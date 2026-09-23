@@ -2,7 +2,8 @@
 
 Browser game about a startup trying to find its first paying customer. Open `index.html` directly; the game needs no server or build step.
 
-The project site will be available at [mistakery.github.io/mistakery](https://mistakery.github.io/mistakery/) after GitHub Pages is enabled for this repository. Add `?story=live-agent` to open the Live AI Agent route directly for testing.
+- [Play from the beginning](https://mistakery.github.io/mistakery/).
+- [Open the Live AI Agent test version](https://mistakery.github.io/mistakery/?story=live-agent) directly, with Back and Restart controls.
 
 ## Source of truth
 
