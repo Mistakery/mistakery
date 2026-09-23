@@ -1,0 +1,14 @@
+{
+  "name": "mistakery",
+  "private": true,
+  "scripts": {
+    "test": "node --test --test-concurrency=3",
+    "test:unit": "node --test tests/offline.test.cjs tests/personal-chat-runtime.test.cjs tests/live-agent.test.cjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "playwright": "^1.62.0"
+  }
+}
