@@ -17,3 +17,7 @@ After changing the deck or runtime, run `node scripts/build-offline-deck.cjs`. A
 ## Checks
 
 Use Node.js 20 or newer. Run `npm ci`, then `npm run test:unit` for the fast data and runtime checks. Install the Playwright browsers with `npx playwright install chromium webkit`, then run `npm test` for all current checks, including browser coverage.
+
+## Working together
+
+Ask an agent to make one change in a new branch and open a pull request to `main`. Cloudflare Pages adds a separate preview link to the pull request; add `?story=live-agent` to that link when checking Live Agent. Request fixes in the same pull request so the preview updates. Merge only after the game looks right and the test check passes. The merge updates the main GitHub Pages site; delete the task branch afterward.
