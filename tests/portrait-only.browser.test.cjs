@@ -18,6 +18,11 @@ async function rotate(page, angle) {
 }
 async function assertVisible(page, selector) {
   const node = typeof selector === 'string' ? page.locator(selector) : selector;
+  await page.waitForFunction(n => {
+    const a = n.getBoundingClientRect(), b = document.querySelector('[data-chat]').getBoundingClientRect();
+    return a.left >= b.left - 1 && a.right <= b.right + 1
+      && a.top >= b.top - 1 && a.bottom <= b.bottom + 1;
+  }, await node.elementHandle(), { timeout: 2000 });
   const rect = await node.evaluate(n => {
     const a = n.getBoundingClientRect(), b = document.querySelector('[data-chat]').getBoundingClientRect();
     return { left: a.left, right: a.right, top: a.top, bottom: a.bottom,

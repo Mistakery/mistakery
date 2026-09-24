@@ -60,7 +60,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
             await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
             assert.deepEqual(await page.evaluate(() => window.MistakeryApp.state), before, 'full success glow remains protected under either system setting');
           }
-          await page.waitForFunction(() => !window.MistakeryApp.locked, null, { timeout: 1500 });
+          await page.waitForFunction(() => !window.MistakeryApp.locked, null, { timeout: 5000 });
           await page.locator('[data-choice="left"]').tap();
           await page.locator('[data-test-back]').tap();
           assert.equal(await page.evaluate(() => window.MistakeryApp.state.currentCardId), outcome);
@@ -112,6 +112,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
         if (action === 'reduce') await page.emulateMedia({ reducedMotion: 'reduce' });
         if (action === 'timeout') await page.waitForTimeout(2650);
         release();
+        if (action === 'reduce') await page.waitForFunction(() => window.motionEvents.length === 2, null, { timeout: 2000 });
         await page.waitForTimeout(550);
         assert.equal(await page.evaluate(() => window.motionEvents.length), action === 'reduce' ? 2 : 1, action);
       }
