@@ -823,8 +823,8 @@
       let width = bubble.offsetWidth;
       let bestWidth = width;
       let bestHeight = contentHeight();
-      while (contentHeight() > chat.clientHeight - 16 && width > 96) {
-        width = Math.max(96, width - 4);
+      while (contentHeight() > chat.clientHeight - 16 && width > 128) {
+        width = Math.max(128, width - 4);
         bubble.style.width = `${width}px`;
         const height = contentHeight();
         if (height < bestHeight) { bestWidth = width; bestHeight = height; }
