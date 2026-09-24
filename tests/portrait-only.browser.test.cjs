@@ -18,11 +18,23 @@ async function rotate(page, angle) {
 }
 async function assertVisible(page, selector) {
   const node = typeof selector === 'string' ? page.locator(selector) : selector;
-  await page.waitForFunction(n => {
-    const a = n.getBoundingClientRect(), b = document.querySelector('[data-chat]').getBoundingClientRect();
-    return a.left >= b.left - 1 && a.right <= b.right + 1
-      && a.top >= b.top - 1 && a.bottom <= b.bottom + 1;
-  }, await node.elementHandle(), { timeout: 2000 });
+  try {
+    await page.waitForFunction(n => {
+      const a = n.getBoundingClientRect(), b = document.querySelector('[data-chat]').getBoundingClientRect();
+      return a.left >= b.left - 1 && a.right <= b.right + 1
+        && a.top >= b.top - 1 && a.bottom <= b.bottom + 1;
+    }, await node.elementHandle(), { timeout: 2000 });
+  } catch (error) {
+    const detail = await node.evaluate(n => {
+      const chat = document.querySelector('[data-chat]');
+      const a = n.getBoundingClientRect(), b = chat.getBoundingClientRect();
+      return { node: n.className, rect: { left: a.left, right: a.right, top: a.top, bottom: a.bottom },
+        chat: { left: b.left, right: b.right, top: b.top, bottom: b.bottom,
+          scrollTop: chat.scrollTop, scrollHeight: chat.scrollHeight, clientHeight: chat.clientHeight },
+        current: [...chat.querySelectorAll('[data-chat-current]')].map(x => ({ className: x.className, height: x.offsetHeight })) };
+    });
+    throw new Error(`${error.message}: ${JSON.stringify(detail)}`);
+  }
   const rect = await node.evaluate(n => {
     const a = n.getBoundingClientRect(), b = document.querySelector('[data-chat]').getBoundingClientRect();
     return { left: a.left, right: a.right, top: a.top, bottom: a.bottom,
