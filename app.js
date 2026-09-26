@@ -819,6 +819,14 @@
     if (overflow > 0) chat.scrollTop += overflow;
   }
 
+  function updateHistoryVisibility() {
+    const chat = $('[data-chat]');
+    chat.querySelectorAll('[data-chat-history]').forEach(node => {
+      // Preserve scroll space and full history, but do not show a clipped bubble's tail.
+      node.classList.toggle('is-clipped-history', node.offsetTop < chat.scrollTop);
+    });
+  }
+
   function focusContinuation() {
     const chat = $('[data-chat]');
     const current = Array.from(chat.querySelectorAll('[data-chat-current], .typing-bubble'));
@@ -844,6 +852,7 @@
     });
     // New content takes priority; the reply and earlier messages remain in history.
     chat.scrollTop = chat.scrollHeight;
+    updateHistoryVisibility();
   }
 
   function stageCardMessages(card) {
@@ -1235,6 +1244,7 @@
     body.scrollTop = 0;
   }
 
+  $('[data-chat]').addEventListener('scroll', updateHistoryVisibility, { passive: true });
   $('[data-test-back]').addEventListener('click', backInStoryTest);
   $('[data-test-inspect]').addEventListener('click', showTestDetails);
   $('[data-details-close]').addEventListener('click', () => $('[data-test-details]').close());

@@ -380,6 +380,7 @@ button { font: inherit; }
 }
 .chat.has-chat-history::-webkit-scrollbar { display: none; }
 .chat.has-chat-history > * { flex-shrink: 0; }
+.chat.has-chat-history .is-clipped-history { visibility: hidden; }
 .chat.has-chat-history .message { flex-shrink: 0; }
 .chat.has-chat-history .message-stack { flex: 1; }
 .chat.has-chat-history .image-bubble { transition-property: none; }

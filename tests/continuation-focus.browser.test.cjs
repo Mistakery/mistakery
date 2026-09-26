@@ -17,6 +17,12 @@ async function assertContinuationVisible(page) {
     });
   });
   for (const rect of layout) assert.ok(rect.top >= rect.chatTop - 1 && rect.bottom <= rect.chatBottom + 1, JSON.stringify(rect));
+  const clippedHistory = await page.locator('[data-chat-history]').evaluateAll(nodes => nodes.filter(node => {
+    const chat = node.closest('[data-chat]');
+    const partlyClipped = node.offsetTop < chat.scrollTop && node.offsetTop + node.offsetHeight > chat.scrollTop;
+    return partlyClipped && getComputedStyle(node).visibility !== 'hidden';
+  }).map(node => node.textContent));
+  assert.deepEqual(clippedHistory, [], 'partially clipped history must not leave a strip under the header');
   const photo = await page.locator('[data-chat-current] img').evaluate(image => ({
     width: image.clientWidth, height: image.clientHeight,
     naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight,
@@ -38,6 +44,12 @@ test('photo continuation stays fully visible with animation, rerender and viewpo
       await page.locator('.typing-bubble').waitFor({ state: 'detached' });
       await page.locator('[data-choice="left"]').click();
       await assertContinuationVisible(page);
+      await page.locator('[data-chat]').evaluate(async chat => {
+        chat.scrollTop = 0;
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      });
+      assert.equal(await page.locator('[data-chat-history]').evaluateAll(nodes => nodes.every(node => getComputedStyle(node).visibility === 'visible')), true, 'scrolling up must reveal the complete history');
+      await page.evaluate(() => MistakeryApp.render());
       for (const viewport of [{ width: 320, height: 650 }, { width: 390, height: 844 }]) {
         await page.setViewportSize(viewport);
         await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
