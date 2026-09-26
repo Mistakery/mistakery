@@ -50,7 +50,7 @@ test('a stalled photo request cannot block play or replace initials later', asyn
     assert.equal(await page.locator('.avatar-photo').count(), 0);
     assert.equal(await page.locator('[data-source="@bigdeals"] .member-avatar').first().textContent(), 'BD');
     release();
-    await page.waitForFunction(() => performance.getEntriesByType('resource').filter(entry => entry.name.includes('/avatar-')).length === 9);
+    await page.waitForFunction(() => performance.getEntriesByType('resource').filter(entry => entry.name.includes('/avatar-')).length === 11);
     await page.getByRole('button', { name: 'Restart story' }).click();
     assert.equal(await page.locator('.avatar-photo').count(), 0, 'late photos must not pop into the chat');
   } finally { release(); await browser.close(); }
@@ -69,7 +69,15 @@ test('character photos load in personal and team chats without changing avatar s
     const teamSize = await sales.evaluate(image => ({ width: image.clientWidth, height: image.clientHeight }));
     assert.deepEqual(teamSize, { width: 27, height: 27 });
 
-    for (const [cardId, filename] of [['OPEN_BOSS', 'exboss'], ['OPEN_INVESTOR', 'investor'], ['INFLUENCER_02', 'ai-influencer']]) {
+    const teamHeader = page.locator('[data-avatar] img');
+    await teamHeader.waitFor({ timeout: 1500 });
+    assert.match(await teamHeader.getAttribute('src'), /avatar-dream-team\.webp$/);
+    await page.evaluate(() => { MistakeryApp.state.currentCardId = 'LIVE_AGENT_02'; MistakeryApp.render(); });
+    const bot = page.locator('[data-source="@b2buddy"] .member-avatar img');
+    await bot.evaluate(image => image.decode());
+    assert.match(await bot.getAttribute('src'), /avatar-b2buddy\.webp$/);
+
+    for (const [cardId, filename] of [['OPEN_01', 'b2buddy'], ['LIVE_AGENT_03', 'b2buddy'], ['OPEN_BOSS', 'exboss'], ['OPEN_INVESTOR', 'investor'], ['INFLUENCER_02', 'ai-influencer']]) {
       await page.evaluate(id => { MistakeryApp.state.currentCardId = id; MistakeryApp.render(); }, cardId);
       for (const selector of ['[data-avatar] img', '[data-message-avatar] img']) {
         const image = page.locator(selector);
@@ -84,7 +92,7 @@ test('character photos load in personal and team chats without changing avatar s
     assert.equal(await page.locator('[data-avatar]').textContent(), 'E');
 
     const sources = await page.evaluate(() => Object.values(MistakeryApp.deck.sources).filter(source => source.avatarImage));
-    assert.equal(sources.length, 9);
+    assert.equal(new Set(sources.map(source => source.avatarImage)).size, 11);
     for (const source of sources) {
       assert.ok(fs.statSync(path.join(root, source.avatarImage)).size <= 12 * 1024, `${source.name}: avatar exceeds 12 KB`);
       const dimensions = await page.evaluate(async src => {

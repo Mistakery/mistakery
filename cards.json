@@ -105,7 +105,8 @@
   "sources": {
     "@b2buddy_bot": {
       "name": "@b2buddy",
-      "role": "AI Agent"
+      "role": "AI Agent",
+      "avatarImage": "assets/avatar-b2buddy.webp"
     },
     "@hustler": {
       "name": "@hustler",
@@ -168,7 +169,8 @@
     "dream_team": {
       "name": "Dream Team",
       "role": "6 members · 3 online",
-      "avatar": "DT"
+      "avatar": "DT",
+      "avatarImage": "assets/avatar-dream-team.webp"
     },
     "@head_of_agile": {
       "name": "@head_of_agile",
@@ -190,7 +192,8 @@
     },
     "@b2buddy": {
       "name": "@b2buddy",
-      "role": "AI Agent"
+      "role": "AI Agent",
+      "avatarImage": "assets/avatar-b2buddy.webp"
     },
     "@head_of_innovations": {
       "name": "@head_of_innovations",

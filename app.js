@@ -653,7 +653,7 @@
 
   function renderTeamCard(card) {
     const thread = sourceFor(card.source);
-    setContact({ name: thread.name, role: thread.role, avatar: thread.avatar || 'DT' });
+    setContact({ name: thread.name, role: thread.role, avatar: characterAvatar(thread, thread.avatar || 'DT') });
     $('[data-chat]').innerHTML = `<span class="sr-only" data-card-id>${card.id}</span>
       ${teamCardMessagesMarkup(card)}
       <div class="message-clearance" aria-hidden="true"></div>`;
