@@ -217,7 +217,6 @@
     Object.assign(app, structuredClone(saved), { locked: false });
     // Restored outcomes retain their styling but never replay their entrance.
     presentedOutcomes.add(app.state);
-    $('[data-pin-sheet]').hidden = true;
     clearPreview();
     render();
     $('[data-chat]').scrollTop = scrollTop;
@@ -237,7 +236,6 @@
     app.influencerPreviousCardId = null;
     app.locked = false;
     app.view = 'playing';
-    $('[data-pin-sheet]').hidden = true;
     clearPreview();
     renderCard();
   }
@@ -275,7 +273,18 @@
     $('[data-sender]').textContent = name;
     $('[data-status]').textContent = role;
     const avatarNode = $('[data-avatar]');
-    avatarNode.innerHTML = avatar || name.replace('@', '').slice(0, 1).toUpperCase();
+    const markup = avatar || name.replace('@', '').slice(0, 1).toUpperCase();
+    const template = document.createElement('template');
+    template.innerHTML = markup;
+    const photo = template.content.querySelector('img');
+    const readyPhoto = photo && readyCharacterAvatars.get(photo.getAttribute('src'));
+    if (readyPhoto) {
+      readyPhoto.className = 'avatar-photo';
+      readyPhoto.alt = '';
+      readyPhoto.decoding = 'sync';
+      readyPhoto.draggable = false;
+      if (avatarNode.firstChild !== readyPhoto) avatarNode.replaceChildren(readyPhoto);
+    } else if (avatarNode.innerHTML !== markup) avatarNode.innerHTML = markup;
     const messageAvatar = $('[data-message-avatar]');
     if (messageAvatar) messageAvatar.innerHTML = avatar || name.replace('@', '').slice(0, 1).toUpperCase();
   }
@@ -286,13 +295,13 @@
 
   const readyCharacterAvatars = new Map();
 
-  function characterAvatar(source, fallback) {
-    if (!readyCharacterAvatars.has(source.avatarImage)) return fallback || source.name.replace('@', '').slice(0, 1).toUpperCase();
-    return `<img class="avatar-photo" src="${htmlAttribute(source.avatarImage)}" alt="" width="128" height="128" decoding="sync" draggable="false">`;
+  function characterAvatar(source, fallback, imageSrc = source.avatarImage) {
+    if (!readyCharacterAvatars.has(imageSrc)) return fallback || source.name.replace('@', '').slice(0, 1).toUpperCase();
+    return `<img class="avatar-photo" src="${htmlAttribute(imageSrc)}" alt="" width="128" height="128" decoding="sync" draggable="false">`;
   }
 
   async function warmCharacterAvatars() {
-    const urls = new Set(Object.values(app.deck.sources).map(source => source.avatarImage).filter(Boolean));
+    const urls = new Set(Object.values(app.deck.sources).flatMap(source => [source.avatarImage, source.irlAvatar]).filter(Boolean));
     let accepting = true;
     let timeout;
     const preparation = Promise.all(Array.from(urls, async src => {
@@ -325,37 +334,15 @@
     $('[data-scene]').dataset.activeCard = id;
   }
 
-  function hidePinned() {
-    const pinned = $('[data-pinned]');
-    pinned.classList.remove('irl-location');
-    pinned.querySelector('.pin').textContent = '📌';
-    pinned.querySelector('small').textContent = 'PINNED';
-    pinned.hidden = true;
-    $('[data-pin-sheet]').hidden = true;
-  }
-
-  function showPinned() {
-    const pinned = $('[data-pinned]');
-    pinned.classList.remove('irl-location');
-    pinned.querySelector('.pin').textContent = '📌';
-    pinned.querySelector('small').textContent = 'PINNED';
-    $('[data-pinned-title]').textContent = '5 MONTHS AS A FOUNDER 🚀';
-    $('[data-pin-text]').innerHTML = NOTE_SCREENS[1].messages
-      .join('\n')
-      .split('\n')
-      .map((line) => `<span>${line ? typography(line) : '&nbsp;'}</span>`)
-      .join('');
-    pinned.hidden = false;
+  function hideIrlLocation() {
+    $('[data-location]').hidden = true;
   }
 
   function showIrlLocation(card) {
-    const pinned = $('[data-pinned]');
-    pinned.classList.add('irl-location');
-    pinned.querySelector('.pin').textContent = '📍';
-    pinned.querySelector('small').textContent = card.location;
-    $('[data-pinned-title]').textContent = card.score;
-    $('[data-pin-sheet]').hidden = true;
-    pinned.hidden = false;
+    const location = $('[data-location]');
+    location.querySelector('small').textContent = card.location;
+    $('[data-location-score]').textContent = card.score;
+    location.hidden = false;
   }
 
   function setReplyHint(visible) {
@@ -442,7 +429,7 @@
     const delivered = app.onboardingIndex + (typing ? 0 : 1);
     setView('onboarding', step.shellStage);
     setSceneMode('personal');
-    hidePinned();
+    hideIrlLocation();
     setReplyHint(false);
     setCardId(`ONBOARDING_${delivered}`);
     setContact({ name: 'Mistakery', role: 'online', avatar: 'M' });
@@ -511,7 +498,7 @@
     setView('saved', 'real');
     setSceneMode('personal');
     renderResources(app.state.resources);
-    hidePinned();
+    hideIrlLocation();
     setReplyHint(true);
     setCardId(note.id);
     setContact({ name: 'Saved Messages', role: '', avatar: BOOKMARK_SVG });
@@ -723,9 +710,7 @@
   function renderIrlCard(card) {
     const source = sourceFor(card.source);
     const name = source.irlName || source.name;
-    const avatar = source.irlAvatar
-      ? `<img class="irl-avatar-photo" src="${source.irlAvatar}" alt="">`
-      : name.slice(0, 1).toUpperCase();
+    const avatar = characterAvatar(source, name.slice(0, 1).toUpperCase(), source.irlAvatar);
     setContact({ name, role: '', avatar });
     $('[data-chat]').innerHTML = `<span class="sr-only" data-card-id>${card.id}</span>
       <div class="irl-dialog is-pop">${messageLines(card.text)}</div>`;
@@ -744,7 +729,7 @@
     renderResources(app.state.resources);
     setSceneMode(card.mode);
     if (card.mode === 'irl') showIrlLocation(card);
-    else showPinned();
+    else hideIrlLocation();
     setReplyHint(card.mode !== 'irl');
     setCardId(card.id);
     if (card.mode === 'irl') renderIrlCard(card);
@@ -786,8 +771,7 @@
     const phone = $('[data-game]');
     phone.dataset.outcome = card.outcomeTone;
     if (card.outcomeBanner !== false) {
-      $('[data-pinned]').hidden = true;
-      $('[data-pin-sheet]').hidden = true;
+      hideIrlLocation();
       $('[data-outcome-label]').textContent = card.outcomeTone === 'success' ? 'SUCCESS' : 'FAILURE';
       $('[data-outcome-banner]').hidden = false;
     }
@@ -1251,18 +1235,10 @@
     body.scrollTop = 0;
   }
 
-  $('[data-pinned]').addEventListener('click', () => {
-    if ($('[data-pinned]').classList.contains('irl-location')) return;
-    $('[data-pin-sheet]').hidden = false;
-  });
   $('[data-test-back]').addEventListener('click', backInStoryTest);
   $('[data-test-inspect]').addEventListener('click', showTestDetails);
   $('[data-details-close]').addEventListener('click', () => $('[data-test-details]').close());
   $('[data-test-restart]').addEventListener('click', startStoryTest);
-  $('[data-pin-close]').addEventListener('click', () => { $('[data-pin-sheet]').hidden = true; });
-  $('[data-pin-sheet]').addEventListener('click', (event) => {
-    if (event.target === $('[data-pin-sheet]')) $('[data-pin-sheet]').hidden = true;
-  });
   $('[data-restart-run]').addEventListener('click', () => {
     if (app.view === 'onboarding') return;
     recordTestStep();
@@ -1277,7 +1253,6 @@
 
   document.addEventListener('keydown', (event) => {
     if ($('[data-test-details]').open) return;
-    if (event.key === 'Escape') $('[data-pin-sheet]').hidden = true;
     if (app.view !== 'playing') return;
     if (event.key === 'ArrowLeft') $('[data-choice="left"]')?.click();
     if (event.key === 'ArrowRight') $('[data-choice="right"]')?.click();

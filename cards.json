@@ -130,11 +130,13 @@
     },
     "@error404": {
       "name": "@error404",
-      "role": "Dev"
+      "role": "Dev",
+      "avatarImage": "assets/avatar-dev.svg"
     },
     "@error_404": {
       "name": "@error_404",
-      "role": "Dev"
+      "role": "Dev",
+      "avatarImage": "assets/avatar-dev.svg"
     },
     "@pixel_perfect": {
       "name": "@pixel_perfect",
@@ -164,7 +166,8 @@
       "name": "@padel_pro",
       "irlName": "Padel coach",
       "irlAvatar": "assets/irl-padel-coach-avatar.webp",
-      "role": "Padel Coach"
+      "role": "Padel Coach",
+      "avatarImage": "assets/irl-padel-coach-avatar.webp"
     },
     "dream_team": {
       "name": "Dream Team",

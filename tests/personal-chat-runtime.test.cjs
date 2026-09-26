@@ -493,7 +493,8 @@ test('index uses one Screen 13 Personal Chat shell in semantic row order', () =>
   assert.match(html, /class="resources"[^>]*data-resources/);
   assert.match(html, /class="messenger-scene scene--card personal-scene"/);
   assert.match(html, /class="contact"/);
-  assert.match(html, /data-pinned/);
+  assert.match(html, /data-location/);
+  assert.doesNotMatch(html, /data-pinned|pin-sheet|PINNED/);
   assert.match(html, /class="chat"[^>]*data-chat[\s\S]*data-reply-hint[\s\S]*class="choices"[^>]*data-choices/);
   assert.match(html, /data-message-avatar/);
   assert.match(html, /data-card-id/);
@@ -514,7 +515,7 @@ test('CSS matches the approved phone, typography, Quiet Glass, and shadow spacin
   assert.match(css, /\.choice\s*\{[^}]*font-size:\s*13px;/s);
   assert.match(css, /\.team-scene \.choice\s*\{[^}]*font-size:\s*12\.2px;/s);
   assert.match(css, /\.irl-scene \.choice\s*\{[^}]*font-size:\s*12\.2px;/s);
-  assert.match(css, /\.pinned\s*\{[^}]*height:\s*48px;/s);
+  assert.match(css, /\.irl-location\s*\{[^}]*height:\s*48px;/s);
   assert.doesNotMatch(css, /\.irl-location\s+\.pin\s*\{/);
   assert.match(css, /\.irl-scene\s*\{[^}]*background:\s*#d2dbe1;/s);
   assert.match(css, /\.irl-scene::before\s*\{[^}]*background:\s*#d2dbe1;/s);

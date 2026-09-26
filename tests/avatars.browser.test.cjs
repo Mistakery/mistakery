@@ -17,7 +17,7 @@ test('the first chat waits for slow avatar requests and displays decoded photos 
       const pathname = new URL(route.request().url()).pathname;
       const file = path.join(root, pathname === '/' ? 'index.html' : pathname.slice(1));
       if (pathname.includes('/avatar-')) { avatarRequests++; await heldAvatars; }
-      const contentType = file.endsWith('.webp') ? 'image/webp' : file.endsWith('.js') ? 'text/javascript' : file.endsWith('.css') ? 'text/css' : 'text/html';
+      const contentType = file.endsWith('.svg') ? 'image/svg+xml' : file.endsWith('.webp') ? 'image/webp' : file.endsWith('.js') ? 'text/javascript' : file.endsWith('.css') ? 'text/css' : 'text/html';
       await route.fulfill({ path: file, contentType });
     });
     await page.goto('http://mistakery.test/?story=live-agent', { waitUntil: 'domcontentloaded' });
@@ -42,7 +42,7 @@ test('a stalled photo request cannot block play or replace initials later', asyn
       const pathname = new URL(route.request().url()).pathname;
       const file = path.join(root, pathname === '/' ? 'index.html' : pathname.slice(1));
       if (pathname.includes('/avatar-')) await heldAvatars;
-      const contentType = file.endsWith('.webp') ? 'image/webp' : file.endsWith('.js') ? 'text/javascript' : file.endsWith('.css') ? 'text/css' : 'text/html';
+      const contentType = file.endsWith('.svg') ? 'image/svg+xml' : file.endsWith('.webp') ? 'image/webp' : file.endsWith('.js') ? 'text/javascript' : file.endsWith('.css') ? 'text/css' : 'text/html';
       await route.fulfill({ path: file, contentType });
     });
     await page.goto('http://mistakery.test/?story=live-agent', { waitUntil: 'domcontentloaded' });
@@ -50,7 +50,7 @@ test('a stalled photo request cannot block play or replace initials later', asyn
     assert.equal(await page.locator('.avatar-photo').count(), 0);
     assert.equal(await page.locator('[data-source="@bigdeals"] .member-avatar').first().textContent(), 'BD');
     release();
-    await page.waitForFunction(() => performance.getEntriesByType('resource').filter(entry => entry.name.includes('/avatar-')).length === 11);
+    await page.waitForFunction(() => performance.getEntriesByType('resource').filter(entry => entry.name.includes('/avatar-')).length === 12);
     await page.getByRole('button', { name: 'Restart story' }).click();
     assert.equal(await page.locator('.avatar-photo').count(), 0, 'late photos must not pop into the chat');
   } finally { release(); await browser.close(); }
@@ -87,12 +87,32 @@ test('character photos load in personal and team chats without changing avatar s
       const size = await page.locator('[data-avatar] img').evaluate(image => ({ width: image.clientWidth, height: image.clientHeight }));
       assert.deepEqual(size, { width: 36, height: 36 });
     }
+    const irlReady = await page.evaluate(() => {
+      MistakeryApp.state.currentCardId = 'IRL_PADEL_01'; MistakeryApp.render();
+      const image = document.querySelector('[data-avatar] img');
+      return image.complete && image.naturalWidth > 0 && image.decoding === 'sync';
+    });
+    assert.equal(irlReady, true, 'IRL header must use a ready portrait in the first render');
     await page.evaluate(() => { MistakeryApp.state.currentCardId = 'OPEN_DEV'; MistakeryApp.render(); });
-    assert.equal(await page.locator('[data-avatar] img').count(), 0);
-    assert.equal(await page.locator('[data-avatar]').textContent(), 'E');
+    assert.match(await page.locator('[data-avatar] img').getAttribute('src'), /avatar-dev\.svg$/);
+    assert.match(await page.locator('[data-message-avatar] img').getAttribute('src'), /avatar-dev\.svg$/);
+    assert.equal(await page.locator('[data-pinned], .pin-sheet').count(), 0);
+    assert.equal(await page.locator('[data-location]').isVisible(), false);
+    const headerStable = await page.evaluate(() => {
+      const photo = document.querySelector('[data-avatar] img');
+      MistakeryApp.render();
+      return photo === document.querySelector('[data-avatar] img');
+    });
+    assert.equal(headerStable, true, 'rerendering the same contact must retain the decoded header photo');
+    await page.evaluate(() => { MistakeryApp.state.currentCardId = 'PADEL_INVITE'; MistakeryApp.render(); });
+    const padelSrc = await page.locator('[data-avatar] img').getAttribute('src');
+    await page.evaluate(() => { MistakeryApp.state.currentCardId = 'IRL_PADEL_01'; MistakeryApp.render(); });
+    assert.equal(await page.locator('[data-avatar] img').getAttribute('src'), padelSrc);
+    assert.equal(await page.locator('[data-location]').isVisible(), true);
+    assert.ok((await page.locator('[data-location-score]').textContent()).length > 0);
 
-    const sources = await page.evaluate(() => Object.values(MistakeryApp.deck.sources).filter(source => source.avatarImage));
-    assert.equal(new Set(sources.map(source => source.avatarImage)).size, 11);
+    const sources = await page.evaluate(() => Object.values(MistakeryApp.deck.sources).filter(source => source.avatarImage?.includes('/avatar-')));
+    assert.equal(new Set(sources.map(source => source.avatarImage)).size, 12);
     for (const source of sources) {
       assert.ok(fs.statSync(path.join(root, source.avatarImage)).size <= 12 * 1024, `${source.name}: avatar exceeds 12 KB`);
       const dimensions = await page.evaluate(async src => {
