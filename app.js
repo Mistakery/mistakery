@@ -284,18 +284,31 @@
     return app.deck.sources[sourceId];
   }
 
+  const readyCharacterAvatars = new Map();
+
   function characterAvatar(source, fallback) {
-    if (!source.avatarImage) return fallback || source.name.replace('@', '').slice(0, 1).toUpperCase();
-    return `<img class="avatar-photo" src="${htmlAttribute(source.avatarImage)}" alt="" width="128" height="128" decoding="async" draggable="false">`;
+    if (!readyCharacterAvatars.has(source.avatarImage)) return fallback || source.name.replace('@', '').slice(0, 1).toUpperCase();
+    return `<img class="avatar-photo" src="${htmlAttribute(source.avatarImage)}" alt="" width="128" height="128" decoding="sync" draggable="false">`;
   }
 
-  function warmCharacterAvatars() {
+  async function warmCharacterAvatars() {
     const urls = new Set(Object.values(app.deck.sources).map(source => source.avatarImage).filter(Boolean));
-    for (const src of urls) {
+    let accepting = true;
+    let timeout;
+    const preparation = Promise.all(Array.from(urls, async src => {
       const image = new Image();
-      image.fetchPriority = 'low';
+      image.fetchPriority = 'high';
       image.src = src;
-    }
+      try {
+        await image.decode();
+        if (accepting) readyCharacterAvatars.set(src, image);
+      } catch { /* Keep initials if a photo cannot load. */ }
+    }));
+    // Keep decoded images alive; slow or unavailable photos must not block play
+    // forever or suddenly replace initials after the first screen has appeared.
+    await Promise.race([preparation, new Promise(resolve => { timeout = window.setTimeout(resolve, 2500); })]);
+    accepting = false;
+    window.clearTimeout(timeout);
   }
 
   function setThread(sourceId, status) {
@@ -1278,11 +1291,11 @@
       });
 
   deckRequest
-    .then((deck) => {
+    .then(async (deck) => {
       const errors = engine.validateDeck(deck);
       if (errors.length) throw new Error(errors.join('\n'));
       app.deck = deck;
-      warmCharacterAvatars();
+      await warmCharacterAvatars();
       if (storyTestEnabled) {
         startStoryTest();
         return;
