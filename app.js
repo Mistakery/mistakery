@@ -320,6 +320,34 @@
     window.clearTimeout(timeout);
   }
 
+  const readyStoryImages = new Map();
+  const storyImageSources = new Set();
+
+  async function warmStoryImages() {
+    for (const card of app.deck.cards.filter(card => /^(LIVE_AGENT|INFLUENCER)_/.test(card.id))) {
+      if (card.image?.src) storyImageSources.add(card.image.src);
+      for (const message of card.messages || []) {
+        const image = message.image || app.deck.images?.[message.imageRef];
+        if (image?.src) storyImageSources.add(image.src);
+      }
+    }
+    let accepting = true;
+    let timeout;
+    const preparation = Promise.all(Array.from(storyImageSources, async src => {
+      const image = new Image();
+      image.fetchPriority = 'high';
+      image.src = src;
+      try {
+        await image.decode();
+        if (accepting) readyStoryImages.set(src, image);
+      } catch { /* Unavailable pictures keep their captions and a stable fallback. */ }
+    }));
+    // Prepare pixels, not just network responses; retain them across card transitions.
+    await Promise.race([preparation, new Promise(resolve => { timeout = window.setTimeout(resolve, 5000); })]);
+    accepting = false;
+    window.clearTimeout(timeout);
+  }
+
   function setThread(sourceId, status) {
     const source = sourceFor(sourceId);
     setContact({
@@ -401,7 +429,10 @@
       .replace(/>/g, '&gt;');
   }
 
-  function mediaImageMarkup(image, decoding = 'async') {
+  function mediaImageMarkup(image, decoding = 'sync') {
+    if (storyImageSources.has(image.src) && !readyStoryImages.has(image.src)) {
+      return `<span class="media-placeholder__label" role="img" aria-label="${htmlAttribute(image.alt)}">Image unavailable</span>`;
+    }
     return `<img class="message-image" src="${htmlAttribute(image.src)}" alt="${htmlAttribute(image.alt)}" width="${Number(image.width)}" height="${Number(image.height)}" style="--image-ratio: ${Number(image.width)} / ${Number(image.height)}" decoding="${decoding}" fetchpriority="high" draggable="false">`;
   }
 
@@ -412,7 +443,7 @@
     if (!asset) throw new Error(`Missing image reference: ${message.imageRef}`);
     const isImage = Boolean(asset.src);
     const caption = message.text ? `<div class="message-caption">${messageLines(message.text, preserveTerminalPeriod)}</div>` : '';
-    return `<div class="message ${isImage ? 'image-bubble' : 'media-placeholder'}${caption ? ' has-caption' : ''} is-pop" data-asset-reference="${htmlAttribute(message.imageRef)}">${isImage ? mediaImageMarkup(asset, caption ? 'sync' : 'async') : mediaPlaceholderMarkup(asset.placeholder)}${caption}</div>`;
+    return `<div class="message ${isImage ? 'image-bubble' : 'media-placeholder'}${caption ? ' has-caption' : ''} is-pop" data-asset-reference="${htmlAttribute(message.imageRef)}">${isImage ? mediaImageMarkup(asset, 'sync') : mediaPlaceholderMarkup(asset.placeholder)}${caption}</div>`;
   }
 
   function popMessage() {
@@ -1281,7 +1312,7 @@
       const errors = engine.validateDeck(deck);
       if (errors.length) throw new Error(errors.join('\n'));
       app.deck = deck;
-      await warmCharacterAvatars();
+      await Promise.all([warmCharacterAvatars(), warmStoryImages()]);
       if (storyTestEnabled) {
         startStoryTest();
         return;
