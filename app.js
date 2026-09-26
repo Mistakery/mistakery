@@ -284,12 +284,26 @@
     return app.deck.sources[sourceId];
   }
 
+  function characterAvatar(source, fallback) {
+    if (!source.avatarImage) return fallback || source.name.replace('@', '').slice(0, 1).toUpperCase();
+    return `<img class="avatar-photo" src="${htmlAttribute(source.avatarImage)}" alt="" width="128" height="128" decoding="async" draggable="false">`;
+  }
+
+  function warmCharacterAvatars() {
+    const urls = new Set(Object.values(app.deck.sources).map(source => source.avatarImage).filter(Boolean));
+    for (const src of urls) {
+      const image = new Image();
+      image.fetchPriority = 'low';
+      image.src = src;
+    }
+  }
+
   function setThread(sourceId, status) {
     const source = sourceFor(sourceId);
     setContact({
       name: source.name,
       role: status === 'typing...' ? `${source.role} · online` : status,
-      avatar: source.name.replace('@', '').slice(0, 1).toUpperCase(),
+      avatar: characterAvatar(source),
     });
   }
 
@@ -593,7 +607,7 @@
 
   function renderPersonalCard(card) {
     setThread(card.source, 'typing...');
-    const avatar = sourceFor(card.source).name.replace('@', '').slice(0, 1).toUpperCase();
+    const avatar = characterAvatar(sourceFor(card.source));
     $('[data-chat]').innerHTML = `<span class="sr-only" data-card-id>${card.id}</span>
       <div class="message-row">
         <div class="mini-avatar message-avatar" data-message-avatar aria-hidden="true">${avatar}</div>
@@ -615,7 +629,7 @@
       }
       const member = sourceFor(message.source);
       return `<div class="team-row is-pop" data-source="${message.source}">
-        <div class="member-avatar" aria-hidden="true">${message.avatar}</div>
+        <div class="member-avatar" aria-hidden="true">${characterAvatar(member, message.avatar)}</div>
         <div class="team-bubble${mediaClass}">
           <span class="team-meta">${member.name}${member.role ? `<span class="team-role"> · ${member.role}</span>` : ''}</span>
           ${body}
@@ -1268,6 +1282,7 @@
       const errors = engine.validateDeck(deck);
       if (errors.length) throw new Error(errors.join('\n'));
       app.deck = deck;
+      warmCharacterAvatars();
       if (storyTestEnabled) {
         startStoryTest();
         return;
