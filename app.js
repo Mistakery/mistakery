@@ -822,8 +822,9 @@
   function updateHistoryVisibility() {
     const chat = $('[data-chat]');
     chat.querySelectorAll('[data-chat-history]').forEach(node => {
-      // Preserve scroll space and full history, but do not show a clipped bubble's tail.
-      node.classList.toggle('is-clipped-history', node.offsetTop < chat.scrollTop);
+      // Hide only a thin clipped tail; keep substantial text and photos visible.
+      const remaining = node.offsetTop + node.offsetHeight - chat.scrollTop;
+      node.classList.toggle('is-clipped-history', node.offsetTop < chat.scrollTop && remaining <= 24);
     });
   }
 

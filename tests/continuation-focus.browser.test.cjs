@@ -19,7 +19,8 @@ async function assertContinuationVisible(page) {
   for (const rect of layout) assert.ok(rect.top >= rect.chatTop - 1 && rect.bottom <= rect.chatBottom + 1, JSON.stringify(rect));
   const clippedHistory = await page.locator('[data-chat-history]').evaluateAll(nodes => nodes.filter(node => {
     const chat = node.closest('[data-chat]');
-    const partlyClipped = node.offsetTop < chat.scrollTop && node.offsetTop + node.offsetHeight > chat.scrollTop;
+    const remaining = node.offsetTop + node.offsetHeight - chat.scrollTop;
+    const partlyClipped = node.offsetTop < chat.scrollTop && remaining > 0 && remaining <= 24;
     return partlyClipped && getComputedStyle(node).visibility !== 'hidden';
   }).map(node => node.textContent));
   assert.deepEqual(clippedHistory, [], 'partially clipped history must not leave a strip under the header');
@@ -58,6 +59,23 @@ test('photo continuation stays fully visible with animation, rerender and viewpo
         await assertContinuationVisible(page);
         await page.screenshot({ path: `/tmp/mistakery-continuation-${viewport.width}-${reducedMotion}.png` });
       }
+      await page.locator('[data-choice="left"]').click();
+      assert.equal(await page.locator('[data-card-id]').textContent(), 'LIVE_AGENT_04B');
+      const retainedPhoto = page.locator('[data-chat-history] img');
+      assert.equal(await retainedPhoto.count(), 1, 'continuing the chat must retain the previous photo');
+      const historyPhoto = await retainedPhoto.evaluate(image => {
+        const bubble = image.closest('[data-chat-history]');
+        const chat = image.closest('[data-chat]');
+        return { visibility: getComputedStyle(bubble).visibility,
+          visibleHeight: bubble.offsetTop + bubble.offsetHeight - chat.scrollTop };
+      });
+      assert.ok(historyPhoto.visibleHeight > 24, 'the photo should occupy visible chat space');
+      assert.equal(historyPhoto.visibility, 'visible', 'a clipped photo must not disappear leaving blank space');
+      await page.locator('[data-chat]').evaluate(async chat => {
+        chat.scrollTop = 0;
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      });
+      assert.equal(await retainedPhoto.evaluate(image => getComputedStyle(image.closest('[data-chat-history]')).visibility), 'visible');
       await page.close();
     }
   } finally { await browser.close(); }
