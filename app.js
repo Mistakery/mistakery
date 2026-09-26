@@ -217,7 +217,6 @@
     Object.assign(app, structuredClone(saved), { locked: false });
     // Restored outcomes retain their styling but never replay their entrance.
     presentedOutcomes.add(app.state);
-    $('[data-pin-sheet]').hidden = true;
     clearPreview();
     render();
     $('[data-chat]').scrollTop = scrollTop;
@@ -237,7 +236,6 @@
     app.influencerPreviousCardId = null;
     app.locked = false;
     app.view = 'playing';
-    $('[data-pin-sheet]').hidden = true;
     clearPreview();
     renderCard();
   }
@@ -275,7 +273,18 @@
     $('[data-sender]').textContent = name;
     $('[data-status]').textContent = role;
     const avatarNode = $('[data-avatar]');
-    avatarNode.innerHTML = avatar || name.replace('@', '').slice(0, 1).toUpperCase();
+    const markup = avatar || name.replace('@', '').slice(0, 1).toUpperCase();
+    const template = document.createElement('template');
+    template.innerHTML = markup;
+    const photo = template.content.querySelector('img');
+    const readyPhoto = photo && readyCharacterAvatars.get(photo.getAttribute('src'));
+    if (readyPhoto) {
+      readyPhoto.className = 'avatar-photo';
+      readyPhoto.alt = '';
+      readyPhoto.decoding = 'sync';
+      readyPhoto.draggable = false;
+      if (avatarNode.firstChild !== readyPhoto) avatarNode.replaceChildren(readyPhoto);
+    } else if (avatarNode.innerHTML !== markup) avatarNode.innerHTML = markup;
     const messageAvatar = $('[data-message-avatar]');
     if (messageAvatar) messageAvatar.innerHTML = avatar || name.replace('@', '').slice(0, 1).toUpperCase();
   }
@@ -284,12 +293,67 @@
     return app.deck.sources[sourceId];
   }
 
+  const readyCharacterAvatars = new Map();
+
+  function characterAvatar(source, fallback, imageSrc = source.avatarImage) {
+    if (!readyCharacterAvatars.has(imageSrc)) return fallback || source.name.replace('@', '').slice(0, 1).toUpperCase();
+    return `<img class="avatar-photo" src="${htmlAttribute(imageSrc)}" alt="" width="128" height="128" decoding="sync" draggable="false">`;
+  }
+
+  async function warmCharacterAvatars() {
+    const urls = new Set(Object.values(app.deck.sources).flatMap(source => [source.avatarImage, source.irlAvatar]).filter(Boolean));
+    let accepting = true;
+    let timeout;
+    const preparation = Promise.all(Array.from(urls, async src => {
+      const image = new Image();
+      image.fetchPriority = 'high';
+      image.src = src;
+      try {
+        await image.decode();
+        if (accepting) readyCharacterAvatars.set(src, image);
+      } catch { /* Keep initials if a photo cannot load. */ }
+    }));
+    // Keep decoded images alive; slow or unavailable photos must not block play
+    // forever or suddenly replace initials after the first screen has appeared.
+    await Promise.race([preparation, new Promise(resolve => { timeout = window.setTimeout(resolve, 2500); })]);
+    accepting = false;
+    window.clearTimeout(timeout);
+  }
+
+  const readyStoryImages = new Map();
+  const storyImageSources = new Set();
+
+  async function warmStoryImages() {
+    for (const card of app.deck.cards.filter(card => /^(LIVE_AGENT|INFLUENCER)_/.test(card.id))) {
+      if (card.image?.src) storyImageSources.add(card.image.src);
+      for (const message of card.messages || []) {
+        const image = message.image || app.deck.images?.[message.imageRef];
+        if (image?.src) storyImageSources.add(image.src);
+      }
+    }
+    let accepting = true;
+    let timeout;
+    const preparation = Promise.all(Array.from(storyImageSources, async src => {
+      const image = new Image();
+      image.fetchPriority = 'high';
+      image.src = src;
+      try {
+        await image.decode();
+        if (accepting) readyStoryImages.set(src, image);
+      } catch { /* Unavailable pictures keep their captions and a stable fallback. */ }
+    }));
+    // Prepare pixels, not just network responses; retain them across card transitions.
+    await Promise.race([preparation, new Promise(resolve => { timeout = window.setTimeout(resolve, 5000); })]);
+    accepting = false;
+    window.clearTimeout(timeout);
+  }
+
   function setThread(sourceId, status) {
     const source = sourceFor(sourceId);
     setContact({
       name: source.name,
       role: status === 'typing...' ? `${source.role} · online` : status,
-      avatar: source.name.replace('@', '').slice(0, 1).toUpperCase(),
+      avatar: characterAvatar(source),
     });
   }
 
@@ -298,37 +362,15 @@
     $('[data-scene]').dataset.activeCard = id;
   }
 
-  function hidePinned() {
-    const pinned = $('[data-pinned]');
-    pinned.classList.remove('irl-location');
-    pinned.querySelector('.pin').textContent = '📌';
-    pinned.querySelector('small').textContent = 'PINNED';
-    pinned.hidden = true;
-    $('[data-pin-sheet]').hidden = true;
-  }
-
-  function showPinned() {
-    const pinned = $('[data-pinned]');
-    pinned.classList.remove('irl-location');
-    pinned.querySelector('.pin').textContent = '📌';
-    pinned.querySelector('small').textContent = 'PINNED';
-    $('[data-pinned-title]').textContent = '5 MONTHS AS A FOUNDER 🚀';
-    $('[data-pin-text]').innerHTML = NOTE_SCREENS[1].messages
-      .join('\n')
-      .split('\n')
-      .map((line) => `<span>${line ? typography(line) : '&nbsp;'}</span>`)
-      .join('');
-    pinned.hidden = false;
+  function hideIrlLocation() {
+    $('[data-location]').hidden = true;
   }
 
   function showIrlLocation(card) {
-    const pinned = $('[data-pinned]');
-    pinned.classList.add('irl-location');
-    pinned.querySelector('.pin').textContent = '📍';
-    pinned.querySelector('small').textContent = card.location;
-    $('[data-pinned-title]').textContent = card.score;
-    $('[data-pin-sheet]').hidden = true;
-    pinned.hidden = false;
+    const location = $('[data-location]');
+    location.querySelector('small').textContent = card.location;
+    $('[data-location-score]').textContent = card.score;
+    location.hidden = false;
   }
 
   function setReplyHint(visible) {
@@ -387,7 +429,10 @@
       .replace(/>/g, '&gt;');
   }
 
-  function mediaImageMarkup(image, decoding = 'async') {
+  function mediaImageMarkup(image, decoding = 'sync') {
+    if (storyImageSources.has(image.src) && !readyStoryImages.has(image.src)) {
+      return `<span class="media-placeholder__label" role="img" aria-label="${htmlAttribute(image.alt)}">Image unavailable</span>`;
+    }
     return `<img class="message-image" src="${htmlAttribute(image.src)}" alt="${htmlAttribute(image.alt)}" width="${Number(image.width)}" height="${Number(image.height)}" style="--image-ratio: ${Number(image.width)} / ${Number(image.height)}" decoding="${decoding}" fetchpriority="high" draggable="false">`;
   }
 
@@ -398,7 +443,7 @@
     if (!asset) throw new Error(`Missing image reference: ${message.imageRef}`);
     const isImage = Boolean(asset.src);
     const caption = message.text ? `<div class="message-caption">${messageLines(message.text, preserveTerminalPeriod)}</div>` : '';
-    return `<div class="message ${isImage ? 'image-bubble' : 'media-placeholder'}${caption ? ' has-caption' : ''} is-pop" data-asset-reference="${htmlAttribute(message.imageRef)}">${isImage ? mediaImageMarkup(asset, caption ? 'sync' : 'async') : mediaPlaceholderMarkup(asset.placeholder)}${caption}</div>`;
+    return `<div class="message ${isImage ? 'image-bubble' : 'media-placeholder'}${caption ? ' has-caption' : ''} is-pop" data-asset-reference="${htmlAttribute(message.imageRef)}">${isImage ? mediaImageMarkup(asset, 'sync') : mediaPlaceholderMarkup(asset.placeholder)}${caption}</div>`;
   }
 
   function popMessage() {
@@ -415,7 +460,7 @@
     const delivered = app.onboardingIndex + (typing ? 0 : 1);
     setView('onboarding', step.shellStage);
     setSceneMode('personal');
-    hidePinned();
+    hideIrlLocation();
     setReplyHint(false);
     setCardId(`ONBOARDING_${delivered}`);
     setContact({ name: 'Mistakery', role: 'online', avatar: 'M' });
@@ -484,7 +529,7 @@
     setView('saved', 'real');
     setSceneMode('personal');
     renderResources(app.state.resources);
-    hidePinned();
+    hideIrlLocation();
     setReplyHint(true);
     setCardId(note.id);
     setContact({ name: 'Saved Messages', role: '', avatar: BOOKMARK_SVG });
@@ -593,7 +638,7 @@
 
   function renderPersonalCard(card) {
     setThread(card.source, 'typing...');
-    const avatar = sourceFor(card.source).name.replace('@', '').slice(0, 1).toUpperCase();
+    const avatar = characterAvatar(sourceFor(card.source));
     $('[data-chat]').innerHTML = `<span class="sr-only" data-card-id>${card.id}</span>
       <div class="message-row">
         <div class="mini-avatar message-avatar" data-message-avatar aria-hidden="true">${avatar}</div>
@@ -615,7 +660,7 @@
       }
       const member = sourceFor(message.source);
       return `<div class="team-row is-pop" data-source="${message.source}">
-        <div class="member-avatar" aria-hidden="true">${message.avatar}</div>
+        <div class="member-avatar" aria-hidden="true">${characterAvatar(member, message.avatar)}</div>
         <div class="team-bubble${mediaClass}">
           <span class="team-meta">${member.name}${member.role ? `<span class="team-role"> · ${member.role}</span>` : ''}</span>
           ${body}
@@ -626,7 +671,7 @@
 
   function renderTeamCard(card) {
     const thread = sourceFor(card.source);
-    setContact({ name: thread.name, role: thread.role, avatar: thread.avatar || 'DT' });
+    setContact({ name: thread.name, role: thread.role, avatar: characterAvatar(thread, thread.avatar || 'DT') });
     $('[data-chat]').innerHTML = `<span class="sr-only" data-card-id>${card.id}</span>
       ${teamCardMessagesMarkup(card)}
       <div class="message-clearance" aria-hidden="true"></div>`;
@@ -696,9 +741,7 @@
   function renderIrlCard(card) {
     const source = sourceFor(card.source);
     const name = source.irlName || source.name;
-    const avatar = source.irlAvatar
-      ? `<img class="irl-avatar-photo" src="${source.irlAvatar}" alt="">`
-      : name.slice(0, 1).toUpperCase();
+    const avatar = characterAvatar(source, name.slice(0, 1).toUpperCase(), source.irlAvatar);
     setContact({ name, role: '', avatar });
     $('[data-chat]').innerHTML = `<span class="sr-only" data-card-id>${card.id}</span>
       <div class="irl-dialog is-pop">${messageLines(card.text)}</div>`;
@@ -717,7 +760,7 @@
     renderResources(app.state.resources);
     setSceneMode(card.mode);
     if (card.mode === 'irl') showIrlLocation(card);
-    else showPinned();
+    else hideIrlLocation();
     setReplyHint(card.mode !== 'irl');
     setCardId(card.id);
     if (card.mode === 'irl') renderIrlCard(card);
@@ -759,8 +802,7 @@
     const phone = $('[data-game]');
     phone.dataset.outcome = card.outcomeTone;
     if (card.outcomeBanner !== false) {
-      $('[data-pinned]').hidden = true;
-      $('[data-pin-sheet]').hidden = true;
+      hideIrlLocation();
       $('[data-outcome-label]').textContent = card.outcomeTone === 'success' ? 'SUCCESS' : 'FAILURE';
       $('[data-outcome-banner]').hidden = false;
     }
@@ -808,6 +850,15 @@
     if (overflow > 0) chat.scrollTop += overflow;
   }
 
+  function updateHistoryVisibility() {
+    const chat = $('[data-chat]');
+    chat.querySelectorAll('[data-chat-history]').forEach(node => {
+      // Hide only a thin clipped tail; keep substantial text and photos visible.
+      const remaining = node.offsetTop + node.offsetHeight - chat.scrollTop;
+      node.classList.toggle('is-clipped-history', node.offsetTop < chat.scrollTop && remaining <= 24);
+    });
+  }
+
   function focusContinuation() {
     const chat = $('[data-chat]');
     const current = Array.from(chat.querySelectorAll('[data-chat-current], .typing-bubble'));
@@ -833,6 +884,7 @@
     });
     // New content takes priority; the reply and earlier messages remain in history.
     chat.scrollTop = chat.scrollHeight;
+    updateHistoryVisibility();
   }
 
   function stageCardMessages(card) {
@@ -1224,18 +1276,11 @@
     body.scrollTop = 0;
   }
 
-  $('[data-pinned]').addEventListener('click', () => {
-    if ($('[data-pinned]').classList.contains('irl-location')) return;
-    $('[data-pin-sheet]').hidden = false;
-  });
+  $('[data-chat]').addEventListener('scroll', updateHistoryVisibility, { passive: true });
   $('[data-test-back]').addEventListener('click', backInStoryTest);
   $('[data-test-inspect]').addEventListener('click', showTestDetails);
   $('[data-details-close]').addEventListener('click', () => $('[data-test-details]').close());
   $('[data-test-restart]').addEventListener('click', startStoryTest);
-  $('[data-pin-close]').addEventListener('click', () => { $('[data-pin-sheet]').hidden = true; });
-  $('[data-pin-sheet]').addEventListener('click', (event) => {
-    if (event.target === $('[data-pin-sheet]')) $('[data-pin-sheet]').hidden = true;
-  });
   $('[data-restart-run]').addEventListener('click', () => {
     if (app.view === 'onboarding') return;
     recordTestStep();
@@ -1250,7 +1295,6 @@
 
   document.addEventListener('keydown', (event) => {
     if ($('[data-test-details]').open) return;
-    if (event.key === 'Escape') $('[data-pin-sheet]').hidden = true;
     if (app.view !== 'playing') return;
     if (event.key === 'ArrowLeft') $('[data-choice="left"]')?.click();
     if (event.key === 'ArrowRight') $('[data-choice="right"]')?.click();
@@ -1264,10 +1308,11 @@
       });
 
   deckRequest
-    .then((deck) => {
+    .then(async (deck) => {
       const errors = engine.validateDeck(deck);
       if (errors.length) throw new Error(errors.join('\n'));
       app.deck = deck;
+      await Promise.all([warmCharacterAvatars(), warmStoryImages()]);
       if (storyTestEnabled) {
         startStoryTest();
         return;

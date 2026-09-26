@@ -89,12 +89,12 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
       }
       await page.clock.resume();
       // Normal entry also remains playable when initially loaded in landscape.
-      await page.goto(base); await page.waitForFunction(() => window.MistakeryApp?.deck && !window.MistakeryApp.locked);
+      await page.goto(base); await page.waitForFunction(() => window.MistakeryApp?.deck && window.MistakeryApp.view !== 'loading' && !window.MistakeryApp.locked);
       await page.locator('[data-choice="left"]').tap();
       assert.equal(await page.evaluate(() => window.MistakeryApp.onboardingIndex), 1);
       assert.deepEqual(errors, []);
       const desktop = await browser.newPage({ viewport: { width: 1280, height: 720 } });
-      await desktop.goto(`${base}?story=live-agent`); await desktop.waitForFunction(() => window.MistakeryApp?.deck);
+      await desktop.goto(`${base}?story=live-agent`); await desktop.waitForFunction(() => window.MistakeryApp?.deck && window.MistakeryApp.view !== 'loading');
       assert.equal(await desktop.locator('[data-app]').evaluate(n => getComputedStyle(n).transform), 'none');
       await desktop.locator('[data-choice="left"]').click();
       assert.equal((await snapshot(desktop)).state.currentCardId, 'LIVE_AGENT_02');

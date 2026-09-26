@@ -53,7 +53,7 @@ async function withPage(fn, width = 390) {
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     await page.goto(`${url}?story=live-agent`);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
     await fn(page);
     assert.deepEqual(errors, []);
   } finally { await browser.close(); }

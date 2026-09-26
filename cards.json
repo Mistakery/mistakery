@@ -105,43 +105,53 @@
   "sources": {
     "@b2buddy_bot": {
       "name": "@b2buddy",
-      "role": "AI Agent"
+      "role": "AI Agent",
+      "avatarImage": "assets/avatar-b2buddy.webp"
     },
     "@hustler": {
       "name": "@hustler",
-      "role": "Cofounder"
+      "role": "Cofounder",
+      "avatarImage": "assets/avatar-hustler.webp"
     },
     "@ai_evangelist": {
       "name": "@ai_evangelist",
-      "role": "AI Influencer"
+      "role": "AI Influencer",
+      "avatarImage": "assets/avatar-ai-influencer.webp"
     },
     "@hype_queen": {
       "name": "@hype_queen",
-      "role": "Marketer"
+      "role": "Marketer",
+      "avatarImage": "assets/avatar-marketer.webp"
     },
     "@bigdeals": {
       "name": "@bigdeals",
-      "role": "Sales"
+      "role": "Sales",
+      "avatarImage": "assets/avatar-sales.webp"
     },
     "@error404": {
       "name": "@error404",
-      "role": "Dev"
+      "role": "Dev",
+      "avatarImage": "assets/avatar-dev.svg"
     },
     "@error_404": {
       "name": "@error_404",
-      "role": "Dev"
+      "role": "Dev",
+      "avatarImage": "assets/avatar-dev.svg"
     },
     "@pixel_perfect": {
       "name": "@pixel_perfect",
-      "role": "Designer"
+      "role": "Designer",
+      "avatarImage": "assets/avatar-designer.webp"
     },
     "@unicorn_hunter": {
       "name": "@unicorn_hunter",
-      "role": "Investor"
+      "role": "Investor",
+      "avatarImage": "assets/avatar-investor.webp"
     },
     "@business1": {
       "name": "@business1",
-      "role": "Ex-Boss"
+      "role": "Ex-Boss",
+      "avatarImage": "assets/avatar-exboss.webp"
     },
     "@yc_founder": {
       "name": "@yc_founder",
@@ -149,18 +159,21 @@
     },
     "@i_love_cats72": {
       "name": "@i_love_cats72",
-      "role": "Mom"
+      "role": "Mom",
+      "avatarImage": "assets/avatar-mom.webp"
     },
     "@padel_pro": {
       "name": "@padel_pro",
       "irlName": "Padel coach",
       "irlAvatar": "assets/irl-padel-coach-avatar.webp",
-      "role": "Padel Coach"
+      "role": "Padel Coach",
+      "avatarImage": "assets/irl-padel-coach-avatar.webp"
     },
     "dream_team": {
       "name": "Dream Team",
       "role": "6 members · 3 online",
-      "avatar": "DT"
+      "avatar": "DT",
+      "avatarImage": "assets/avatar-dream-team.webp"
     },
     "@head_of_agile": {
       "name": "@head_of_agile",
@@ -182,11 +195,13 @@
     },
     "@b2buddy": {
       "name": "@b2buddy",
-      "role": "AI Agent"
+      "role": "AI Agent",
+      "avatarImage": "assets/avatar-b2buddy.webp"
     },
     "@head_of_innovations": {
       "name": "@head_of_innovations",
-      "role": "Customer"
+      "role": "Customer",
+      "avatarImage": "assets/avatar-innovations.webp"
     },
     "@b2buddy_120": {
       "name": "@b2buddy_120",

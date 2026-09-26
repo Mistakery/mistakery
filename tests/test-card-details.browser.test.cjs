@@ -33,9 +33,9 @@ test('test-only translation dialog is readable, contextual and read-only across 
   try {
     const page=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
-    await page.goto(url);await page.waitForFunction(()=>window.MistakeryApp?.deck);
+    await page.goto(url);await page.waitForFunction(()=>window.MistakeryApp?.deck && window.MistakeryApp.view !== 'loading');
     assert.equal(await page.locator('[data-test-inspect]').isVisible(),false);
-    await page.goto(`${url}?story=live-agent`);await page.waitForFunction(()=>window.MistakeryApp?.deck);
+    await page.goto(`${url}?story=live-agent`);await page.waitForFunction(()=>window.MistakeryApp?.deck && window.MistakeryApp.view !== 'loading');
     for(const width of [390,320]) {
       await page.setViewportSize({width,height:width===390?844:650});
       for(const id of ids) {

@@ -6,14 +6,14 @@
     <meta name="theme-color" content="#bdd5e8">
     <title>Mistakery</title>
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="style.css?v=f32d2c654fc3">
+    <link rel="stylesheet" href="style.css?v=fd053087d88f">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-founder.webp" fetchpriority="high">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-manifesto.webp?v=91aac6e47bbd">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-judgment-day.webp">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-hasta-la-vista.webp">
-    <script src="cards.bundle.js?v=49d1c68e6757" defer></script>
+    <script src="cards.bundle.js?v=8e8dd33a711a" defer></script>
     <script src="game.js?v=4587f9034eb5" defer></script>
-    <script src="app.js?v=d59402acbb00" defer></script>
+    <script src="app.js?v=914d65dd7cb2" defer></script>
   </head>
   <body>
     <main class="app" data-app>
@@ -41,10 +41,10 @@
               <span class="more" aria-hidden="true">⋯</span>
             </header>
 
-            <button class="pinned" type="button" data-pinned hidden>
-              <span class="pin" aria-hidden="true">📌</span>
-              <span><small>PINNED</small><b data-pinned-title>5 MONTHS AS A FOUNDER 🚀</b></span>
-            </button>
+            <div class="irl-location" data-location hidden>
+              <span class="pin" aria-hidden="true">📍</span>
+              <span><small></small><b data-location-score></b></span>
+            </div>
 
             <div class="outcome-banner" data-outcome-banner role="status" hidden>
               <b data-outcome-label></b>
@@ -72,15 +72,6 @@
             <footer class="choices" data-choices></footer>
           </section>
 
-          <div class="pin-sheet" data-pin-sheet hidden>
-            <div class="pin-sheet__card" role="dialog" aria-label="Pinned message">
-              <header class="pin-sheet__head">
-                <span>📌 Pinned</span>
-                <button class="pin-sheet__close" type="button" data-pin-close aria-label="Close">✕</button>
-              </header>
-              <div class="message note-message"><p data-pin-text></p></div>
-            </div>
-          </div>
         </section>
       </div>
     </main>
