@@ -32,7 +32,7 @@ test('every gameplay resolver charges half a Cash exactly once, including neutra
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     await page.goto(`${url}?story=live-agent`);
-    await page.waitForFunction(()=>window.MistakeryApp?.deck);
+    await page.waitForFunction(()=>window.MistakeryApp?.deck && window.MistakeryApp.view !== 'loading');
     for(const [id,side,cash] of cases) {
       await page.evaluate(id=>{
         const a=window.MistakeryApp;

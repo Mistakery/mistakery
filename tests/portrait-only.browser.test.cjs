@@ -82,19 +82,24 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
         await assertVisible(page, '[data-chat-current]:last-child');
         // The photo continuation also uses portrait-sized fitting after rotation.
         await page.evaluate(() => { const a = window.MistakeryApp; a.state.currentCardId = 'LIVE_AGENT_03'; a.render(); });
-        await page.clock.runFor(2500);
+        assert.equal(await page.locator('[data-chat-current]').count(), 1);
+        await assertVisible(page, '.typing-bubble');
+        await page.clock.runFor(1000);
+        assert.equal(await page.locator('[data-chat-current]').count(), 2);
+        assert.equal(await page.locator('[data-chat-current]').nth(1).innerText(), 'Just between us...');
+        await page.clock.runFor(2000);
         await page.locator('[data-choice="left"]').tap();
         await page.clock.runFor(600);
         for (const node of await page.locator('[data-chat-current]').all()) await assertVisible(page, node);
       }
       await page.clock.resume();
       // Normal entry also remains playable when initially loaded in landscape.
-      await page.goto(base); await page.waitForFunction(() => window.MistakeryApp?.deck && !window.MistakeryApp.locked);
+      await page.goto(base); await page.waitForFunction(() => window.MistakeryApp?.deck && window.MistakeryApp.view !== 'loading' && !window.MistakeryApp.locked);
       await page.locator('[data-choice="left"]').tap();
       assert.equal(await page.evaluate(() => window.MistakeryApp.onboardingIndex), 1);
       assert.deepEqual(errors, []);
       const desktop = await browser.newPage({ viewport: { width: 1280, height: 720 } });
-      await desktop.goto(`${base}?story=live-agent`); await desktop.waitForFunction(() => window.MistakeryApp?.deck);
+      await desktop.goto(`${base}?story=live-agent`); await desktop.waitForFunction(() => window.MistakeryApp?.deck && window.MistakeryApp.view !== 'loading');
       assert.equal(await desktop.locator('[data-app]').evaluate(n => getComputedStyle(n).transform), 'none');
       await desktop.locator('[data-choice="left"]').click();
       assert.equal((await snapshot(desktop)).state.currentCardId, 'LIVE_AGENT_02');

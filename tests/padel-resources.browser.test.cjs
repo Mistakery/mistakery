@@ -52,7 +52,7 @@ test('Padel decisions and each outcome apply once, preview resources, and preser
   try {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
     await page.goto(`${url}?story=live-agent`);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
     for (const [id, effects] of Object.entries(decisions).filter(([id]) => id !== 'IRL_PADEL_06')) {
       for (const [index, side] of ['left', 'right'].entries()) {
         await seed(page, id);
@@ -96,7 +96,7 @@ test('zero resource boundaries stay playable without crises or double refusal pe
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     await page.goto(`${url}?story=live-agent`);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
     for (const cash of [40, 25, 10, 0]) {
       await seed(page, 'PADEL_INVITE', 0, { ...base, cash });
       await click(page, 'right');

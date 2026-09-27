@@ -39,7 +39,7 @@ test('live agent probabilities, resources, completion and mobile messenger', asy
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     await page.goto(url);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
 
     // Every route and exact threshold, including zero-chance mercy.
     for (const [id, side, chances, good, bad] of [
@@ -185,7 +185,7 @@ test('founder photo is preloaded and shares one bubble with its caption', async 
   try {
     const page = await browser.newPage({ viewport: { width: 320, height: 650 }, reducedMotion: 'reduce' });
     await page.goto(url);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
     const preload = page.locator('link[rel="preload"][as="image"][href="assets/live-agent-founder.webp"]');
     assert.equal(await preload.getAttribute('href'), 'assets/live-agent-founder.webp');
     await seed(page, 'LIVE_AGENT_04');
