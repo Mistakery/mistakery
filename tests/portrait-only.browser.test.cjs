@@ -82,7 +82,12 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
         await assertVisible(page, '[data-chat-current]:last-child');
         // The photo continuation also uses portrait-sized fitting after rotation.
         await page.evaluate(() => { const a = window.MistakeryApp; a.state.currentCardId = 'LIVE_AGENT_03'; a.render(); });
-        await page.clock.runFor(2500);
+        assert.equal(await page.locator('[data-chat-current]').count(), 1);
+        await assertVisible(page, '.typing-bubble');
+        await page.clock.runFor(1000);
+        assert.equal(await page.locator('[data-chat-current]').count(), 2);
+        assert.equal(await page.locator('[data-chat-current]').nth(1).innerText(), 'Just between us...');
+        await page.clock.runFor(2000);
         await page.locator('[data-choice="left"]').tap();
         await page.clock.runFor(600);
         for (const node of await page.locator('[data-chat-current]').all()) await assertVisible(page, node);

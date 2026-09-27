@@ -644,10 +644,16 @@
           }
         }
       },
-      "typingPause": {
-        "after": 2,
-        "durationMs": 2000
-      }
+      "typingPauses": [
+        {
+          "after": 1,
+          "durationMs": 1000
+        },
+        {
+          "after": 2,
+          "durationMs": 2000
+        }
+      ]
     },
     {
       "id": "LIVE_AGENT_04",
