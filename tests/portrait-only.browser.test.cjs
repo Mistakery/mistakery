@@ -76,7 +76,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
         await page.evaluate(angle => { window.testAngle = angle; window.dispatchEvent(new Event('orientationchange')); }, angle);
         assert.deepEqual(await geometry(page), smallGeometry);
         await page.evaluate(() => { const a = window.MistakeryApp; a.state.history = []; a.state.currentCardId = 'LIVE_AGENT_07B'; a.cardDelivery = null; a.render(); });
-        await page.clock.runFor(2500);
+        await page.clock.runFor(600);
         await assertVisible(page, '.typing-bubble');
         await page.clock.runFor(2000);
         await assertVisible(page, '[data-chat-current]:last-child');

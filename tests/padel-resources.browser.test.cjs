@@ -1,4 +1,5 @@
 const test = require('node:test');
+const { revealMessages } = require('./chat-delivery.fixture.cjs');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -25,6 +26,7 @@ async function seed(page, id, score = 0, resources = base, draws = [.99]) {
     Math.random = () => draws[window.draws++] ?? .99;
     a.render();
   }, { id, score, resources, draws });
+  await revealMessages(page);
 }
 async function click(page, side) {
   await page.waitForFunction(() => !window.MistakeryApp.locked);

@@ -985,11 +985,11 @@
       "typingPauses": [
         {
           "after": 1,
-          "durationMs": 2000
+          "durationMs": 500
         },
         {
           "after": 2,
-          "durationMs": 2000
+          "durationMs": 1250
         }
       ]
     },
@@ -1614,7 +1614,17 @@
             }
           }
         }
-      }
+      },
+      "typingPauses": [
+        {
+          "after": 1,
+          "durationMs": 600
+        },
+        {
+          "after": 2,
+          "durationMs": 1100
+        }
+      ]
     },
     {
       "id": "INFLUENCER_06",

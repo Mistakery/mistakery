@@ -90,6 +90,7 @@
   const presentedOutcomes = new WeakSet();
   let choiceUnlockTimer = null;
   let cardTypingTimer = null;
+  let revealCardMessages = () => {};
   let cancelOutcomeImageMotion = () => {};
   let padelImagesPreloaded = false;
   const INITIAL_RESOURCES = Object.freeze({ cash: 25, team: 60, customers: 15, founder: 65 });
@@ -168,6 +169,9 @@
     cancelOutcomeImageMotion();
     if ($('[data-test-details]').open) $('[data-test-details]').close();
     window.clearTimeout(cardTypingTimer);
+    revealCardMessages = () => {};
+    $('[data-chat]').removeAttribute('aria-busy');
+    $('.reply-hint__text').textContent = 'Choose a reply...';
     continuationResizeObserver?.disconnect();
     app.view = view;
     const phone = $('[data-game]');
@@ -756,6 +760,9 @@
       preloadPadelImages();
     }
     const complete = app.view === 'irl-complete';
+    const deliveryKey = `${card.id}:${app.state.history.length}`;
+    const readingHistory = app.cardDelivery?.key === deliveryKey && app.cardDelivery.follow === false;
+    const previousScroll = $('[data-chat]').scrollTop;
     setView(complete ? 'irl-complete' : 'playing', 'real');
     renderResources(app.state.resources);
     setSceneMode(card.mode);
@@ -789,12 +796,16 @@
         const nextSize = `${chat.clientWidth}:${chat.clientHeight}`;
         if (size === nextSize) return;
         size = nextSize;
-        focusContinuation();
+        if (app.cardDelivery?.follow !== false) focusContinuation();
       });
       continuationResizeObserver.observe(chat);
     }
-    if (card.typingPauses) keepDeliveryVisible($('[data-chat] .typing-bubble'));
+    if (!readingHistory) keepDeliveryVisible($('[data-chat] .typing-bubble'));
     presentOutcome(card);
+    if (readingHistory) {
+      $('[data-chat]').scrollTop = previousScroll;
+      updateHistoryVisibility();
+    }
   }
 
   function presentOutcome(card) {
@@ -888,48 +899,121 @@
   }
 
   function stageCardMessages(card) {
-    const pauses = card.typingPauses || (card.typingPause ? [card.typingPause] : []);
+    const chat = $('[data-chat]');
+    const stack = card.mode === 'team' ? chat : chat.querySelector('[data-message-stack]');
+    const nodes = Array.from(chat.querySelectorAll('[data-chat-current]'));
+    const repeated = app.state.history.some(step => step.cardId === card.id);
+    const pauses = card.mode === 'irl' || repeated ? []
+      : card.typingPauses || (card.typingPause ? [card.typingPause] : defaultTypingPauses(card, nodes));
     if (!pauses.length) {
       app.cardDelivery = null;
+      if (repeated) nodes.forEach(node => node.classList.remove('is-pop'));
       return;
     }
     const key = `${card.id}:${app.state.history.length}`;
     if (app.cardDelivery?.key !== key) {
-      app.cardDelivery = { key, delivered: false, pauseIndex: 0, deadline: Date.now() + pauses[0].durationMs };
+      app.cardDelivery = { key, delivered: false, pauseIndex: 0, deadline: Date.now() + pauses[0].durationMs, follow: true };
     }
     const delivery = app.cardDelivery;
-    if (delivery.delivered) return;
-    const stack = $('[data-message-stack]');
-    const pending = Array.from(stack.querySelectorAll('[data-chat-current]')).slice(pauses[delivery.pauseIndex].after);
+    if (delivery.delivered) {
+      nodes.forEach(node => { node.classList.remove('is-pop'); node.style.animationDelay = ''; });
+      return;
+    }
+    const pending = nodes.slice(pauses[delivery.pauseIndex].after);
     pending.forEach(node => node.remove());
-    const typing = document.createElement('div');
-    typing.className = 'typing-bubble';
-    typing.setAttribute('aria-label', `${sourceFor(card.source).name} is typing`);
-    typing.innerHTML = '<i></i><i></i><i></i>';
-    stack.append(typing);
+    let typing;
+    const anchor = card.mode === 'team' ? chat.querySelector('.message-clearance') : null;
+    const append = node => stack.insertBefore(node, anchor);
     const buttons = Array.from(document.querySelectorAll('[data-choice]'));
     buttons.forEach(button => { button.disabled = true; });
+    chat.setAttribute('aria-busy', 'true');
+    $('.reply-hint__text').textContent = 'Tap chat to show all';
+    function isCurrent() { return app.view === 'playing' && app.cardDelivery === delivery && stack.isConnected; }
+    function followDelivery() {
+      if (delivery.follow === false) { updateHistoryVisibility(); return; }
+      if (chat.classList.contains('has-chat-history')) focusContinuation();
+      else keepDeliveryVisible(typing || nodes.at(-1));
+    }
+    function finish() {
+      window.clearTimeout(cardTypingTimer);
+      typing?.remove(); typing = null;
+      delivery.delivered = true;
+      chat.removeAttribute('aria-busy');
+      $('.reply-hint__text').textContent = 'Choose a reply...';
+      buttons.forEach(button => { button.disabled = false; });
+      revealCardMessages = () => {};
+    }
+    revealCardMessages = () => {
+      if (!isCurrent() || delivery.delivered) return;
+      pending.splice(0).forEach(node => {
+        node.style.animationDelay = '';
+        node.classList.remove('is-pop');
+        append(node);
+      });
+      finish(); followDelivery();
+    };
+    function showTyping() {
+      typing?.remove(); typing = null;
+      const next = pending[0];
+      if (pauses[delivery.pauseIndex].durationMs < 400 || next.matches('.self-message')
+        || next.matches('.image-bubble, [data-forwarded-from]') || next.querySelector('.image-bubble')) return;
+      const sourceId = next.dataset.source || card.source;
+      const source = sourceFor(sourceId);
+      const indicator = document.createElement('button');
+      indicator.type = 'button'; indicator.className = 'typing-bubble';
+      indicator.setAttribute('aria-label', `${source.name} is typing`);
+      indicator.title = 'Show all messages';
+      indicator.setAttribute('aria-description', 'Show all messages');
+      indicator.innerHTML = '<i></i><i></i><i></i>';
+      indicator.addEventListener('click', event => {
+        event.stopPropagation();
+        if (event.detail && (!chatGesture || chatGesture.moved || chatGesture.delivery !== delivery
+          || Math.abs(chatGesture.scroll - chat.scrollTop) > 10)) return;
+        revealCardMessages();
+      });
+      if (card.mode === 'team') {
+        typing = document.createElement('div');
+        typing.className = 'team-row typing-row'; typing.dataset.source = sourceId;
+        const initials = card.messages.find(message => message.source === sourceId)?.avatar;
+        typing.innerHTML = `<div class="member-avatar" aria-hidden="true">${characterAvatar(source, initials)}</div>
+          <div class="team-typing"><span class="team-meta">${htmlAttribute(source.name)}</span></div>`;
+        typing.querySelector('.team-typing').append(indicator);
+      } else typing = indicator;
+      append(typing);
+    }
     function deliverNext() {
+      if (!isCurrent() || delivery.delivered) return;
       const previousPause = pauses[delivery.pauseIndex];
       const nextPause = pauses[++delivery.pauseIndex];
-      typing.remove();
+      typing?.remove(); typing = null;
       const count = nextPause ? nextPause.after - previousPause.after : pending.length;
       pending.splice(0, count).forEach((node, index) => {
         node.style.animationDelay = `${index * 90}ms`;
-        stack.append(node);
+        append(node);
       });
       if (nextPause) {
-        stack.append(typing);
+        showTyping();
         delivery.deadline = Date.now() + nextPause.durationMs;
         cardTypingTimer = window.setTimeout(deliverNext, nextPause.durationMs);
       } else {
-        delivery.delivered = true;
-        buttons.forEach(button => { button.disabled = false; });
+        finish();
       }
-      if ($('[data-chat]').classList.contains('has-chat-history')) focusContinuation();
-      else if (pauses.length > 1) keepDeliveryVisible(nextPause ? typing : stack.lastElementChild);
+      followDelivery();
     }
+    showTyping();
     cardTypingTimer = window.setTimeout(deliverNext, Math.max(0, delivery.deadline - Date.now()));
+  }
+
+  function defaultTypingPauses(card, nodes) {
+    return nodes.slice(1).map((next, index) => {
+      const previous = nodes[index];
+      const media = next.matches('.image-bubble, [data-forwarded-from]') || next.querySelector('.image-bubble');
+      const short = next.textContent.trim().split(/\s+/).length <= 12;
+      const changedAuthor = card.mode === 'team' && next.dataset.source !== previous.dataset.source;
+      const durationMs = next.matches('.self-message') ? 0 : card.outcomeTone ? 250
+        : media ? 300 : changedAuthor ? 600 : short ? 300 : 500;
+      return { after: index + 1, durationMs };
+    }).filter(pause => pause.durationMs > 0);
   }
 
   function influencerChoicesFor(card) {
@@ -1169,6 +1253,7 @@
 
   function choose(side) {
     if (app.locked || app.view !== 'playing') return;
+    if (app.cardDelivery && !app.cardDelivery.delivered) return;
     const card = engine.cardById(app.deck, app.state.currentCardId);
     recordTestStep();
     if (card.arc === 'live_agent') return continueFromLiveAgent(card, side);
@@ -1277,6 +1362,34 @@
   }
 
   $('[data-chat]').addEventListener('scroll', updateHistoryVisibility, { passive: true });
+  let chatGesture;
+  $('[data-chat]').addEventListener('pointerdown', event => {
+    chatGesture = { x: event.clientX, y: event.clientY, scroll: $('[data-chat]').scrollTop, moved: false, delivery: app.cardDelivery };
+  }, { passive: true });
+  $('[data-chat]').addEventListener('pointermove', event => {
+    if (!chatGesture || !event.buttons) return;
+    if (Math.hypot(event.clientX - chatGesture.x, event.clientY - chatGesture.y) > 10) {
+      chatGesture.moved = true;
+      if (app.cardDelivery) app.cardDelivery.follow = false;
+    }
+  }, { passive: true });
+  $('[data-chat]').addEventListener('pointercancel', () => {
+    if (app.cardDelivery) app.cardDelivery.follow = false;
+    chatGesture = null;
+  }, { passive: true });
+  $('[data-chat]').addEventListener('wheel', () => {
+    if (app.cardDelivery) app.cardDelivery.follow = false;
+  }, { passive: true });
+  $('[data-chat]').addEventListener('keydown', event => {
+    if (['Home', 'End', 'PageUp', 'PageDown', 'ArrowUp', 'ArrowDown'].includes(event.key)
+      && app.cardDelivery) app.cardDelivery.follow = false;
+  });
+  $('[data-chat]').addEventListener('click', event => {
+    if (event.target.closest('button, a') || !chatGesture || chatGesture.moved
+      || chatGesture.delivery !== app.cardDelivery || Math.abs(chatGesture.scroll - $('[data-chat]').scrollTop) > 10) return;
+    revealCardMessages();
+    chatGesture = null;
+  });
   $('[data-test-back]').addEventListener('click', backInStoryTest);
   $('[data-test-inspect]').addEventListener('click', showTestDetails);
   $('[data-details-close]').addEventListener('click', () => $('[data-test-details]').close());

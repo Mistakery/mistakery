@@ -29,6 +29,7 @@ test('innovation DM delivers two bubbles, typing, then two more; rerender, Back 
         app.state.currentCardId = 'LIVE_AGENT_04B';
         app.render();
       });
+      await page.clock.runFor(500);
       await page.locator('[data-choice="left"]').click();
       assert.deepEqual(await messages(page), expected.slice(0, 2));
       assert.equal(await page.locator('.typing-bubble i').count(), 3);

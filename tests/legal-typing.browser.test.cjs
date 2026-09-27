@@ -40,10 +40,10 @@ test('Legal continuation delivers three bubbles with two pauses and preserves th
         assert.equal(await page.locator('.typing-bubble').count(), 1);
         await assertVisibleInChat(page, '.typing-bubble');
         assert.equal(await page.locator('[data-choice]:disabled').count(), 2);
-        await page.clock.runFor(700);
+        await page.clock.runFor(200);
         await page.evaluate(() => window.MistakeryApp.render());
         await assertVisibleInChat(page, '.typing-bubble');
-        await page.clock.runFor(1299);
+        await page.clock.runFor((stage === 1 ? 500 : 1250) - 201);
         assert.deepEqual(await current(page), expected.slice(0, stage));
         await page.clock.runFor(1);
         assert.deepEqual(await current(page), expected.slice(0, stage + 1));
@@ -60,7 +60,7 @@ test('Legal continuation delivers three bubbles with two pauses and preserves th
       assert.equal(await page.locator('.typing-bubble').count(), 0);
       await page.locator('[data-test-back]').click();
       await page.locator('[data-choice="right"]').click();
-      await page.clock.runFor(2000);
+      await page.clock.runFor(600);
       assert.deepEqual(await current(page), expected.slice(0, 2));
       await assertVisibleInChat(page, '.typing-bubble');
       await page.screenshot({ path: `/tmp/mistakery-legal-second-typing-${viewport.width}.png`, animations: 'disabled' });

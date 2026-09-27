@@ -423,6 +423,8 @@ button { font: inherit; }
 .message-caption { padding: 10px 14px 11px; }
 .typing-bubble {
   width: 64px;
+  border: 0;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -432,6 +434,10 @@ button { font: inherit; }
   box-shadow: 0 8px 26px rgba(35, 77, 114, .13);
   animation: messagePop .3s cubic-bezier(.2,.9,.3,1.1) both;
 }
+button.typing-bubble { cursor: pointer; }
+button.typing-bubble:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.team-typing .team-meta { margin-left: 10px; }
+.typing-row { flex-shrink: 0; }
 .typing-bubble i {
   width: 7px;
   height: 7px;
