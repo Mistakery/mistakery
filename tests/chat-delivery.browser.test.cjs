@@ -21,6 +21,79 @@ async function open(browser) {
   return page;
 }
 for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
+  test(`${name}: delivered bubbles move smoothly when a new bubble arrives`, async () => {
+    const browser = await engine.launch();
+    try {
+      const page = await open(browser);
+      await seed(page, 'LIVE_AGENT_01');
+      await page.waitForTimeout(350);
+      await page.clock.runFor(599);
+      const first = page.locator('[data-chat-current]').first();
+      const before = await first.evaluate(n => n.getBoundingClientRect().top);
+      await page.clock.runFor(1);
+      const start = await first.evaluate(n => n.getBoundingClientRect().top);
+      assert.ok(Math.abs(start - before) < 16, `existing message jumped ${Math.abs(start - before)}px`);
+      await page.waitForTimeout(250);
+      const settled = await first.evaluate(n => n.getBoundingClientRect().top);
+      assert.ok(before - settled > 16, 'message must settle into its new position');
+    } finally { await browser.close(); }
+  });
+  test(`${name}: a single incoming text has a visible typing pause`, async () => {
+    const browser = await engine.launch();
+    try {
+      const page = await open(browser);
+      await seed(page, 'INFLUENCER_02A');
+      assert.equal(await count(page), 0);
+      assert.equal(await page.locator('button.typing-bubble').count(), 1);
+      await page.clock.runFor(499); assert.equal(await count(page), 0);
+      await page.clock.runFor(1); assert.equal(await count(page), 1);
+      assert.equal(await page.locator('[data-choice]:disabled').count(), 0);
+    } finally { await browser.close(); }
+  });
+  test(`${name}: typing author stays inside the bubble and same-author dots keep their rhythm`, async () => {
+    const browser = await engine.launch();
+    try {
+      const page = await open(browser);
+      await seed(page, 'LIVE_AGENT_01');
+      assert.equal(await page.locator('button.typing-bubble .team-meta').count(), 1);
+      const geometry = await page.locator('button.typing-bubble').evaluate(n => {
+        const b = n.getBoundingClientRect(), m = n.querySelector('.team-meta').getBoundingClientRect();
+        return { contained: m.top >= b.top && m.bottom <= b.bottom && m.left >= b.left && m.right <= b.right,
+          animation: getComputedStyle(n).animationName };
+      });
+      assert.ok(geometry.contained, 'nickname belongs to the same white surface');
+      assert.equal(geometry.animation, 'none', 'dots must not bounce in on every bubble');
+      await page.evaluate(() => { window.typingBefore = document.querySelector('button.typing-bubble'); });
+      await page.clock.runFor(600);
+      assert.equal(await page.evaluate(() => window.typingBefore === document.querySelector('button.typing-bubble')), true);
+      if (name === 'Chromium') await page.screenshot({path:'/tmp/mistakery-typing-fixed.png', animations:'disabled'});
+    } finally { await browser.close(); }
+  });
+  test(`${name}: ASAP keeps typing before its photo and delivers the following text separately`, async () => {
+    const browser = await engine.launch();
+    try {
+      const page = await open(browser);
+      await seed(page, 'LIVE_AGENT_07');
+      assert.equal(await count(page), 1);
+      assert.equal(await page.locator('button.typing-bubble').count(), 1);
+      await page.clock.runFor(1999); assert.equal(await count(page), 1);
+      await page.clock.runFor(1); assert.equal(await count(page), 2);
+      assert.equal(await page.locator('[data-chat-current] img').count(), 1);
+      assert.equal(await page.locator('button.typing-bubble').count(), 1);
+      await page.clock.runFor(500); assert.equal(await count(page), 3);
+    } finally { await browser.close(); }
+  });
+  test(`${name}: short messages wait with dots rather than appearing in a silent rush`, async () => {
+    const browser = await engine.launch();
+    try {
+      const page = await open(browser);
+      await seed(page, 'LIVE_AGENT_OUTCOME_2');
+      assert.equal(await count(page), 1);
+      assert.equal(await page.locator('button.typing-bubble').count(), 1);
+      await page.clock.runFor(300); assert.equal(await count(page), 1);
+      await page.clock.runFor(200); assert.equal(await count(page), 2);
+    } finally { await browser.close(); }
+  });
   test(`${name}: group delivers whole bubbles with the next author's identity`, async () => {
     const browser = await engine.launch();
     try {
@@ -89,7 +162,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
     const browser = await engine.launch();
     try {
       const page = await open(browser);
-      await seed(page, 'LIVE_AGENT_03'); await page.clock.runFor(3000);
+      await seed(page, 'LIVE_AGENT_03'); await page.clock.runFor(3500);
       await page.locator('[data-choice="left"]').click();
       assert.equal(await count(page), 1);
       assert.equal(await page.locator('[data-chat-current] img').count(), 1);
@@ -134,7 +207,8 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.equal(cards.length, 52);
       for (const card of cards) {
         await seed(page, card.id);
-        await page.clock.runFor(card.id === 'LIVE_AGENT_03' ? 3000 : 2000);
+        const budget = { LIVE_AGENT_03: 3500, LIVE_AGENT_05: 3000, LIVE_AGENT_07: 2500 }[card.id] || 2000;
+        await page.clock.runFor(budget);
         assert.equal(await page.locator('[data-choice]:disabled').count(), 0, `${card.id}: delivery budget`);
         assert.equal(await page.locator('.typing-bubble').count(), 0, `${card.id}: no stale typing`);
         const expected = card.mode === 'irl' ? 0 : card.messages

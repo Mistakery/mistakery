@@ -3,7 +3,7 @@
 async function revealMessages(page) {
   const pending = await page.evaluate(() => window.MistakeryApp.view === 'playing'
     && window.MistakeryApp.cardDelivery && !window.MistakeryApp.cardDelivery.delivered);
-  if (pending) await page.locator('[data-chat-current]').first().click();
+  if (pending) await page.locator('button.typing-bubble').press('Enter');
   await page.waitForFunction(() => !document.querySelector('[data-choice]:disabled'));
 }
 module.exports = { revealMessages };

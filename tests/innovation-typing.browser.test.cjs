@@ -13,7 +13,7 @@ const expected = [
 async function messages(page) {
   return page.locator('[data-chat] .message').evaluateAll(nodes => nodes.map(node => node.innerText.replace(/\s+/g, ' ').trim()));
 }
-test('innovation DM delivers two bubbles, typing, then two more; rerender, Back and Restart remain safe', async () => {
+test('innovation DM delivers each bubble separately with its dramatic pause; rerender, Back and Restart remain safe', async () => {
   const browser = await chromium.launch({ headless: true });
   try {
     for (const viewport of [{ width: 390, height: 844 }, { width: 320, height: 650 }]) {
@@ -31,6 +31,8 @@ test('innovation DM delivers two bubbles, typing, then two more; rerender, Back 
       });
       await page.clock.runFor(500);
       await page.locator('[data-choice="left"]').click();
+      assert.deepEqual(await messages(page), expected.slice(0, 1));
+      await page.clock.runFor(500);
       assert.deepEqual(await messages(page), expected.slice(0, 2));
       assert.equal(await page.locator('.typing-bubble i').count(), 3);
       assert.equal(await page.locator('[data-choice]:disabled').count(), 2);
@@ -38,6 +40,9 @@ test('innovation DM delivers two bubbles, typing, then two more; rerender, Back 
       await page.evaluate(() => window.MistakeryApp.render());
       assert.deepEqual(await messages(page), expected.slice(0, 2));
       await page.clock.runFor(1300);
+      assert.deepEqual(await messages(page), expected.slice(0, 3));
+      assert.equal(await page.locator('.typing-bubble').count(), 1);
+      await page.clock.runFor(500);
       assert.deepEqual(await messages(page), expected);
       assert.equal(await page.locator('.typing-bubble').count(), 0);
       assert.equal(await page.locator('[data-choice]:disabled').count(), 0);

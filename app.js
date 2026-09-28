@@ -903,14 +903,14 @@
     const stack = card.mode === 'team' ? chat : chat.querySelector('[data-message-stack]');
     const nodes = Array.from(chat.querySelectorAll('[data-chat-current]'));
     const repeated = app.state.history.some(step => step.cardId === card.id);
-    const pauses = card.mode === 'irl' || repeated ? []
-      : card.typingPauses || (card.typingPause ? [card.typingPause] : defaultTypingPauses(card, nodes));
+    const pauses = card.mode === 'irl' || repeated ? [] : defaultTypingPauses(card, nodes);
     if (!pauses.length) {
       app.cardDelivery = null;
       if (repeated) nodes.forEach(node => node.classList.remove('is-pop'));
       return;
     }
     const key = `${card.id}:${app.state.history.length}`;
+    const restoring = app.cardDelivery?.key === key;
     if (app.cardDelivery?.key !== key) {
       app.cardDelivery = { key, delivered: false, pauseIndex: 0, deadline: Date.now() + pauses[0].durationMs, follow: true };
     }
@@ -921,9 +921,12 @@
     }
     const pending = nodes.slice(pauses[delivery.pauseIndex].after);
     pending.forEach(node => node.remove());
+    if (restoring) nodes.filter(node => node.isConnected).forEach(node => {
+      node.classList.remove('is-pop'); node.style.animationDelay = '';
+    });
     let typing;
     const anchor = card.mode === 'team' ? chat.querySelector('.message-clearance') : null;
-    const append = node => stack.insertBefore(node, anchor);
+    const append = node => stack.insertBefore(node, typing || anchor);
     const buttons = Array.from(document.querySelectorAll('[data-choice]'));
     buttons.forEach(button => { button.disabled = true; });
     chat.setAttribute('aria-busy', 'true');
@@ -953,18 +956,18 @@
       finish(); followDelivery();
     };
     function showTyping() {
-      typing?.remove(); typing = null;
       const next = pending[0];
-      if (pauses[delivery.pauseIndex].durationMs < 400 || next.matches('.self-message')
-        || next.matches('.image-bubble, [data-forwarded-from]') || next.querySelector('.image-bubble')) return;
       const sourceId = next.dataset.source || card.source;
+      if (typing?.dataset.source === sourceId) return;
+      typing?.remove(); typing = null;
+      if (next.matches('.self-message')) return;
       const source = sourceFor(sourceId);
       const indicator = document.createElement('button');
       indicator.type = 'button'; indicator.className = 'typing-bubble';
       indicator.setAttribute('aria-label', `${source.name} is typing`);
       indicator.title = 'Show all messages';
       indicator.setAttribute('aria-description', 'Show all messages');
-      indicator.innerHTML = '<i></i><i></i><i></i>';
+      indicator.innerHTML = '<span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span>';
       indicator.addEventListener('click', event => {
         event.stopPropagation();
         if (event.detail && (!chatGesture || chatGesture.moved || chatGesture.delivery !== delivery
@@ -975,20 +978,29 @@
         typing = document.createElement('div');
         typing.className = 'team-row typing-row'; typing.dataset.source = sourceId;
         const initials = card.messages.find(message => message.source === sourceId)?.avatar;
-        typing.innerHTML = `<div class="member-avatar" aria-hidden="true">${characterAvatar(source, initials)}</div>
-          <div class="team-typing"><span class="team-meta">${htmlAttribute(source.name)}</span></div>`;
-        typing.querySelector('.team-typing').append(indicator);
+        typing.innerHTML = `<div class="member-avatar" aria-hidden="true">${characterAvatar(source, initials)}</div>`;
+        indicator.classList.add('team-bubble');
+        const meta = document.createElement('span'); meta.className = 'team-meta';
+        meta.textContent = source.name;
+        if (source.role) {
+          const role = document.createElement('span'); role.className = 'team-role';
+          role.textContent = ` · ${source.role}`; meta.append(role);
+        }
+        indicator.prepend(meta); typing.append(indicator);
       } else typing = indicator;
-      append(typing);
+      typing.dataset.source = sourceId;
+      stack.insertBefore(typing, anchor);
     }
     function deliverNext() {
       if (!isCurrent() || delivery.delivered) return;
+      const positions = delivery.follow && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? Array.from(chat.querySelectorAll('[data-chat-current], [data-chat-history]'))
+          .map(node => [node, node.offsetTop - chat.scrollTop]) : [];
       const previousPause = pauses[delivery.pauseIndex];
       const nextPause = pauses[++delivery.pauseIndex];
-      typing?.remove(); typing = null;
       const count = nextPause ? nextPause.after - previousPause.after : pending.length;
-      pending.splice(0, count).forEach((node, index) => {
-        node.style.animationDelay = `${index * 90}ms`;
+      pending.splice(0, count).forEach(node => {
+        node.style.animationDelay = '';
         append(node);
       });
       if (nextPause) {
@@ -999,19 +1011,28 @@
         finish();
       }
       followDelivery();
+      // Keep existing bubbles visually in place, then ease into the new layout.
+      // Local offsets also work when the portrait stage is rotated.
+      positions.forEach(([node, before]) => {
+        const delta = before - (node.offsetTop - chat.scrollTop);
+        if (Math.abs(delta) > 1) node.animate([
+          { transform: `translateY(${delta}px)` }, { transform: 'none' },
+        ], { duration: 220, easing: 'ease-out' });
+      });
     }
     showTyping();
     cardTypingTimer = window.setTimeout(deliverNext, Math.max(0, delivery.deadline - Date.now()));
   }
 
   function defaultTypingPauses(card, nodes) {
+    const authored = card.typingPauses || (card.typingPause ? [card.typingPause] : []);
+    if (nodes.length === 1 && !nodes[0].matches('.self-message, .image-bubble')
+      && !nodes[0].querySelector('.message-image')) return [{ after: 0, durationMs: 500 }];
     return nodes.slice(1).map((next, index) => {
       const previous = nodes[index];
-      const media = next.matches('.image-bubble, [data-forwarded-from]') || next.querySelector('.image-bubble');
-      const short = next.textContent.trim().split(/\s+/).length <= 12;
       const changedAuthor = card.mode === 'team' && next.dataset.source !== previous.dataset.source;
-      const durationMs = next.matches('.self-message') ? 0 : card.outcomeTone ? 250
-        : media ? 300 : changedAuthor ? 600 : short ? 300 : 500;
+      const durationMs = next.matches('.self-message') ? 0
+        : authored.find(pause => pause.after === index + 1)?.durationMs || (changedAuthor ? 600 : 500);
       return { after: index + 1, durationMs };
     }).filter(pause => pause.durationMs > 0);
   }

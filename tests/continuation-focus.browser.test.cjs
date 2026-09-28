@@ -6,6 +6,7 @@ const path = require('node:path');
 const url = `${pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href}?story=live-agent`;
 
 async function assertContinuationVisible(page) {
+  await page.locator('.typing-bubble').waitFor({ state: 'detached' });
   await page.locator('[data-chat]').evaluate(async node => {
     await Promise.all(node.getAnimations({ subtree: true }).map(animation => animation.finished));
   });

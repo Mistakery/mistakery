@@ -31,7 +31,7 @@ test('Legal continuation delivers three bubbles with two pauses and preserves th
       await page.clock.install();
       await page.clock.pauseAt(new Date());
       await page.evaluate(() => { const a = window.MistakeryApp; a.state.currentCardId = 'LIVE_AGENT_07'; a.render(); });
-      await page.clock.runFor(2000);
+      await page.clock.runFor(2500);
       await page.locator('[data-choice="left"]').click();
       assert.deepEqual(await current(page), expected.slice(0, 1));
       assert.equal(await page.locator('[data-player-reply]').innerText(), 'Just AI humor');

@@ -10,6 +10,14 @@
 
 ## Agreed design
 
+### Review revision, 2026-09-28
+
+Owner reported detached typing nicknames, silent appearances, missing dots after ASAP and overly rapid/jerky motion. Group nickname/role and dots now share one white bubble. Every pending incoming bubble, including media/forward/outcome, has dots; single incoming text cards start with a 500 ms pause. Ordinary gaps are 500 ms, group author changes 600 ms. Authored pauses remain at their boundaries, with ordinary pauses filling previously batched boundaries: LIVE_AGENT_03 completes in 3.5 s, LIVE_AGENT_05 in 3 s, LIVE_AGENT_07 in 2.5 s. Other active cards still complete within 2 s. Same-author dots retain their animation instance across delivery; typing has no entrance bounce and arriving text uses a short ease-out fade/4px slide. Rerendered delivered bubbles do not replay entrance animation.
+
+The original draft below records the first implementation; the revision above supersedes its short-gap, media-indicator and batched timing decisions.
+
+Existing bubbles now ease into their new positions after delivery instead of jumping upward by about 55px. Movement uses the stage's local vertical axis, is skipped while the reader explores history, and honors reduced motion.
+
 - Whole bubbles after animated dots; ordinary cards generally wait 1–2 seconds in total. First bubble is immediate; later same-author bubbles wait 300–500 ms, a new group author waits 600 ms. Short reactions, photos, forwards and outcome reactions use brief gaps without typing dots.
 - Existing LIVE_AGENT_03 greeting stays 1 s + 2 s. LIVE_AGENT_05/06/07 keep their existing authored pauses. LIVE_AGENT_07B becomes 500 ms then 1250 ms before the ultimatum; INFLUENCER_05 gets 600 ms then 1100 ms before its demand.
 - Team typing shows the next author's avatar and name. Outgoing text, IRL, saved notes, already delivered Back views and revisited cards reveal immediately.

@@ -88,6 +88,8 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
         assert.equal(await page.locator('[data-chat-current]').count(), 2);
         assert.equal(await page.locator('[data-chat-current]').nth(1).innerText(), 'Just between us...');
         await page.clock.runFor(2000);
+        assert.equal(await page.locator('[data-chat-current]').count(), 3);
+        await page.clock.runFor(500);
         await page.locator('[data-choice="left"]').tap();
         await page.clock.runFor(600);
         for (const node of await page.locator('[data-chat-current]').all()) await assertVisible(page, node);
