@@ -17,7 +17,7 @@ test('live agent has ten screens, five outcomes and only five attitude decisions
     const card = engine.cardById(deck, `LIVE_AGENT_OUTCOME_${n}`);
     for (const choice of Object.values(card.choices)) {
       assert.deepEqual(choice.effects, {});
-      assert.equal(choice.next, 'OPEN_INVESTOR');
+      assert.equal(choice.next, undefined);
     }
   }
 });
@@ -54,19 +54,14 @@ test('photo interlude is neutral and its continuation retains the original decis
   }
 });
 
-test('Sales queues the story after both check-ins in either order; other choices keep Investor', () => {
-  for (const rng of [() => 0, () => 0.999999]) {
-    for (const side of ['left', 'right']) {
-      let state = engine.startRun(deck);
-      state = engine.resolveChoice(deck, state, 'right', { rng }).state;
-      state = engine.resolveChoice(deck, state, side, { rng }).state;
-      const seen = [];
-      for (let i = 0; i < 2; i++) {
-        seen.push(state.currentCardId);
-        state = engine.resolveChoice(deck, state, 'right', { rng }).state;
-      }
-      assert.deepEqual(seen.sort(), ['OPEN_BOSS', 'OPEN_DEV']);
-      assert.equal(state.currentCardId, side === 'left' ? 'LIVE_AGENT_01' : 'OPEN_INVESTOR');
-    }
+test('Live Agent starts without opening flags and OPEN choices cannot choose a plot', () => {
+  const route = require('../route.js');
+  const state = route.startRun(deck, { seed: 0, firstPlot: 'live_agent' });
+  assert.equal(state.currentCardId, 'LIVE_AGENT_01');
+  assert.deepEqual(engine.cardById(deck, 'LIVE_AGENT_01').requires, []);
+  const investor = engine.cardById(deck, 'OPEN_INVESTOR');
+  for (const choice of Object.values(investor.choices)) {
+    assert.equal(choice.next, undefined);
+    assert.equal(choice.startArc, undefined);
   }
 });

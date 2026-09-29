@@ -37,7 +37,7 @@ test('every gameplay resolver charges half a Cash exactly once, including neutra
     for(const [id,side,cash] of cases) {
       await page.evaluate(id=>{
         const a=window.MistakeryApp;
-        a.state=window.MistakeryEngine.startRun(a.deck);
+        a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null };
         a.state.currentCardId=id;
         a.state.resources={cash:50,team:50,customers:50,founder:50};
         a.state.schedulerResources={...a.state.resources};
@@ -65,7 +65,7 @@ test('every gameplay resolver charges half a Cash exactly once, including neutra
     }
     for(const id of ['OPEN_01','OPEN_INVESTOR','INFLUENCER_02','LIVE_AGENT_04','PADEL_INVITE']) {
       await page.evaluate(id=>{
-        const a=window.MistakeryApp;a.state=window.MistakeryEngine.startRun(a.deck);
+        const a=window.MistakeryApp;a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null };
         a.state.currentCardId=id;a.state.resources.cash=.25;a.state.schedulerResources.cash=.25;
         a.state.turn=10000;a.view='playing';a.locked=false;a.render();
       },id);
@@ -77,7 +77,7 @@ test('every gameplay resolver charges half a Cash exactly once, including neutra
     }
     // A second neutral turn accumulates to exactly one Cash, with no rounding loss.
     await page.evaluate(()=>{
-      const a=window.MistakeryApp;a.state=window.MistakeryEngine.startRun(a.deck);
+      const a=window.MistakeryApp;a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null };
       a.state.currentCardId='INFLUENCER_02';a.state.resources.cash=50;a.view='playing';a.locked=false;a.render();
     });
     await page.locator('[data-choice="right"]').click();

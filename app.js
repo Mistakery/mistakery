@@ -1,59 +1,6 @@
 (function startBrowserGame() {
   const engine = window.MistakeryEngine;
-  const ACTIVE_CARD_IDS = Object.freeze([
-    'OPEN_01',
-    'OPEN_02a',
-    'OPEN_02b',
-    'OPEN_BOSS',
-    'OPEN_DEV',
-    'OPEN_INVESTOR',
-    'LIVE_AGENT_01',
-    'LIVE_AGENT_02',
-    'LIVE_AGENT_03',
-    'LIVE_AGENT_04',
-    'LIVE_AGENT_04B',
-    'LIVE_AGENT_05',
-    'LIVE_AGENT_06',
-    'LIVE_AGENT_07',
-    'LIVE_AGENT_07B',
-    'LIVE_AGENT_08',
-    'LIVE_AGENT_OUTCOME_0',
-    'LIVE_AGENT_OUTCOME_1',
-    'LIVE_AGENT_OUTCOME_2',
-    'LIVE_AGENT_OUTCOME_3',
-    'LIVE_AGENT_OUTCOME_4',
-    'INFLUENCER_01',
-    'INFLUENCER_02',
-    'INFLUENCER_02A',
-    'INFLUENCER_03',
-    'INFLUENCER_04',
-    'INFLUENCER_05',
-    'INFLUENCER_06',
-    'INFLUENCER_07',
-    'INFLUENCER_08',
-    'INFLUENCER_OUTCOME_1',
-    'INFLUENCER_OUTCOME_2',
-    'INFLUENCER_OUTCOME_3',
-    'INFLUENCER_OUTCOME_4',
-    'INFLUENCER_OUTCOME_5',
-    'INFLUENCER_OUTCOME_6',
-    'INFLUENCER_OUTCOME_7',
-    'PADEL_INVITE',
-    'DREAM_TEAM',
-    'IRL_PADEL_01',
-    'IRL_PADEL_03B',
-    'IRL_PADEL_04',
-    'IRL_PADEL_05',
-    'IRL_PADEL_06',
-    'PADEL_OUTCOME_0',
-    'PADEL_OUTCOME_1',
-    'PADEL_OUTCOME_2',
-    'PADEL_OUTCOME_3',
-    'PADEL_OUTCOME_4',
-    'PADEL_OUTCOME_5',
-    'PADEL_OUTCOME_6',
-    'PADEL_OUTCOME_7',
-  ]);
+  const route = window.MistakeryRoute;
 
   const app = {
     deck: null,
@@ -65,16 +12,29 @@
     locked: false,
     introTypingTimer: null,
     cardDelivery: null,
-    padelCeoScore: null,
+    padelCeoScore: 0,
     influencerPreviousCardId: null,
     liveAgentScore: 0,
-    activeCardIds: ACTIVE_CARD_IDS,
+    activeCardIds: [],
     render,
   };
   window.MistakeryApp = app;
 
   const $ = (selector) => document.querySelector(selector);
-  const storyTestEnabled = new URLSearchParams(window.location.search).get('story') === 'live-agent';
+  const params = new URLSearchParams(window.location.search);
+  const directStoryTest = params.get('story') === 'live-agent';
+  const routeTest = params.get('test') === 'route';
+  const storyTestEnabled = directStoryTest || routeTest;
+  const runSeed = params.get('seed') ?? (directStoryTest ? 'live-agent-preview' : Math.floor(Math.random() * 4294967296));
+  for (const [name, initial] of Object.entries({ liveAgentScore: 0, padelCeoScore: 0, influencerPreviousCardId: null })) {
+    Object.defineProperty(app, name, {
+      get: () => app.state?.route?.[name] ?? initial,
+      set: value => { if (app.state?.route) app.state.route[name] = value; },
+    });
+  }
+  function newRun() {
+    return route.startRun(app.deck, { seed: runSeed, firstPlot: directStoryTest ? 'live_agent' : undefined });
+  }
   const landscapeTouch = window.matchMedia('(pointer: coarse) and (orientation: landscape)');
   function updatePortraitDirection() {
     const angle = screen.orientation?.angle ?? window.orientation ?? 90;
@@ -267,16 +227,14 @@
     window.clearTimeout(app.introTypingTimer);
     testHistory.length = 0;
     app.cardDelivery = null;
-    app.state = engine.startRun(app.deck);
-    app.state.currentCardId = 'LIVE_AGENT_01';
-    app.state.flags = ['met_boss', 'met_dev', 'live_agent_pending'];
+    app.state = newRun();
     app.liveAgentScore = 0;
-    app.padelCeoScore = null;
+    app.padelCeoScore = 0;
     app.influencerPreviousCardId = null;
     app.locked = false;
-    app.view = 'playing';
     clearPreview();
-    renderCard();
+    if (routeTest) startSaved(0);
+    else { app.view = 'playing'; renderCard(); }
   }
 
   function setSceneMode(mode) {
@@ -363,7 +321,7 @@
   const storyImageSources = new Set();
 
   async function warmStoryImages() {
-    for (const card of app.deck.cards.filter(card => /^(LIVE_AGENT|INFLUENCER)_/.test(card.id))) {
+    for (const card of app.deck.cards.filter(card => card.plot || card.filler)) {
       if (card.image?.src) storyImageSources.add(card.image.src);
       for (const message of card.messages || []) {
         const image = message.image || app.deck.images?.[message.imageRef];
@@ -607,8 +565,8 @@
   }
 
   function beginRun() {
-    app.state = engine.startRun(app.deck);
-    app.padelCeoScore = null;
+    app.state = newRun();
+    app.padelCeoScore = 0;
     app.influencerPreviousCardId = null;
     app.liveAgentScore = 0;
     app.locked = false;
@@ -621,13 +579,7 @@
   }
 
   function padelChoiceTargets(card, side) {
-    if (card.id === 'IRL_PADEL_06') {
-      return (side === 'left' ? [3, 4] : [1, 2, 5, 6]).map(n => `PADEL_OUTCOME_${n}`);
-    }
-    if (card.id === 'IRL_PADEL_05' && app.padelCeoScore + card.choices[side].ceoScore === 4) {
-      return ['PADEL_OUTCOME_7'];
-    }
-    return [card.choices[side].next];
+    return route.choiceTargets(app.deck, app.state, card, side);
   }
 
   function previewChoice(card, choice, side) {
@@ -816,7 +768,7 @@
   function renderCard() {
     const sent = sentReplyPositions;
     const card = engine.cardById(app.deck, app.state.currentCardId);
-    if (!card || !ACTIVE_CARD_IDS.includes(card.id)) {
+    if (!card || !app.activeCardIds.includes(card.id)) {
       throw new Error(`Disabled card cannot enter the Personal Chat runtime: ${app.state.currentCardId}`);
     }
     if (card.id === 'OPEN_INVESTOR' || card.id === 'DREAM_TEAM' || card.id.startsWith('PADEL_') || card.id.startsWith('IRL_PADEL_')) {
@@ -984,7 +936,7 @@
     const chat = $('[data-chat]');
     const stack = card.mode === 'team' ? chat : chat.querySelector('[data-message-stack]');
     const nodes = Array.from(chat.querySelectorAll('[data-chat-current]'));
-    const repeated = app.state.history.some(step => step.cardId === card.id);
+    const repeated = app.state.history.slice(app.state.route.cycleStart).some(step => step.cardId === card.id);
     const pauses = card.mode === 'irl' || repeated ? [] : defaultTypingPauses(card, nodes);
     if (!pauses.length) {
       app.cardDelivery = null;
@@ -1140,238 +1092,11 @@
   }
 
   function influencerChoicesFor(card) {
-    if (!['INFLUENCER_05', 'INFLUENCER_06'].includes(card.id)) return card.choices;
-    if (app.influencerPreviousCardId === 'INFLUENCER_04') return card.choices;
-    const contextual = card.contextualChoices?.[app.influencerPreviousCardId];
-    if (contextual) return contextual;
-    throw new Error(`Invalid previous Influencer card for ${card.id}: ${app.influencerPreviousCardId}`);
-  }
-
-  function continueFromInvestor(side) {
-    app.locked = true;
-    clearPreview();
-    const result = engine.resolveChoice(prototypeDeck(), app.state, side, { rng: () => 0 });
-    app.state = result.state;
-    if (side === 'left') {
-      app.padelCeoScore = null;
-      app.influencerPreviousCardId = 'OPEN_INVESTOR';
-      app.state.currentCardId = 'INFLUENCER_01';
-    } else {
-      app.padelCeoScore = 0;
-      app.influencerPreviousCardId = null;
-      app.state.currentCardId = 'PADEL_INVITE';
-    }
-    renderCard();
-    unlockAfterChoice();
-  }
-
-  function continueFromDreamTeam(side) {
-    app.locked = true;
-    clearPreview();
-    const result = resolvePadelChoice(side);
-    app.state = result.state;
-    app.state.currentCardId = 'IRL_PADEL_01';
-    renderCard();
-    unlockAfterChoice();
-  }
-
-  function resolvePadelChoice(side, nextId) {
-    const card = engine.cardById(app.deck, app.state.currentCardId);
-    const choice = card.choices[side];
-    const next = nextId || choice.next || 'OPEN_INVESTOR';
-    const target = engine.cardById(app.deck, next);
-    const effects = { ...choice.effects };
-    if (next.startsWith('PADEL_OUTCOME_')) {
-      for (const [key, amount] of Object.entries(target.outcomeEffects || {})) {
-        effects[key] = (effects[key] || 0) + amount;
-      }
-    }
-    // Record choice and outcome together, once. Resource boundaries remain
-    // playable: crises are intentionally disabled in this prototype branch.
-    const resolvedCard = { ...card, continuation: 'forced', choices: {
-      ...card.choices, [side]: { ...choice, next, effects },
-    } };
-    const scopedDeck = {
-      ...app.deck,
-      crises: {},
-      meta: { ...app.deck.meta, maxTurns: Number.MAX_SAFE_INTEGER },
-      cards: app.deck.cards.map(item => item.id === card.id ? resolvedCard : item),
-    };
-    return engine.resolveChoice(scopedDeck, app.state, side, { rng: () => 0 });
-  }
-
-  function resolveInfluencerChoice(side, nextId) {
-    const card = engine.cardById(app.deck, app.state.currentCardId);
-    const choices = influencerChoicesFor(card);
-    const choice = choices[side];
-    const next = nextId || choice.next || 'OPEN_INVESTOR';
-    const target = engine.cardById(app.deck, next);
-    const effects = { ...choice.effects };
-    if (next.startsWith('INFLUENCER_OUTCOME_')) {
-      for (const [key, amount] of Object.entries(target.outcomeEffects || {})) {
-        effects[key] = (effects[key] || 0) + amount;
-      }
-    }
-    // Resolve the displayed contextual choice and selected outcome together.
-    // Renders and decorative replies cannot charge these entry effects again.
-    const resolvedCard = { ...card, continuation: 'forced', choices: {
-      ...choices, [side]: { ...choice, next, effects },
-    } };
-    const scopedDeck = {
-      ...app.deck,
-      crises: {},
-      meta: { ...app.deck.meta, maxTurns: Number.MAX_SAFE_INTEGER },
-      cards: app.deck.cards.map(item => item.id === card.id ? resolvedCard : item),
-    };
-    return engine.resolveChoice(scopedDeck, app.state, side, { rng: () => 0 });
+    return route.choicesFor(card, app.state);
   }
 
   function influencerChoiceTargets(card, side) {
-    if (card.id === 'INFLUENCER_07') return ['INFLUENCER_OUTCOME_2', 'INFLUENCER_OUTCOME_3'];
-    if (card.id === 'INFLUENCER_08') {
-      return (side === 'left' ? [4, 5] : [6, 7]).map(n => `INFLUENCER_OUTCOME_${n}`);
-    }
-    return [influencerChoicesFor(card)[side].next];
-  }
-
-  function selectInfluencerOutcome(cardId, side, rng = Math.random) {
-    const won = rng() < 0.4;
-    if (cardId === 'INFLUENCER_07') return won ? 'INFLUENCER_OUTCOME_2' : 'INFLUENCER_OUTCOME_3';
-    if (cardId === 'INFLUENCER_08' && side === 'left') {
-      return won ? 'INFLUENCER_OUTCOME_4' : 'INFLUENCER_OUTCOME_5';
-    }
-    if (cardId === 'INFLUENCER_08' && side === 'right') {
-      return won ? 'INFLUENCER_OUTCOME_6' : 'INFLUENCER_OUTCOME_7';
-    }
-    throw new Error(`Influencer outcome requested from ${cardId} ${side}`);
-  }
-
-  function continueFromInfluencer(card, side) {
-    app.locked = true;
-    clearPreview();
-    const choices = influencerChoicesFor(card);
-    const next = ['INFLUENCER_07', 'INFLUENCER_08'].includes(card.id)
-      ? selectInfluencerOutcome(card.id, side)
-      : choices[side].next;
-    const result = resolveInfluencerChoice(side, next);
-    app.state = result.state;
-    app.influencerPreviousCardId = card.id;
-    renderCard();
-    unlockAfterChoice();
-  }
-
-  function finishInfluencerOutcome(side) {
-    app.locked = true;
-    clearPreview();
-    const result = resolveInfluencerChoice(side);
-    app.state = result.state;
-    app.influencerPreviousCardId = null;
-    startSaved(1);
-    app.locked = false;
-  }
-
-  function continueFromPadelInvite(side) {
-    app.locked = true;
-    clearPreview();
-    const result = resolvePadelChoice(side);
-    app.state = result.state;
-    if (side === 'right') {
-      app.padelCeoScore = null;
-    }
-    renderCard();
-    unlockAfterChoice();
-  }
-
-  function continueFromPadelScoreCard(card, side) {
-    app.locked = true;
-    clearPreview();
-    const next = padelChoiceTargets(card, side)[0];
-    const result = resolvePadelChoice(side, next);
-    app.state = result.state;
-    app.padelCeoScore += Number(card.choices[side].ceoScore || 0);
-    renderCard();
-    unlockAfterChoice();
-  }
-
-  function selectPadelOutcome(side, ceoScore, rng = Math.random) {
-    if (![-2, 0, 2].includes(ceoScore)) {
-      throw new Error(`Invalid Padel CEO score at match point: ${ceoScore}`);
-    }
-    const edgeThreshold = ceoScore === 0 ? 0.5 : 0.6;
-    if (side === 'left') return rng() < edgeThreshold ? 'PADEL_OUTCOME_3' : 'PADEL_OUTCOME_4';
-
-    const wonMatch = rng() < 0.5;
-    const outcomeRoll = rng();
-    if (wonMatch) return outcomeRoll < edgeThreshold ? 'PADEL_OUTCOME_1' : 'PADEL_OUTCOME_2';
-    const loseDealThreshold = ceoScore === 0 ? 0.5 : 0.4;
-    return outcomeRoll < loseDealThreshold ? 'PADEL_OUTCOME_5' : 'PADEL_OUTCOME_6';
-  }
-
-  function continueFromPadelMatchPoint(side) {
-    app.locked = true;
-    clearPreview();
-    const outcomeId = selectPadelOutcome(side, app.padelCeoScore);
-    const result = resolvePadelChoice(side, outcomeId);
-    app.state = result.state;
-    renderCard();
-    unlockAfterChoice();
-  }
-
-  function finishPadelOutcome(side) {
-    app.locked = true;
-    clearPreview();
-    const result = resolvePadelChoice(side);
-    app.state = result.state;
-    app.padelCeoScore = null;
-    startSaved(1);
-    app.locked = false;
-  }
-
-  function prototypeDeck() {
-    // All prototype branches stay playable at zero, including the opening.
-    // Keep the displayed resources, but don't freeze the prototype at a boundary.
-    return { ...app.deck, crises: {}, meta: { ...app.deck.meta, maxTurns: Number.MAX_SAFE_INTEGER } };
-  }
-
-  function selectLiveAgentOutcome(roll, rng = Math.random) {
-    const score = app.liveAgentScore;
-    if (!Number.isInteger(score) || Math.abs(score) > 5 || (score + 5) % 2 !== 0) {
-      throw new Error(`Invalid bot score after five decisions: ${score}`);
-    }
-    const count = roll.count === 'support' ? (5 + score) / 2 : (5 - score) / 2;
-    return rng() < roll.chances[count] ? roll.win : roll.lose;
-  }
-
-  function continueFromLiveAgent(card, side) {
-    app.locked = true;
-    clearPreview();
-    if (card.id === 'LIVE_AGENT_01') app.liveAgentScore = 0;
-    const choice = card.choices[side];
-    const next = choice.outcomeRoll ? selectLiveAgentOutcome(choice.outcomeRoll) : choice.next;
-    const target = engine.cardById(app.deck, next);
-    const effects = { ...choice.effects };
-    if (target.outcome) {
-      for (const key of engine.RESOURCE_KEYS) {
-        effects[key] = target.resetResources === 0
-          ? -app.state.resources[key]
-          : (effects[key] || 0) + (target.outcomeEffects[key] || 0);
-      }
-    }
-    // One resolution records the local or selected outcome effect exactly once.
-    const resolvedCard = { ...card, choices: { ...card.choices, [side]: { ...choice, next, effects } } };
-    const deck = prototypeDeck();
-    const scopedDeck = {
-      ...deck,
-      cards: deck.cards.map(item => item.id === card.id ? resolvedCard : item),
-    };
-    app.state = engine.resolveChoice(scopedDeck, app.state, side, { rng: () => 0 }).state;
-    app.liveAgentScore += choice.botScore || 0;
-    if (card.outcome) {
-      app.liveAgentScore = 0;
-      app.state.activeArc = null;
-    }
-    renderCard();
-    unlockAfterChoice();
+    return route.choiceTargets(app.deck, app.state, card, side);
   }
 
   function choose(side) {
@@ -1440,22 +1165,22 @@
 
   function resolveCardChoice(card, side, scrollTop) {
     recordTestStep(scrollTop);
-    if (card.arc === 'live_agent') return continueFromLiveAgent(card, side);
-    if (card.id === 'OPEN_INVESTOR') return continueFromInvestor(side);
-    if (card.id.startsWith('INFLUENCER_OUTCOME_')) return finishInfluencerOutcome(side);
-    if (card.id.startsWith('INFLUENCER_')) return continueFromInfluencer(card, side);
-    if (card.id === 'PADEL_INVITE') return continueFromPadelInvite(side);
-    if (card.id === 'DREAM_TEAM') return continueFromDreamTeam(side);
-    if (card.id === 'IRL_PADEL_06') return continueFromPadelMatchPoint(side);
-    if (card.id.startsWith('PADEL_OUTCOME_')) return finishPadelOutcome(side);
-    if (Object.hasOwn(card.choices[side], 'ceoScore')) return continueFromPadelScoreCard(card, side);
-
     app.locked = true;
     clearPreview();
-    const result = engine.resolveChoice(prototypeDeck(), app.state, side);
-    app.state = result.state;
+    app.state = route.resolveChoice(app.deck, app.state, side,
+      directStoryTest ? { outcomeRng: Math.random } : {}).state;
     renderCard();
     unlockAfterChoice();
+  }
+
+  function restartRun() {
+    recordTestStep();
+    window.clearTimeout(choiceUnlockTimer);
+    window.clearTimeout(app.introTypingTimer);
+    app.cardDelivery = null;
+    app.state = newRun();
+    app.locked = false;
+    startSaved(0);
   }
 
   function render() {
@@ -1578,17 +1303,7 @@
   $('[data-test-inspect]').addEventListener('click', showTestDetails);
   $('[data-details-close]').addEventListener('click', () => $('[data-test-details]').close());
   $('[data-test-restart]').addEventListener('click', startStoryTest);
-  $('[data-restart-run]').addEventListener('click', () => {
-    if (app.view === 'onboarding') return;
-    recordTestStep();
-    window.clearTimeout(choiceUnlockTimer);
-    app.state = engine.startRun(app.deck);
-    app.padelCeoScore = null;
-    app.influencerPreviousCardId = null;
-    app.liveAgentScore = 0;
-    app.locked = false;
-    startSaved(0);
-  });
+  $('[data-restart-run]').addEventListener('click', () => { if (app.view !== 'onboarding') restartRun(); });
 
   document.addEventListener('keydown', (event) => {
     if ($('[data-test-details]').open) return;
@@ -1609,12 +1324,13 @@
       const errors = engine.validateDeck(deck);
       if (errors.length) throw new Error(errors.join('\n'));
       app.deck = deck;
+      app.activeCardIds = deck.cards.filter(card => card.plot || card.filler).map(card => card.id);
       await Promise.all([warmCharacterAvatars(), warmStoryImages()]);
       if (storyTestEnabled) {
         startStoryTest();
         return;
       }
-      app.state = engine.startRun(deck);
+      app.state = newRun();
       app.onboardingIndex = 0;
       deliverOnboardingMessage();
     })

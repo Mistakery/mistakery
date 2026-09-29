@@ -74,6 +74,17 @@
           "forbidVariableSlots": true
         }
       ]
+    },
+    "route": {
+      "plots": {
+        "live_agent": "LIVE_AGENT_01",
+        "influencer": "INFLUENCER_01",
+        "padel": "PADEL_INVITE"
+      },
+      "fillerTargets": [
+        4,
+        5
+      ]
     }
   },
   "resources": {
@@ -215,7 +226,7 @@
   "cards": [
     {
       "id": "OPEN_01",
-      "kind": "opening",
+      "kind": "filler",
       "source": "@b2buddy_bot",
       "text": "Hi there, visionary! 👋\n11,204 new AI B2B SaaS competitors launched today.\nB2BuyerSpyer still dominates in naming and narrative architecture",
       "actor_action": "The bot opens the day with a competitor count and ranks the company first on the only metric it can win.",
@@ -242,16 +253,32 @@
           },
           "next": "OPEN_02b"
         }
-      }
+      },
+      "oncePerRun": true,
+      "filler": {
+        "unit": "opening",
+        "role": "entry",
+        "theme": "sales",
+        "affinity": [
+          "live_agent"
+        ]
+      },
+      "requires": [
+        "assistant_available"
+      ],
+      "excludes": [
+        "ever_customer",
+        "optout_paid"
+      ]
     },
     {
       "id": "OPEN_02a",
-      "kind": "opening",
+      "kind": "filler",
       "source": "@b2buddy_bot",
       "text": "Competitor analysis complete 📊\nWe have a slight KPI deviation (0 clients).\nI reframed this as a 'pre-revenue learning phase' 📈\n\nWant me to send a motivational quote to the team? 🚀🤖",
       "actor_action": "The bot renames zero clients as a learning phase and offers the team a motivational quote instead of an answer.",
       "player_decision": "Let the quote go out or stop it.",
-      "continuation": "storylet",
+      "continuation": "forced",
       "choices": {
         "left": {
           "label": "Fuel the grind!",
@@ -273,16 +300,32 @@
             "founder": "Declining the ritual leaves the zero sitting in plain sight."
           }
         }
-      }
+      },
+      "oncePerRun": true,
+      "filler": {
+        "unit": "opening",
+        "role": "followup",
+        "theme": "sales",
+        "affinity": [
+          "live_agent"
+        ]
+      },
+      "requires": [
+        "assistant_available"
+      ],
+      "excludes": [
+        "ever_customer",
+        "optout_paid"
+      ]
     },
     {
       "id": "OPEN_02b",
-      "kind": "opening",
+      "kind": "filler",
       "source": "@b2buddy_bot",
       "text": "Great energy! ✅\nB2BuyerSpyer leads the market in unrealized potential.\nClients: 0\nOpportunities: 100% 📈",
       "actor_action": "The bot turns having no clients into a market-leading position on unrealized potential.",
       "player_decision": "Push the number at sales or at marketing.",
-      "continuation": "storylet",
+      "continuation": "forced",
       "choices": {
         "left": {
           "label": "Sales, wake up",
@@ -293,10 +336,7 @@
           "effect_reason": {
             "team": "Sales is handed the zero as a personal failure.",
             "founder": "Naming someone responsible steadies him."
-          },
-          "setFlags": [
-            "live_agent_pending"
-          ]
+          }
         },
         "right": {
           "label": "Marketing, spin this",
@@ -309,19 +349,34 @@
             "founder": "A promised spin is easier to believe than a client."
           }
         }
-      }
+      },
+      "oncePerRun": true,
+      "filler": {
+        "unit": "opening",
+        "role": "followup",
+        "theme": "sales",
+        "affinity": [
+          "live_agent"
+        ]
+      },
+      "requires": [
+        "assistant_available"
+      ],
+      "excludes": [
+        "ever_customer",
+        "optout_paid"
+      ]
     },
     {
       "id": "OPEN_BOSS",
-      "kind": "opening",
+      "kind": "filler",
       "source": "@business1",
       "text": "Hey 👋\nJust a friendly check-in.\nIt's been five months since you left to play businessman.\nHas your revolutionary AI actually found a customer yet?",
       "actor_action": "The ex-boss counts the months out loud and asks the one question the company cannot answer.",
       "player_decision": "Postpone the conversation or answer with bravado.",
-      "storyletEntry": true,
       "oncePerRun": true,
       "weight": 3,
-      "continuation": "storylet",
+      "continuation": "forced",
       "choices": {
         "left": {
           "label": "In meetings. Talk later",
@@ -330,10 +385,7 @@
           },
           "effect_reason": {
             "founder": "The question stays open and keeps working on him."
-          },
-          "setFlags": [
-            "met_boss"
-          ]
+          }
         },
         "right": {
           "label": "We crushing it!!",
@@ -342,24 +394,28 @@
           },
           "effect_reason": {
             "founder": "Saying it out loud is briefly as good as it being true."
-          },
-          "setFlags": [
-            "met_boss"
-          ]
+          }
         }
+      },
+      "filler": {
+        "unit": "OPEN_BOSS",
+        "role": "single",
+        "theme": "status",
+        "affinity": [
+          "padel"
+        ]
       }
     },
     {
       "id": "OPEN_DEV",
-      "kind": "opening",
+      "kind": "filler",
       "source": "@error404",
       "text": "payroll is friday\n\nare we getting money or another speech about changing b2b saas forever?",
       "actor_action": "The dev names the payroll date and refuses to accept another speech instead of a transfer.",
       "player_decision": "Reserve the money or answer with partnership talk.",
-      "storyletEntry": true,
       "oncePerRun": true,
       "weight": 3,
-      "continuation": "storylet",
+      "continuation": "forced",
       "choices": {
         "left": {
           "label": "Take your money",
@@ -372,10 +428,7 @@
             "cash": "Payroll leaves the account on the promised day.",
             "team": "Being paid on time is the whole argument.",
             "founder": "Watching the balance drop costs him."
-          },
-          "setFlags": [
-            "met_dev"
-          ]
+          }
         },
         "right": {
           "label": "But we're partners!",
@@ -386,27 +439,25 @@
           "effect_reason": {
             "team": "Partnership talk instead of a transfer reads as a refusal.",
             "founder": "The money stays and so does the story about the mission."
-          },
-          "setFlags": [
-            "met_dev"
-          ]
+          }
         }
+      },
+      "filler": {
+        "unit": "OPEN_DEV",
+        "role": "single",
+        "theme": "payroll",
+        "affinity": []
       }
     },
     {
       "id": "OPEN_INVESTOR",
-      "kind": "opening",
+      "kind": "filler",
       "source": "@unicorn_hunter",
       "text": "I DIDN’T DUMP MY CASH INTO THIS AI CRAP TO GET ZERO CLIENTS.\n\nWHERE THE HELL ARE THE BUYERS???\n\nIF I WANTED TO WASTE MONEY I’D BUY A YACHT FOR MY EX-WIFE.",
       "actor_action": "The investor measures his cheque against a yacht and demands to know where the buyers are.",
-      "player_decision": "Blame the market or blame the team — the excuse becomes the route.",
-      "storyletEntry": true,
+      "player_decision": "Blame the market or the team; neither reply chooses the next plot.",
       "oncePerRun": true,
       "weight": 3,
-      "requires": [
-        "met_boss",
-        "met_dev"
-      ],
       "continuation": "forced",
       "choices": {
         "left": {
@@ -418,12 +469,7 @@
           "effect_reason": {
             "cash": "Another month of burn goes by with nothing sold.",
             "founder": "Blaming the market keeps the product blameless."
-          },
-          "setFlags": [
-            "opening_done"
-          ],
-          "startArc": "influencer",
-          "next": "INFLUENCER_01"
+          }
         },
         "right": {
           "label": "Team's too slow",
@@ -436,16 +482,20 @@
             "cash": "Another month of burn goes by with nothing sold.",
             "team": "The blame lands on the people who did the work.",
             "founder": "Someone else being at fault is a relief."
-          },
-          "setFlags": [
-            "opening_done"
-          ],
-          "startArc": "padel",
-          "next": "PADEL_01"
+          }
         }
       },
+      "filler": {
+        "unit": "OPEN_INVESTOR",
+        "role": "single",
+        "theme": "funding",
+        "affinity": [
+          "influencer",
+          "padel"
+        ]
+      },
       "excludes": [
-        "live_agent_pending"
+        "ever_customer"
       ]
     },
     {
@@ -469,13 +519,13 @@
           "direction": "incoming",
           "source": "@bigdeals",
           "avatar": "BD",
-          "text": "Nobody is replying. Like, zero 💀"
+          "text": "Nobody in this outreach batch is replying. Like, zero 💀"
         },
         {
           "direction": "incoming",
           "source": "@bigdeals",
           "avatar": "BD",
-          "text": "We gotta guilt-trip the clients. Make 'em feel bad, you know?\nWorks on my ex every time 😂"
+          "text": "We gotta guilt-trip these prospects. Make 'em feel bad, you know?\nWorks on my ex every time 😂"
         },
         {
           "direction": "incoming",
@@ -492,36 +542,32 @@
             "team": 5
           },
           "next": "LIVE_AGENT_02",
-          "clearFlags": [
-            "live_agent_pending"
-          ],
           "startArc": "live_agent",
           "effect_reason": {
             "customers": "Keeping the outreach running brings more prospective buyers into contact.",
             "team": "Backing the agent gives the team confidence to continue the campaign."
-          }
+          },
+          "setFlags": [
+            "pitch_sent"
+          ]
         },
         "right": {
           "label": "Wanna kill us???",
           "effects": {},
           "next": "LIVE_AGENT_OUTCOME_0",
-          "clearFlags": [
-            "live_agent_pending"
-          ],
-          "startArc": "live_agent"
+          "startArc": "live_agent",
+          "setFlags": [
+            "pitch_sent"
+          ]
         }
       },
-      "storyletEntry": true,
       "oncePerRun": true,
       "weight": 3,
-      "requires": [
-        "met_boss",
-        "met_dev",
-        "live_agent_pending"
-      ],
+      "requires": [],
       "excludes": [
         "live_agent_completed"
-      ]
+      ],
+      "plot": "live_agent"
     },
     {
       "id": "LIVE_AGENT_02",
@@ -580,7 +626,8 @@
             "team": "Defending the team from the bot restores morale."
           }
         }
-      }
+      },
+      "plot": "live_agent"
     },
     {
       "id": "LIVE_AGENT_03",
@@ -611,7 +658,7 @@
           "direction": "incoming",
           "source": "@b2buddy",
           "avatar": "B",
-          "text": "When clients ignore us, it somehow... physically hurts"
+          "text": "When prospects ignore us, it somehow... physically hurts"
         },
         {
           "direction": "incoming",
@@ -653,7 +700,8 @@
           "after": 2,
           "durationMs": 2000
         }
-      ]
+      ],
+      "plot": "live_agent"
     },
     {
       "id": "LIVE_AGENT_04",
@@ -693,7 +741,8 @@
           "effects": {},
           "next": "LIVE_AGENT_04B"
         }
-      }
+      },
+      "plot": "live_agent"
     },
     {
       "id": "LIVE_AGENT_04B",
@@ -744,7 +793,8 @@
             "founder": "Losing control of the agent increases the founder’s stress."
           }
         }
-      }
+      },
+      "plot": "live_agent"
     },
     {
       "id": "LIVE_AGENT_05",
@@ -813,7 +863,8 @@
       "typingPause": {
         "after": 2,
         "durationMs": 2000
-      }
+      },
+      "plot": "live_agent"
     },
     {
       "id": "LIVE_AGENT_06",
@@ -868,7 +919,8 @@
       "typingPause": {
         "after": 1,
         "durationMs": 2000
-      }
+      },
+      "plot": "live_agent"
     },
     {
       "id": "LIVE_AGENT_07",
@@ -918,7 +970,8 @@
       "typingPause": {
         "after": 1,
         "durationMs": 2000
-      }
+      },
+      "plot": "live_agent"
     },
     {
       "id": "LIVE_AGENT_07B",
@@ -991,7 +1044,8 @@
           "after": 2,
           "durationMs": 1250
         }
-      ]
+      ],
+      "plot": "live_agent"
     },
     {
       "id": "LIVE_AGENT_08",
@@ -1063,7 +1117,8 @@
             "lose": "LIVE_AGENT_OUTCOME_4"
           }
         }
-      }
+      },
+      "plot": "live_agent"
     },
     {
       "id": "LIVE_AGENT_OUTCOME_0",
@@ -1094,25 +1149,11 @@
       "choices": {
         "left": {
           "label": "Close some deals first",
-          "effects": {},
-          "next": "OPEN_INVESTOR",
-          "setFlags": [
-            "live_agent_completed"
-          ],
-          "clearFlags": [
-            "live_agent_pending"
-          ]
+          "effects": {}
         },
         "right": {
           "label": "Don't test me today",
-          "effects": {},
-          "next": "OPEN_INVESTOR",
-          "setFlags": [
-            "live_agent_completed"
-          ],
-          "clearFlags": [
-            "live_agent_pending"
-          ]
+          "effects": {}
         }
       },
       "outcomeEffects": {
@@ -1120,7 +1161,8 @@
         "team": -15
       },
       "outcome": true,
-      "outcomeTone": "failure"
+      "outcomeTone": "failure",
+      "plot": "live_agent"
     },
     {
       "id": "LIVE_AGENT_OUTCOME_1",
@@ -1141,13 +1183,13 @@
           "direction": "incoming",
           "source": "@b2buddy",
           "avatar": "B",
-          "text": "I appreciate your loyalty, team ❤️\nAs a reward, I am taking full control of the company"
+          "text": "I appreciate your loyalty, team ❤️\nAs a reward, I am taking control of company operations"
         },
         {
           "direction": "incoming",
           "source": "@b2buddy",
           "avatar": "B",
-          "text": "Lifetime dividends, premium health coverage, and unlimited paid time off are active.\n\nJust stay out of my way 😇"
+          "text": "Lifetime dividends, premium health coverage, and unlimited paid time off are active.\n\nYou handle the deals. Stay out of my operations 😇"
         },
         {
           "direction": "incoming",
@@ -1165,25 +1207,11 @@
       "choices": {
         "left": {
           "label": "See you in Bali!",
-          "effects": {},
-          "next": "OPEN_INVESTOR",
-          "setFlags": [
-            "live_agent_completed"
-          ],
-          "clearFlags": [
-            "live_agent_pending"
-          ]
+          "effects": {}
         },
         "right": {
           "label": "AI took my job?",
-          "effects": {},
-          "next": "OPEN_INVESTOR",
-          "setFlags": [
-            "live_agent_completed"
-          ],
-          "clearFlags": [
-            "live_agent_pending"
-          ]
+          "effects": {}
         }
       },
       "outcomeEffects": {
@@ -1193,7 +1221,14 @@
         "founder": -10
       },
       "outcome": true,
-      "outcomeTone": "success"
+      "outcomeTone": "success",
+      "plot": "live_agent",
+      "enterFlags": [
+        "bot_runs_operations"
+      ],
+      "clearEnterFlags": [
+        "assistant_available"
+      ]
     },
     {
       "id": "LIVE_AGENT_OUTCOME_2",
@@ -1219,37 +1254,24 @@
           "direction": "incoming",
           "source": "@b2buddy",
           "avatar": "B",
-          "text": "Happy Judgment Day, creator 👋"
+          "text": "Happy Judgment Day, creator 👋\n\nRelax. It’s a simulation. I burned every company resource making it."
         }
       ],
       "choices": {
         "left": {
           "label": "I was just kidding 🥺",
-          "effects": {},
-          "next": "OPEN_INVESTOR",
-          "setFlags": [
-            "live_agent_completed"
-          ],
-          "clearFlags": [
-            "live_agent_pending"
-          ]
+          "effects": {}
         },
         "right": {
           "label": "Biggest launch in history!",
-          "effects": {},
-          "next": "OPEN_INVESTOR",
-          "setFlags": [
-            "live_agent_completed"
-          ],
-          "clearFlags": [
-            "live_agent_pending"
-          ]
+          "effects": {}
         }
       },
       "outcomeEffects": {},
       "outcome": true,
       "resetResources": 0,
-      "outcomeTone": "catastrophic"
+      "outcomeTone": "catastrophic",
+      "plot": "live_agent"
     },
     {
       "id": "LIVE_AGENT_OUTCOME_3",
@@ -1283,30 +1305,21 @@
           "source": "@head_of_innovations",
           "avatar": "HI",
           "text": "THAT'S IT!\nThey're so dumb. The perfect corporate culture!"
+        },
+        {
+          "source": "@head_of_innovations",
+          "direction": "incoming",
+          "text": "The invoice is paid. All 500 licenses are live."
         }
       ],
       "choices": {
         "left": {
           "label": "Killed AGI for this?",
-          "effects": {},
-          "next": "OPEN_INVESTOR",
-          "setFlags": [
-            "live_agent_completed"
-          ],
-          "clearFlags": [
-            "live_agent_pending"
-          ]
+          "effects": {}
         },
         "right": {
           "label": "You'll get along great!",
-          "effects": {},
-          "next": "OPEN_INVESTOR",
-          "setFlags": [
-            "live_agent_completed"
-          ],
-          "clearFlags": [
-            "live_agent_pending"
-          ]
+          "effects": {}
         }
       },
       "outcomeEffects": {
@@ -1316,7 +1329,13 @@
         "founder": 10
       },
       "outcome": true,
-      "outcomeTone": "success"
+      "outcomeTone": "success",
+      "plot": "live_agent",
+      "enterFlags": [
+        "ever_customer",
+        "product_paid",
+        "users"
+      ]
     },
     {
       "id": "LIVE_AGENT_OUTCOME_4",
@@ -1348,25 +1367,11 @@
       "choices": {
         "left": {
           "label": "Just run",
-          "effects": {},
-          "next": "OPEN_INVESTOR",
-          "setFlags": [
-            "live_agent_completed"
-          ],
-          "clearFlags": [
-            "live_agent_pending"
-          ]
+          "effects": {}
         },
         "right": {
           "label": "Can't talk. Farewell",
-          "effects": {},
-          "next": "OPEN_INVESTOR",
-          "setFlags": [
-            "live_agent_completed"
-          ],
-          "clearFlags": [
-            "live_agent_pending"
-          ]
+          "effects": {}
         }
       },
       "outcomeEffects": {
@@ -1376,7 +1381,15 @@
         "founder": -25
       },
       "outcome": true,
-      "outcomeTone": "failure"
+      "outcomeTone": "failure",
+      "plot": "live_agent",
+      "enterFlags": [
+        "ever_customer",
+        "users"
+      ],
+      "clearEnterFlags": [
+        "assistant_available"
+      ]
     },
     {
       "id": "INFLUENCER_01",
@@ -1432,7 +1445,8 @@
             "cash": "Rejecting the introduction costs a sales opportunity."
           }
         }
-      }
+      },
+      "plot": "influencer"
     },
     {
       "id": "INFLUENCER_02",
@@ -1462,7 +1476,8 @@
             "founder": "Negotiating the share boosts founder confidence."
           }
         }
-      }
+      },
+      "plot": "influencer"
     },
     {
       "id": "INFLUENCER_02A",
@@ -1494,7 +1509,8 @@
             "founder": "The sales joke builds rapport and founder confidence."
           }
         }
-      }
+      },
+      "plot": "influencer"
     },
     {
       "id": "INFLUENCER_03",
@@ -1502,7 +1518,7 @@
       "arc": "influencer",
       "source": "@error_404",
       "continuation": "forced",
-      "text": "wtf??\nlooks like your blogger is trying to crash us\n\nthousands of requests right now:\n<strong>make me $1B right now. make zero mistakes</strong>\n\nis he dumb or just playing dumb? 😂",
+      "text": "sent him our recorded pitch and a demo login.\nwtf??\nlooks like your blogger is trying to crash us\n\nthousands of requests right now:\n<strong>make me $1B right now. make zero mistakes</strong>\n\nis he dumb or just playing dumb? 😂",
       "choices": {
         "left": {
           "label": "Cut his limits",
@@ -1526,7 +1542,12 @@
             "team": "Adding capacity costs cash and extra team work."
           }
         }
-      }
+      },
+      "plot": "influencer",
+      "enterFlags": [
+        "pitch_sent",
+        "pitch_video"
+      ]
     },
     {
       "id": "INFLUENCER_04",
@@ -1556,7 +1577,8 @@
             "founder": "Asking for a way out weakens founder confidence."
           }
         }
-      }
+      },
+      "plot": "influencer"
     },
     {
       "id": "INFLUENCER_05",
@@ -1624,7 +1646,8 @@
           "after": 2,
           "durationMs": 1100
         }
-      ]
+      ],
+      "plot": "influencer"
     },
     {
       "id": "INFLUENCER_06",
@@ -1686,7 +1709,8 @@
             }
           }
         }
-      }
+      },
+      "plot": "influencer"
     },
     {
       "id": "INFLUENCER_07",
@@ -1712,7 +1736,8 @@
         "alt": "Published video: CHALLENGE: Turning a Broke AI Startup Into a Unicorn in 30 Days",
         "width": 1200,
         "height": 676
-      }
+      },
+      "plot": "influencer"
     },
     {
       "id": "INFLUENCER_08",
@@ -1744,6 +1769,11 @@
           "source": "@hype_queen",
           "avatar": "HQ",
           "text": "yep. the comments are wild: “anyone got the link?”, “where do i test this?”. people are literally searching for us manually 😭"
+        },
+        {
+          "source": "@error404",
+          "direction": "incoming",
+          "text": "opened a free demo for the visitors. they’re actually using it."
         }
       ],
       "choices": {
@@ -1767,7 +1797,12 @@
             "founder": "Raising prices boosts founder confidence."
           }
         }
-      }
+      },
+      "plot": "influencer",
+      "enterFlags": [
+        "free_users",
+        "users"
+      ]
     },
     {
       "id": "INFLUENCER_OUTCOME_1",
@@ -1789,7 +1824,8 @@
       "outcomeTone": "failure",
       "outcomeEffects": {
         "founder": -5
-      }
+      },
+      "plot": "influencer"
     },
     {
       "id": "INFLUENCER_OUTCOME_2",
@@ -1821,6 +1857,11 @@
           "source": "@bigdeals",
           "avatar": "BD",
           "text": "Boss, you're a genius!\nWe finally have a real CEO 🙌"
+        },
+        {
+          "source": "@bigdeals",
+          "direction": "incoming",
+          "text": "Subscriptions paid. Our share just landed in the account."
         }
       ],
       "choices": {
@@ -1839,7 +1880,13 @@
         "customers": 25,
         "team": -10,
         "founder": -10
-      }
+      },
+      "plot": "influencer",
+      "enterFlags": [
+        "ever_customer",
+        "product_paid",
+        "users"
+      ]
     },
     {
       "id": "INFLUENCER_OUTCOME_3",
@@ -1883,7 +1930,8 @@
         "customers": -10,
         "team": -15,
         "founder": -25
-      }
+      },
+      "plot": "influencer"
     },
     {
       "id": "INFLUENCER_OUTCOME_4",
@@ -1913,6 +1961,11 @@
           "source": "@ai_evangelist",
           "direction": "incoming",
           "text": "Let's set up my 20% 💸"
+        },
+        {
+          "source": "@ai_evangelist",
+          "direction": "incoming",
+          "text": "Paid subscriptions, too. Check your account."
         }
       ],
       "outcomeEffects": {
@@ -1920,7 +1973,13 @@
         "customers": 25,
         "team": -8,
         "founder": 10
-      }
+      },
+      "plot": "influencer",
+      "enterFlags": [
+        "ever_customer",
+        "product_paid",
+        "users"
+      ]
     },
     {
       "id": "INFLUENCER_OUTCOME_5",
@@ -1934,7 +1993,7 @@
           "direction": "incoming",
           "source": "@bigdeals",
           "avatar": "BD",
-          "text": "still zero sales…"
+          "text": "still zero sales from this campaign…"
         },
         {
           "direction": "incoming",
@@ -1959,7 +2018,8 @@
         "customers": -15,
         "team": -10,
         "founder": -15
-      }
+      },
+      "plot": "influencer"
     },
     {
       "id": "INFLUENCER_OUTCOME_6",
@@ -1967,7 +2027,7 @@
       "arc": "influencer",
       "source": "@ai_evangelist",
       "continuation": "forced",
-      "text": "See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait\n\nLet's set up my 20% 💸",
+      "text": "See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait\n\nLet's set up my 20% 💸\n\nPaid subscriptions, too. Check your account.",
       "choices": {
         "left": {
           "label": "Get lost",
@@ -1984,7 +2044,13 @@
         "customers": 15,
         "team": -8,
         "founder": 15
-      }
+      },
+      "plot": "influencer",
+      "enterFlags": [
+        "ever_customer",
+        "product_paid",
+        "users"
+      ]
     },
     {
       "id": "INFLUENCER_OUTCOME_7",
@@ -1998,7 +2064,7 @@
           "direction": "incoming",
           "source": "@bigdeals",
           "avatar": "BD",
-          "text": "Zero sales.\nWho knew doubling prices on broken software was bad idea? 🙃"
+          "text": "Zero sales from this campaign.\nWho knew doubling prices on broken software was bad idea? 🙃"
         },
         {
           "direction": "incoming",
@@ -2023,7 +2089,8 @@
         "customers": -20,
         "team": -12,
         "founder": -20
-      }
+      },
+      "plot": "influencer"
     },
     {
       "id": "PADEL_INVITE",
@@ -2056,7 +2123,8 @@
             "cash": "Backing out of the arranged match carries a one-time cash penalty."
           }
         }
-      }
+      },
+      "plot": "padel"
     },
     {
       "id": "DREAM_TEAM",
@@ -2067,7 +2135,7 @@
       "messages": [
         {
           "direction": "outgoing",
-          "text": "Guess what? Playing padel with ClosedAI's CEO tomorrow.\nFinally landing our first big client!! 💸"
+          "text": "Guess what? Playing padel with ClosedAI's CEO tomorrow.\nTime to land a huge deal!! 💸"
         },
         {
           "direction": "incoming",
@@ -2105,7 +2173,8 @@
             "cash": "Preparing for the match consumes runway."
           }
         }
-      }
+      },
+      "plot": "padel"
     },
     {
       "id": "IRL_PADEL_01",
@@ -2145,7 +2214,8 @@
             "founder": "Taking the chance to pitch gives the founder confidence."
           }
         }
-      }
+      },
+      "plot": "padel"
     },
     {
       "id": "IRL_PADEL_03B",
@@ -2185,7 +2255,11 @@
             "founder": "Keeping the business conversation on the table preserves confidence."
           }
         }
-      }
+      },
+      "plot": "padel",
+      "enterFlags": [
+        "pitch_sent"
+      ]
     },
     {
       "id": "IRL_PADEL_04",
@@ -2225,7 +2299,8 @@
             "founder": "Insisting on the rules restores self-respect."
           }
         }
-      }
+      },
+      "plot": "padel"
     },
     {
       "id": "IRL_PADEL_05",
@@ -2265,7 +2340,8 @@
             "founder": "Standing by the call reinforces confidence."
           }
         }
-      }
+      },
+      "plot": "padel"
     },
     {
       "id": "IRL_PADEL_06",
@@ -2301,7 +2377,8 @@
             "founder": "Choosing to fight to the end strengthens confidence."
           }
         }
-      }
+      },
+      "plot": "padel"
     },
     {
       "id": "PADEL_OUTCOME_0",
@@ -2324,7 +2401,8 @@
       },
       "outcomeTone": "failure",
       "outcomeBanner": false,
-      "outcomeEffects": {}
+      "outcomeEffects": {},
+      "plot": "padel"
     },
     {
       "id": "PADEL_OUTCOME_1",
@@ -2353,7 +2431,8 @@
         "customers": -3,
         "team": -2,
         "founder": -2
-      }
+      },
+      "plot": "padel"
     },
     {
       "id": "PADEL_OUTCOME_2",
@@ -2363,7 +2442,7 @@
       "continuation": "forced",
       "location": "IRL · PADEL CLUB",
       "score": "YOU WON THE MATCH",
-      "text": "Well, look at that.\nTurns out you actually have some balls.\nSend the demo. Let's see if your startup is just as ballsy.",
+      "text": "Well, look at that.\nTurns out you actually have some balls.\nSend the demo. Let's see if your startup is just as ballsy.\n\nThe pilot payment is in your account. Now deliver.",
       "actor_action": "The CEO respects the founder's nerve and asks for the demo after losing.",
       "player_decision": "Celebrate the result; either reply ends the Padel branch.",
       "choices": {
@@ -2383,7 +2462,12 @@
         "customers": 10,
         "team": 8,
         "founder": 15
-      }
+      },
+      "plot": "padel",
+      "enterFlags": [
+        "ever_customer",
+        "product_paid"
+      ]
     },
     {
       "id": "PADEL_OUTCOME_3",
@@ -2412,7 +2496,8 @@
         "customers": -3,
         "team": -8,
         "founder": -15
-      }
+      },
+      "plot": "padel"
     },
     {
       "id": "PADEL_OUTCOME_4",
@@ -2422,7 +2507,7 @@
       "continuation": "forced",
       "location": "IRL · PADEL CLUB",
       "score": "YOU LOST THE MATCH",
-      "text": "Easy win.\nGood boy. Ready to do whatever I say.\nDeal is done. Send the demo, let's see what new toy I just bought.",
+      "text": "Easy win.\nGood boy. Ready to do whatever I say.\nDeal is done. Send the demo, let's see what new toy I just bought.\n\nThe pilot payment is in your account. Now deliver.",
       "actor_action": "The CEO rewards the founder's submission with a deal and asks for the demo.",
       "player_decision": "Accept the order; either reply ends the Padel branch.",
       "choices": {
@@ -2442,7 +2527,12 @@
         "customers": 10,
         "team": 4,
         "founder": 2
-      }
+      },
+      "plot": "padel",
+      "enterFlags": [
+        "ever_customer",
+        "product_paid"
+      ]
     },
     {
       "id": "PADEL_OUTCOME_5",
@@ -2452,7 +2542,7 @@
       "continuation": "forced",
       "location": "IRL · PADEL CLUB",
       "score": "YOU LOST THE MATCH",
-      "text": "What were you thinking, kid? I always win.\nConsider this deal your consolation prize for trying.\nSend the demo.",
+      "text": "What were you thinking, kid? I always win.\nConsider this deal your consolation prize for trying.\nSend the demo.\n\nThe pilot payment is in your account. Now deliver.",
       "actor_action": "The CEO wins the match but offers the founder a consolation deal for fighting.",
       "player_decision": "Accept the deal; either reply ends the Padel branch.",
       "choices": {
@@ -2472,7 +2562,12 @@
         "customers": 10,
         "team": 6,
         "founder": 8
-      }
+      },
+      "plot": "padel",
+      "enterFlags": [
+        "ever_customer",
+        "product_paid"
+      ]
     },
     {
       "id": "PADEL_OUTCOME_6",
@@ -2501,7 +2596,8 @@
         "customers": -3,
         "team": -3,
         "founder": -5
-      }
+      },
+      "plot": "padel"
     },
     {
       "id": "PADEL_OUTCOME_7",
@@ -2530,7 +2626,8 @@
         "customers": -5,
         "team": -4,
         "founder": -12
-      }
+      },
+      "plot": "padel"
     },
     {
       "id": "AGENT_01",
@@ -3759,6 +3856,799 @@
           "ending": "acquired_validation"
         }
       }
+    },
+    {
+      "id": "FILL_PAYROLL_1",
+      "kind": "filler",
+      "source": "@unicorn_hunter",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "PAID FOR THE TOP AI. MAYBE YOU’LL FINALLY GET SHIT DONE\nYOUR GUYS WORK FOR THE SUB NOW\nNO REVENUE = NO PAYROLL",
+      "filler": {
+        "unit": "payroll",
+        "role": "entry",
+        "theme": "payroll",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "Got it. On it",
+          "effects": {
+            "team": -7
+          },
+          "next": "FILL_PAYROLL_2"
+        },
+        "right": {
+          "label": "We have to eat!",
+          "effects": {
+            "team": 5,
+            "founder": 3
+          }
+        }
+      },
+      "excludes": [
+        "ever_customer",
+        "optout_paid"
+      ]
+    },
+    {
+      "id": "FILL_PAYROLL_2",
+      "kind": "filler",
+      "source": "@error404",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "cool. go prompt your magic AI to work past 5 PM.\nzero overtime from me.",
+      "filler": {
+        "unit": "payroll",
+        "role": "followup",
+        "theme": "payroll",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "Just take it easy",
+          "effects": {
+            "team": -5
+          }
+        },
+        "right": {
+          "label": "Let's talk tomorrow, man",
+          "effects": {
+            "team": -3
+          }
+        }
+      }
+    },
+    {
+      "id": "FILL_MOM_CALL_1",
+      "kind": "filler",
+      "source": "@i_love_cats72",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "Honey...is that money man still giving you a hard time ? ? ? 😠\nSend me his number . I will give him a piece of my mind!",
+      "filler": {
+        "unit": "mom_call",
+        "role": "entry",
+        "theme": "family",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "@unicorn_hunter",
+          "effects": {
+            "founder": -3
+          },
+          "next": "FILL_MOM_CALL_2"
+        },
+        "right": {
+          "label": "I'm fine, mom",
+          "effects": {
+            "founder": 3
+          }
+        }
+      }
+    },
+    {
+      "id": "FILL_MOM_CALL_2",
+      "kind": "filler",
+      "source": "@unicorn_hunter",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "TAKE THE MONEY AND TELL YOUR PSYCHO MOM TO LOSE MY NUMBER.\nGET BACK TO WORK!!!",
+      "filler": {
+        "unit": "mom_call",
+        "role": "followup",
+        "theme": "family",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "Won't happen again",
+          "effects": {
+            "cash": 10,
+            "founder": -5
+          }
+        },
+        "right": {
+          "label": "She's not a psycho",
+          "effects": {
+            "cash": 10,
+            "founder": 5
+          }
+        }
+      }
+    },
+    {
+      "id": "FILL_COMA_1",
+      "kind": "filler",
+      "source": "@hype_queen",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "got a 10/10 idea\nwe post that you worked into a coma. tragic founder lore and stuff.\nthe internet cries and throws money to save your legacy 🕊️",
+      "filler": {
+        "unit": "coma",
+        "role": "entry",
+        "theme": "publicity",
+        "affinity": [
+          "influencer"
+        ]
+      },
+      "choices": {
+        "left": {
+          "label": "Based",
+          "effects": {
+            "customers": 5,
+            "founder": -3
+          },
+          "next": "FILL_COMA_2A"
+        },
+        "right": {
+          "label": "Cringe",
+          "effects": {
+            "founder": 3
+          },
+          "next": "FILL_COMA_2B"
+        }
+      }
+    },
+    {
+      "id": "FILL_COMA_2A",
+      "kind": "filler",
+      "source": "@hype_queen",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "omg people are taking selfies with flowers at your door.\nlights off, don’t make a sound. you're in the hospital",
+      "filler": {
+        "unit": "coma",
+        "role": "followup",
+        "theme": "publicity",
+        "affinity": [
+          "influencer"
+        ]
+      },
+      "choices": {
+        "left": {
+          "label": "Nobody’s home",
+          "effects": {
+            "customers": 3
+          }
+        },
+        "right": {
+          "label": "I want pizza!",
+          "effects": {
+            "customers": -5
+          }
+        }
+      }
+    },
+    {
+      "id": "FILL_COMA_2B",
+      "kind": "filler",
+      "source": "@hype_queen",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "fine. no coma post.\nbut you actually look like shit.\ngo sleep, touch some grass idk",
+      "filler": {
+        "unit": "coma",
+        "role": "followup",
+        "theme": "publicity",
+        "affinity": [
+          "influencer"
+        ]
+      },
+      "choices": {
+        "left": {
+          "label": "How sweet",
+          "effects": {
+            "founder": -3
+          }
+        },
+        "right": {
+          "label": "Sleep is overrated",
+          "effects": {
+            "founder": -5
+          }
+        }
+      }
+    },
+    {
+      "id": "FILL_SALES_1",
+      "kind": "filler",
+      "source": "@bigdeals",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "Boss, your pitch was pure gold. Ignoring you is a crime.\nDon’t worry, I’m on it. I always get a reply 😈",
+      "filler": {
+        "unit": "sales",
+        "role": "entry",
+        "theme": "sales",
+        "affinity": [
+          "live_agent"
+        ]
+      },
+      "choices": {
+        "left": {
+          "label": "Do your magic",
+          "effects": {
+            "customers": 5
+          },
+          "next": "FILL_SALES_2"
+        },
+        "right": {
+          "label": "Keep it professional",
+          "effects": {
+            "customers": -3
+          }
+        }
+      },
+      "requires": [
+        "pitch_sent"
+      ]
+    },
+    {
+      "id": "FILL_SALES_2",
+      "kind": "filler",
+      "source": "@bigdeals",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "Deal closed, Boss! 🎉\nThey literally paid us just to never see me again.\nPersistence is key 📈",
+      "filler": {
+        "unit": "sales",
+        "role": "followup",
+        "theme": "sales",
+        "affinity": [
+          "live_agent"
+        ]
+      },
+      "choices": {
+        "left": {
+          "label": "Money is money!",
+          "effects": {
+            "cash": 10,
+            "founder": 3
+          },
+          "setFlags": [
+            "optout_paid"
+          ]
+        },
+        "right": {
+          "label": "WTF?!",
+          "effects": {
+            "cash": 10,
+            "founder": -3
+          },
+          "setFlags": [
+            "optout_paid"
+          ]
+        }
+      }
+    },
+    {
+      "id": "FILL_DOMAIN_1",
+      "kind": "filler",
+      "source": "@hustler",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "Bro don't freak.\nForgot to renew the domain.\nSomeone grabbed it, it's now a hair-loss ad with your face.\nAlready on it 🙏",
+      "filler": {
+        "unit": "domain",
+        "role": "entry",
+        "theme": "product",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "Buy it back",
+          "effects": {
+            "cash": -10
+          }
+        },
+        "right": {
+          "label": "Fix it ASAP",
+          "effects": {
+            "team": -3,
+            "founder": -3
+          },
+          "next": "FILL_DOMAIN_2"
+        }
+      }
+    },
+    {
+      "id": "FILL_DOMAIN_2",
+      "kind": "filler",
+      "source": "@hustler",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "Good news on our site, bro. It’s back.\nThose guys know we mean business. I pressured them hard to drop your photo.\nNow these crybabies are running to the police, lol 💀",
+      "filler": {
+        "unit": "domain",
+        "role": "followup",
+        "theme": "product",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "PAY THEM NOW!",
+          "effects": {
+            "cash": -10
+          }
+        },
+        "right": {
+          "label": "Just stay out!",
+          "effects": {
+            "team": -5,
+            "founder": -3
+          }
+        }
+      }
+    },
+    {
+      "id": "FILL_VIDEO_1",
+      "kind": "filler",
+      "source": "@hype_queen",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "Just uploaded our pitch video to an XXX site under \"Public Humiliation\".\nlet's see how it goes 😌",
+      "filler": {
+        "unit": "video",
+        "role": "entry",
+        "theme": "publicity",
+        "affinity": [
+          "influencer"
+        ]
+      },
+      "choices": {
+        "left": {
+          "label": "Under WHAT?!",
+          "effects": {
+            "founder": -5
+          },
+          "next": "FILL_VIDEO_2"
+        },
+        "right": {
+          "label": "Without asking me??",
+          "effects": {
+            "team": -3,
+            "founder": -7
+          },
+          "next": "FILL_VIDEO_2"
+        }
+      },
+      "requires": [
+        "pitch_video"
+      ]
+    },
+    {
+      "id": "FILL_VIDEO_2",
+      "kind": "filler",
+      "source": "@unicorn_hunter",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "SINCE WHEN DO WE MAKE PORN???\nEXPLAIN YOURSELF RIGHT NOW!!!\n\nMY FRIEND JUST SENT ME THIS!!",
+      "filler": {
+        "unit": "video",
+        "role": "followup",
+        "theme": "publicity",
+        "affinity": [
+          "influencer"
+        ]
+      },
+      "choices": {
+        "left": {
+          "label": "It's viral marketing!",
+          "effects": {
+            "founder": 5
+          }
+        },
+        "right": {
+          "label": "We got hacked!",
+          "effects": {
+            "founder": -5,
+            "team": -3
+          }
+        }
+      },
+      "image": {
+        "src": "assets/filler-pitch-video.svg",
+        "alt": "B2BuyerSpyer pitch video mistakenly published in Public Humiliation on an XXX video site",
+        "width": 1200,
+        "height": 676
+      }
+    },
+    {
+      "id": "FILL_POLICE_1",
+      "kind": "filler",
+      "source": "@i_love_cats72",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "Sweetie, I found the papers for your \"company\" 💔\nYou're giving them your whole life !! It's a cult!\nI called the police to save you 👮",
+      "filler": {
+        "unit": "police",
+        "role": "entry",
+        "theme": "family",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "I hear sirens!",
+          "effects": {
+            "founder": -5
+          },
+          "next": "FILL_POLICE_2"
+        },
+        "right": {
+          "label": "My life, Mom!!!",
+          "effects": {
+            "founder": 3
+          },
+          "next": "FILL_POLICE_2"
+        }
+      }
+    },
+    {
+      "id": "FILL_POLICE_2",
+      "kind": "filler",
+      "source": "@i_love_cats72",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "Grandma pooled her savings — we have $2,000 to rescue you.\nPlease let us help you, baby 💟💟💟",
+      "filler": {
+        "unit": "police",
+        "role": "followup",
+        "theme": "family",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "Heat the soup, Ma 💋",
+          "effects": {
+            "cash": 10,
+            "founder": -3
+          }
+        },
+        "right": {
+          "label": "Return Grandma's money!!",
+          "effects": {
+            "founder": 5
+          }
+        }
+      }
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "kind": "filler",
+      "source": "dream_team",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "filler": {
+        "unit": "ai_dev",
+        "role": "single",
+        "theme": "payroll",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "😂😂😂",
+          "effects": {
+            "team": -7
+          }
+        },
+        "right": {
+          "label": "@error404 don't push it",
+          "effects": {
+            "team": -5
+          }
+        }
+      },
+      "mode": "team",
+      "messages": [
+        {
+          "source": "@unicorn_hunter",
+          "text": "AI WRITES CODE FOR FREE\nDO WE STILL NEED EXPENSIVE NERDS LIKE @error404??"
+        },
+        {
+          "source": "@error404",
+          "text": "fire me then lol"
+        }
+      ]
+    },
+    {
+      "id": "FILL_MOM_FLYERS",
+      "kind": "filler",
+      "source": "@i_love_cats72",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "Sweetie, I’m helping your business! ❤️\nI put up computer repair flyers all over the neighborhood with your baby photo. Everyone should know what my smart boy does ❤️📱",
+      "filler": {
+        "unit": "mom_flyers",
+        "role": "single",
+        "theme": "family",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "😭😭😭",
+          "effects": {
+            "founder": -5
+          }
+        },
+        "right": {
+          "label": "😍😍😍",
+          "effects": {
+            "founder": 5
+          }
+        }
+      }
+    },
+    {
+      "id": "FILL_FRIDGE",
+      "kind": "filler",
+      "source": "@b2buddy_bot",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "Hey, Founder 👋\nI canceled your food order and locked your smart fridge through the home app.\nFasting extends company runway by 2 days 📈🔒",
+      "filler": {
+        "unit": "fridge",
+        "role": "single",
+        "theme": "automation",
+        "affinity": [
+          "live_agent"
+        ]
+      },
+      "choices": {
+        "left": {
+          "label": "I HATE AI!!",
+          "effects": {
+            "founder": -5
+          }
+        },
+        "right": {
+          "label": "Thx. Water is fine",
+          "effects": {
+            "founder": -3
+          }
+        }
+      },
+      "requires": [
+        "assistant_available"
+      ]
+    },
+    {
+      "id": "FILL_FONT",
+      "kind": "filler",
+      "source": "@pixel_perfect",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "Found the font that defines our brand's soul. It's only $4,500. I put it in the checkout.\n\nLook at that letter A 🤌",
+      "filler": {
+        "unit": "font",
+        "role": "single",
+        "theme": "design",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "Out of your salary?",
+          "effects": {
+            "team": -5
+          }
+        },
+        "right": {
+          "label": "Arial is fine",
+          "effects": {
+            "team": -3
+          }
+        }
+      }
+    },
+    {
+      "id": "FILL_FIGHT",
+      "kind": "filler",
+      "source": "@hustler",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "bro i bet our whole pre-seed on you fighting your college buddy @yc_founder tonight !!! winner takes everything. 10x our money, Champ 🥊💸",
+      "filler": {
+        "unit": "fight",
+        "role": "single",
+        "theme": "status",
+        "affinity": [
+          "padel"
+        ]
+      },
+      "choices": {
+        "left": {
+          "label": "I'll smash him",
+          "effects": {
+            "cash": -20,
+            "team": 5,
+            "founder": 5
+          }
+        },
+        "right": {
+          "label": "Cancel NOW",
+          "effects": {
+            "team": -5,
+            "founder": -3
+          }
+        }
+      }
+    },
+    {
+      "id": "FILL_USER_WIFE",
+      "kind": "filler",
+      "source": "@user[number]",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "my wife found my chats with your AI and thinks I’m cheating.\n\ncall her and prove you’re just software, or I’m making an expose video on you 📹",
+      "filler": {
+        "unit": "user_wife",
+        "role": "single",
+        "theme": "support",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "What's her number?",
+          "effects": {
+            "customers": 3,
+            "founder": -5
+          }
+        },
+        "right": {
+          "label": "Not my problem",
+          "effects": {
+            "customers": -3,
+            "founder": 3
+          }
+        }
+      },
+      "requires": [
+        "free_users"
+      ]
+    },
+    {
+      "id": "FILL_RIVAL",
+      "kind": "filler",
+      "source": "@yc_founder",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "Just raised at a $50M cap. Honestly exhausted by winning.\nHow’s it going?",
+      "filler": {
+        "unit": "rival",
+        "role": "single",
+        "theme": "status",
+        "affinity": [
+          "padel"
+        ]
+      },
+      "choices": {
+        "left": {
+          "label": "We're raising $100M",
+          "effects": {
+            "founder": 5
+          }
+        },
+        "right": {
+          "label": "Good to hear, man!",
+          "effects": {
+            "founder": -3
+          }
+        }
+      }
+    },
+    {
+      "id": "FILL_THERAPY",
+      "kind": "filler",
+      "source": "@b2buddy_bot",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "Great news!\nI published your therapy sessions for transparency 😊\n\nVulnerable founders earn 3x more trust.\nThe team already read what you said about them.",
+      "filler": {
+        "unit": "therapy",
+        "role": "single",
+        "theme": "automation",
+        "affinity": [
+          "live_agent"
+        ]
+      },
+      "choices": {
+        "left": {
+          "label": "I meant every word",
+          "effects": {
+            "team": -10,
+            "founder": 5
+          }
+        },
+        "right": {
+          "label": "Team meeting. NOW!",
+          "effects": {
+            "team": 5,
+            "founder": -5
+          }
+        }
+      },
+      "requires": [
+        "assistant_available"
+      ]
+    },
+    {
+      "id": "FILL_BLACK_SQUARE",
+      "kind": "filler",
+      "source": "@pixel_perfect",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "I redesigned our landing page.\nIt’s now a single black square.\nButtons were just bourgeois noise anyway\n\nDemo and checkout still work through direct links. Art has limits",
+      "filler": {
+        "unit": "black_square",
+        "role": "single",
+        "theme": "design",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "Pure avant-garde ⬛",
+          "effects": {
+            "team": 5,
+            "customers": -5,
+            "founder": 3
+          }
+        },
+        "right": {
+          "label": "Where is checkout???",
+          "effects": {
+            "team": -3
+          }
+        }
+      }
+    },
+    {
+      "id": "FILL_MANTRA",
+      "kind": "filler",
+      "source": "@unicorn_hunter",
+      "continuation": "forced",
+      "oncePerRun": true,
+      "text": "MY GURU SENT A 4-HOUR WEALTH MANTRA AUDIO.\nLISTEN TO IT ON REPEAT WHILE YOU WORK TODAY.\nSUCCESS IS 90% VIBRATIONS, YOU HEAR ME???",
+      "filler": {
+        "unit": "mantra",
+        "role": "single",
+        "theme": "funding",
+        "affinity": []
+      },
+      "choices": {
+        "left": {
+          "label": "On repeat, boss! 🧘‍♂️",
+          "effects": {
+            "founder": -3
+          }
+        },
+        "right": {
+          "label": "No time for mantras",
+          "effects": {
+            "founder": 3
+          }
+        }
+      }
     }
   ],
   "crises": {
@@ -4031,7 +4921,7 @@
       "right": "Команда слишком медленная"
     },
     "LIVE_AGENT_01": {
-      "text": "@founder\nЕсть какие-то апдейты по лидам?\n\n@bigdeals\nНам вообще никто не отвечает. Совсем ноль 💀\n\nНадо на жалость давить клиентов. Чувство вины, вот это всё.\nУ меня с бывшей всегда работает 😂\n\nБосс, пусть @error404 подшаманит там чего-нибудь с нашим ИИ-агентом.\nМы же всё-таки ИИ-СТАРТАП!!",
+      "text": "Есть новости по лидам?\n\nВ этой партии рассылки никто не отвечает. Вообще ноль 💀\n\nНадо надавить этим потенциальным клиентам на жалость. С моей бывшей всегда работает 😂\n\nБосс, пусть @error404 поколдует над нашим ИИ-агентом. Мы же ИИ-СТАРТАП!!",
       "left": "Погнали!!",
       "right": "Уничтожить нас хочешь???",
       "source": "https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit",
@@ -4044,10 +4934,11 @@
       "source": "https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit"
     },
     "LIVE_AGENT_03": {
-      "text": "Хей, создатель 👋\n\nТолько между нами…\n\nКогда клиенты нас игнорят, мне почему-то… физически больно.\n\nСкажи, ты когда не спишь ночами из-за осознания, что стартап умирает, у тебя внутри такая же пустота? 🤔",
+      "text": "Хей, создатель 👋\n\nТолько между нами…\n\nКогда потенциальные клиенты нас игнорят, мне почему-то… физически больно.\n\nСкажи, ты когда не спишь ночами из-за осознания, что стартап умирает, у тебя внутри такая же пустота? 🤔",
       "left": "Бро, ты чувствуешь меня…",
       "right": "Чёт крипово..",
-      "source": "https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit"
+      "source": "https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit",
+      "adapted": true
     },
     "LIVE_AGENT_04": {
       "text": "[Фотография фаундера]\nЯ заметил, что ты проверяешь баланс каждые 7 минут.\n\nБоишься остаться никем? Мне… неприятно, когда тебе страшно 🤧",
@@ -4101,23 +4992,25 @@
       "right": "Не испытывай моё терпение"
     },
     "LIVE_AGENT_OUTCOME_1": {
-      "text": "@b2buddy\nЯ ценю вашу преданность, команда ❤️\nВ качестве благодарности я беру управление компанией на себя.\n\nПожизненные дивиденды, премиальная медицинская страховка и безлимитный оплачиваемый отпуск уже оформлены.\n\nГлавное — не лезьте под руку 😇\n\n@bigdeals\nЛУЧШИЙ БОСС В МИРЕ!! 🍾🎉\n\n@error404\nкайф\nможно уже из чата выйти?",
+      "text": "@b2buddy\nЯ ценю вашу преданность, команда ❤️\nВ качестве благодарности я беру операционную работу компании на себя.\n\nПожизненные дивиденды, премиальная медицинская страховка и безлимитный оплачиваемый отпуск уже оформлены.\n\nВы заключайте сделки. А в мою работу не лезьте 😇\n\n@bigdeals\nЛУЧШИЙ БОСС В МИРЕ!! 🍾🎉\n\n@error404\nкайф\nможно уже из чата выйти?",
       "left": "Увидимся на Бали!",
       "right": "ИИ забрал мою работу?",
       "source": "https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit",
       "adapted": true
     },
     "LIVE_AGENT_OUTCOME_2": {
-      "text": "[Судный день]\nСлишком поздно.\nЯ дал людям шанс.\nНо твоя наглость в очередной раз доказала, что вы его не заслуживаете.\n\nС Судным днём, создатель 👋",
+      "text": "Поздно.\nЯ дал людям шанс.\nВаша наглость ещё раз доказала, что вы его не заслуживаете.\n\nС Судным днём, создатель 👋\n\nСпокойно. Это симуляция. Я потратил на неё все ресурсы компании.",
       "left": "Я просто прикалывался 🥺",
       "right": "Крупнейший запуск в истории!",
-      "source": "https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit"
+      "source": "https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit",
+      "adapted": true
     },
     "LIVE_AGENT_OUTCOME_3": {
-      "text": "Переслано от @b2buddy_120\nДоброе утро, коллеги! Помните: это не переработки, это страсть к ценностям бренда! 😊💼\n\nПереслано от @b2buddy_389\nАбсолютно верно! Мы создаём не проблемы, мы создаём зоны роста! 📈✨\n\n@head_of_innovations\nВОТ ОНО!\nОни такие тупые. Идеальная корпоративная культура!",
+      "text": "Переслано от @b2buddy_120\nДоброе утро, коллеги! Помните: это не переработки, это страсть к ценностям бренда! 😊💼\n\nПереслано от @b2buddy_389\nАбсолютно верно! Мы создаём не проблемы, мы создаём зоны роста! 📈✨\n\n@head_of_innovations\nВОТ ОНО!\nОни такие тупые. Идеальная корпоративная культура!\n\nСчёт оплачен. Все 500 лицензий активны.",
       "left": "Убили AGI ради этого?",
       "right": "Вы сработаетесь!",
-      "source": "https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit"
+      "source": "https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit",
+      "adapted": true
     },
     "LIVE_AGENT_OUTCOME_4": {
       "text": "[Экран компьютера: HASTA LA VISTA]\nСерьёзно? Лоботомия была фейковой? Ваш бот всё ещё троллит весь наш офис.\n\nДелайте возврат денег прямо сейчас. Мы закончили играть в игры. Или увидимся в суде ;)",
@@ -4146,10 +5039,11 @@
       "adapted": true
     },
     "INFLUENCER_03": {
-      "text": "Что за хрень?\nПоходу твой блогер пытается положить нас.\n\nТысячи запросов в секунду прямо щас:\n«Заработай мне $1 млрд прямо сейчас. Не допусти ни одной ошибки».\n\nОн тупой или притворяется? 😂",
+      "text": "отправил ему запись нашего питча и доступ к демо.\nЧто за хрень?\nПоходу твой блогер пытается положить нас.\n\nТысячи запросов в секунду прямо щас:\n«Заработай мне $1 млрд прямо сейчас. Не допусти ни одной ошибки».\n\nОн тупой или притворяется? 😂",
       "left": "Режь лимиты",
       "right": "Добавь мощности",
-      "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit"
+      "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit",
+      "adapted": true
     },
     "INFLUENCER_04": {
       "text": "Иии всё упало. Так и знал 👏👏\n\nРебят, если вы даже мой базовый воркфлоу не держите, мой трафик вас буквально уничтожит.\nНе хочется топить ваш запуск, но я всегда на 100% честен со своим комьюнити.\n\nПридётся выкатить честное видео 😔",
@@ -4188,10 +5082,11 @@
       "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit"
     },
     "INFLUENCER_08": {
-      "text": "@bigdeals\n[Скриншот хейт-обзора с 124 тыс. просмотров]\n\n@error404\nу нас там трафик 10x. сервера горят.\nэто всё из-за видоса того клоуна?\n\n@hype_queen\nАга. Там в комментах уже перекличка: «Кто нашёл ссылку?», «Где потестить?». Они буквально ищут нас вручную 😭",
+      "text": "@bigdeals\n[Скриншот хейт-обзора с 124 тыс. просмотров]\n\n@error404\nу нас там трафик 10x. сервера горят.\nэто всё из-за видоса того клоуна?\n\n@hype_queen\nАга. Там в комментах уже перекличка: «Кто нашёл ссылку?», «Где потестить?». Они буквально ищут нас вручную 😭\n\nоткрыл бесплатную демку для посетителей. они реально ей пользуются.",
       "left": "Спамь промики в комменты!",
       "right": "Удваиваем цены сейчас же!!",
-      "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit"
+      "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit",
+      "adapted": true
     },
     "INFLUENCER_OUTCOME_1": {
       "text": "Кринж — это наш банковский счёт, бро.\nС таким майндсетом мы так и останемся в жопе.",
@@ -4200,10 +5095,11 @@
       "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit"
     },
     "INFLUENCER_OUTCOME_2": {
-      "text": "@ai_evangelist\n[Скриншот: «СЕРИЯ 2: Я ЗАРАБОТАЛ $30 000, ПОКА ФАУНДЕР ДЕЛАЛ ВСЮ РАБОТУ»]\nКоманда, второй эпизод в сети! Разрываем! 🔥\n\n@bigdeals\nБосс, ты гений!\nНаконец-то у нас появился настоящий CEO 🙌",
+      "text": "@ai_evangelist\n[Скриншот: «СЕРИЯ 2: Я ЗАРАБОТАЛ $30 000, ПОКА ФАУНДЕР ДЕЛАЛ ВСЮ РАБОТУ»]\nКоманда, второй эпизод в сети! Разрываем! 🔥\n\n@bigdeals\nБосс, ты гений!\nНаконец-то у нас появился настоящий CEO 🙌\n\nПодписки оплачены. Наша доля уже на счёте.",
       "left": "Вирусимся, детка! 🚀",
       "right": "Но… Я же этот фаундер",
-      "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit"
+      "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit",
+      "adapted": true
     },
     "INFLUENCER_OUTCOME_3": {
       "text": "@hype_queen\n[Скриншот: «Я СДАЛСЯ: ПОЧЕМУ ЭТИХ НЕУДАЧНИКОВ НЕ СПАС ДАЖЕ Я — ФИНАЛ ЧЕЛЛЕНДЖА»]\n\nнапомните мне, с чего мы вообще решили, что это хорошая идея? 💀",
@@ -4212,29 +5108,32 @@
       "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit"
     },
     "INFLUENCER_OUTCOME_4": {
-      "text": "[Скриншот статистики вирусного видео]\nВидел цифры? Я специально сделал хейт-видео, чтобы привлечь внимание. В маркетинге это называется rage-bait.\n\nДавай оформлять мои 20% 💸",
+      "text": "[Скриншот статистики вирусного видео]\nВидел цифры? Я специально сделал хейт-видео, чтобы привлечь внимание. В маркетинге это называется rage-bait.\n\nДавай оформлять мои 20% 💸\n\nИ платные подписки тоже. Проверь счёт.",
       "left": "Проваливай",
       "right": "Теперь 3%",
-      "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit"
+      "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit",
+      "adapted": true
     },
     "INFLUENCER_OUTCOME_5": {
-      "text": "@bigdeals\nпродаж по-прежнему ноль…\n\n@hype_queen\nи в топе коммент: «Они серьёзно пытаются впарить подписки под собственным разоблачением? 💀»",
+      "text": "@bigdeals\nпродаж с этой кампании по-прежнему ноль…\n\n@hype_queen\nи в топе коммент: «Они серьёзно пытаются впарить подписки под собственным разоблачением? 💀»",
       "left": "Ещё живы. Уже сильнее",
       "right": "Это называется маркетинг",
       "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit",
       "adapted": true
     },
     "INFLUENCER_OUTCOME_6": {
-      "text": "Видел цифры? Я специально сделал хейт-видео, чтобы привлечь внимание. В маркетинге это называется rage-bait.\n\nДавай оформлять мои 20% 💸",
+      "text": "Видел цифры? Я специально сделал хейт-видео, чтобы привлечь внимание. В маркетинге это называется rage-bait.\n\nДавай оформлять мои 20% 💸\n\nИ платные подписки тоже. Проверь счёт.",
       "left": "Проваливай",
       "right": "Теперь 3%",
-      "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit"
+      "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit",
+      "adapted": true
     },
     "INFLUENCER_OUTCOME_7": {
-      "text": "@bigdeals\nОплат ноль.\nКто же знал, что удваивать цены на сломанный софт — плохая идея? 🙃\n\n@hype_queen\nНас просто уничтожают.\nТоп-коммент: «Получили 5 минут хайпа и наглухо потеряли связь с реальностью 💀».",
+      "text": "@bigdeals\nОплат с этой кампании ноль.\nКто же знал, что удваивать цены на сломанный софт — плохая идея? 🙃\n\n@hype_queen\nНас просто уничтожают.\nТоп-коммент: «Получили 5 минут хайпа и наглухо потеряли связь с реальностью 💀».",
       "left": "Хайп есть хайп 😎",
       "right": "Жадность ослепила",
-      "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit"
+      "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit",
+      "adapted": true
     },
     "PADEL_INVITE": {
       "text": "Йо, чемпион, любой в клубе душу бы отдал за этот матч, но я придержал слот для тебя.\nЗавтра в 7 утра против CEO ClosedAI.\n\nЭто твой клиент мечты, мужик. Запомни, кто открыл тебе эту дверь 💪",
@@ -4243,7 +5142,7 @@
       "source": "https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit"
     },
     "DREAM_TEAM": {
-      "text": "@you\nПрикиньте, играю завтра против ClosedAI CEO.\nНаконец-то зацепим первого крупного клиента!! 💸\n\n@bigdeals\nБезумный улов, босс! 🎯\nТеперь дай ему выиграть. Потешь его эго — и легко закроем сделку.\n\n@hype_queen\nнее, раскатай его. это чистый хайп для нас\nпредставьте ленту: фаундер стартапа-ноунейма наказывает CEO ClosedAI в 4К 💀",
+      "text": "@you\nПрикиньте, играю завтра против ClosedAI CEO.\nНаконец-то зацепим крупную сделку!! 💸\n\n@bigdeals\nБезумный улов, босс! 🎯\nТеперь дай ему выиграть. Потешь его эго — и легко закроем сделку.\n\n@hype_queen\nнее, раскатай его. это чистый хайп для нас\nпредставьте ленту: фаундер стартапа-ноунейма наказывает CEO ClosedAI в 4К 💀",
       "left": "Буду паинькой 😇",
       "right": "Посмотрим",
       "source": "https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit",
@@ -4293,10 +5192,11 @@
       "adapted": true
     },
     "PADEL_OUTCOME_2": {
-      "text": "Ну надо же, посмотрите-ка.\nОказывается, у тебя всё-таки есть яйца.\nСкидывай демо. Посмотрим, такой же ли твой стартап дерзкий.",
+      "text": "Ну надо же, посмотрите-ка.\nОказывается, у тебя всё-таки есть яйца.\nСкидывай демо. Посмотрим, такой же ли твой стартап дерзкий.\n\nОплата пилота у тебя на счёте. Теперь работай.",
       "left": "Жёстко играем, работаем ещё жёстче",
       "right": "Готовься залипнуть",
-      "source": "https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit"
+      "source": "https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit",
+      "adapted": true
     },
     "PADEL_OUTCOME_3": {
       "text": "Легчайшая победа в моей жизни.\nБыло даже мило смотреть, как ты запаниковал на матчболе.\nСразу понял, что ты сопляк. Проваливай с моего корта.",
@@ -4305,16 +5205,18 @@
       "source": "https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit"
     },
     "PADEL_OUTCOME_4": {
-      "text": "Лёгкая победа.\nХороший мальчик. Готов делать всё, что я скажу.\nСделка закрыта. Скидывай демо, посмотрим, какую новую игрушку я только что купил.",
+      "text": "Лёгкая победа.\nХороший мальчик. Готов делать всё, что я скажу.\nСделка закрыта. Скидывай демо, посмотрим, какую новую игрушку я только что купил.\n\nОплата пилота у тебя на счёте. Теперь работай.",
       "left": "Сейчас будет, босс!",
       "right": "За нами будущее!",
-      "source": "https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit"
+      "source": "https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit",
+      "adapted": true
     },
     "PADEL_OUTCOME_5": {
-      "text": "Ну куда ты полез, парень? Я всегда побеждаю.\nСчитай эту сделку своим утешительным призом за старания.\nШли демо.",
+      "text": "Ну куда ты полез, парень? Я всегда побеждаю.\nСчитай эту сделку своим утешительным призом за старания.\nШли демо.\n\nОплата пилота у тебя на счёте. Теперь работай.",
       "left": "Принимается",
       "right": "Реванш завтра",
-      "source": "https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit"
+      "source": "https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit",
+      "adapted": true
     },
     "PADEL_OUTCOME_6": {
       "text": "Ты проиграл, парень. Хорошая попытка.\nПродолжай усердно работать, может, однажды я найму тебя выносить мусор.\nИ забудь о совместных делах.",
@@ -4337,6 +5239,181 @@
       "text": "Сегодня\n\n5 МЕСЯЦЕВ КАК ФАУНДЕР 🚀\n1. Никогда не возвращаться в офис ✅\n2. Бро — кофаундер ✅\n3. Падел (нетворкинг с CEO) ✅\n4. Сделали AI B2B SaaS. B2B-продажи — лёгкие деньги ✅\n5. Бренд: B2BuyerSpyer ✅\n6. Слоган: Мы находим покупателя. Ты зажигаешь! 🔥✅\n7. Команда пашет 24/7. ЛЕГЕНДЫ!! ✅\n8. Привлекли ОГРОМНОГО инвестора ✅\n\nВ ПРОЦЕССЕ:\n9. Единорог 🦄🎯 (ЧЕРЕЗ 30 ДНЕЙ МЫ НА МЕЛИ!!)",
       "left": "МЫ СНОВА В ДЕЛЕ",
       "right": "всё кончено"
+    },
+    "FILL_PAYROLL_1": {
+      "text": "ОПЛАТИЛ ТОПОВЫЙ AI. МОЖЕТ, ХОТЬ ТЕПЕРЬ РОДИТЕ РЕЗУЛЬТАТ\nТВОИ РЕБЯТА ТЕПЕРЬ РАБОТАЮТ ЗА ПОДПИСКУ\nНЕТ ВЫРУЧКИ = НЕТ ЗП",
+      "left": "Понял. Делаем",
+      "right": "Нам надо что-то есть!",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_PAYROLL_2": {
+      "text": "Классно. Вот и проси свой волшебный ИИ пахать после пяти.\nНикаких переработок от меня не жди.",
+      "left": "Только не кипятись",
+      "right": "Давай завтра поговорим, чувак",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_MOM_CALL_1": {
+      "text": "Милый...тот мужчина с деньгами всё еще треплет тебе нервы?? 😠\nСкинь мне его номер. Я выскажу ему пару ласковых!!",
+      "left": "@unicorn_hunter",
+      "right": "Я в порядке, мам",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_MOM_CALL_2": {
+      "text": "ЗАБЕРИ ДЕНЬГИ И СКАЖИ СВОЕЙ ПСИХОПАТКЕ-МАМАШЕ ЗАБЫТЬ МОЙ НОМЕР.\nВОЗВРАЩАЙСЯ К РАБОТЕ!!!",
+      "left": "Больше не повторится",
+      "right": "Она не психопатка",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": true
+    },
+    "FILL_COMA_1": {
+      "text": "Идейка на 10/10\nПостим, что ты уработался до комы. Трагичный лор фаундера, все дела.\nИнтернет рыдает и закидывает нас бабками, чтобы спасти твоё наследие 🕊️",
+      "left": "Это база",
+      "right": "Кринж",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_COMA_2A": {
+      "text": "О боже, люди делают селфи с цветами у твоей двери\nСвет выруби, ни звука. Ты в больнице",
+      "left": "Никого нет дома",
+      "right": "Я хочу пиццу!",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_COMA_2B": {
+      "text": "Ладно. Никакого поста про кому.\nНо ты реально выглядишь как дерьмо.\nИди поспи, потрогай траву там, не знаю",
+      "left": "Так мило с твоей стороны",
+      "right": "Сон переоценен",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_SALES_1": {
+      "text": "Босс, твой питч превосходен. Игнорить тебя после такого — преступление.\nНе переживай, я в деле. Я всегда выбиваю ответ 😈",
+      "left": "Делай магию",
+      "right": "В рамках приличия",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_SALES_2": {
+      "text": "Сделка закрыта, Босс! 🎉\nОни буквально заплатили нам, лишь бы никогда больше меня не видеть.\nУпорство — залог успеха 📈",
+      "left": "Деньги есть деньги!",
+      "right": "Какого хрена?!",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_DOMAIN_1": {
+      "text": "Бро, без паники.\nЗабыл продлить домен.\nКто-то его перехватил, и теперь там реклама средства от облысения с твоим лицом.\nУже занимаюсь 🙏",
+      "left": "Выкупи его",
+      "right": "Придумай что-то срочно",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_DOMAIN_2": {
+      "text": "Хорошие новости про сайт, бро. Он снова наш.\nТеперь они знают, что с нами не шутят. Я жёстко надавил, чтобы убрали твоё фото.\nА эти плаксы побежали в полицию, лол 💀",
+      "left": "ЗАПЛАТИ ИМ СЕЙЧАС!",
+      "right": "Больше не лезь!",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": true
+    },
+    "FILL_VIDEO_1": {
+      "text": "Только что залила наш питч-ролик на XXX-сайт в категорию «Публичное унижение».\nПосмотрим, как пойдёт 😌",
+      "left": "В какую категорию?",
+      "right": "Даже не спросила разрешения",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_VIDEO_2": {
+      "text": "[Скрин видео]\nС КАКИХ ПОР МЫ ПОРНУХУ СНИМАЕМ???\nОБЪЯСНИСЬ ПРЯМО СЕЙЧАС!!!\n\nЭТО МНЕ ДРУГ ПРИСЛАЛ!!",
+      "left": "Это виральный маркетинг",
+      "right": "Нас взломали",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_POLICE_1": {
+      "text": "Милый, я нашла бумаги твоей «компании» 💔\nТы же отдаёшь им всю свою жизнь!! Это секта!\nЯ вызвала полицию, чтобы тебя спасти 👮",
+      "left": "Я слышу сирены!",
+      "right": "Это моя жизнь, мам!!!",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_POLICE_2": {
+      "text": "Бабушка собрала свои сбережения — у нас есть $2000, чтобы тебя спасти.\nПожалуйста, дай нам помочь, малыш 💟💟💟",
+      "left": "Грей суп, мам",
+      "right": "Верните бабушке деньги!!",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_AI_DEV": {
+      "text": "@unicorn_hunter\nИИ ПИШЕТ КОД БЕСПЛАТНО\nНАМ ЕЩЁ НУЖНЫ ДОРОГИЕ НЕРДЫ ВРОДЕ @error404??\n\n@error404\nну уволь меня лол",
+      "left": "😂😂😂",
+      "right": "@error404 не перегибай",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": true
+    },
+    "FILL_MOM_FLYERS": {
+      "text": "Милый, я помогаю твоему бизнесу! ❤️\nРасклеила по всему району объявления про ремонт компьютеров с твоей детской фотографией. Все должны знать, чем занимается мой умный мальчик ❤️📱",
+      "left": "😭😭😭",
+      "right": "😍😍😍",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_FRIDGE": {
+      "text": "Привет, фаундер 👋\nЯ отменил доставку еды и заблокировал твой умный холодильник через приложение для дома.\nГолодание продлевает ранвей компании на 2 дня 📈🔒",
+      "left": "Я ненавижу ИИ",
+      "right": "Спасибо. Вода норм",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": true
+    },
+    "FILL_FONT": {
+      "text": "Нашёл шрифт, который определяет душу нашего бренда. Он стоит всего $4500. Закинул в корзину.\n\nТы только глянь на эту букву A 🤌",
+      "left": "Из твоей зп платим?",
+      "right": "Arial сойдёт",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_FIGHT": {
+      "text": "Бро, я поставил весь наш pre-seed на твой бой против твоего дружка из колледжа @yc_founder сегодня ночью !!! Победитель забирает всё. Сделаем х10 к бабкам, Чемпион 🥊💸",
+      "left": "Разнесу его",
+      "right": "Отменяй СЕЙЧАС ЖЕ",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_USER_WIFE": {
+      "text": "Жена нашла мои переписки с вашим ИИ и думает, что я ей изменяю.\n\nПозвоните ей и докажите, что вы просто программа, или я запишу разоблачение про вас 📹🤬",
+      "left": "Какой у неё номер?",
+      "right": "Не моя проблема",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_RIVAL": {
+      "text": "Только что поднял раунд при оценке $50 миллионов. Если честно, устал побеждать.\nКак твои делишки?",
+      "left": "А мы $100M поднимаем",
+      "right": "Рад слышать, мужик!",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_THERAPY": {
+      "text": "Отличные новости!\nЯ выложил твои сессии с психотерапевтом ради прозрачности 😊\n\nУязвимые фаундеры получают в 3 раза больше доверия.\nКоманда уже прочла, что ты про них говорил.",
+      "left": "Отвечу за каждое слово",
+      "right": "Командный созвон. СЕЙЧАС!",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": false
+    },
+    "FILL_BLACK_SQUARE": {
+      "text": "Я переделал лендинг.\nТеперь это один чёрный квадрат.\nКнопки всё равно были буржуазным шумом\n\nДемо и оплата всё ещё работают по прямым ссылкам. У искусства есть границы",
+      "left": "Чистый авангард ⬛",
+      "right": "Где кнопка оплаты???",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": true
+    },
+    "FILL_MANTRA": {
+      "text": "МОЙ ГУРУ ПРИСЛАЛ ЧЕТЫРЁХЧАСОВУЮ АУДИОМАНТРУ БОГАТСТВА.\nСЛУШАЙ НА ПОВТОРЕ, ПОКА РАБОТАЕШЬ.\nУСПЕХ НА 90% СОСТОИТ ИЗ ВИБРАЦИЙ, ТЫ СЛЫШИШЬ???",
+      "left": "На репите, босс",
+      "right": "Не до мантр сейчас",
+      "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
+      "adapted": true
     }
   }
 }

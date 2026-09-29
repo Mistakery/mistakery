@@ -9,7 +9,7 @@ const count = page => page.locator('[data-chat-current]').count();
 async function seed(page, id, previous = 'INFLUENCER_04') {
   await page.evaluate(({id, previous}) => {
     const a = window.MistakeryApp;
-    a.state = window.MistakeryEngine.startRun(a.deck);
+    a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null };
     a.state.currentCardId = id; a.cardDelivery = null; a.locked = false;
     a.influencerPreviousCardId = previous; a.liveAgentScore = 5; a.view = 'playing'; a.render();
   }, {id, previous});
@@ -211,10 +211,10 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       const page = await open(browser);
       const errors = []; page.on('pageerror', error => errors.push(error.message));
       const cards = await page.evaluate(() => MistakeryApp.deck.cards.filter(c => MistakeryApp.activeCardIds.includes(c.id)));
-      assert.equal(cards.length, 52);
+      assert.equal(cards.length, 77);
       for (const card of cards) {
         await seed(page, card.id);
-        const budget = { LIVE_AGENT_03: 3500, LIVE_AGENT_05: 3000, LIVE_AGENT_07: 2900 }[card.id] || 2500;
+        const budget = { LIVE_AGENT_03: 3500, LIVE_AGENT_05: 3000, LIVE_AGENT_07: 2900, INFLUENCER_08: 2600 }[card.id] || 2500;
         await page.clock.runFor(budget);
         assert.equal(await page.locator('[data-choice]:disabled').count(), 0, `${card.id}: delivery budget`);
         assert.equal(await page.locator('.typing-bubble').count(), 0, `${card.id}: no stale typing`);

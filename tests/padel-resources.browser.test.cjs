@@ -13,7 +13,7 @@ async function seed(page, id, score = 0, resources = base, draws = [.99]) {
   await page.evaluate(({ id, score, resources, draws }) => {
     const a = window.MistakeryApp;
     clearTimeout(a.introTypingTimer);
-    a.state = window.MistakeryEngine.startRun(a.deck);
+    a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null };
     a.state.currentCardId = id;
     a.state.resources = resources;
     a.state.schedulerResources = { ...resources };
@@ -81,7 +81,7 @@ test('Padel decisions and each outcome apply once, preview resources, and preser
       await page.evaluate(() => window.MistakeryApp.render());
       assert.deepEqual((await state(page)).resources, entered.resources);
       await click(page, 'left');
-      assert.equal((await state(page)).view, 'saved');
+      assert.equal((await state(page)).view, 'playing');
       assert.deepEqual((await state(page)).resources, sum(entered.resources));
       await page.locator('[data-test-back]').click();
       assert.deepEqual((await state(page)).resources, entered.resources, 'Back does not reapply outcome effects');
@@ -109,7 +109,7 @@ test('zero resource boundaries stay playable without crises or double refusal pe
       assert.equal(outcome.gameOver, false);
       await click(page, 'right');
       const finished = await state(page);
-      assert.equal(finished.view, 'saved');
+      assert.equal(finished.view, 'playing');
       assert.deepEqual(finished.resources, sum(outcome.resources));
       assert.equal(finished.activeCrisisId, null);
       assert.equal(finished.gameOver, false);

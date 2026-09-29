@@ -24,76 +24,15 @@ function sha256(name) {
   return crypto.createHash('sha256').update(fs.readFileSync(path.join(root, name))).digest('hex');
 }
 
-function activeCardIds() {
-  const match = app.match(/const ACTIVE_CARD_IDS\s*=\s*Object\.freeze\(\[([\s\S]*?)\]\);/);
-  assert.ok(match, 'missing ACTIVE_CARD_IDS runtime gate');
-  return [...match[1].matchAll(/['"]([^'"]+)['"]/g)].map((entry) => entry[1]);
-}
-
-test('runtime exposes only the approved opening, live agent, influencer, and Padel sequences', () => {
-  assert.deepEqual(activeCardIds(), [
-    'OPEN_01',
-    'OPEN_02a',
-    'OPEN_02b',
-    'OPEN_BOSS',
-    'OPEN_DEV',
-    'OPEN_INVESTOR',
-    'LIVE_AGENT_01',
-    'LIVE_AGENT_02',
-    'LIVE_AGENT_03',
-    'LIVE_AGENT_04',
-    'LIVE_AGENT_04B',
-    'LIVE_AGENT_05',
-    'LIVE_AGENT_06',
-    'LIVE_AGENT_07',
-    'LIVE_AGENT_07B',
-    'LIVE_AGENT_08',
-    'LIVE_AGENT_OUTCOME_0',
-    'LIVE_AGENT_OUTCOME_1',
-    'LIVE_AGENT_OUTCOME_2',
-    'LIVE_AGENT_OUTCOME_3',
-    'LIVE_AGENT_OUTCOME_4',
-    'INFLUENCER_01',
-    'INFLUENCER_02',
-    'INFLUENCER_02A',
-    'INFLUENCER_03',
-    'INFLUENCER_04',
-    'INFLUENCER_05',
-    'INFLUENCER_06',
-    'INFLUENCER_07',
-    'INFLUENCER_08',
-    'INFLUENCER_OUTCOME_1',
-    'INFLUENCER_OUTCOME_2',
-    'INFLUENCER_OUTCOME_3',
-    'INFLUENCER_OUTCOME_4',
-    'INFLUENCER_OUTCOME_5',
-    'INFLUENCER_OUTCOME_6',
-    'INFLUENCER_OUTCOME_7',
-    'PADEL_INVITE',
-    'DREAM_TEAM',
-    'IRL_PADEL_01',
-    'IRL_PADEL_03B',
-    'IRL_PADEL_04',
-    'IRL_PADEL_05',
-    'IRL_PADEL_06',
-    'PADEL_OUTCOME_0',
-    'PADEL_OUTCOME_1',
-    'PADEL_OUTCOME_2',
-    'PADEL_OUTCOME_3',
-    'PADEL_OUTCOME_4',
-    'PADEL_OUTCOME_5',
-    'PADEL_OUTCOME_6',
-    'PADEL_OUTCOME_7',
-  ]);
-  assert.match(app, /ACTIVE_CARD_IDS\.includes\(card\.id\)/);
-  assert.match(app, /card\.id\s*===\s*['"]OPEN_INVESTOR['"][\s\S]*continueFromInvestor/);
-  assert.match(app, /function\s+continueFromInfluencer[\s\S]*resolveInfluencerChoice/);
-  assert.match(app, /function\s+selectInfluencerOutcome[\s\S]*rng\(\)\s*<\s*0\.4/);
-  assert.match(app, /function\s+finishInfluencerOutcome[\s\S]*influencerPreviousCardId\s*=\s*null[\s\S]*startSaved\(1\)/);
-  assert.match(app, /card\.id\s*===\s*['"]DREAM_TEAM['"][\s\S]*continueFromDreamTeam/);
-  assert.match(app, /card\.id\s*===\s*['"]IRL_PADEL_06['"][\s\S]*continueFromPadelMatchPoint/);
-  assert.match(app, /function\s+finishPadelOutcome[\s\S]*padelCeoScore\s*=\s*null[\s\S]*startSaved\(1\)/);
-  assert.doesNotMatch(`${app}\n${html}`, /NEXT CONTENT DISABLED|BOTH ORIGINAL ARCS STOP HERE/);
+test('runtime exposes the three plots and the authored filler pool', () => {
+  assert.match(app, /app\.activeCardIds\.includes\(card\.id\)/);
+  assert.match(app, /deck\.cards\.filter\(card => card\.plot \|\| card\.filler\)/);
+  assert.match(app, /route\.resolveChoice/);
+  const active = canonicalDeck.cards.filter(card => card.plot || card.filler);
+  assert.equal(active.length, 77);
+  assert.ok(active.every(card => !card.id.startsWith('SADBOT_')));
+  assert.ok(active.every(card => canonicalDeck.testTranslations[card.id]));
+  assert.equal(canonicalDeck.cards.filter(card => card.filler).length, 31);
 });
 
 test('copy edits keep the offline bundle canonical and the engine byte-for-byte unchanged', () => {
@@ -130,8 +69,8 @@ test('AI influencer cards preserve approved copy and graph with document resourc
     'INFLUENCER_OUTCOME_7',
   ];
 
-  assert.equal(cards.OPEN_INVESTOR.choices.left.next, 'INFLUENCER_01');
-  assert.equal(cards.OPEN_INVESTOR.choices.right.next, 'PADEL_01');
+  assert.equal(cards.OPEN_INVESTOR.choices.left.next, undefined);
+  assert.equal(cards.OPEN_INVESTOR.choices.right.next, undefined);
   assert.deepEqual(ids.filter((id) => cards[id]), ids);
   assert.deepEqual(ids.filter((id) => !cards[id]), []);
   assert.equal(canonicalDeck.sources['@ai_evangelist'].name, '@ai_evangelist');
@@ -180,7 +119,7 @@ test('AI influencer cards preserve approved copy and graph with document resourc
     right: { label: 'We need you in sales', effects: influencerEffects.INFLUENCER_02A[1], next: 'INFLUENCER_03' },
   });
 
-  assert.equal(cards.INFLUENCER_03.text, 'wtf??\nlooks like your blogger is trying to crash us\n\nthousands of requests right now:\n<strong>make me $1B right now. make zero mistakes</strong>\n\nis he dumb or just playing dumb? 😂');
+  assert.equal(cards.INFLUENCER_03.text, 'sent him our recorded pitch and a demo login.\nwtf??\nlooks like your blogger is trying to crash us\n\nthousands of requests right now:\n<strong>make me $1B right now. make zero mistakes</strong>\n\nis he dumb or just playing dumb? 😂');
   assert.equal(cards.INFLUENCER_04.text, "Aaand it's down. Knew it 👏👏\n\nGuys, if you can't even handle my basic workflow, my traffic will literally destroy you.\nDon't wanna bury your launch, but I never lie to my community.\n\nGotta drop an honest video 😔");
   assert.deepEqual(withoutReasons(cards.INFLUENCER_04.choices), {
     left: { label: 'Have fun', effects: influencerEffects.INFLUENCER_04[0], next: 'INFLUENCER_06' },
@@ -244,6 +183,7 @@ test('AI influencer cards preserve approved copy and graph with document resourc
   assert.deepEqual(cards.INFLUENCER_OUTCOME_4.messages.map(message => message.text), [
     "See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait",
     "Let's set up my 20% 💸",
+    "Paid subscriptions, too. Check your account.",
   ]);
   assert.equal(cards.INFLUENCER_OUTCOME_4.messages[0].imageRef, 'influencer_viral_analytics');
   assert.deepEqual(canonicalDeck.images.influencer_viral_analytics, {
@@ -287,8 +227,8 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
 
   const choicesWithoutReasons = card => Object.fromEntries(Object.entries(card.choices).map(([side, { effect_reason, ...choice }]) => [side, choice]));
   const cards = Object.fromEntries(canonicalDeck.cards.map((card) => [card.id, card]));
-  assert.equal(cards.OPEN_INVESTOR.choices.left.next, 'INFLUENCER_01');
-  assert.equal(cards.OPEN_INVESTOR.choices.right.next, 'PADEL_01');
+  assert.equal(cards.OPEN_INVESTOR.choices.left.next, undefined);
+  assert.equal(cards.OPEN_INVESTOR.choices.right.next, undefined);
   assert.deepEqual(cards.OPEN_INVESTOR.choices.left.effects, { cash: -2, founder: 1 });
   assert.deepEqual(cards.OPEN_INVESTOR.choices.right.effects, { cash: -2, team: -4, founder: 2 });
 
@@ -303,7 +243,7 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
   assert.deepEqual(cards.DREAM_TEAM.messages, [
     {
       direction: 'outgoing',
-      text: "Guess what? Playing padel with ClosedAI's CEO tomorrow.\nFinally landing our first big client!! 💸",
+      text: "Guess what? Playing padel with ClosedAI's CEO tomorrow.\nTime to land a huge deal!! 💸",
     },
     {
       direction: 'incoming',
@@ -442,7 +382,7 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
     assert.equal(card.mode, expected.mode);
     assert.equal(card.source, expected.source);
     assert.equal(card.score, expected.score);
-    assert.equal(card.text, expected.text);
+    assert.equal(card.text, expected.text + ([2, 4, 5].includes(Number(number)) ? '\n\nThe pilot payment is in your account. Now deliver.' : ''));
     assert.deepEqual([card.choices.left.label, card.choices.right.label], expected.labels);
     assert.deepEqual(card.outcomeEffects, padelOutcomes[number]);
     assert.deepEqual(card.choices.left.effects, {});

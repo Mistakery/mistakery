@@ -15,7 +15,7 @@ const profiles = [
 async function seed(page, id) {
   await page.evaluate(id => {
     const app = window.MistakeryApp;
-    app.state = window.MistakeryEngine.startRun(app.deck);
+    app.state = window.MistakeryRoute.startRun(app.deck, { seed: 'fixture' }); app.state.route.gap = { target: 4, played: [], usedUnit: null };
     app.state.currentCardId = id;
     app.cardDelivery = null; app.locked = false; app.liveAgentScore = 5;
     app.influencerPreviousCardId = 'INFLUENCER_04';
@@ -264,7 +264,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
         LIVE_AGENT_01: [600, 500, 700], LIVE_AGENT_03: [1000, 2000, 500],
         LIVE_AGENT_05: [500, 2000, 500], LIVE_AGENT_07: [2000, 900],
         LIVE_AGENT_07B: [500, 1250], INFLUENCER_02: [700, 900],
-        INFLUENCER_05: [600, 1100], INFLUENCER_08: [1000, 800],
+        INFLUENCER_05: [600, 1100], INFLUENCER_08: [1000, 800, 800],
       };
       for (const [card, pauses] of Object.entries(expected)) {
         await seed(page, card);

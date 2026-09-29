@@ -7,7 +7,7 @@ const url = `${pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href}?
 async function seed(page, id) {
   await page.evaluate(id => {
     const a = MistakeryApp;
-    a.state = MistakeryEngine.startRun(a.deck); a.state.currentCardId = id;
+    a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null }; a.state.currentCardId = id;
     a.cardDelivery = null; a.locked = false; a.view = 'playing'; a.render();
     document.querySelector('button.typing-bubble')?.click();
   }, id);

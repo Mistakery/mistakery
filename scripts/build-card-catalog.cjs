@@ -90,7 +90,7 @@ function route(choice) {
   if (choice.next) parts.push(`→ \`${Array.isArray(choice.next) ? choice.next.join(' / ') : choice.next}\``);
   if (choice.crisis) parts.push(`кризис \`${choice.crisis}\``);
   if (choice.ending) parts.push(`финал \`${choice.ending}\``);
-  if (!parts.length) parts.push('возврат к основной ветке');
+  if (!parts.length) parts.push('продолжение через общий маршрут');
   return parts.join('; ');
 }
 
@@ -110,7 +110,7 @@ function cardVisibleLines(card) {
 }
 
 const sections = [
-  ['1. Стартовая последовательность', (card) => card.kind === 'opening'],
+  ['1. Филлеры между сюжетами', (card) => Boolean(card.filler)],
   ['2. SADBOT — первый клиент (@head_of_agile)', (card) => card.id === 'AGENT_01' || card.id.startsWith('SADBOT')],
   ['3. ClosedAI Padel', (card) => card.arc === 'padel'],
   ['4. Global side-stories', (card) => card.kind === 'sideStory'],
@@ -156,10 +156,11 @@ for (const [title, predicate] of sections) {
       const choice = card.choices[side];
       lines.push(`- **${choice.label} — ${translation[side]}**: ${effects(choice)}; ${route(choice)}.`);
     }
+    if (card.filler) lines.push('', `Филлер: ${card.filler.role}; связка/единица ${card.filler.unit}. Условия: нужны ${(card.requires || []).join(', ') || 'нет'}; исключены ${(card.excludes || []).join(', ') || 'нет'}. Продолжение связки немедленно; каждый экран считается отдельной картой.`);
     if (card.outcome) {
-      lines.push('', `Эффект при входе в исход, ровно один раз: ${card.resetResources === 0 ? 'Cash = Team = Customers = Founder = 0' : effects({ effects: card.outcomeEffects })}. Оба ответа декоративные и возвращают к Investor.`);
+      lines.push('', `Эффект при входе в исход, ровно один раз: ${card.resetResources === 0 ? 'Cash = Team = Customers = Founder = 0' : effects({ effects: card.outcomeEffects })}. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Judgment Day — симуляция с обнулением ресурсов; игра продолжается.`);
     } else if (card.id.startsWith('PADEL_OUTCOME_') || card.id.startsWith('INFLUENCER_OUTCOME_')) {
-      lines.push('', `Эффект при входе в исход, ровно один раз: ${effects({ effects: card.outcomeEffects })}. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.`);
+      lines.push('', `Эффект при входе в исход, ровно один раз: ${effects({ effects: card.outcomeEffects })}. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.`);
     }
     for (const [previousCardId, contextualChoices] of Object.entries(card.contextualChoices || {})) {
       for (const side of ['left', 'right']) {

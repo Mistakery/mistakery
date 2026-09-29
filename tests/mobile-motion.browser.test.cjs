@@ -9,7 +9,7 @@ const url = `${process.env.MISTAKERY_TEST_URL || pathToFileURL(path.join(root, '
 async function seed(page, id) {
   await page.evaluate(id => {
     const a = window.MistakeryApp;
-    a.state = window.MistakeryEngine.startRun(a.deck);
+    a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null };
     a.state.currentCardId = id; a.cardDelivery = null;
     a.liveAgentScore = 5; a.locked = false; a.view = 'playing';
     Math.random = () => 0; a.render();
@@ -127,7 +127,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
       assert.equal(await page.evaluate(() => window.motionEvents.length), 2);
       await page.locator('[data-choice="left"]').tap();
       await completeFounderSend(page);
-      assert.equal(await page.evaluate(() => window.MistakeryApp.state.currentCardId), 'OPEN_INVESTOR');
+      assert.equal(await page.evaluate(() => window.MistakeryApp.state.route.phase), 'fillers');
     } finally { await browser.close(); }
   });
 }
