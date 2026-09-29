@@ -10,6 +10,14 @@ The old independent CSS entrance is removed synchronously after the layout measu
 
 Tracked animations are cancelled on user input, resize, rerender/navigation, reveal, and changes to reduced motion. Automatic arrival motion is bypassed while reading history or when reduced motion is enabled. Delivery deadlines, decoding/preparation and the existing reveal/Back/Restart/revisit behavior remain intact.
 
+## Founder replies
+
+Choosing a reply in a chat first inserts the selected label as a whole blue outgoing bubble. It rises and fades in over 200 ms with the same non-spring easing while existing messages and the incoming avatar move to make room. The sender bubble sits outside the incoming avatar's row. The selected action resolves once after this send beat; incoming deadlines begin with the next card. IRL choices and reduced motion remain immediate.
+
+For the four retained-history continuations, the sent reply and retained messages carry their measured positions into a second coordinated 200 ms transition. The already-sent reply stays opaque. Fitted photo widths transfer with the history and survive rerenders, avoiding enlargement/overlap on small screens. Other conversation changes happen after the outgoing bubble lands.
+
+Choices remain locked during sending. Back, Restart, navigation or rerender cancel an uncommitted send; no effects or randomness have been applied yet. The existing input/resize/reduced-motion handlers can stop the visual movement without duplicating the pending action. Undo snapshots retain the pre-send scroll position. `tests/founder-send.browser.test.cjs` verifies Chromium/WebKit, phones/desktop/touch landscape, first-frame continuity, monotonic movement, avatar ownership, exactly-once choice application, cancellation, reduced motion, and the real 320×568 photo continuation sequence.
+
 ## Compact reading pauses
 
 An ordinary boundary allows time to take in the **previous** bubble:

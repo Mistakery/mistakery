@@ -1,3 +1,4 @@
+const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { chromium } = require('playwright');
@@ -45,6 +46,7 @@ test('photo continuation stays fully visible with animation, rerender and viewpo
       await page.evaluate(() => { MistakeryApp.state.currentCardId = 'LIVE_AGENT_03'; MistakeryApp.render(); });
       await page.locator('.typing-bubble').waitFor({ state: 'detached' });
       await page.locator('[data-choice="left"]').click();
+      await completeFounderSend(page);
       await assertContinuationVisible(page);
       await page.locator('[data-chat]').evaluate(async chat => {
         chat.scrollTop = 0;
@@ -61,6 +63,7 @@ test('photo continuation stays fully visible with animation, rerender and viewpo
         await page.screenshot({ path: `/tmp/mistakery-continuation-${viewport.width}-${reducedMotion}.png` });
       }
       await page.locator('[data-choice="left"]').click();
+      await completeFounderSend(page);
       assert.equal(await page.locator('[data-card-id]').textContent(), 'LIVE_AGENT_04B');
       const retainedPhoto = page.locator('[data-chat-history] img');
       assert.equal(await retainedPhoto.count(), 1, 'continuing the chat must retain the previous photo');

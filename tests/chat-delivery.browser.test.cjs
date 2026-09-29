@@ -1,3 +1,4 @@
+const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -130,6 +131,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await page.clock.runFor(10000); assert.equal(await count(page), 4);
       await page.evaluate(() => MistakeryApp.render()); assert.equal(await count(page), 4);
       await page.locator('[data-choice="left"]').click();
+      await completeFounderSend(page, true);
       assert.equal(await page.evaluate(() => MistakeryApp.state.history.length), before.history.length + 1);
       await page.locator('[data-test-back]').click();
       assert.equal(await count(page), 4); assert.equal(await page.locator('.typing-bubble').count(), 0);
@@ -151,9 +153,11 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await seed(page, 'INFLUENCER_05');
       await page.locator('button.typing-bubble').press('Space');
       await page.locator('[data-choice="right"]').click();
+      await completeFounderSend(page, true);
       assert.equal(await count(page), 1, 'scheduled review photo is immediate');
       await page.clock.runFor(900);
       await page.locator('[data-choice="left"]').click();
+      await completeFounderSend(page, true);
       assert.equal(await page.evaluate(() => MistakeryApp.state.currentCardId), 'INFLUENCER_07', 'contextual concession continues forward');
       await page.evaluate(() => { MistakeryApp.state.currentCardId = 'INFLUENCER_05'; MistakeryApp.influencerPreviousCardId = 'INFLUENCER_06'; MistakeryApp.render(); });
       assert.equal(await count(page), 3); assert.equal(await page.locator('.typing-bubble').count(), 0);
@@ -165,6 +169,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       const page = await open(browser);
       await seed(page, 'LIVE_AGENT_03'); await page.clock.runFor(3500);
       await page.locator('[data-choice="left"]').click();
+      await completeFounderSend(page, true);
       assert.equal(await count(page), 1);
       assert.equal(await page.locator('[data-chat-current] img').count(), 1);
       assert.match(await page.locator('[data-chat-current]').innerText(), /bank account every 7/);
@@ -189,6 +194,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await seed(page, 'LIVE_AGENT_07');
       await page.locator('[data-chat-current]').first().tap();
       await page.locator('[data-choice="left"]').click();
+      await completeFounderSend(page, true);
       await page.locator('button.typing-bubble').press('Home');
       await page.evaluate(() => { document.querySelector('[data-chat]').scrollTop = 0; });
       await page.clock.runFor(200);

@@ -385,6 +385,9 @@ button { font: inherit; }
 .chat.has-chat-history .message-stack { flex: 1; }
 .chat.has-chat-history .image-bubble { transition-property: none; }
 .chat-player-reply { flex-shrink: 0; margin-block: 4px; }
+.chat.is-sending { justify-content: safe flex-end; overflow-y: auto; overflow-anchor: none; scrollbar-width: none; }
+.chat.is-sending::-webkit-scrollbar { display: none; }
+.chat.is-sending > *, .chat.is-sending .message { flex-shrink: 0; }
 .media-placeholder {
   width: min(210px, 100%);
   min-height: 62px;

@@ -1,3 +1,4 @@
+const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -58,6 +59,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
       }
       await page.locator('[data-details-close]').tap();
       await page.locator('[data-choice="left"]').tap();
+      await completeFounderSend(page);
       assert.notEqual((await snapshot(page)).state.currentCardId, before.state.currentCardId);
       await page.locator('[data-test-back]').tap();
       assert.deepEqual(await snapshot(page), before);
@@ -109,6 +111,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
       await desktop.goto(`${base}?story=live-agent`); await desktop.waitForFunction(() => window.MistakeryApp?.deck && window.MistakeryApp.view !== 'loading');
       assert.equal(await desktop.locator('[data-app]').evaluate(n => getComputedStyle(n).transform), 'none');
       await desktop.locator('[data-choice="left"]').click();
+      await completeFounderSend(desktop);
       assert.equal((await snapshot(desktop)).state.currentCardId, 'LIVE_AGENT_02');
     } finally { await browser.close(); }
   });

@@ -90,6 +90,8 @@
   const presentedOutcomes = new WeakSet();
   let choiceUnlockTimer = null;
   let cardTypingTimer = null;
+  let founderSendTimer = null;
+  let sentReplyPositions = null;
   let revealCardMessages = () => {};
   let cancelOutcomeImageMotion = () => {};
   const arrivalAnimations = new Set();
@@ -97,6 +99,16 @@
   function cancelArrivalMotion() {
     arrivalAnimations.forEach(animation => animation.cancel());
     arrivalAnimations.clear();
+  }
+  function animateArrival(node, delta, fade, start) {
+    const animation = node.animate([
+      { transform: `translateY(${delta}px)`, opacity: fade ? 0 : 1 },
+      { transform: 'translateY(0)', opacity: 1 },
+    ], { duration: 200, easing: 'cubic-bezier(.2,0,0,1)' });
+    animation.startTime = start;
+    arrivalAnimations.add(animation);
+    animation.finished.then(() => arrivalAnimations.delete(animation), () => arrivalAnimations.delete(animation));
+    return animation;
   }
   ['pointerdown', 'wheel', 'keydown'].forEach(type => {
     document.addEventListener(type, cancelArrivalMotion, { capture: true, passive: true });
@@ -177,6 +189,8 @@
   let continuationResizeObserver;
 
   function setView(view, shellStage = 'real') {
+    cancelFounderSend();
+    sentReplyPositions = null;
     cancelArrivalMotion();
     cancelOutcomeImageMotion();
     if ($('[data-test-details]').open) $('[data-test-details]').close();
@@ -202,7 +216,7 @@
     $('[data-test-inspect]').disabled = !['playing', 'saved'].includes(view);
   }
 
-  function recordTestStep() {
+  function recordTestStep(scrollTop = $('[data-chat]').scrollTop) {
     if (!storyTestEnabled) return;
     testHistory.push({
       state: structuredClone(app.state),
@@ -212,7 +226,7 @@
       influencerPreviousCardId: app.influencerPreviousCardId,
       liveAgentScore: app.liveAgentScore,
       cardDelivery: app.cardDelivery ? { ...app.cardDelivery } : null,
-      scrollTop: $('[data-chat]').scrollTop,
+      scrollTop,
     });
   }
 
@@ -226,6 +240,7 @@
   }
 
   function backInStoryTest() {
+    if (storyTestEnabled && founderSendTimer !== null) { render(); return; }
     if (!storyTestEnabled || !testHistory.length) return;
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
@@ -693,7 +708,7 @@
       <div class="message-clearance" aria-hidden="true"></div>`;
   }
 
-  function prependPreviousChatMessages(card) {
+  function prependPreviousChatMessages(card, mediaWidths) {
     if (card.mode === 'irl') return null;
     const chat = $('[data-chat]');
     const host = card.mode === 'team' ? chat : chat.querySelector('[data-message-stack]');
@@ -718,9 +733,11 @@
       ? teamCardMessagesMarkup(previous)
       : personalCardMessagesMarkup(previous);
     const retained = Array.from(template.content.children).slice(-2);
-    retained.forEach(node => {
+    retained.forEach((node, index) => {
       node.classList.remove('is-pop');
       node.dataset.chatHistory = '';
+      const media = node.matches('.image-bubble') ? node : node.querySelector('.image-bubble');
+      if (media && mediaWidths?.[index]) media.style.width = `${mediaWidths[index]}px`;
     });
     host.prepend(...retained);
     chat.classList.toggle('has-chat-history', retained.length > 0);
@@ -764,6 +781,7 @@
   }
 
   function renderCard() {
+    const sent = sentReplyPositions;
     const card = engine.cardById(app.deck, app.state.currentCardId);
     if (!card || !ACTIVE_CARD_IDS.includes(card.id)) {
       throw new Error(`Disabled card cannot enter the Personal Chat runtime: ${app.state.currentCardId}`);
@@ -773,6 +791,8 @@
     }
     const complete = app.view === 'irl-complete';
     const deliveryKey = `${card.id}:${app.state.history.length}`;
+    const historyMediaWidths = sent?.mediaWidths
+      || (app.cardDelivery?.key === deliveryKey ? app.cardDelivery.historyMediaWidths : null);
     const readingHistory = app.cardDelivery?.key === deliveryKey && app.cardDelivery.follow === false;
     const previousScroll = $('[data-chat]').scrollTop;
     setView(complete ? 'irl-complete' : 'playing', 'real');
@@ -785,7 +805,7 @@
     if (card.mode === 'irl') renderIrlCard(card);
     else if (card.mode === 'team') renderTeamCard(card);
     else renderPersonalCard(card);
-    const playerReply = prependPreviousChatMessages(card);
+    const playerReply = prependPreviousChatMessages(card, historyMediaWidths);
 
     if (card.arc === 'live_agent' || playerReply) {
       $('[data-chat]').scrollTop = 0;
@@ -800,6 +820,7 @@
     setChoices([left, right], () => {}, { disabled: complete });
     bindCardChoices(card, choices, complete);
     stageCardMessages(card);
+    if (playerReply && app.cardDelivery && historyMediaWidths) app.cardDelivery.historyMediaWidths = historyMediaWidths;
     if (playerReply) {
       focusContinuation();
       const chat = $('[data-chat]');
@@ -817,6 +838,22 @@
     if (readingHistory) {
       $('[data-chat]').scrollTop = previousScroll;
       updateHistoryVisibility();
+    }
+    if (playerReply && sent && !reducedMotion.matches) {
+      const chat = $('[data-chat]');
+      const delta = sent.reply - (playerReply.offsetTop - chat.scrollTop);
+      const start = document.timeline.currentTime;
+      const history = Array.from(chat.querySelectorAll('[data-chat-history]'));
+      history.forEach((node, index) => {
+        node.classList.remove('is-clipped-history');
+        animateArrival(node, sent.history[index] - (node.offsetTop - chat.scrollTop), false, start);
+      });
+      const motion = animateArrival(playerReply, delta, false, start);
+      motion.finished.then(updateHistoryVisibility, updateHistoryVisibility);
+      chat.querySelectorAll('[data-chat-current], .typing-row, .message-stack > .typing-bubble').forEach(node => {
+        node.classList.remove('is-pop'); node.style.animationDelay = '';
+        animateArrival(node, delta, true, start);
+      });
     }
   }
 
@@ -1038,13 +1075,7 @@
         : typingTop - (arrived[0].offsetTop - chat.scrollTop);
       const start = document.timeline.currentTime;
       [...positions.map(([node]) => node), ...arrived, typing].filter(Boolean).forEach(node => {
-        const animation = node.animate([
-          { transform: `translateY(${delta}px)`, opacity: arrived.includes(node) || node === typing ? 0 : 1 },
-          { transform: 'translateY(0)', opacity: 1 },
-        ], { duration: 200, easing: 'cubic-bezier(.2,0,0,1)' });
-        animation.startTime = start;
-        arrivalAnimations.add(animation);
-        animation.finished.then(() => arrivalAnimations.delete(animation), () => arrivalAnimations.delete(animation));
+        animateArrival(node, delta, arrived.includes(node) || node === typing, start);
       });
     }
     showTyping();
@@ -1314,7 +1345,67 @@
     if (app.locked || app.view !== 'playing') return;
     if (app.cardDelivery && !app.cardDelivery.delivered) return;
     const card = engine.cardById(app.deck, app.state.currentCardId);
-    recordTestStep();
+    if (card.mode !== 'irl' && !reducedMotion.matches) return sendFounderReply(card, side);
+    resolveCardChoice(card, side);
+  }
+
+  function cancelFounderSend() {
+    if (founderSendTimer === null) return;
+    window.clearTimeout(founderSendTimer);
+    founderSendTimer = null;
+    app.locked = false;
+    $('[data-chat]').classList.remove('is-sending');
+  }
+
+  function sendFounderReply(card, side) {
+    cancelArrivalMotion();
+    app.locked = true;
+    clearPreview();
+    const chat = $('[data-chat]');
+    const scrollTop = chat.scrollTop;
+    const rows = Array.from(chat.querySelectorAll('[data-chat-current], [data-chat-history], [data-player-reply]'));
+    const positions = rows.map(node => node.offsetTop - chat.scrollTop);
+    const avatar = chat.querySelector('.message-avatar');
+    const avatarTop = avatar?.offsetTop - chat.scrollTop;
+    const host = card.mode === 'team' ? chat : chat.querySelector('[data-message-stack]');
+    chat.classList.add('is-sending');
+    const reply = document.createElement('div');
+    reply.className = 'self-message chat-player-reply';
+    reply.dataset.sendingReply = '';
+    // Outside the incoming row so its avatar stays with the last incoming text.
+    // Match the retained reply's text width in the following continuation.
+    if (host !== chat) reply.style.maxWidth = `${host.offsetWidth * .88}px`;
+    const text = document.createElement('p');
+    text.textContent = engine.getChoiceLabel(influencerChoicesFor(card)[side], app.state.resources.founder);
+    reply.append(text);
+    chat.insertBefore(reply, chat.querySelector('.message-clearance'));
+    chat.scrollTop = chat.scrollHeight;
+    rows.forEach(node => { node.classList.remove('is-pop'); node.style.animationDelay = ''; });
+    const start = document.timeline.currentTime;
+    [...rows, reply].forEach((node, index) => {
+      const delta = node === reply ? Math.max(16, reply.offsetHeight + 8)
+        : positions[index] - (node.offsetTop - chat.scrollTop);
+      animateArrival(node, delta, node === reply, start);
+    });
+    if (avatar) animateArrival(avatar, avatarTop - (avatar.offsetTop - chat.scrollTop), false, start);
+    document.querySelectorAll('[data-choice]').forEach(button => { button.disabled = true; });
+    if (storyTestEnabled) $('[data-test-back]').disabled = false;
+    founderSendTimer = window.setTimeout(() => {
+      founderSendTimer = null;
+      sentReplyPositions = {
+        history: rows.filter(node => node.matches('[data-chat-current]')).slice(-2)
+          .map(node => node.offsetTop - chat.scrollTop),
+        reply: reply.offsetTop - chat.scrollTop,
+        mediaWidths: rows.filter(node => node.matches('[data-chat-current]')).slice(-2)
+          .map(node => (node.matches('.image-bubble') ? node : node.querySelector('.image-bubble'))?.offsetWidth || null),
+      };
+      chat.classList.remove('is-sending');
+      resolveCardChoice(card, side, scrollTop);
+    }, 200);
+  }
+
+  function resolveCardChoice(card, side, scrollTop) {
+    recordTestStep(scrollTop);
     if (card.arc === 'live_agent') return continueFromLiveAgent(card, side);
     if (card.id === 'OPEN_INVESTOR') return continueFromInvestor(side);
     if (card.id.startsWith('INFLUENCER_OUTCOME_')) return finishInfluencerOutcome(side);

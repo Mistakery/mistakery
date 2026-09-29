@@ -1,3 +1,4 @@
+const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -31,6 +32,7 @@ test('innovation DM delivers each bubble separately with its dramatic pause; rer
       });
       await page.clock.runFor(500);
       await page.locator('[data-choice="left"]').click();
+      await completeFounderSend(page, true);
       assert.deepEqual(await messages(page), [], 'new correspondent starts with dots');
       await page.clock.runFor(500);
       assert.deepEqual(await messages(page), expected.slice(0, 1));
@@ -58,11 +60,13 @@ test('innovation DM delivers each bubble separately with its dramatic pause; rer
       assert.ok(geometry.pageOverflow <= 1 && geometry.chatOverflow <= 1 && geometry.choicesBottom <= viewport.height + 1, JSON.stringify(geometry));
       if (viewport.width === 390) await page.screenshot({ path: '/tmp/mistakery-innovation-delivered.png', animations: 'disabled' });
       await page.locator('[data-choice="left"]').click();
+      await completeFounderSend(page, true);
       await page.locator('[data-test-back]').click();
       assert.deepEqual(await messages(page), expected, 'Back restores delivered messages');
       assert.equal(await page.locator('.typing-bubble').count(), 0);
       await page.locator('[data-test-back]').click();
       await page.locator('[data-choice="left"]').click();
+      await completeFounderSend(page, true);
       assert.equal(await page.locator('.typing-bubble').count(), 1);
       await page.locator('[data-test-restart]').click();
       await page.clock.runFor(2000);

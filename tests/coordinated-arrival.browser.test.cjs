@@ -1,3 +1,4 @@
+const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -52,6 +53,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
           if (previous) {
             await page.locator('button.typing-bubble').press('Enter');
             await page.locator('[data-choice="left"]').click();
+            await completeFounderSend(page, true);
             await page.waitForTimeout(350);
             assert.equal(await page.locator('[data-scene]').getAttribute('data-active-card'), card);
             assert.equal(await page.locator('[data-player-reply]').count(), card === 'LIVE_AGENT_03' ? 0 : 1);
@@ -156,6 +158,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.equal(await page.locator('[data-chat-current]').count(), 1);
       await page.locator('button.typing-bubble').press('Enter');
       await page.locator('[data-choice="left"]').click();
+      await completeFounderSend(page, true);
       assert.equal(await page.locator('[data-chat-current]').count(), 0);
       assert.match(await page.locator('.typing-bubble').getAttribute('aria-label'), /@error404/);
       assert.equal(await page.locator('[data-player-reply]').count(), 1);
@@ -178,6 +181,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
         await seed(page, previous);
         await page.locator('button.typing-bubble').press('Enter');
         await page.locator('[data-choice="left"]').click();
+        await completeFounderSend(page, true);
         assert.equal(await page.locator('[data-scene]').getAttribute('data-active-card'), card);
         assert.equal(await page.locator('[data-chat-current]').count(), 0, `${card}: first wait`);
         assert.equal(await page.locator('.typing-bubble i').count(), 3);
@@ -199,15 +203,18 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
         await seed(page, previous);
         await page.locator('button.typing-bubble').press('Enter');
         await page.locator(`[data-choice="${previous === 'INFLUENCER_04' ? 'right' : 'left'}"]`).click();
+        await completeFounderSend(page, true);
         assert.equal(await page.locator('[data-scene]').getAttribute('data-active-card'), card);
         assert.equal(await page.locator('[data-chat-current]').count(), 1);
       }
       await seed(page, 'LIVE_AGENT_02');
       await page.locator('button.typing-bubble').press('Enter');
       await page.locator('[data-choice="left"]').click();
+      await completeFounderSend(page, true);
       await page.locator('button.typing-bubble').press('Enter');
       await page.clock.runFor(300);
       await page.locator('[data-choice="left"]').click();
+      await completeFounderSend(page, true);
       await page.locator('[data-test-back]').click();
       assert.equal(await page.locator('[data-chat-current]').count(), 4, 'Back does not repeat the lead-in');
       assert.equal(await page.locator('.typing-bubble').count(), 0);

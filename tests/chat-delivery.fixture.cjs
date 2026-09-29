@@ -6,4 +6,9 @@ async function revealMessages(page) {
   if (pending) await page.locator('button.typing-bubble').press('Enter');
   await page.waitForFunction(() => !document.querySelector('[data-choice]:disabled'));
 }
-module.exports = { revealMessages };
+async function completeFounderSend(page, controlledClock = false) {
+  if (!await page.locator('[data-sending-reply]').count()) return;
+  if (controlledClock) await page.clock.runFor(200);
+  else await page.locator('[data-sending-reply]').waitFor({ state: 'detached' });
+}
+module.exports = { revealMessages, completeFounderSend };
