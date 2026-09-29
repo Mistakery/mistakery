@@ -1,3 +1,4 @@
+const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -17,6 +18,11 @@ async function rotate(page, angle) {
   await page.waitForTimeout(80);
 }
 async function assertVisible(page, selector) {
+  // Containment is a settled-layout check. The coordinated arrival can still
+  // be entering from the chat edge; don't wait on the infinite typing dots.
+  await page.evaluate(() => Promise.all(document.getAnimations()
+    .filter(a => a.playState === 'running' && a.effect.getTiming().iterations !== Infinity)
+    .map(a => a.finished.catch(() => {}))));
   const node = typeof selector === 'string' ? page.locator(selector) : selector;
   const rect = await node.evaluate(n => {
     const a = n.getBoundingClientRect(), b = document.querySelector('[data-chat]').getBoundingClientRect();
@@ -53,6 +59,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
       }
       await page.locator('[data-details-close]').tap();
       await page.locator('[data-choice="left"]').tap();
+      await completeFounderSend(page);
       assert.notEqual((await snapshot(page)).state.currentCardId, before.state.currentCardId);
       await page.locator('[data-test-back]').tap();
       assert.deepEqual(await snapshot(page), before);
@@ -76,7 +83,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
         await page.evaluate(angle => { window.testAngle = angle; window.dispatchEvent(new Event('orientationchange')); }, angle);
         assert.deepEqual(await geometry(page), smallGeometry);
         await page.evaluate(() => { const a = window.MistakeryApp; a.state.history = []; a.state.currentCardId = 'LIVE_AGENT_07B'; a.cardDelivery = null; a.render(); });
-        await page.clock.runFor(2500);
+        await page.clock.runFor(600);
         await assertVisible(page, '.typing-bubble');
         await page.clock.runFor(2000);
         await assertVisible(page, '[data-chat-current]:last-child');
@@ -88,6 +95,8 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
         assert.equal(await page.locator('[data-chat-current]').count(), 2);
         assert.equal(await page.locator('[data-chat-current]').nth(1).innerText(), 'Just between us...');
         await page.clock.runFor(2000);
+        assert.equal(await page.locator('[data-chat-current]').count(), 3);
+        await page.clock.runFor(500);
         await page.locator('[data-choice="left"]').tap();
         await page.clock.runFor(600);
         for (const node of await page.locator('[data-chat-current]').all()) await assertVisible(page, node);
@@ -102,6 +111,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
       await desktop.goto(`${base}?story=live-agent`); await desktop.waitForFunction(() => window.MistakeryApp?.deck && window.MistakeryApp.view !== 'loading');
       assert.equal(await desktop.locator('[data-app]').evaluate(n => getComputedStyle(n).transform), 'none');
       await desktop.locator('[data-choice="left"]').click();
+      await completeFounderSend(desktop);
       assert.equal((await snapshot(desktop)).state.currentCardId, 'LIVE_AGENT_02');
     } finally { await browser.close(); }
   });

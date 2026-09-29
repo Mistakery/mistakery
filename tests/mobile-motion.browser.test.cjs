@@ -1,3 +1,4 @@
+const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -49,6 +50,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
         for (const [from, side, outcome] of [['LIVE_AGENT_08', 'left', 'LIVE_AGENT_OUTCOME_1'], ['LIVE_AGENT_01', 'right', 'LIVE_AGENT_OUTCOME_0']]) {
           await seed(page, from);
           await page.locator(`[data-choice="${side}"]`).tap();
+          await completeFounderSend(page);
           const before = await page.evaluate(() => structuredClone(window.MistakeryApp.state));
           const box = await page.locator('[data-choice="left"]').boundingBox();
           await page.waitForTimeout(310);
@@ -62,6 +64,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
           }
           await page.waitForFunction(() => !window.MistakeryApp.locked, null, { timeout: 1500 });
           await page.locator('[data-choice="left"]').tap();
+          await completeFounderSend(page);
           await page.locator('[data-test-back]').tap();
           assert.equal(await page.evaluate(() => window.MistakeryApp.state.currentCardId), outcome);
           assert.equal(await page.locator('[data-game]').evaluate(n => n.classList.contains('is-outcome-entering')), false);
@@ -123,6 +126,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
       await page.waitForTimeout(600);
       assert.equal(await page.evaluate(() => window.motionEvents.length), 2);
       await page.locator('[data-choice="left"]').tap();
+      await completeFounderSend(page);
       assert.equal(await page.evaluate(() => window.MistakeryApp.state.currentCardId), 'OPEN_INVESTOR');
     } finally { await browser.close(); }
   });

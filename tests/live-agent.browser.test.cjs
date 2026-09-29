@@ -1,5 +1,6 @@
 const { afterTurn } = require('./turn-resources.fixture.cjs');
 const test = require('node:test');
+const { revealMessages } = require('./chat-delivery.fixture.cjs');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -22,9 +23,11 @@ async function seed(page, id, score = 0, random = 0, resources = { cash: 50, tea
     Math.random = () => { window.draws++; return random; };
     a.render();
   }, { id, score, random, resources });
+  await revealMessages(page);
 }
 
 async function click(page, side) {
+  await revealMessages(page);
   await page.waitForFunction(() => !window.MistakeryApp.locked);
   await page.locator(`[data-choice="${side}"]`).click();
 }

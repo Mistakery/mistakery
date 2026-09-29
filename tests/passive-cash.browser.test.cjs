@@ -1,4 +1,5 @@
 const test = require('node:test');
+const { revealMessages } = require('./chat-delivery.fixture.cjs');
 const assert = require('node:assert/strict');
 const { chromium } = require('playwright');
 const { pathToFileURL } = require('node:url');
@@ -46,6 +47,7 @@ test('every gameplay resolver charges half a Cash exactly once, including neutra
         a.view='playing';a.locked=false;Math.random=()=>0;
         a.render();
       },id);
+      await revealMessages(page);
       const before=await snapshot(page);
       await page.locator(`[data-choice="${side}"]`).hover();
       await page.locator(`[data-choice="${side}"]`).focus();

@@ -385,6 +385,9 @@ button { font: inherit; }
 .chat.has-chat-history .message-stack { flex: 1; }
 .chat.has-chat-history .image-bubble { transition-property: none; }
 .chat-player-reply { flex-shrink: 0; margin-block: 4px; }
+.chat.is-sending { justify-content: safe flex-end; overflow-y: auto; overflow-anchor: none; scrollbar-width: none; }
+.chat.is-sending::-webkit-scrollbar { display: none; }
+.chat.is-sending > *, .chat.is-sending .message { flex-shrink: 0; }
 .media-placeholder {
   width: min(210px, 100%);
   min-height: 62px;
@@ -423,6 +426,8 @@ button { font: inherit; }
 .message-caption { padding: 10px 14px 11px; }
 .typing-bubble {
   width: 64px;
+  border: 0;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -430,8 +435,15 @@ button { font: inherit; }
   border-radius: 18px 18px 18px 6px;
   background: #fff;
   box-shadow: 0 8px 26px rgba(35, 77, 114, .13);
-  animation: messagePop .3s cubic-bezier(.2,.9,.3,1.1) both;
 }
+.typing-dots { display: flex; align-items: center; gap: 5px; }
+button.typing-bubble { cursor: pointer; }
+button.typing-bubble:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.team-bubble.typing-bubble { display: block; width: auto; min-width: 92px; text-align: left; }
+.team-bubble.typing-bubble .typing-dots { padding-block: 5px; }
+.typing-row { flex-shrink: 0; }
+/* Keep shadow paint order stable when temporary arrival transforms disappear. */
+.phone[data-view="playing"] :is(.message, .self-message, .team-row, .typing-bubble) { isolation: isolate; }
 .typing-bubble i {
   width: 7px;
   height: 7px;
@@ -738,8 +750,12 @@ button { font: inherit; }
 }
 
 @keyframes messagePop { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes messageArrive { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @keyframes typingBlink { 0%, 60%, 100% { opacity: .32; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-1px); } }
 .message.is-pop, .self-message.is-pop, .team-row.is-pop { animation: messagePop .3s cubic-bezier(.2,.9,.3,1.1) both; }
+.phone[data-view="playing"] .message.is-pop,
+.phone[data-view="playing"] .self-message.is-pop,
+.phone[data-view="playing"] .team-row.is-pop { animation: messageArrive .22s ease-out both; }
 
 /* Breakpoints follow the portrait stage, including a rotated phone viewport. */
 @media (max-width: 340px) and (orientation: portrait),

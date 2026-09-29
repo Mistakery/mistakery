@@ -61,6 +61,7 @@
     view: 'loading',
     onboardingIndex: 0,
     noteIndex: 0,
+    savedDelivery: null,
     locked: false,
     introTypingTimer: null,
     cardDelivery: null,
@@ -90,7 +91,32 @@
   const presentedOutcomes = new WeakSet();
   let choiceUnlockTimer = null;
   let cardTypingTimer = null;
+  let savedDeliveryTimer = null;
+  let founderSendTimer = null;
+  let sentReplyPositions = null;
+  let revealCardMessages = () => {};
   let cancelOutcomeImageMotion = () => {};
+  const arrivalAnimations = new Set();
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function cancelArrivalMotion() {
+    arrivalAnimations.forEach(animation => animation.cancel());
+    arrivalAnimations.clear();
+  }
+  function animateArrival(node, delta, fade, start) {
+    const animation = node.animate([
+      { transform: `translateY(${delta}px)`, opacity: fade ? 0 : 1 },
+      { transform: 'translateY(0)', opacity: 1 },
+    ], { duration: 200, easing: 'cubic-bezier(.2,0,0,1)' });
+    animation.startTime = start;
+    arrivalAnimations.add(animation);
+    animation.finished.then(() => arrivalAnimations.delete(animation), () => arrivalAnimations.delete(animation));
+    return animation;
+  }
+  ['pointerdown', 'wheel', 'keydown'].forEach(type => {
+    document.addEventListener(type, cancelArrivalMotion, { capture: true, passive: true });
+  });
+  window.addEventListener('resize', cancelArrivalMotion);
+  reducedMotion.addEventListener('change', cancelArrivalMotion);
   let padelImagesPreloaded = false;
   const INITIAL_RESOURCES = Object.freeze({ cash: 25, team: 60, customers: 15, founder: 65 });
   const OPTIMISTIC_RESOURCES = Object.freeze({ cash: 100, team: 100, customers: 100, founder: 100 });
@@ -133,7 +159,7 @@
       chip: 'Today',
       messages: [
         '<strong>5 MONTHS AS A FOUNDER 🚀</strong>\n<b>1.</b> Never return to the office ✅\n<b>2.</b> Bro as a cofounder ✅\n<b>3.</b> Padel (CEO networking) ✅\n<b>4.</b> Built AI B2B SaaS. B2B sales - easy money ✅\n<b>5.</b> Brand: B2BuyerSpyer ✅\n<b>6.</b> Slogan: We find the buyer. You light the fire 🔥✅\n<b>7.</b> Team grinding 24/7. LEGENDS!! ✅\n<b>8.</b> Landed a HUGE investor ✅',
-        '<strong>IN PROGRESS:</strong>\n<b>9.</b> Unicorn 🦄🎯 (waiting for the market to wake up)',
+        "<strong>IN PROGRESS:</strong>\n<b>9.</b> Unicorn 🦄🎯 (30 DAYS UNTIL WE'RE BROKE!!)",
       ],
       buttons: ['WE’RE SO BACK', 'it’s so over'],
     },
@@ -165,9 +191,20 @@
   let continuationResizeObserver;
 
   function setView(view, shellStage = 'real') {
+    if (view !== 'saved') {
+      window.clearTimeout(savedDeliveryTimer);
+      savedDeliveryTimer = null;
+      app.savedDelivery = null;
+    }
+    cancelFounderSend();
+    sentReplyPositions = null;
+    cancelArrivalMotion();
     cancelOutcomeImageMotion();
     if ($('[data-test-details]').open) $('[data-test-details]').close();
     window.clearTimeout(cardTypingTimer);
+    revealCardMessages = () => {};
+    $('[data-chat]').removeAttribute('aria-busy');
+    $('.reply-hint__text').textContent = 'Choose a reply...';
     continuationResizeObserver?.disconnect();
     app.view = view;
     const phone = $('[data-game]');
@@ -186,17 +223,18 @@
     $('[data-test-inspect]').disabled = !['playing', 'saved'].includes(view);
   }
 
-  function recordTestStep() {
+  function recordTestStep(scrollTop = $('[data-chat]').scrollTop) {
     if (!storyTestEnabled) return;
     testHistory.push({
       state: structuredClone(app.state),
       view: app.view,
       noteIndex: app.noteIndex,
+      savedDelivery: app.savedDelivery ? { ...app.savedDelivery } : null,
       padelCeoScore: app.padelCeoScore,
       influencerPreviousCardId: app.influencerPreviousCardId,
       liveAgentScore: app.liveAgentScore,
       cardDelivery: app.cardDelivery ? { ...app.cardDelivery } : null,
-      scrollTop: $('[data-chat]').scrollTop,
+      scrollTop,
     });
   }
 
@@ -210,6 +248,7 @@
   }
 
   function backInStoryTest() {
+    if (storyTestEnabled && founderSendTimer !== null) { render(); return; }
     if (!storyTestEnabled || !testHistory.length) return;
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
@@ -516,16 +555,32 @@
     return withoutTerminalPeriod(text).split('\n').map((line) => `<span>${line ? typography(line) : '&nbsp;'}</span>`).join('');
   }
 
+  function savedMessageMarkup(message) {
+    return `<div class="message note-message is-pop"><p>${noteLineMarkup(message)}</p><span class="stamp">15:54</span></div>`;
+  }
+
+  function chooseSaved() {
+    recordTestStep();
+    if (app.noteIndex === 0) startSaved(1);
+    else beginRun();
+  }
+
   function startSaved(index) {
+    window.clearTimeout(savedDeliveryTimer);
+    savedDeliveryTimer = null;
     app.noteIndex = index;
+    app.savedDelivery = index === 1 ? { deadline: Date.now() + 1000, delivered: false } : null;
     renderSaved();
   }
 
   function renderSaved() {
     const note = NOTE_SCREENS[app.noteIndex];
-    const messages = note.messages.map((message) => (
-      `<div class="message note-message is-pop"><p>${noteLineMarkup(message)}</p><span class="stamp">15:54</span></div>`
-    )).join('');
+    const delivery = app.savedDelivery;
+    const delivered = app.noteIndex !== 1 || delivery?.delivered || Date.now() >= delivery.deadline;
+    if (delivery && delivered) delivery.delivered = true;
+    window.clearTimeout(savedDeliveryTimer);
+    savedDeliveryTimer = null;
+    const messages = note.messages.slice(0, delivered ? undefined : 1).map(savedMessageMarkup).join('');
     setView('saved', 'real');
     setSceneMode('personal');
     renderResources(app.state.resources);
@@ -539,11 +594,16 @@
         <div class="message-stack" data-message-stack>${messages}</div>
       </div>
       <div class="message-clearance" aria-hidden="true"></div>`;
-    setChoices(note.buttons, () => {
-      recordTestStep();
-      if (app.noteIndex === 0) startSaved(1);
-      else beginRun();
-    });
+    setChoices(note.buttons, chooseSaved, { disabled: !delivered });
+    if (!delivered) {
+      savedDeliveryTimer = window.setTimeout(() => {
+        if (app.view !== 'saved' || app.noteIndex !== 1 || app.savedDelivery !== delivery) return;
+        delivery.delivered = true;
+        savedDeliveryTimer = null;
+        $('[data-message-stack]').insertAdjacentHTML('beforeend', savedMessageMarkup(note.messages[1]));
+        setChoices(note.buttons, chooseSaved);
+      }, Math.max(0, delivery.deadline - Date.now()));
+    }
   }
 
   function beginRun() {
@@ -677,7 +737,19 @@
       <div class="message-clearance" aria-hidden="true"></div>`;
   }
 
-  function prependPreviousChatMessages(card) {
+  function retainsPreviousChat(card, previous) {
+    const approvedPrevious = {
+      LIVE_AGENT_02: 'LIVE_AGENT_01',
+      LIVE_AGENT_04: 'LIVE_AGENT_03',
+      LIVE_AGENT_04B: 'LIVE_AGENT_04',
+      LIVE_AGENT_07B: 'LIVE_AGENT_07',
+    };
+    return Boolean(card && previous && card.mode !== 'irl'
+      && approvedPrevious[card.id] === previous.id && previous.source === card.source
+      && (previous.mode || 'personal') === (card.mode || 'personal'));
+  }
+
+  function prependPreviousChatMessages(card, mediaWidths) {
     if (card.mode === 'irl') return null;
     const chat = $('[data-chat]');
     const host = card.mode === 'team' ? chat : chat.querySelector('[data-message-stack]');
@@ -687,24 +759,18 @@
     // Derive context from resolved choices so rerenders and Back stay deterministic.
     const answered = app.state.history.at(-1);
     const previousId = answered?.cardId;
-    const approvedPrevious = {
-      LIVE_AGENT_02: 'LIVE_AGENT_01',
-      LIVE_AGENT_04: 'LIVE_AGENT_03',
-      LIVE_AGENT_04B: 'LIVE_AGENT_04',
-      LIVE_AGENT_07B: 'LIVE_AGENT_07',
-    }[card.id];
-    if (!approvedPrevious || previousId !== approvedPrevious) return null;
     const previous = previousId && engine.cardById(app.deck, previousId);
-    if (!previous || previous.id === card.id || previous.source !== card.source
-      || (previous.mode || 'personal') !== (card.mode || 'personal')) return null;
+    if (!retainsPreviousChat(card, previous)) return null;
     const template = document.createElement('template');
     template.innerHTML = card.mode === 'team'
       ? teamCardMessagesMarkup(previous)
       : personalCardMessagesMarkup(previous);
     const retained = Array.from(template.content.children).slice(-2);
-    retained.forEach(node => {
+    retained.forEach((node, index) => {
       node.classList.remove('is-pop');
       node.dataset.chatHistory = '';
+      const media = node.matches('.image-bubble') ? node : node.querySelector('.image-bubble');
+      if (media && mediaWidths?.[index]) media.style.width = `${mediaWidths[index]}px`;
     });
     host.prepend(...retained);
     chat.classList.toggle('has-chat-history', retained.length > 0);
@@ -748,6 +814,7 @@
   }
 
   function renderCard() {
+    const sent = sentReplyPositions;
     const card = engine.cardById(app.deck, app.state.currentCardId);
     if (!card || !ACTIVE_CARD_IDS.includes(card.id)) {
       throw new Error(`Disabled card cannot enter the Personal Chat runtime: ${app.state.currentCardId}`);
@@ -756,6 +823,11 @@
       preloadPadelImages();
     }
     const complete = app.view === 'irl-complete';
+    const deliveryKey = `${card.id}:${app.state.history.length}`;
+    const historyMediaWidths = sent?.mediaWidths
+      || (app.cardDelivery?.key === deliveryKey ? app.cardDelivery.historyMediaWidths : null);
+    const readingHistory = app.cardDelivery?.key === deliveryKey && app.cardDelivery.follow === false;
+    const previousScroll = $('[data-chat]').scrollTop;
     setView(complete ? 'irl-complete' : 'playing', 'real');
     renderResources(app.state.resources);
     setSceneMode(card.mode);
@@ -766,7 +838,7 @@
     if (card.mode === 'irl') renderIrlCard(card);
     else if (card.mode === 'team') renderTeamCard(card);
     else renderPersonalCard(card);
-    const playerReply = prependPreviousChatMessages(card);
+    const playerReply = prependPreviousChatMessages(card, historyMediaWidths);
 
     if (card.arc === 'live_agent' || playerReply) {
       $('[data-chat]').scrollTop = 0;
@@ -781,6 +853,7 @@
     setChoices([left, right], () => {}, { disabled: complete });
     bindCardChoices(card, choices, complete);
     stageCardMessages(card);
+    if (playerReply && app.cardDelivery && historyMediaWidths) app.cardDelivery.historyMediaWidths = historyMediaWidths;
     if (playerReply) {
       focusContinuation();
       const chat = $('[data-chat]');
@@ -789,12 +862,32 @@
         const nextSize = `${chat.clientWidth}:${chat.clientHeight}`;
         if (size === nextSize) return;
         size = nextSize;
-        focusContinuation();
+        if (app.cardDelivery?.follow !== false) focusContinuation();
       });
       continuationResizeObserver.observe(chat);
     }
-    if (card.typingPauses) keepDeliveryVisible($('[data-chat] .typing-bubble'));
+    if (!readingHistory) keepDeliveryVisible($('[data-chat] .typing-bubble'));
     presentOutcome(card);
+    if (readingHistory) {
+      $('[data-chat]').scrollTop = previousScroll;
+      updateHistoryVisibility();
+    }
+    if (playerReply && sent && !reducedMotion.matches) {
+      const chat = $('[data-chat]');
+      const delta = sent.reply - (playerReply.offsetTop - chat.scrollTop);
+      const start = document.timeline.currentTime;
+      const history = Array.from(chat.querySelectorAll('[data-chat-history]'));
+      history.forEach((node, index) => {
+        node.classList.remove('is-clipped-history');
+        animateArrival(node, sent.history[index] - (node.offsetTop - chat.scrollTop), false, start);
+      });
+      const motion = animateArrival(playerReply, delta, false, start);
+      motion.finished.then(updateHistoryVisibility, updateHistoryVisibility);
+      chat.querySelectorAll('[data-chat-current], .typing-row, .message-stack > .typing-bubble').forEach(node => {
+        node.classList.remove('is-pop'); node.style.animationDelay = '';
+        animateArrival(node, delta, true, start);
+      });
+    }
   }
 
   function presentOutcome(card) {
@@ -888,48 +981,162 @@
   }
 
   function stageCardMessages(card) {
-    const pauses = card.typingPauses || (card.typingPause ? [card.typingPause] : []);
+    const chat = $('[data-chat]');
+    const stack = card.mode === 'team' ? chat : chat.querySelector('[data-message-stack]');
+    const nodes = Array.from(chat.querySelectorAll('[data-chat-current]'));
+    const repeated = app.state.history.some(step => step.cardId === card.id);
+    const pauses = card.mode === 'irl' || repeated ? [] : defaultTypingPauses(card, nodes);
     if (!pauses.length) {
       app.cardDelivery = null;
+      if (repeated) nodes.forEach(node => node.classList.remove('is-pop'));
       return;
     }
     const key = `${card.id}:${app.state.history.length}`;
+    const restoring = app.cardDelivery?.key === key;
     if (app.cardDelivery?.key !== key) {
-      app.cardDelivery = { key, delivered: false, pauseIndex: 0, deadline: Date.now() + pauses[0].durationMs };
+      app.cardDelivery = { key, delivered: false, pauseIndex: 0, deadline: Date.now() + pauses[0].durationMs, follow: true };
     }
     const delivery = app.cardDelivery;
-    if (delivery.delivered) return;
-    const stack = $('[data-message-stack]');
-    const pending = Array.from(stack.querySelectorAll('[data-chat-current]')).slice(pauses[delivery.pauseIndex].after);
+    if (delivery.delivered) {
+      nodes.forEach(node => { node.classList.remove('is-pop'); node.style.animationDelay = ''; });
+      return;
+    }
+    const pending = nodes.slice(pauses[delivery.pauseIndex].after);
     pending.forEach(node => node.remove());
-    const typing = document.createElement('div');
-    typing.className = 'typing-bubble';
-    typing.setAttribute('aria-label', `${sourceFor(card.source).name} is typing`);
-    typing.innerHTML = '<i></i><i></i><i></i>';
-    stack.append(typing);
+    if (restoring) nodes.filter(node => node.isConnected).forEach(node => {
+      node.classList.remove('is-pop'); node.style.animationDelay = '';
+    });
+    let typing;
+    const anchor = card.mode === 'team' ? chat.querySelector('.message-clearance') : null;
+    const append = node => stack.insertBefore(node, typing || anchor);
     const buttons = Array.from(document.querySelectorAll('[data-choice]'));
     buttons.forEach(button => { button.disabled = true; });
+    chat.setAttribute('aria-busy', 'true');
+    $('.reply-hint__text').textContent = 'Tap chat to show all';
+    function isCurrent() { return app.view === 'playing' && app.cardDelivery === delivery && stack.isConnected; }
+    function followDelivery() {
+      if (delivery.follow === false) { updateHistoryVisibility(); return; }
+      if (chat.classList.contains('has-chat-history')) focusContinuation();
+      else keepDeliveryVisible(typing || nodes.at(-1));
+    }
+    function finish() {
+      window.clearTimeout(cardTypingTimer);
+      typing?.remove(); typing = null;
+      delivery.delivered = true;
+      chat.removeAttribute('aria-busy');
+      $('.reply-hint__text').textContent = 'Choose a reply...';
+      buttons.forEach(button => { button.disabled = false; });
+      revealCardMessages = () => {};
+    }
+    revealCardMessages = () => {
+      if (!isCurrent() || delivery.delivered) return;
+      cancelArrivalMotion();
+      pending.splice(0).forEach(node => {
+        node.style.animationDelay = '';
+        node.classList.remove('is-pop');
+        append(node);
+      });
+      finish(); followDelivery();
+    };
+    function showTyping() {
+      const next = pending[0];
+      const sourceId = next.dataset.source || card.source;
+      if (typing?.dataset.source === sourceId) return;
+      typing?.remove(); typing = null;
+      if (next.matches('.self-message')) return;
+      const source = sourceFor(sourceId);
+      const indicator = document.createElement('button');
+      indicator.type = 'button'; indicator.className = 'typing-bubble';
+      indicator.setAttribute('aria-label', `${source.name} is typing`);
+      indicator.title = 'Show all messages';
+      indicator.setAttribute('aria-description', 'Show all messages');
+      indicator.innerHTML = '<span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span>';
+      indicator.addEventListener('click', event => {
+        event.stopPropagation();
+        if (event.detail && (!chatGesture || chatGesture.moved || chatGesture.delivery !== delivery
+          || Math.abs(chatGesture.scroll - chat.scrollTop) > 10)) return;
+        revealCardMessages();
+      });
+      if (card.mode === 'team') {
+        typing = document.createElement('div');
+        typing.className = 'team-row typing-row'; typing.dataset.source = sourceId;
+        const initials = card.messages.find(message => message.source === sourceId)?.avatar;
+        typing.innerHTML = `<div class="member-avatar" aria-hidden="true">${characterAvatar(source, initials)}</div>`;
+        indicator.classList.add('team-bubble');
+        const meta = document.createElement('span'); meta.className = 'team-meta';
+        meta.textContent = source.name;
+        if (source.role) {
+          const role = document.createElement('span'); role.className = 'team-role';
+          role.textContent = ` · ${source.role}`; meta.append(role);
+        }
+        indicator.prepend(meta); typing.append(indicator);
+      } else typing = indicator;
+      typing.dataset.source = sourceId;
+      stack.insertBefore(typing, anchor);
+    }
     function deliverNext() {
+      if (!isCurrent() || delivery.delivered) return;
+      cancelArrivalMotion();
+      const animate = delivery.follow !== false && !reducedMotion.matches;
+      const positions = animate
+        ? Array.from(chat.querySelectorAll('[data-chat-current], [data-chat-history], [data-player-reply]'))
+          .map(node => [node, node.offsetTop - chat.scrollTop]) : [];
+      const typingTop = typing ? typing.offsetTop - chat.scrollTop : 0;
       const previousPause = pauses[delivery.pauseIndex];
       const nextPause = pauses[++delivery.pauseIndex];
-      typing.remove();
       const count = nextPause ? nextPause.after - previousPause.after : pending.length;
-      pending.splice(0, count).forEach((node, index) => {
-        node.style.animationDelay = `${index * 90}ms`;
-        stack.append(node);
+      const arrived = pending.splice(0, count);
+      arrived.forEach(node => {
+        node.style.animationDelay = '';
+        append(node);
       });
       if (nextPause) {
-        stack.append(typing);
+        showTyping();
         delivery.deadline = Date.now() + nextPause.durationMs;
         cardTypingTimer = window.setTimeout(deliverNext, nextPause.durationMs);
       } else {
-        delivery.delivered = true;
-        buttons.forEach(button => { button.disabled = false; });
+        finish();
       }
-      if ($('[data-chat]').classList.contains('has-chat-history')) focusContinuation();
-      else if (pauses.length > 1) keepDeliveryVisible(nextPause ? typing : stack.lastElementChild);
+      followDelivery();
+      arrived.forEach(node => node.classList.remove('is-pop'));
+      if (!animate) return;
+      // One measured displacement and timeline for history, new bubbles and dots.
+      // Local coordinates also work in the rotated portrait stage. Never layer
+      // a separate CSS entrance onto the incoming bubble: it would change gaps.
+      const last = positions.at(-1);
+      const delta = last ? last[1] - (last[0].offsetTop - chat.scrollTop)
+        : typingTop - (arrived[0].offsetTop - chat.scrollTop);
+      const start = document.timeline.currentTime;
+      [...positions.map(([node]) => node), ...arrived, typing].filter(Boolean).forEach(node => {
+        animateArrival(node, delta, arrived.includes(node) || node === typing, start);
+      });
     }
+    showTyping();
     cardTypingTimer = window.setTimeout(deliverNext, Math.max(0, delivery.deadline - Date.now()));
+  }
+
+  function defaultTypingPauses(card, nodes) {
+    const authored = card.typingPauses || (card.typingPause ? [card.typingPause] : []);
+    const firstText = nodes[0] && !nodes[0].matches('.self-message, .image-bubble')
+      && !nodes[0].querySelector('.message-image');
+    const previousCard = engine.cardById(app.deck, app.state.history.at(-1)?.cardId);
+    // Briefly cue a new conversation or a different speaker taking over a team thread.
+    const newTeamAuthor = card.mode === 'team' && previousCard?.source === card.source
+      && previousCard.messages?.at(-1)?.source !== nodes[0]?.dataset.source;
+    const opening = firstText && (nodes.length === 1 || newTeamAuthor || previousCard && previousCard.source !== card.source)
+      ? [{ after: 0, durationMs: 500 }] : [];
+    return opening.concat(nodes.slice(1).map((next, index) => {
+      const previous = nodes[index];
+      const changedAuthor = card.mode === 'team' && next.dataset.source !== previous.dataset.source;
+      // Brief reading room after the previous bubble, not simulated typing speed.
+      // Count message copy only (no nicknames/roles); photos need a longer glance.
+      const words = Array.from(previous.querySelectorAll('p')).map(p => p.textContent).join(' ').trim().split(/\s+/).length;
+      const media = previous.matches('.image-bubble, .media-placeholder') || previous.querySelector('.message-image, .media-placeholder');
+      const readingMs = media || words > 28 ? 900 : words > 12 ? 700 : 500;
+      const durationMs = next.matches('.self-message') ? 0
+        : authored.find(pause => pause.after === index + 1)?.durationMs || readingMs + (changedAuthor ? 100 : 0);
+      return { after: index + 1, durationMs };
+    }).filter(pause => pause.durationMs > 0));
   }
 
   function influencerChoicesFor(card) {
@@ -1169,8 +1376,70 @@
 
   function choose(side) {
     if (app.locked || app.view !== 'playing') return;
+    if (app.cardDelivery && !app.cardDelivery.delivered) return;
     const card = engine.cardById(app.deck, app.state.currentCardId);
-    recordTestStep();
+    const next = engine.cardById(app.deck, card.choices[side].next);
+    if (!reducedMotion.matches && retainsPreviousChat(next, card)) return sendFounderReply(card, side);
+    resolveCardChoice(card, side);
+  }
+
+  function cancelFounderSend() {
+    if (founderSendTimer === null) return;
+    window.clearTimeout(founderSendTimer);
+    founderSendTimer = null;
+    app.locked = false;
+    $('[data-chat]').classList.remove('is-sending');
+  }
+
+  function sendFounderReply(card, side) {
+    cancelArrivalMotion();
+    app.locked = true;
+    clearPreview();
+    const chat = $('[data-chat]');
+    const scrollTop = chat.scrollTop;
+    const rows = Array.from(chat.querySelectorAll('[data-chat-current], [data-chat-history], [data-player-reply]'));
+    const positions = rows.map(node => node.offsetTop - chat.scrollTop);
+    const avatar = chat.querySelector('.message-avatar');
+    const avatarTop = avatar?.offsetTop - chat.scrollTop;
+    const host = card.mode === 'team' ? chat : chat.querySelector('[data-message-stack]');
+    chat.classList.add('is-sending');
+    const reply = document.createElement('div');
+    reply.className = 'self-message chat-player-reply';
+    reply.dataset.sendingReply = '';
+    // Outside the incoming row so its avatar stays with the last incoming text.
+    // Match the retained reply's text width in the following continuation.
+    if (host !== chat) reply.style.maxWidth = `${host.offsetWidth * .88}px`;
+    const text = document.createElement('p');
+    text.textContent = engine.getChoiceLabel(influencerChoicesFor(card)[side], app.state.resources.founder);
+    reply.append(text);
+    chat.insertBefore(reply, chat.querySelector('.message-clearance'));
+    chat.scrollTop = chat.scrollHeight;
+    rows.forEach(node => { node.classList.remove('is-pop'); node.style.animationDelay = ''; });
+    const start = document.timeline.currentTime;
+    [...rows, reply].forEach((node, index) => {
+      const delta = node === reply ? Math.max(16, reply.offsetHeight + 8)
+        : positions[index] - (node.offsetTop - chat.scrollTop);
+      animateArrival(node, delta, node === reply, start);
+    });
+    if (avatar) animateArrival(avatar, avatarTop - (avatar.offsetTop - chat.scrollTop), false, start);
+    document.querySelectorAll('[data-choice]').forEach(button => { button.disabled = true; });
+    if (storyTestEnabled) $('[data-test-back]').disabled = false;
+    founderSendTimer = window.setTimeout(() => {
+      founderSendTimer = null;
+      sentReplyPositions = {
+        history: rows.filter(node => node.matches('[data-chat-current]')).slice(-2)
+          .map(node => node.offsetTop - chat.scrollTop),
+        reply: reply.offsetTop - chat.scrollTop,
+        mediaWidths: rows.filter(node => node.matches('[data-chat-current]')).slice(-2)
+          .map(node => (node.matches('.image-bubble') ? node : node.querySelector('.image-bubble'))?.offsetWidth || null),
+      };
+      chat.classList.remove('is-sending');
+      resolveCardChoice(card, side, scrollTop);
+    }, 200);
+  }
+
+  function resolveCardChoice(card, side, scrollTop) {
+    recordTestStep(scrollTop);
     if (card.arc === 'live_agent') return continueFromLiveAgent(card, side);
     if (card.id === 'OPEN_INVESTOR') return continueFromInvestor(side);
     if (card.id.startsWith('INFLUENCER_OUTCOME_')) return finishInfluencerOutcome(side);
@@ -1277,6 +1546,34 @@
   }
 
   $('[data-chat]').addEventListener('scroll', updateHistoryVisibility, { passive: true });
+  let chatGesture;
+  $('[data-chat]').addEventListener('pointerdown', event => {
+    chatGesture = { x: event.clientX, y: event.clientY, scroll: $('[data-chat]').scrollTop, moved: false, delivery: app.cardDelivery };
+  }, { passive: true });
+  $('[data-chat]').addEventListener('pointermove', event => {
+    if (!chatGesture || !event.buttons) return;
+    if (Math.hypot(event.clientX - chatGesture.x, event.clientY - chatGesture.y) > 10) {
+      chatGesture.moved = true;
+      if (app.cardDelivery) app.cardDelivery.follow = false;
+    }
+  }, { passive: true });
+  $('[data-chat]').addEventListener('pointercancel', () => {
+    if (app.cardDelivery) app.cardDelivery.follow = false;
+    chatGesture = null;
+  }, { passive: true });
+  $('[data-chat]').addEventListener('wheel', () => {
+    if (app.cardDelivery) app.cardDelivery.follow = false;
+  }, { passive: true });
+  $('[data-chat]').addEventListener('keydown', event => {
+    if (['Home', 'End', 'PageUp', 'PageDown', 'ArrowUp', 'ArrowDown'].includes(event.key)
+      && app.cardDelivery) app.cardDelivery.follow = false;
+  });
+  $('[data-chat]').addEventListener('click', event => {
+    if (event.target.closest('button, a') || !chatGesture || chatGesture.moved
+      || chatGesture.delivery !== app.cardDelivery || Math.abs(chatGesture.scroll - $('[data-chat]').scrollTop) > 10) return;
+    revealCardMessages();
+    chatGesture = null;
+  });
   $('[data-test-back]').addEventListener('click', backInStoryTest);
   $('[data-test-inspect]').addEventListener('click', showTestDetails);
   $('[data-details-close]').addEventListener('click', () => $('[data-test-details]').close());
