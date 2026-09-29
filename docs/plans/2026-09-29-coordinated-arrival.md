@@ -12,9 +12,11 @@ Tracked animations are cancelled on user input, resize, rerender/navigation, rev
 
 ## Founder replies
 
-Choosing a reply in a chat first inserts the selected label as a whole blue outgoing bubble. It rises and fades in over 200 ms with the same non-spring easing while existing messages and the incoming avatar move to make room. The sender bubble sits outside the incoming avatar's row. The selected action resolves once after this send beat; incoming deadlines begin with the next card. IRL choices and reduced motion remain immediate.
+Only a choice leading into an approved retained-history continuation inserts the selected label as a whole blue outgoing bubble. Sending and history retention use the same route predicate: LIVE_AGENT_01 → 02, 03 → 04, 04 → 04B and 07 → 07B. The chosen destination matters: the other branch of LIVE_AGENT_01 goes to a separate outcome and does not send. All separate cards, including unstitched cards with the same correspondent, switch immediately without a send bubble or send delay. Reduced motion also remains immediate.
 
-For the four retained-history continuations, the sent reply and retained messages carry their measured positions into a second coordinated 200 ms transition. The already-sent reply stays opaque. Fitted photo widths transfer with the history and survive rerenders, avoiding enlargement/overlap on small screens. Other conversation changes happen after the outgoing bubble lands.
+On a stitched route, the reply rises and fades in over 200 ms with the same non-spring easing while existing messages and the incoming avatar move to make room. The sender bubble sits outside the incoming avatar's row. The selected action resolves once after this send beat; incoming deadlines begin with the continuation.
+
+For the four retained-history continuations, the sent reply and retained messages carry their measured positions into a second coordinated 200 ms transition. The already-sent reply stays opaque. Fitted photo widths transfer with the history and survive rerenders, avoiding enlargement/overlap on small screens.
 
 Choices remain locked during sending. Back, Restart, navigation or rerender cancel an uncommitted send; no effects or randomness have been applied yet. The existing input/resize/reduced-motion handlers can stop the visual movement without duplicating the pending action. Undo snapshots retain the pre-send scroll position. `tests/founder-send.browser.test.cjs` verifies Chromium/WebKit, phones/desktop/touch landscape, first-frame continuity, monotonic movement, avatar ownership, exactly-once choice application, cancellation, reduced motion, and the real 320×568 photo continuation sequence.
 

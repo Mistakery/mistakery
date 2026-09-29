@@ -708,6 +708,18 @@
       <div class="message-clearance" aria-hidden="true"></div>`;
   }
 
+  function retainsPreviousChat(card, previous) {
+    const approvedPrevious = {
+      LIVE_AGENT_02: 'LIVE_AGENT_01',
+      LIVE_AGENT_04: 'LIVE_AGENT_03',
+      LIVE_AGENT_04B: 'LIVE_AGENT_04',
+      LIVE_AGENT_07B: 'LIVE_AGENT_07',
+    };
+    return Boolean(card && previous && card.mode !== 'irl'
+      && approvedPrevious[card.id] === previous.id && previous.source === card.source
+      && (previous.mode || 'personal') === (card.mode || 'personal'));
+  }
+
   function prependPreviousChatMessages(card, mediaWidths) {
     if (card.mode === 'irl') return null;
     const chat = $('[data-chat]');
@@ -718,16 +730,8 @@
     // Derive context from resolved choices so rerenders and Back stay deterministic.
     const answered = app.state.history.at(-1);
     const previousId = answered?.cardId;
-    const approvedPrevious = {
-      LIVE_AGENT_02: 'LIVE_AGENT_01',
-      LIVE_AGENT_04: 'LIVE_AGENT_03',
-      LIVE_AGENT_04B: 'LIVE_AGENT_04',
-      LIVE_AGENT_07B: 'LIVE_AGENT_07',
-    }[card.id];
-    if (!approvedPrevious || previousId !== approvedPrevious) return null;
     const previous = previousId && engine.cardById(app.deck, previousId);
-    if (!previous || previous.id === card.id || previous.source !== card.source
-      || (previous.mode || 'personal') !== (card.mode || 'personal')) return null;
+    if (!retainsPreviousChat(card, previous)) return null;
     const template = document.createElement('template');
     template.innerHTML = card.mode === 'team'
       ? teamCardMessagesMarkup(previous)
@@ -1345,7 +1349,8 @@
     if (app.locked || app.view !== 'playing') return;
     if (app.cardDelivery && !app.cardDelivery.delivered) return;
     const card = engine.cardById(app.deck, app.state.currentCardId);
-    if (card.mode !== 'irl' && !reducedMotion.matches) return sendFounderReply(card, side);
+    const next = engine.cardById(app.deck, card.choices[side].next);
+    if (!reducedMotion.matches && retainsPreviousChat(next, card)) return sendFounderReply(card, side);
     resolveCardChoice(card, side);
   }
 

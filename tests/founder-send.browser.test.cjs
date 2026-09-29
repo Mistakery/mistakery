@@ -14,7 +14,7 @@ async function seed(page, id) {
   await page.waitForTimeout(250);
 }
 for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
-  test(`${name}: founder sends a whole bubble before the next conversation turn`, async () => {
+  test(`${name}: founder sends a whole bubble only into a retained conversation`, async () => {
     const browser = await engine.launch();
     try {
       for (const profile of [
@@ -26,7 +26,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
         const page = await browser.newPage(profile);
         await page.goto(url); await page.waitForFunction(() => MistakeryApp?.view === 'playing');
         await page.clock.install(); await page.clock.pauseAt(new Date());
-        for (const id of ['LIVE_AGENT_01', 'LIVE_AGENT_03', 'LIVE_AGENT_04', 'LIVE_AGENT_05', 'INFLUENCER_02']) {
+        for (const id of ['LIVE_AGENT_01', 'LIVE_AGENT_03', 'LIVE_AGENT_04', 'LIVE_AGENT_07']) {
           await seed(page, id);
           const initial = await page.evaluate(() => structuredClone(MistakeryApp.state));
           const label = await page.locator('[data-choice="left"]').innerText();
@@ -69,7 +69,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
           assert.equal(await page.locator('[data-sending-reply]').count(), 0);
           assert.equal(await page.evaluate(() => MistakeryApp.state.history.length), initial.history.length + 1);
           assert.equal(await page.evaluate(() => MistakeryApp.state.history.at(-1).side), 'left');
-          if (['LIVE_AGENT_01', 'LIVE_AGENT_03', 'LIVE_AGENT_04'].includes(id)) {
+          {
             assert.equal(await page.locator('[data-player-reply]').innerText(), label);
             const continued = await page.locator('[data-player-reply]').evaluate(node => {
               const animation = node.getAnimations()[0];
@@ -85,6 +85,37 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
           }
         }
         await page.close();
+      }
+    } finally { await browser.close(); }
+  });
+  test(`${name}: separate cards switch immediately without sending a founder bubble`, async () => {
+    const browser = await engine.launch();
+    try {
+      const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+      await page.goto(url); await page.waitForFunction(() => MistakeryApp?.view === 'playing');
+      await page.clock.install(); await page.clock.pauseAt(new Date());
+      for (const [id, side] of [
+        ['LIVE_AGENT_01', 'right'], ['LIVE_AGENT_02', 'left'], ['LIVE_AGENT_04B', 'left'],
+        ['LIVE_AGENT_05', 'left'], ['LIVE_AGENT_07B', 'left'], ['INFLUENCER_02', 'left'],
+        ['OPEN_INVESTOR', 'left'],
+      ]) {
+        await seed(page, id);
+        await page.locator(`[data-choice="${side}"]`).click();
+        assert.equal(await page.locator('[data-sending-reply]').count(), 0, `${id}/${side}: no send bubble`);
+        const resolved = await page.evaluate(() => structuredClone(MistakeryApp.state));
+        assert.notEqual(resolved.currentCardId, id, `${id}/${side}: immediate card switch`);
+        assert.equal(resolved.history.length, 1);
+        assert.equal(await page.locator('[data-player-reply]').count(), 0, 'no retained founder reply on a separate card');
+        await page.clock.runFor(200);
+        assert.deepEqual(await page.evaluate(() => MistakeryApp.state), resolved, 'no deferred extra action');
+      }
+      // The same source card can have a stitched route and a separate outcome.
+      for (const id of ['LIVE_AGENT_03', 'LIVE_AGENT_04', 'LIVE_AGENT_07']) {
+        await seed(page, id);
+        await page.locator('[data-choice="right"]').click();
+        assert.equal(await page.locator('[data-sending-reply]').count(), 1);
+        await page.clock.runFor(200);
+        assert.equal(await page.locator('[data-player-reply]').count(), 1);
       }
     } finally { await browser.close(); }
   });
