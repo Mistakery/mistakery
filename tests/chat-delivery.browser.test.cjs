@@ -80,14 +80,15 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await page.clock.runFor(1); assert.equal(await count(page), 2);
       assert.equal(await page.locator('[data-chat-current] img').count(), 1);
       assert.equal(await page.locator('button.typing-bubble').count(), 1);
-      await page.clock.runFor(500); assert.equal(await count(page), 3);
+      await page.clock.runFor(899); assert.equal(await count(page), 2);
+      await page.clock.runFor(1); assert.equal(await count(page), 3);
     } finally { await browser.close(); }
   });
   test(`${name}: short messages wait with dots rather than appearing in a silent rush`, async () => {
     const browser = await engine.launch();
     try {
       const page = await open(browser);
-      await seed(page, 'LIVE_AGENT_OUTCOME_2');
+      await seed(page, 'LIVE_AGENT_OUTCOME_0');
       assert.equal(await count(page), 1);
       assert.equal(await page.locator('button.typing-bubble').count(), 1);
       await page.clock.runFor(300); assert.equal(await count(page), 1);
@@ -103,10 +104,10 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.match(await page.locator('.typing-bubble').getAttribute('aria-label'), /@bigdeals is typing/);
       assert.equal(await page.locator('[data-choice]:disabled').count(), 2);
       if (name === 'Chromium') await page.screenshot({ path: '/tmp/mistakery-chat-typing-group.png', animations: 'disabled' });
-      await page.clock.runFor(599); assert.equal(await count(page), 1);
+      await page.clock.runFor(799); assert.equal(await count(page), 1);
       await page.clock.runFor(1); assert.equal(await count(page), 2);
       assert.match(await page.locator('.typing-bubble').getAttribute('aria-label'), /@hype_queen is typing/);
-      await page.clock.runFor(600); assert.equal(await count(page), 3);
+      await page.clock.runFor(800); assert.equal(await count(page), 3);
       assert.equal(await page.locator('.typing-bubble').count(), 0);
       assert.equal(await page.locator('[data-choice]:disabled').count(), 0);
     } finally { await browser.close(); }
@@ -143,7 +144,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await seed(page, 'INFLUENCER_02');
       assert.equal(await count(page), 1);
       await page.clock.runFor(200); await page.evaluate(() => MistakeryApp.render());
-      await page.clock.runFor(299); assert.equal(await count(page), 1);
+      await page.clock.runFor(499); assert.equal(await count(page), 1);
       await page.clock.runFor(1); assert.equal(await count(page), 2);
       await page.locator('button.typing-bubble').press('Enter');
       assert.equal(await count(page), 3);
@@ -151,7 +152,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await page.locator('button.typing-bubble').press('Space');
       await page.locator('[data-choice="right"]').click();
       assert.equal(await count(page), 1, 'scheduled review photo is immediate');
-      await page.clock.runFor(500);
+      await page.clock.runFor(900);
       await page.locator('[data-choice="left"]').click();
       assert.equal(await page.evaluate(() => MistakeryApp.state.currentCardId), 'INFLUENCER_07', 'contextual concession continues forward');
       await page.evaluate(() => { MistakeryApp.state.currentCardId = 'INFLUENCER_05'; MistakeryApp.influencerPreviousCardId = 'INFLUENCER_06'; MistakeryApp.render(); });
@@ -207,7 +208,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.equal(cards.length, 52);
       for (const card of cards) {
         await seed(page, card.id);
-        const budget = { LIVE_AGENT_03: 3500, LIVE_AGENT_05: 3000, LIVE_AGENT_07: 2500 }[card.id] || 2000;
+        const budget = { LIVE_AGENT_03: 3500, LIVE_AGENT_05: 3000, LIVE_AGENT_07: 2900 }[card.id] || 2500;
         await page.clock.runFor(budget);
         assert.equal(await page.locator('[data-choice]:disabled').count(), 0, `${card.id}: delivery budget`);
         assert.equal(await page.locator('.typing-bubble').count(), 0, `${card.id}: no stale typing`);

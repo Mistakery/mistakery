@@ -92,6 +92,17 @@
   let cardTypingTimer = null;
   let revealCardMessages = () => {};
   let cancelOutcomeImageMotion = () => {};
+  const arrivalAnimations = new Set();
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function cancelArrivalMotion() {
+    arrivalAnimations.forEach(animation => animation.cancel());
+    arrivalAnimations.clear();
+  }
+  ['pointerdown', 'wheel', 'keydown'].forEach(type => {
+    document.addEventListener(type, cancelArrivalMotion, { capture: true, passive: true });
+  });
+  window.addEventListener('resize', cancelArrivalMotion);
+  reducedMotion.addEventListener('change', cancelArrivalMotion);
   let padelImagesPreloaded = false;
   const INITIAL_RESOURCES = Object.freeze({ cash: 25, team: 60, customers: 15, founder: 65 });
   const OPTIMISTIC_RESOURCES = Object.freeze({ cash: 100, team: 100, customers: 100, founder: 100 });
@@ -166,6 +177,7 @@
   let continuationResizeObserver;
 
   function setView(view, shellStage = 'real') {
+    cancelArrivalMotion();
     cancelOutcomeImageMotion();
     if ($('[data-test-details]').open) $('[data-test-details]').close();
     window.clearTimeout(cardTypingTimer);
@@ -948,6 +960,7 @@
     }
     revealCardMessages = () => {
       if (!isCurrent() || delivery.delivered) return;
+      cancelArrivalMotion();
       pending.splice(0).forEach(node => {
         node.style.animationDelay = '';
         node.classList.remove('is-pop');
@@ -993,13 +1006,17 @@
     }
     function deliverNext() {
       if (!isCurrent() || delivery.delivered) return;
-      const positions = delivery.follow && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        ? Array.from(chat.querySelectorAll('[data-chat-current], [data-chat-history]'))
+      cancelArrivalMotion();
+      const animate = delivery.follow !== false && !reducedMotion.matches;
+      const positions = animate
+        ? Array.from(chat.querySelectorAll('[data-chat-current], [data-chat-history], [data-player-reply]'))
           .map(node => [node, node.offsetTop - chat.scrollTop]) : [];
+      const typingHeight = typing?.offsetHeight || 0;
       const previousPause = pauses[delivery.pauseIndex];
       const nextPause = pauses[++delivery.pauseIndex];
       const count = nextPause ? nextPause.after - previousPause.after : pending.length;
-      pending.splice(0, count).forEach(node => {
+      const arrived = pending.splice(0, count);
+      arrived.forEach(node => {
         node.style.animationDelay = '';
         append(node);
       });
@@ -1011,13 +1028,23 @@
         finish();
       }
       followDelivery();
-      // Keep existing bubbles visually in place, then ease into the new layout.
-      // Local offsets also work when the portrait stage is rotated.
-      positions.forEach(([node, before]) => {
-        const delta = before - (node.offsetTop - chat.scrollTop);
-        if (Math.abs(delta) > 1) node.animate([
-          { transform: `translateY(${delta}px)` }, { transform: 'none' },
-        ], { duration: 220, easing: 'ease-out' });
+      arrived.forEach(node => node.classList.remove('is-pop'));
+      if (!animate) return;
+      // One measured displacement and timeline for history, new bubbles and dots.
+      // Local coordinates also work in the rotated portrait stage. Never layer
+      // a separate CSS entrance onto the incoming bubble: it would change gaps.
+      const last = positions.at(-1);
+      const delta = last ? last[1] - (last[0].offsetTop - chat.scrollTop)
+        : Math.max(0, (arrived[0]?.offsetHeight || 0) - typingHeight);
+      const start = document.timeline.currentTime;
+      [...positions.map(([node]) => node), ...arrived, typing].filter(Boolean).forEach(node => {
+        const animation = node.animate([
+          { transform: `translateY(${delta}px)`, opacity: arrived.includes(node) ? 0 : 1 },
+          { transform: 'translateY(0)', opacity: 1 },
+        ], { duration: 200, easing: 'cubic-bezier(.2,0,0,1)' });
+        animation.startTime = start;
+        arrivalAnimations.add(animation);
+        animation.finished.then(() => arrivalAnimations.delete(animation), () => arrivalAnimations.delete(animation));
       });
     }
     showTyping();
@@ -1031,8 +1058,13 @@
     return nodes.slice(1).map((next, index) => {
       const previous = nodes[index];
       const changedAuthor = card.mode === 'team' && next.dataset.source !== previous.dataset.source;
+      // Brief reading room after the previous bubble, not simulated typing speed.
+      // Count message copy only (no nicknames/roles); photos need a longer glance.
+      const words = Array.from(previous.querySelectorAll('p')).map(p => p.textContent).join(' ').trim().split(/\s+/).length;
+      const media = previous.matches('.image-bubble, .media-placeholder') || previous.querySelector('.message-image, .media-placeholder');
+      const readingMs = media || words > 28 ? 900 : words > 12 ? 700 : 500;
       const durationMs = next.matches('.self-message') ? 0
-        : authored.find(pause => pause.after === index + 1)?.durationMs || (changedAuthor ? 600 : 500);
+        : authored.find(pause => pause.after === index + 1)?.durationMs || readingMs + (changedAuthor ? 100 : 0);
       return { after: index + 1, durationMs };
     }).filter(pause => pause.durationMs > 0);
   }

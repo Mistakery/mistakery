@@ -17,6 +17,11 @@ async function rotate(page, angle) {
   await page.waitForTimeout(80);
 }
 async function assertVisible(page, selector) {
+  // Containment is a settled-layout check. The coordinated arrival can still
+  // be entering from the chat edge; don't wait on the infinite typing dots.
+  await page.evaluate(() => Promise.all(document.getAnimations()
+    .filter(a => a.playState === 'running' && a.effect.getTiming().iterations !== Infinity)
+    .map(a => a.finished.catch(() => {}))));
   const node = typeof selector === 'string' ? page.locator(selector) : selector;
   const rect = await node.evaluate(n => {
     const a = n.getBoundingClientRect(), b = document.querySelector('[data-chat]').getBoundingClientRect();
