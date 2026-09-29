@@ -1,5 +1,5 @@
 (function initRoute(root, factory) {
-  const engine = typeof module === 'object' && module.exports ? require('./game.js') : root.MistakeryEngine;
+  const engine = typeof module === 'object' && module.exports ? require('../game.js') : root.MistakeryEngine;
   const api = factory(engine);
   if (typeof module === 'object' && module.exports) module.exports = api;
   root.MistakeryRoute = api;

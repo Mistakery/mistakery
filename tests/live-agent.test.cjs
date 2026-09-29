@@ -55,7 +55,7 @@ test('photo interlude is neutral and its continuation retains the original decis
 });
 
 test('Live Agent starts without opening flags and OPEN choices cannot choose a plot', () => {
-  const route = require('../route.js');
+  const route = require('../assets/route.js');
   const state = route.startRun(deck, { seed: 0, firstPlot: 'live_agent' });
   assert.equal(state.currentCardId, 'LIVE_AGENT_01');
   assert.deepEqual(engine.cardById(deck, 'LIVE_AGENT_01').requires, []);

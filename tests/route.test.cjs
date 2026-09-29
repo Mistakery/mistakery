@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const deck = require('../cards.json');
 const fs = require('node:fs');
 const path = require('node:path');
-const routePath = path.resolve(__dirname, '../route.js');
+const routePath = path.resolve(__dirname, '../assets/route.js');
 
 test('route module starts three seeded plots without an OPEN prerequisite', () => {
   assert.ok(fs.existsSync(routePath), 'Missing the shared story/filler route');

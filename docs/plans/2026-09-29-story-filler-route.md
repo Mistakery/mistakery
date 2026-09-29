@@ -2,7 +2,7 @@
 
 **Goal:** Share Saved → three shuffled plots → two 4–5-card filler gaps between regular play and `?test=route`.
 
-**Architecture:** A pure `route.js` state machine owns the seeded plot queue, hidden scores, world facts and filler selection. `game.js` remains the resource/choice primitive and supports archived cards; `app.js` renders the active route and restores complete snapshots. Existing message presentation is unchanged.
+**Architecture:** A pure `assets/route.js` state machine owns the seeded plot queue, hidden scores, world facts and filler selection. `game.js` remains the resource/choice primitive and supports archived cards; `app.js` renders the active route and restores complete snapshots. Existing message presentation is unchanged.
 
 **Tech stack:** Plain browser JavaScript, JSON deck, Node test runner, Playwright Chromium/WebKit.
 
@@ -34,3 +34,7 @@ Source: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQg
 - Normalize @error_404 references to the current @error404 identity in new copy. Correct the mismatched RU answer in Mom/investor B. Supply RU translations where the source omits them and fix MANTRAL → MANTRA.
 - Story openers must work independently, including after previous sales: references to zero sales become specific to the current campaign, and Padel's “first big client” becomes a prospective deal. Existing plot effects and probabilities stay intact; cash-positive product outcomes explicitly acknowledge payment in copy.
 - Keep existing portraits, message layout, shadows and photo sizes. College rival/free-user currently have no portrait assets; retain their existing initial avatars rather than invent replacements for approved characters.
+
+## Preview packaging
+
+The first deployment omitted a new root-level `route.js` while copying the new SVG under `assets/`. Its URL returned the SPA HTML fallback despite a successful Pages check. Keep the pure module at `assets/route.js`, preserve its script order after `game.js`, and verify published bytes plus a real browser route after deployment.

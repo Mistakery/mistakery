@@ -12,7 +12,8 @@ The route repeats indefinitely. Each cycle shuffles Live Agent, Influencer and P
 
 - `cards.json` holds the game deck and English copy. `cards.bundle.js` is its generated offline copy.
 - `MISTAKERY_CARDS_EN_RU.md` is the generated bilingual catalog.
-- `route.js` owns cycle order, filler eligibility, seeded selection and story handoffs. `game.js` supplies resource accounting and the archived deck runtime.
+- New browser modules live under `assets/`, which the Cloudflare preview publishes recursively.
+- `assets/route.js` owns cycle order, filler eligibility, seeded selection and story handoffs. `game.js` supplies resource accounting and the archived deck runtime.
 - `docs/core/` holds current world, character, tone, and rejected-pattern guidance. The character source PDF is in `docs/source/`.
 - `assets/*.webp` are used by the game. The three Padel/CEO PNGs are high-resolution image originals; Phosphor icon attribution is in `assets/icons/PHOSPHOR-LICENSE.txt`.
 

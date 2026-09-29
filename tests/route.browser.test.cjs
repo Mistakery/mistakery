@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const { chromium, webkit } = require('playwright');
-const route = require('../route.js');
+const route = require('../assets/route.js');
 const deck = require('../cards.json');
 const url = pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href;
 const seeds = [...new Map(Array.from({ length: 80 }, (_, seed) => [route.startRun(deck, { seed: String(seed) }).route.order.join(','), seed])).values()];
