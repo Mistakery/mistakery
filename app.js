@@ -1053,9 +1053,13 @@
 
   function defaultTypingPauses(card, nodes) {
     const authored = card.typingPauses || (card.typingPause ? [card.typingPause] : []);
-    if (nodes.length === 1 && !nodes[0].matches('.self-message, .image-bubble')
-      && !nodes[0].querySelector('.message-image')) return [{ after: 0, durationMs: 500 }];
-    return nodes.slice(1).map((next, index) => {
+    const firstText = nodes[0] && !nodes[0].matches('.self-message, .image-bubble')
+      && !nodes[0].querySelector('.message-image');
+    const previousCard = engine.cardById(app.deck, app.state.history.at(-1)?.cardId);
+    // A new correspondent gets a brief lead-in; ongoing threads keep their flow.
+    const opening = firstText && (nodes.length === 1 || previousCard && previousCard.source !== card.source)
+      ? [{ after: 0, durationMs: 500 }] : [];
+    return opening.concat(nodes.slice(1).map((next, index) => {
       const previous = nodes[index];
       const changedAuthor = card.mode === 'team' && next.dataset.source !== previous.dataset.source;
       // Brief reading room after the previous bubble, not simulated typing speed.
@@ -1066,7 +1070,7 @@
       const durationMs = next.matches('.self-message') ? 0
         : authored.find(pause => pause.after === index + 1)?.durationMs || readingMs + (changedAuthor ? 100 : 0);
       return { after: index + 1, durationMs };
-    }).filter(pause => pause.durationMs > 0);
+    }).filter(pause => pause.durationMs > 0));
   }
 
   function influencerChoicesFor(card) {

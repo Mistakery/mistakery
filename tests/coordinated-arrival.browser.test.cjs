@@ -45,6 +45,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
           ['INFLUENCER_02'], ['INFLUENCER_08'], ['INFLUENCER_02A'],
           ['LIVE_AGENT_02', 'LIVE_AGENT_01'], ['LIVE_AGENT_04', 'LIVE_AGENT_03'],
           ['LIVE_AGENT_04B', 'LIVE_AGENT_04'], ['LIVE_AGENT_07B', 'LIVE_AGENT_07'],
+          ['LIVE_AGENT_03', 'LIVE_AGENT_02'],
         ];
         for (const [card, previous] of scenes) {
           await seed(page, previous || card);
@@ -53,7 +54,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
             await page.locator('[data-choice="left"]').click();
             await page.waitForTimeout(350);
             assert.equal(await page.locator('[data-scene]').getAttribute('data-active-card'), card);
-            assert.equal(await page.locator('[data-player-reply]').count(), 1);
+            assert.equal(await page.locator('[data-player-reply]').count(), card === 'LIVE_AGENT_03' ? 0 : 1);
           }
           while (await page.evaluate(() => !MistakeryApp.cardDelivery.delivered)) {
             await deliver(page);
@@ -102,6 +103,54 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
         assert.deepEqual(errors, []);
         await page.close();
       }
+    } finally { await browser.close(); }
+  });
+  test(`${name}: changing chats gives the first incoming text a short lead-in without delaying continuations`, async () => {
+    const browser = await engine.launch();
+    try {
+      const page = await open(browser);
+      for (const [previous, card, nextPause] of [
+        ['LIVE_AGENT_02', 'LIVE_AGENT_03', 1000],
+        ['LIVE_AGENT_04B', 'LIVE_AGENT_05', 500],
+        ['LIVE_AGENT_06', 'LIVE_AGENT_07', 2000],
+        ['INFLUENCER_01', 'INFLUENCER_02', 700],
+      ]) {
+        await seed(page, previous);
+        await page.locator('button.typing-bubble').press('Enter');
+        await page.locator('[data-choice="left"]').click();
+        assert.equal(await page.locator('[data-scene]').getAttribute('data-active-card'), card);
+        assert.equal(await page.locator('[data-chat-current]').count(), 0, `${card}: first wait`);
+        assert.equal(await page.locator('.typing-bubble i').count(), 3);
+        const state = await page.evaluate(() => structuredClone(MistakeryApp.state));
+        await page.clock.runFor(250);
+        await page.evaluate(() => MistakeryApp.render());
+        await page.clock.runFor(249);
+        assert.equal(await page.locator('[data-chat-current]').count(), 0, `${card}: original deadline survives rerender`);
+        await page.clock.runFor(1);
+        assert.equal(await page.locator('[data-chat-current]').count(), 1);
+        assert.deepEqual(await page.evaluate(() => MistakeryApp.state), state);
+        assert.equal(await page.evaluate(() => MistakeryApp.cardDelivery.deadline - Date.now()), nextPause,
+          `${card}: subsequent reading/authored pause unchanged`);
+        await page.locator('button.typing-bubble').press('Space');
+        assert.deepEqual(await page.evaluate(() => MistakeryApp.state), state);
+      }
+      // Same-thread continuation and the photo entry still appear immediately.
+      for (const [previous, card] of [['LIVE_AGENT_07', 'LIVE_AGENT_07B'], ['LIVE_AGENT_03', 'LIVE_AGENT_04'], ['INFLUENCER_04', 'INFLUENCER_05']]) {
+        await seed(page, previous);
+        await page.locator('button.typing-bubble').press('Enter');
+        await page.locator(`[data-choice="${previous === 'INFLUENCER_04' ? 'right' : 'left'}"]`).click();
+        assert.equal(await page.locator('[data-scene]').getAttribute('data-active-card'), card);
+        assert.equal(await page.locator('[data-chat-current]').count(), 1);
+      }
+      await seed(page, 'LIVE_AGENT_02');
+      await page.locator('button.typing-bubble').press('Enter');
+      await page.locator('[data-choice="left"]').click();
+      await page.locator('button.typing-bubble').press('Enter');
+      await page.clock.runFor(300);
+      await page.locator('[data-choice="left"]').click();
+      await page.locator('[data-test-back]').click();
+      assert.equal(await page.locator('[data-chat-current]').count(), 4, 'Back does not repeat the lead-in');
+      assert.equal(await page.locator('.typing-bubble').count(), 0);
     } finally { await browser.close(); }
   });
   test(`${name}: arrival cancellation respects input, resize, rerender, navigation and reduced motion`, async () => {

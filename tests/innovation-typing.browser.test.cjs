@@ -31,6 +31,8 @@ test('innovation DM delivers each bubble separately with its dramatic pause; rer
       });
       await page.clock.runFor(500);
       await page.locator('[data-choice="left"]').click();
+      assert.deepEqual(await messages(page), [], 'new correspondent starts with dots');
+      await page.clock.runFor(500);
       assert.deepEqual(await messages(page), expected.slice(0, 1));
       await page.clock.runFor(500);
       assert.deepEqual(await messages(page), expected.slice(0, 2));
