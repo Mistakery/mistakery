@@ -61,6 +61,7 @@
     view: 'loading',
     onboardingIndex: 0,
     noteIndex: 0,
+    savedDelivery: null,
     locked: false,
     introTypingTimer: null,
     cardDelivery: null,
@@ -90,6 +91,7 @@
   const presentedOutcomes = new WeakSet();
   let choiceUnlockTimer = null;
   let cardTypingTimer = null;
+  let savedDeliveryTimer = null;
   let founderSendTimer = null;
   let sentReplyPositions = null;
   let revealCardMessages = () => {};
@@ -157,7 +159,7 @@
       chip: 'Today',
       messages: [
         '<strong>5 MONTHS AS A FOUNDER 🚀</strong>\n<b>1.</b> Never return to the office ✅\n<b>2.</b> Bro as a cofounder ✅\n<b>3.</b> Padel (CEO networking) ✅\n<b>4.</b> Built AI B2B SaaS. B2B sales - easy money ✅\n<b>5.</b> Brand: B2BuyerSpyer ✅\n<b>6.</b> Slogan: We find the buyer. You light the fire 🔥✅\n<b>7.</b> Team grinding 24/7. LEGENDS!! ✅\n<b>8.</b> Landed a HUGE investor ✅',
-        '<strong>IN PROGRESS:</strong>\n<b>9.</b> Unicorn 🦄🎯 (waiting for the market to wake up)',
+        "<strong>IN PROGRESS:</strong>\n<b>9.</b> Unicorn 🦄🎯 (30 DAYS UNTIL WE'RE BROKE!!)",
       ],
       buttons: ['WE’RE SO BACK', 'it’s so over'],
     },
@@ -189,6 +191,11 @@
   let continuationResizeObserver;
 
   function setView(view, shellStage = 'real') {
+    if (view !== 'saved') {
+      window.clearTimeout(savedDeliveryTimer);
+      savedDeliveryTimer = null;
+      app.savedDelivery = null;
+    }
     cancelFounderSend();
     sentReplyPositions = null;
     cancelArrivalMotion();
@@ -222,6 +229,7 @@
       state: structuredClone(app.state),
       view: app.view,
       noteIndex: app.noteIndex,
+      savedDelivery: app.savedDelivery ? { ...app.savedDelivery } : null,
       padelCeoScore: app.padelCeoScore,
       influencerPreviousCardId: app.influencerPreviousCardId,
       liveAgentScore: app.liveAgentScore,
@@ -547,16 +555,32 @@
     return withoutTerminalPeriod(text).split('\n').map((line) => `<span>${line ? typography(line) : '&nbsp;'}</span>`).join('');
   }
 
+  function savedMessageMarkup(message) {
+    return `<div class="message note-message is-pop"><p>${noteLineMarkup(message)}</p><span class="stamp">15:54</span></div>`;
+  }
+
+  function chooseSaved() {
+    recordTestStep();
+    if (app.noteIndex === 0) startSaved(1);
+    else beginRun();
+  }
+
   function startSaved(index) {
+    window.clearTimeout(savedDeliveryTimer);
+    savedDeliveryTimer = null;
     app.noteIndex = index;
+    app.savedDelivery = index === 1 ? { deadline: Date.now() + 1000, delivered: false } : null;
     renderSaved();
   }
 
   function renderSaved() {
     const note = NOTE_SCREENS[app.noteIndex];
-    const messages = note.messages.map((message) => (
-      `<div class="message note-message is-pop"><p>${noteLineMarkup(message)}</p><span class="stamp">15:54</span></div>`
-    )).join('');
+    const delivery = app.savedDelivery;
+    const delivered = app.noteIndex !== 1 || delivery?.delivered || Date.now() >= delivery.deadline;
+    if (delivery && delivered) delivery.delivered = true;
+    window.clearTimeout(savedDeliveryTimer);
+    savedDeliveryTimer = null;
+    const messages = note.messages.slice(0, delivered ? undefined : 1).map(savedMessageMarkup).join('');
     setView('saved', 'real');
     setSceneMode('personal');
     renderResources(app.state.resources);
@@ -570,11 +594,16 @@
         <div class="message-stack" data-message-stack>${messages}</div>
       </div>
       <div class="message-clearance" aria-hidden="true"></div>`;
-    setChoices(note.buttons, () => {
-      recordTestStep();
-      if (app.noteIndex === 0) startSaved(1);
-      else beginRun();
-    });
+    setChoices(note.buttons, chooseSaved, { disabled: !delivered });
+    if (!delivered) {
+      savedDeliveryTimer = window.setTimeout(() => {
+        if (app.view !== 'saved' || app.noteIndex !== 1 || app.savedDelivery !== delivery) return;
+        delivery.delivered = true;
+        savedDeliveryTimer = null;
+        $('[data-message-stack]').insertAdjacentHTML('beforeend', savedMessageMarkup(note.messages[1]));
+        setChoices(note.buttons, chooseSaved);
+      }, Math.max(0, delivery.deadline - Date.now()));
+    }
   }
 
   function beginRun() {

@@ -471,7 +471,7 @@ test('onboarding and Saved Messages retain the approved copy and stages', () => 
     '<b>2.</b> Bro as a cofounder ✅',
     '<b>3.</b> Padel (CEO networking) ✅',
     '<b>4.</b> Built AI B2B SaaS. B2B sales - easy money ✅',
-    '<b>9.</b> Unicorn 🦄🎯 (waiting for the market to wake up)',
+    '<b>9.</b> Unicorn 🦄🎯 (30 DAYS UNTIL WE\'RE BROKE!!)',
     'Right on track',
     'Slightly behind',
     'WE’RE SO BACK',
