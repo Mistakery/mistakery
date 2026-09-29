@@ -57,6 +57,11 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
             assert.equal(await page.locator('[data-player-reply]').count(), card === 'LIVE_AGENT_03' ? 0 : 1);
           }
           while (await page.evaluate(() => !MistakeryApp.cardDelivery.delivered)) {
+            const before = await page.evaluate(() => {
+              const first = !document.querySelector('[data-chat-current], [data-chat-history], [data-player-reply]');
+              const row = document.querySelector('.typing-row, .typing-bubble');
+              return { first, top: row.offsetTop - document.querySelector('[data-chat]').scrollTop };
+            });
             await deliver(page);
             const sample = await page.evaluate(() => {
               const nodes = [...document.querySelectorAll('[data-chat-current], [data-chat-history], [data-player-reply], .typing-row, .message-stack > .typing-bubble')];
@@ -73,7 +78,11 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
                   const m = new DOMMatrix(getComputedStyle(node).transform);
                   return [m.m42, m.a, m.d];
                 }), gaps: bounds.slice(1).map((b, i) => [b.left - bounds[i].right, b.top - bounds[i].bottom]),
-                opacity: Number(getComputedStyle(fresh).opacity) };
+                opacity: Number(getComputedStyle(fresh).opacity),
+                freshTop: fresh.offsetTop - document.querySelector('[data-chat]').scrollTop
+                  + new DOMMatrix(getComputedStyle(fresh).transform).m42,
+                typingOpacity: nodes.at(-1).matches('.typing-row, .typing-bubble')
+                  ? Number(getComputedStyle(nodes.at(-1)).opacity) : null };
               });
               all.forEach(a => a.finish());
               return { timings, points };
@@ -96,6 +105,12 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
             }
             assert.equal(sample.points[0].opacity, 0, label);
             assert.equal(sample.points[4].opacity, 1, label);
+            if (before.first) assert.ok(Math.abs(sample.points[0].freshTop - before.top) < 1,
+              `${label}: first bubble starts where the old dots were`);
+            if (sample.points[0].typingOpacity !== null) {
+              assert.equal(sample.points[0].typingOpacity, 0, `${label}: next dots must not jump down while visible`);
+              assert.equal(sample.points[4].typingOpacity, 1, label);
+            }
             const dots = await page.locator('.typing-bubble i').count();
             assert.ok(dots === 0 || dots === 3, `${label}: original dots`);
           }
@@ -103,6 +118,51 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
         assert.deepEqual(errors, []);
         await page.close();
       }
+    } finally { await browser.close(); }
+  });
+  test(`${name}: bubble shadows keep the same paint order when arrival transforms end`, async () => {
+    const browser = await engine.launch();
+    try {
+      const page = await open(browser);
+      for (const card of ['LIVE_AGENT_05', 'LIVE_AGENT_01']) {
+        await seed(page, card); await deliver(page);
+        await page.evaluate(() => {
+          const all = document.getAnimations();
+          window.shadowArrivals = all.filter(a => a.playState === 'running' && a.effect.getTiming().iterations !== Infinity);
+          all.forEach(a => a.pause());
+          window.shadowArrivals.forEach(a => {
+            // Isolate paint order from geometry/opacity: identity transforms still
+            // create a stacking context while the transition is active.
+            a.effect.setKeyframes([{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(0)', opacity: 1 }]);
+            a.currentTime = 100;
+          });
+        });
+        // Sample the opaque top surface, where the preceding bubble's shadow
+        // used to paint over the dots. Exclude blur-edge/portrait rasterization.
+        const bounds = await page.locator('.typing-bubble').boundingBox();
+        const clip = { x: bounds.x + 12, y: bounds.y + 4, width: bounds.width - 24, height: 3 };
+        const during = await page.screenshot({ clip });
+        await page.evaluate(() => window.shadowArrivals.forEach(a => a.cancel()));
+        const after = await page.screenshot({ clip });
+        assert.ok(during.equals(after), `${card}: finishing transforms must not repaint shadows over the dots`);
+      }
+    } finally { await browser.close(); }
+  });
+  test(`${name}: a new team author can open with dots while outgoing messages stay immediate`, async () => {
+    const browser = await engine.launch();
+    try {
+      const page = await open(browser);
+      await seed(page, 'LIVE_AGENT_01');
+      assert.equal(await page.locator('[data-chat-current]').count(), 1);
+      await page.locator('button.typing-bubble').press('Enter');
+      await page.locator('[data-choice="left"]').click();
+      assert.equal(await page.locator('[data-chat-current]').count(), 0);
+      assert.match(await page.locator('.typing-bubble').getAttribute('aria-label'), /@error404/);
+      assert.equal(await page.locator('[data-player-reply]').count(), 1);
+      await page.clock.runFor(499);
+      assert.equal(await page.locator('[data-chat-current]').count(), 0);
+      await page.clock.runFor(1);
+      assert.equal(await page.locator('[data-chat-current]').count(), 1);
     } finally { await browser.close(); }
   });
   test(`${name}: changing chats gives the first incoming text a short lead-in without delaying continuations`, async () => {

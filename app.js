@@ -1011,7 +1011,7 @@
       const positions = animate
         ? Array.from(chat.querySelectorAll('[data-chat-current], [data-chat-history], [data-player-reply]'))
           .map(node => [node, node.offsetTop - chat.scrollTop]) : [];
-      const typingHeight = typing?.offsetHeight || 0;
+      const typingTop = typing ? typing.offsetTop - chat.scrollTop : 0;
       const previousPause = pauses[delivery.pauseIndex];
       const nextPause = pauses[++delivery.pauseIndex];
       const count = nextPause ? nextPause.after - previousPause.after : pending.length;
@@ -1035,11 +1035,11 @@
       // a separate CSS entrance onto the incoming bubble: it would change gaps.
       const last = positions.at(-1);
       const delta = last ? last[1] - (last[0].offsetTop - chat.scrollTop)
-        : Math.max(0, (arrived[0]?.offsetHeight || 0) - typingHeight);
+        : typingTop - (arrived[0].offsetTop - chat.scrollTop);
       const start = document.timeline.currentTime;
       [...positions.map(([node]) => node), ...arrived, typing].filter(Boolean).forEach(node => {
         const animation = node.animate([
-          { transform: `translateY(${delta}px)`, opacity: arrived.includes(node) ? 0 : 1 },
+          { transform: `translateY(${delta}px)`, opacity: arrived.includes(node) || node === typing ? 0 : 1 },
           { transform: 'translateY(0)', opacity: 1 },
         ], { duration: 200, easing: 'cubic-bezier(.2,0,0,1)' });
         animation.startTime = start;
@@ -1056,8 +1056,10 @@
     const firstText = nodes[0] && !nodes[0].matches('.self-message, .image-bubble')
       && !nodes[0].querySelector('.message-image');
     const previousCard = engine.cardById(app.deck, app.state.history.at(-1)?.cardId);
-    // A new correspondent gets a brief lead-in; ongoing threads keep their flow.
-    const opening = firstText && (nodes.length === 1 || previousCard && previousCard.source !== card.source)
+    // Briefly cue a new conversation or a different speaker taking over a team thread.
+    const newTeamAuthor = card.mode === 'team' && previousCard?.source === card.source
+      && previousCard.messages?.at(-1)?.source !== nodes[0]?.dataset.source;
+    const opening = firstText && (nodes.length === 1 || newTeamAuthor || previousCard && previousCard.source !== card.source)
       ? [{ after: 0, durationMs: 500 }] : [];
     return opening.concat(nodes.slice(1).map((next, index) => {
       const previous = nodes[index];

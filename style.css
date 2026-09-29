@@ -439,6 +439,8 @@ button.typing-bubble:focus-visible { outline: 2px solid var(--blue); outline-off
 .team-bubble.typing-bubble { display: block; width: auto; min-width: 92px; text-align: left; }
 .team-bubble.typing-bubble .typing-dots { padding-block: 5px; }
 .typing-row { flex-shrink: 0; }
+/* Keep shadow paint order stable when temporary arrival transforms disappear. */
+.phone[data-view="playing"] :is(.message, .self-message, .team-row, .typing-bubble) { isolation: isolate; }
 .typing-bubble i {
   width: 7px;
   height: 7px;
