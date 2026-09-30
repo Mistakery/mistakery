@@ -41,4 +41,6 @@ The first deployment omitted a new root-level `route.js` while copying the new S
 
 ## Filler messenger continuations (owner update, 2026-09-30)
 
-Extend the existing chat-retention rule to the selected direct link between filler cards of the same unit, sender and messenger mode. Reuse the current founder-send animation, retained context, typing, Back and timer cancellation for each link, including a third card. Preserve separate chats when the sender changes. Split FILL_MANTRA into three incoming bubbles with reading pauses, keeping one card, the same replies and effects, and matching EN/RU paragraph boundaries.
+Extend the existing chat-retention rule to the selected direct link between filler cards of the same unit, conversation and messenger mode. Reuse the current founder-send animation, retained context, typing, Back and timer cancellation for each link, including a third card. Preserve separate chats when a personal-chat correspondent changes. Split FILL_MANTRA into three incoming bubbles with reading pauses, keeping one card, the same replies and effects, and matching EN/RU paragraph boundaries.
+
+The payroll AI subscription exchange now takes place in Dream Team: `FILL_PAYROLL_1` has the investor as message author, the selected founder reply stays in history, and `FILL_PAYROLL_2` continues with the developer in the same team thread. Choices, branches and effects are unchanged. `OPEN_BOSS` uses three bubbles (greeting, five-month reminder, customer question), with matching EN/RU breaks and two 500 ms reading pauses.

@@ -371,7 +371,7 @@
       "id": "OPEN_BOSS",
       "kind": "filler",
       "source": "@business1",
-      "text": "Hey 👋\nJust a friendly check-in.\nIt's been five months since you left to play businessman.\nHas your revolutionary AI actually found a customer yet?",
+      "text": "Hey 👋\nJust a friendly check-in.\n\nIt's been five months since you left to play businessman.\n\nHas your revolutionary AI actually found a customer yet?",
       "actor_action": "The ex-boss counts the months out loud and asks the one question the company cannot answer.",
       "player_decision": "Postpone the conversation or answer with bravado.",
       "oncePerRun": true,
@@ -3860,10 +3860,9 @@
     {
       "id": "FILL_PAYROLL_1",
       "kind": "filler",
-      "source": "@unicorn_hunter",
+      "source": "dream_team",
       "continuation": "forced",
       "oncePerRun": true,
-      "text": "PAID FOR THE TOP AI. MAYBE YOU’LL FINALLY GET SHIT DONE\nYOUR GUYS WORK FOR THE SUB NOW\nNO REVENUE = NO PAYROLL",
       "filler": {
         "unit": "payroll",
         "role": "entry",
@@ -3889,15 +3888,26 @@
       "excludes": [
         "ever_customer",
         "optout_paid"
+      ],
+      "mode": "team",
+      "participants": [
+        "@unicorn_hunter",
+        "@error404"
+      ],
+      "messages": [
+        {
+          "direction": "incoming",
+          "source": "@unicorn_hunter",
+          "text": "PAID FOR THE TOP AI. MAYBE YOU’LL FINALLY GET SHIT DONE\nYOUR GUYS WORK FOR THE SUB NOW\nNO REVENUE = NO PAYROLL"
+        }
       ]
     },
     {
       "id": "FILL_PAYROLL_2",
       "kind": "filler",
-      "source": "@error404",
+      "source": "dream_team",
       "continuation": "forced",
       "oncePerRun": true,
-      "text": "cool. go prompt your magic AI to work past 5 PM.\nzero overtime from me.",
       "filler": {
         "unit": "payroll",
         "role": "followup",
@@ -3917,7 +3927,19 @@
             "team": -3
           }
         }
-      }
+      },
+      "mode": "team",
+      "participants": [
+        "@unicorn_hunter",
+        "@error404"
+      ],
+      "messages": [
+        {
+          "direction": "incoming",
+          "source": "@error404",
+          "text": "cool. go prompt your magic AI to work past 5 PM.\nzero overtime from me."
+        }
+      ]
     },
     {
       "id": "FILL_MOM_CALL_1",
@@ -4906,7 +4928,7 @@
       "right": "Маркетинг, красиво подайте"
     },
     "OPEN_BOSS": {
-      "text": "Привет 👋\nПросто по-дружески узнать, как дела.\nПять месяцев прошло с тех пор, как ты ушёл играть в бизнесмена.\nТвой революционный ИИ уже нашёл хоть одного клиента?",
+      "text": "Привет 👋\nПросто по-дружески узнать, как дела.\n\nПять месяцев прошло с тех пор, как ты ушёл играть в бизнесмена.\n\nТвой революционный ИИ уже нашёл хоть одного клиента?",
       "left": "На встречах. Позже поговорим",
       "right": "Мы всех рвём!!"
     },

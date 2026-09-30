@@ -32,12 +32,15 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         ['FILL_COMA_1', 'left', 'FILL_COMA_2A', true], ['FILL_COMA_1', 'right', 'FILL_COMA_2B', true],
         ['FILL_SALES_1', 'left', 'FILL_SALES_2', true], ['FILL_DOMAIN_1', 'right', 'FILL_DOMAIN_2', true],
         ['FILL_POLICE_1', 'left', 'FILL_POLICE_2', true], ['FILL_POLICE_1', 'right', 'FILL_POLICE_2', true],
-        ['FILL_PAYROLL_1', 'left', 'FILL_PAYROLL_2', false],
+        ['FILL_PAYROLL_1', 'left', 'FILL_PAYROLL_2', true],
         ['FILL_MOM_CALL_1', 'left', 'FILL_MOM_CALL_2', false],
         ['FILL_VIDEO_1', 'left', 'FILL_VIDEO_2', false], ['FILL_VIDEO_1', 'right', 'FILL_VIDEO_2', false],
         ['FILL_SALES_1', 'right', null, false], ['FILL_DOMAIN_1', 'left', null, false],
       ]) {
         await seed(page, id); await page.clock.runFor(6000);
+        if (id === 'FILL_PAYROLL_1') {
+          assert.equal(await page.locator('[data-chat-current][data-source="@unicorn_hunter"]').count(), 1);
+        }
         const before = await snapshot(page);
         const oldMessages = (await page.locator('[data-chat-current]').allTextContents()).slice(-2);
         const label = await page.locator(`[data-choice=${side}]`).innerText();
@@ -54,6 +57,11 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         const after = await snapshot(page);
         if (target) assert.equal(after.currentCardId, target);
         else assert.notEqual(after.currentCardId, id);
+        if (id === 'FILL_PAYROLL_1') {
+          await page.clock.runFor(6000);
+          assert.equal(await page.locator('[data-chat-history][data-source="@unicorn_hunter"]').count(), 1);
+          assert.equal(await page.locator('[data-chat-current][data-source="@error404"]').count(), 1);
+        }
         assert.equal(after.history.length, 1);
         await page.clock.runFor(6000);
         assert.equal(await page.locator('[data-choice=left]').isEnabled(), true);
@@ -106,19 +114,22 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.equal(await page.locator('[data-sending-reply]').count(), 0);
     } finally { await browser.close(); }
   });
-  test(`${name}: investor mantra arrives as three messages inside one card`, async () => {
+  test(`${name}: investor mantra and ex-boss arrive as three messages inside their card`, async () => {
     const browser = await type.launch();
     try {
-      const page = await open(browser); await seed(page, 'FILL_MANTRA');
-      assert.equal(await page.locator('[data-chat-current]').count(), 1);
-      assert.equal(await page.locator('[data-choice=left]').isDisabled(), true);
-      await page.clock.runFor(499); assert.equal(await page.locator('[data-chat-current]').count(), 1);
-      await page.clock.runFor(1); assert.equal(await page.locator('[data-chat-current]').count(), 2);
-      await page.clock.runFor(499); assert.equal(await page.locator('[data-choice=left]').isDisabled(), true);
-      await page.clock.runFor(1); assert.equal(await page.locator('[data-chat-current]').count(), 3);
-      assert.equal((await snapshot(page)).currentCardId, 'FILL_MANTRA');
-      assert.equal((await snapshot(page)).history.length, 0);
-      assert.equal(await page.locator('[data-choice=left]').isEnabled(), true);
+      const page = await open(browser);
+      for (const id of ['FILL_MANTRA', 'OPEN_BOSS']) {
+        await seed(page, id);
+        assert.equal(await page.locator('[data-chat-current]').count(), 1);
+        assert.equal(await page.locator('[data-choice=left]').isDisabled(), true);
+        await page.clock.runFor(499); assert.equal(await page.locator('[data-chat-current]').count(), 1);
+        await page.clock.runFor(1); assert.equal(await page.locator('[data-chat-current]').count(), 2);
+        await page.clock.runFor(499); assert.equal(await page.locator('[data-choice=left]').isDisabled(), true);
+        await page.clock.runFor(1); assert.equal(await page.locator('[data-chat-current]').count(), 3);
+        assert.equal((await snapshot(page)).currentCardId, id);
+        assert.equal((await snapshot(page)).history.length, 0);
+        assert.equal(await page.locator('[data-choice=left]').isEnabled(), true);
+      }
     } finally { await browser.close(); }
   });
 }
