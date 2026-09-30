@@ -1,4 +1,5 @@
 const test = require('node:test');
+const { revealMessages } = require('./chat-delivery.fixture.cjs');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -12,7 +13,7 @@ async function seed(page, id, score = 0, resources = base, draws = [.99]) {
   await page.evaluate(({ id, score, resources, draws }) => {
     const a = window.MistakeryApp;
     clearTimeout(a.introTypingTimer);
-    a.state = window.MistakeryEngine.startRun(a.deck);
+    a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null };
     a.state.currentCardId = id;
     a.state.resources = resources;
     a.state.schedulerResources = { ...resources };
@@ -25,6 +26,7 @@ async function seed(page, id, score = 0, resources = base, draws = [.99]) {
     Math.random = () => draws[window.draws++] ?? .99;
     a.render();
   }, { id, score, resources, draws });
+  await revealMessages(page);
 }
 async function click(page, side) {
   await page.waitForFunction(() => !window.MistakeryApp.locked);
@@ -52,7 +54,7 @@ test('Padel decisions and each outcome apply once, preview resources, and preser
   try {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
     await page.goto(`${url}?story=live-agent`);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
     for (const [id, effects] of Object.entries(decisions).filter(([id]) => id !== 'IRL_PADEL_06')) {
       for (const [index, side] of ['left', 'right'].entries()) {
         await seed(page, id);
@@ -79,7 +81,7 @@ test('Padel decisions and each outcome apply once, preview resources, and preser
       await page.evaluate(() => window.MistakeryApp.render());
       assert.deepEqual((await state(page)).resources, entered.resources);
       await click(page, 'left');
-      assert.equal((await state(page)).view, 'saved');
+      assert.equal((await state(page)).view, 'playing');
       assert.deepEqual((await state(page)).resources, sum(entered.resources));
       await page.locator('[data-test-back]').click();
       assert.deepEqual((await state(page)).resources, entered.resources, 'Back does not reapply outcome effects');
@@ -96,7 +98,7 @@ test('zero resource boundaries stay playable without crises or double refusal pe
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     await page.goto(`${url}?story=live-agent`);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
     for (const cash of [40, 25, 10, 0]) {
       await seed(page, 'PADEL_INVITE', 0, { ...base, cash });
       await click(page, 'right');
@@ -107,7 +109,7 @@ test('zero resource boundaries stay playable without crises or double refusal pe
       assert.equal(outcome.gameOver, false);
       await click(page, 'right');
       const finished = await state(page);
-      assert.equal(finished.view, 'saved');
+      assert.equal(finished.view, 'playing');
       assert.deepEqual(finished.resources, sum(outcome.resources));
       assert.equal(finished.activeCrisisId, null);
       assert.equal(finished.gameOver, false);

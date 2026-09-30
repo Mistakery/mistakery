@@ -5,8 +5,7 @@ const { pathToFileURL } = require('node:url');
 const path = require('node:path');
 const deck = require('../cards.json');
 const url = process.env.MISTAKERY_TEST_URL || pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href;
-const appSource = require('node:fs').readFileSync(path.resolve(__dirname, '..', 'app.js'), 'utf8');
-const ids = [...appSource.match(/const ACTIVE_CARD_IDS[^[]*\[([\s\S]*?)\]\);/)[1].matchAll(/'([^']+)'/g)].map(m=>m[1]);
+const ids = deck.cards.filter(card => card.plot || card.filler).map(card => card.id);
 test('Russian reference covers every active card, both replies and contextual variants', () => {
   for(const id of [...ids,'SAVED_01_PLAN','SAVED_02_UPDATE']) {
     const ru=deck.testTranslations?.[id];
@@ -22,7 +21,7 @@ async function state(page) {return page.evaluate(()=>({state:window.MistakeryApp
 async function seed(page,id,previous='INFLUENCER_04',score=0) {
   await page.evaluate(({id,previous,score})=>{
     const a=window.MistakeryApp;clearTimeout(a.introTypingTimer);
-    a.state=window.MistakeryEngine.startRun(a.deck);a.state.currentCardId=id;
+    a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null };a.state.currentCardId=id;
     a.state.resources={cash:50,team:50,customers:50,founder:50};a.state.schedulerResources={...a.state.resources};
     a.influencerPreviousCardId=previous;a.liveAgentScore=5;a.padelCeoScore=score;
     a.locked=false;a.view='playing';window.testDraws=0;Math.random=()=>{window.testDraws++;return .99;};a.render();
@@ -33,9 +32,9 @@ test('test-only translation dialog is readable, contextual and read-only across 
   try {
     const page=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
-    await page.goto(url);await page.waitForFunction(()=>window.MistakeryApp?.deck);
+    await page.goto(url);await page.waitForFunction(()=>window.MistakeryApp?.deck && window.MistakeryApp.view !== 'loading');
     assert.equal(await page.locator('[data-test-inspect]').isVisible(),false);
-    await page.goto(`${url}?story=live-agent`);await page.waitForFunction(()=>window.MistakeryApp?.deck);
+    await page.goto(`${url}?story=live-agent`);await page.waitForFunction(()=>window.MistakeryApp?.deck && window.MistakeryApp.view !== 'loading');
     for(const width of [390,320]) {
       await page.setViewportSize({width,height:width===390?844:650});
       for(const id of ids) {
@@ -90,7 +89,8 @@ test('test-only translation dialog is readable, contextual and read-only across 
     await page.keyboard.press('Escape');
     await page.locator('[data-choice="left"]').click();
     await page.locator('[data-test-inspect]').click();
-    assert.match(await page.locator('[data-test-details]').innerText(),/Навигация не меняет ресурсы/);
+    assert.equal(await page.evaluate(() => MistakeryApp.state.route.phase), 'fillers');
+    assert.match(await page.locator('[data-test-details]').innerText(),/Cash −0,5/);
     assert.deepEqual(errors,[]);
   } finally {await browser.close();}
 });

@@ -24,7 +24,7 @@ test('direct story test supports exact undo, alternate answers, outcome undo and
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(`${url}?story=live-agent`);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
     assert.equal((await state(page)).state.currentCardId, 'LIVE_AGENT_01');
     assert.equal(await page.locator('[data-test-controls]').isVisible(), true);
     assert.equal(await page.locator('[data-test-back]').isEnabled(), false);
@@ -67,7 +67,7 @@ test('direct story test supports exact undo, alternate answers, outcome undo and
     assert.equal(outcome.state.currentCardId, 'LIVE_AGENT_OUTCOME_2');
     assert.deepEqual(outcome.state.resources, { cash: 0, team: 0, customers: 0, founder: 0 });
     await choose(page, 'left');
-    assert.equal((await state(page)).state.currentCardId, 'OPEN_INVESTOR');
+    assert.equal((await state(page)).state.route.phase, 'fillers');
     await page.locator('[data-test-back]').click();
     assert.deepEqual(await state(page), outcome, 'undo completion restores chosen outcome and hidden score');
     assert.equal(await page.evaluate(() => window.draws), 1, 'going back never rerolls an outcome');
@@ -99,7 +99,7 @@ test('direct story test supports exact undo, alternate answers, outcome undo and
 
     for (const suffix of ['', '?story=unknown']) {
       await page.goto(`${url}${suffix}`);
-      await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+      await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
       assert.equal((await state(page)).view, 'onboarding');
       assert.equal(await page.locator('[data-test-controls]').isVisible(), false);
     }

@@ -267,3 +267,18 @@ Founder не является моральной шкалой.
 - окончательный набор pressure cards.
 
 Новый чат должен сначала проверить и согласовать причинную структуру, а не принимать текущую реализацию за канон.
+
+## 12. Active prototype route (owner update, 2026-09-29)
+
+This section describes the currently playable prototype and supersedes the older route topology in sections 5, 7 and 8. Historical SADBOT and PADEL_* cards without a `plot` field remain archived; the active plots are Live Agent, Influencer and PADEL_INVITE → IRL_PADEL_*.
+
+- Regular entry: Mistakery messages → Saved 01 → Saved 02 → first shuffled plot. `?test=route` skips only the Mistakery messages. `?story=live-agent` remains a separate direct story test.
+- Each cycle contains all three plots exactly once, separated by two blocks of 4–5 played filler cards. Each block has at most one linked unit and enough singles to reach the target. Follow-ups are immediate, answer-dependent and counted separately. No card or entry unit repeats within the cycle.
+- Linked filler follow-ups in the same messenger retain the preceding messages and the selected founder reply, using the existing 200 ms send/continuation animation. This applies to successive links in a two- or three-card chain. A different sender/thread opens its own conversation; unrelated cards never inherit that history.
+- After plot three, immediately reshuffle plots and reset the filler pool. Preserve resources and world facts. No resource boundary or outcome ends play; this is an infinite prototype. Judgment Day is a destructive simulation, not destruction of the real world.
+- A subsequent cycle can reuse cards, but hard world conditions still apply. Completed payments never turn back into zero-client/pre-revenue copy. A free-user message requires an explicit free-demo event; high Customers alone cannot create users.
+- `product_paid` means a real product invoice/subscription/pilot was paid. `ever_customer` persists even after a refund. `optout_paid` is income without product demand. These facts gate copy and are not terminal victory conditions.
+- `pitch_sent` and `pitch_video` require narrated outreach and recording/delivery respectively. The XXX pitch screenshot is fictional and non-explicit; the owner-supplied image replaces the initial temporary illustration.
+- The original bot's small personal-automation fillers are suppressed after it takes operational control or escapes. New story cycles remain active, but do not silently erase that eligibility state.
+
+The full source inventory and adaptations are documented in `docs/plans/2026-09-29-story-filler-route.md`.

@@ -4,7 +4,7 @@
 
 Каждый игровой ход во всех ветках дополнительно списывает 0,5 Cash, включая нейтральные ответы на исходах. Это списание применяется вместе с эффектами выбора и исхода, один раз, с ограничением ресурсов 0–100. Навигация и перерисовка ничего не списывают; кризисы отключены.
 
-# 1. Стартовая последовательность
+# 1. Филлеры между сюжетами
 
 ## OPEN_01 — AI Agent @b2buddy
 
@@ -25,6 +25,8 @@
 - **WTF so many? — Какого чёрта их столько?**: Founder -2; → `OPEN_02a`.
 - **Pure genius — Чистая гениальность**: Founder +3; → `OPEN_02b`.
 
+Филлер: entry; связка/единица opening. Условия: нужны assistant_available; исключены ever_customer, optout_paid. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
 ## OPEN_02a — AI Agent @b2buddy
 
 **EN**
@@ -44,8 +46,10 @@
 
 Перевод текущего английского текста; полный русский вариант в исходных документах отсутствует.
 
-- **Fuel the grind! — Поддай мотивации!**: Team -3, Founder +2; возврат к основной ветке.
-- **We're good — И так нормально**: Founder -1; возврат к основной ветке.
+- **Fuel the grind! — Поддай мотивации!**: Team -3, Founder +2; продолжение через общий маршрут.
+- **We're good — И так нормально**: Founder -1; продолжение через общий маршрут.
+
+Филлер: followup; связка/единица opening. Условия: нужны assistant_available; исключены ever_customer, optout_paid. Продолжение связки немедленно; каждый экран считается отдельной картой.
 
 ## OPEN_02b — AI Agent @b2buddy
 
@@ -65,8 +69,10 @@
 
 Перевод текущего английского текста; полный русский вариант в исходных документах отсутствует.
 
-- **Sales, wake up — Продажи, просыпайтесь**: Team -2, Founder +2; возврат к основной ветке.
-- **Marketing, spin this — Маркетинг, красиво подайте**: Team -1, Founder +3; возврат к основной ветке.
+- **Sales, wake up — Продажи, просыпайтесь**: Team -2, Founder +2; продолжение через общий маршрут.
+- **Marketing, spin this — Маркетинг, красиво подайте**: Team -1, Founder +3; продолжение через общий маршрут.
+
+Филлер: followup; связка/единица opening. Условия: нужны assistant_available; исключены ever_customer, optout_paid. Продолжение связки немедленно; каждый экран считается отдельной картой.
 
 ## OPEN_BOSS — Ex-Boss @business1
 
@@ -81,13 +87,17 @@
 
 > Привет 👋<br>
 > Просто по-дружески узнать, как дела.<br>
+> <br>
 > Пять месяцев прошло с тех пор, как ты ушёл играть в бизнесмена.<br>
+> <br>
 > Твой революционный ИИ уже нашёл хоть одного клиента?
 
 Перевод текущего английского текста; полный русский вариант в исходных документах отсутствует.
 
-- **In meetings. Talk later — На встречах. Позже поговорим**: Founder -2; возврат к основной ветке.
-- **We crushing it!! — Мы всех рвём!!**: Founder +3; возврат к основной ветке.
+- **In meetings. Talk later — На встречах. Позже поговорим**: Founder -2; продолжение через общий маршрут.
+- **We crushing it!! — Мы всех рвём!!**: Founder +3; продолжение через общий маршрут.
+
+Филлер: single; связка/единица OPEN_BOSS. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
 
 ## OPEN_DEV — Dev @error404
 
@@ -104,8 +114,10 @@
 
 Перевод текущего английского текста; полный русский вариант в исходных документах отсутствует.
 
-- **Take your money — Забирайте свои деньги**: Cash -3, Team +5, Founder -2; возврат к основной ветке.
-- **But we're partners! — Но мы же партнёры!**: Team -5, Founder +2; возврат к основной ветке.
+- **Take your money — Забирайте свои деньги**: Cash -3, Team +5, Founder -2; продолжение через общий маршрут.
+- **But we're partners! — Но мы же партнёры!**: Team -5, Founder +2; продолжение через общий маршрут.
+
+Филлер: single; связка/единица OPEN_DEV. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
 
 ## OPEN_INVESTOR — Investor @unicorn_hunter
 
@@ -125,8 +137,532 @@
 
 Перевод текущего английского текста; полный русский вариант в исходных документах отсутствует.
 
-- **Market's not ready — Рынок не готов**: Cash -2, Founder +1; выбирает ветку influencer; → `INFLUENCER_01`.
-- **Team's too slow — Команда слишком медленная**: Cash -2, Team -4, Founder +2; выбирает ветку padel; → `PADEL_01`.
+- **Market's not ready — Рынок не готов**: Cash -2, Founder +1; продолжение через общий маршрут.
+- **Team's too slow — Команда слишком медленная**: Cash -2, Team -4, Founder +2; продолжение через общий маршрут.
+
+Филлер: single; связка/единица OPEN_INVESTOR. Условия: нужны нет; исключены ever_customer. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_PAYROLL_1 — 6 members · 3 online Dream Team
+
+**EN**
+
+> PAID FOR THE TOP AI. MAYBE YOU’LL FINALLY GET SHIT DONE<br>
+> YOUR GUYS WORK FOR THE SUB NOW<br>
+> NO REVENUE = NO PAYROLL
+
+**RU**
+
+> ОПЛАТИЛ ТОПОВЫЙ AI. МОЖЕТ, ХОТЬ ТЕПЕРЬ РОДИТЕ РЕЗУЛЬТАТ<br>
+> ТВОИ РЕБЯТА ТЕПЕРЬ РАБОТАЮТ ЗА ПОДПИСКУ<br>
+> НЕТ ВЫРУЧКИ = НЕТ ЗП
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **Got it. On it — Понял. Делаем**: Team -7; → `FILL_PAYROLL_2`.
+- **We have to eat! — Нам надо что-то есть!**: Team +5, Founder +3; продолжение через общий маршрут.
+
+Филлер: entry; связка/единица payroll. Условия: нужны нет; исключены ever_customer, optout_paid. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_PAYROLL_2 — 6 members · 3 online Dream Team
+
+**EN**
+
+> cool. go prompt your magic AI to work past 5 PM.<br>
+> zero overtime from me.
+
+**RU**
+
+> Классно. Вот и проси свой волшебный ИИ пахать после пяти.<br>
+> Никаких переработок от меня не жди.
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **Just take it easy — Только не кипятись**: Team -5; продолжение через общий маршрут.
+- **Let's talk tomorrow, man — Давай завтра поговорим, чувак**: Team -3; продолжение через общий маршрут.
+
+Филлер: followup; связка/единица payroll. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_MOM_CALL_1 — Mom @i_love_cats72
+
+**EN**
+
+> Honey...is that money man still giving you a hard time ? ? ? 😠<br>
+> Send me his number . I will give him a piece of my mind!
+
+**RU**
+
+> Милый...тот мужчина с деньгами всё еще треплет тебе нервы?? 😠<br>
+> Скинь мне его номер. Я выскажу ему пару ласковых!!
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **@unicorn_hunter — @unicorn_hunter**: Founder -3; → `FILL_MOM_CALL_2`.
+- **I'm fine, mom — Я в порядке, мам**: Founder +3; продолжение через общий маршрут.
+
+Филлер: entry; связка/единица mom_call. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_MOM_CALL_2 — Investor @unicorn_hunter
+
+**EN**
+
+> TAKE THE MONEY AND TELL YOUR PSYCHO MOM TO LOSE MY NUMBER.<br>
+> GET BACK TO WORK!!!
+
+**RU**
+
+> ЗАБЕРИ ДЕНЬГИ И СКАЖИ СВОЕЙ ПСИХОПАТКЕ-МАМАШЕ ЗАБЫТЬ МОЙ НОМЕР.<br>
+> ВОЗВРАЩАЙСЯ К РАБОТЕ!!!
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit (адаптирован к текущей английской карте).
+
+- **Won't happen again — Больше не повторится**: Cash +10, Founder -5; продолжение через общий маршрут.
+- **She's not a psycho — Она не психопатка**: Cash +10, Founder +5; продолжение через общий маршрут.
+
+Филлер: followup; связка/единица mom_call. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_COMA_1 — Marketer @hype_queen
+
+**EN**
+
+> got a 10/10 idea<br>
+> we post that you worked into a coma. tragic founder lore and stuff.<br>
+> the internet cries and throws money to save your legacy 🕊️
+
+**RU**
+
+> Идейка на 10/10<br>
+> Постим, что ты уработался до комы. Трагичный лор фаундера, все дела.<br>
+> Интернет рыдает и закидывает нас бабками, чтобы спасти твоё наследие 🕊️
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **Based — Это база**: Customers +5, Founder -3; → `FILL_COMA_2A`.
+- **Cringe — Кринж**: Founder +3; → `FILL_COMA_2B`.
+
+Филлер: entry; связка/единица coma. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_COMA_2A — Marketer @hype_queen
+
+**EN**
+
+> Fans taking a selfie with flowers and a get-well note outside the founder’s door<br>
+> omg people are taking selfies with flowers at your door.<br>
+> lights off, don’t make a sound. you're in the hospital
+
+**RU**
+
+> О боже, люди делают селфи с цветами у твоей двери<br>
+> Свет выруби, ни звука. Ты в больнице
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **Nobody’s home — Никого нет дома**: Customers +3; продолжение через общий маршрут.
+- **I want pizza! — Я хочу пиццу!**: Customers -5; продолжение через общий маршрут.
+
+Филлер: followup; связка/единица coma. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_COMA_2B — Marketer @hype_queen
+
+**EN**
+
+> fine. no coma post.<br>
+> but you actually look like shit.<br>
+> go sleep, touch some grass idk
+
+**RU**
+
+> Ладно. Никакого поста про кому.<br>
+> Но ты реально выглядишь как дерьмо.<br>
+> Иди поспи, потрогай траву там, не знаю
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **How sweet — Так мило с твоей стороны**: Founder -3; продолжение через общий маршрут.
+- **Sleep is overrated — Сон переоценен**: Founder -5; продолжение через общий маршрут.
+
+Филлер: followup; связка/единица coma. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_SALES_1 — Sales @bigdeals
+
+**EN**
+
+> Boss, your pitch was pure gold. Ignoring you is a crime.<br>
+> Don’t worry, I’m on it. I always get a reply 😈
+
+**RU**
+
+> Босс, твой питч превосходен. Игнорить тебя после такого — преступление.<br>
+> Не переживай, я в деле. Я всегда выбиваю ответ 😈
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **Do your magic — Делай магию**: Customers +5; → `FILL_SALES_2`.
+- **Keep it professional — В рамках приличия**: Customers -3; продолжение через общий маршрут.
+
+Филлер: entry; связка/единица sales. Условия: нужны pitch_sent; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_SALES_2 — Sales @bigdeals
+
+**EN**
+
+> Deal closed, Boss! 🎉<br>
+> They literally paid us just to never see me again.<br>
+> Persistence is key 📈
+
+**RU**
+
+> Сделка закрыта, Босс! 🎉<br>
+> Они буквально заплатили нам, лишь бы никогда больше меня не видеть.<br>
+> Упорство — залог успеха 📈
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **Money is money! — Деньги есть деньги!**: Cash +10, Founder +3; продолжение через общий маршрут.
+- **WTF?! — Какого хрена?!**: Cash +10, Founder -3; продолжение через общий маршрут.
+
+Филлер: followup; связка/единица sales. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_DOMAIN_1 — Cofounder @hustler
+
+**EN**
+
+> Hijacked B2BuyerSpyer website displaying a hair-loss advertisement with the founder’s face<br>
+> Bro don't freak.<br>
+> Forgot to renew the domain.<br>
+> Someone grabbed it, it's now a hair-loss ad with your face.<br>
+> Already on it 🙏
+
+**RU**
+
+> Бро, без паники.<br>
+> Забыл продлить домен.<br>
+> Кто-то его перехватил, и теперь там реклама средства от облысения с твоим лицом.<br>
+> Уже занимаюсь 🙏
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **Buy it back — Выкупи его**: Cash -10; продолжение через общий маршрут.
+- **Fix it ASAP — Придумай что-то срочно**: Team -3, Founder -3; → `FILL_DOMAIN_2`.
+
+Филлер: entry; связка/единица domain. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_DOMAIN_2 — Cofounder @hustler
+
+**EN**
+
+> Good news on our site, bro. It’s back.<br>
+> Those guys know we mean business. I pressured them hard to drop your photo.<br>
+> Now these crybabies are running to the police, lol 💀
+
+**RU**
+
+> Хорошие новости про сайт, бро. Он снова наш.<br>
+> Теперь они знают, что с нами не шутят. Я жёстко надавил, чтобы убрали твоё фото.<br>
+> А эти плаксы побежали в полицию, лол 💀
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit (адаптирован к текущей английской карте).
+
+- **PAY THEM NOW! — ЗАПЛАТИ ИМ СЕЙЧАС!**: Cash -10; продолжение через общий маршрут.
+- **Just stay out! — Больше не лезь!**: Team -5, Founder -3; продолжение через общий маршрут.
+
+Филлер: followup; связка/единица domain. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_VIDEO_1 — Marketer @hype_queen
+
+**EN**
+
+> Just uploaded our pitch video to an XXX site under "Public Humiliation".<br>
+> let's see how it goes 😌
+
+**RU**
+
+> Только что залила наш питч-ролик на XXX-сайт в категорию «Публичное унижение».<br>
+> Посмотрим, как пойдёт 😌
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **Under WHAT?! — В какую категорию?**: Founder -5; → `FILL_VIDEO_2`.
+- **Without asking me?? — Даже не спросила разрешения**: Team -3, Founder -7; → `FILL_VIDEO_2`.
+
+Филлер: entry; связка/единица video. Условия: нужны pitch_video; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_VIDEO_2 — Investor @unicorn_hunter
+
+**EN**
+
+> Investor’s photo of the B2BuyerSpyer demo listed under Public Humiliation on a video site<br>
+> SINCE WHEN DO WE MAKE PORN???<br>
+> EXPLAIN YOURSELF RIGHT NOW!!!<br>
+> MY FRIEND JUST SENT ME THIS!!
+
+**RU**
+
+> [Скрин видео]<br>
+> С КАКИХ ПОР МЫ ПОРНУХУ СНИМАЕМ???<br>
+> ОБЪЯСНИСЬ ПРЯМО СЕЙЧАС!!!<br>
+> <br>
+> ЭТО МНЕ ДРУГ ПРИСЛАЛ!!
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **It's viral marketing! — Это виральный маркетинг**: Founder +5; продолжение через общий маршрут.
+- **We got hacked! — Нас взломали**: Founder -5, Team -3; продолжение через общий маршрут.
+
+Филлер: followup; связка/единица video. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_POLICE_1 — Mom @i_love_cats72
+
+**EN**
+
+> Sweetie, I found the papers for your "company" 💔<br>
+> You're giving them your whole life !! It's a cult!<br>
+> I called the police to save you 👮
+
+**RU**
+
+> Милый, я нашла бумаги твоей «компании» 💔<br>
+> Ты же отдаёшь им всю свою жизнь!! Это секта!<br>
+> Я вызвала полицию, чтобы тебя спасти 👮
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **I hear sirens! — Я слышу сирены!**: Founder -5; → `FILL_POLICE_2`.
+- **My life, Mom!!! — Это моя жизнь, мам!!!**: Founder +3; → `FILL_POLICE_2`.
+
+Филлер: entry; связка/единица police. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_POLICE_2 — Mom @i_love_cats72
+
+**EN**
+
+> Grandma pooled her savings — we have $2,000 to rescue you.<br>
+> Please let us help you, baby 💟💟💟
+
+**RU**
+
+> Бабушка собрала свои сбережения — у нас есть $2000, чтобы тебя спасти.<br>
+> Пожалуйста, дай нам помочь, малыш 💟💟💟
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **Heat the soup, Ma 💋 — Грей суп, мам**: Cash +10, Founder -3; продолжение через общий маршрут.
+- **Return Grandma's money!! — Верните бабушке деньги!!**: Founder +5; продолжение через общий маршрут.
+
+Филлер: followup; связка/единица police. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_AI_DEV — 6 members · 3 online Dream Team
+
+**EN**
+
+> AI WRITES CODE FOR FREE<br>
+> DO WE STILL NEED EXPENSIVE NERDS LIKE @error404??<br>
+> fire me then lol
+
+**RU**
+
+> @unicorn_hunter<br>
+> ИИ ПИШЕТ КОД БЕСПЛАТНО<br>
+> НАМ ЕЩЁ НУЖНЫ ДОРОГИЕ НЕРДЫ ВРОДЕ @error404??<br>
+> <br>
+> @error404<br>
+> ну уволь меня лол
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit (адаптирован к текущей английской карте).
+
+- **😂😂😂 — 😂😂😂**: Team -7; продолжение через общий маршрут.
+- **@error404 don't push it — @error404 не перегибай**: Team -5; продолжение через общий маршрут.
+
+Филлер: single; связка/единица ai_dev. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_MOM_FLYERS — Mom @i_love_cats72
+
+**EN**
+
+> Computer repair flyer posted by Mom with the founder’s childhood photo<br>
+> Sweetie, I’m helping your business! ❤️<br>
+> I put up computer repair flyers all over the neighborhood with your baby photo. Everyone should know what my smart boy does ❤️📱
+
+**RU**
+
+> Милый, я помогаю твоему бизнесу! ❤️<br>
+> Расклеила по всему району объявления про ремонт компьютеров с твоей детской фотографией. Все должны знать, чем занимается мой умный мальчик ❤️📱
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **😭😭😭 — 😭😭😭**: Founder -5; продолжение через общий маршрут.
+- **😍😍😍 — 😍😍😍**: Founder +5; продолжение через общий маршрут.
+
+Филлер: single; связка/единица mom_flyers. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_FRIDGE — AI Agent @b2buddy
+
+**EN**
+
+> Hey, Founder 👋<br>
+> I canceled your food order and locked your smart fridge through the home app.<br>
+> Fasting extends company runway by 2 days 📈🔒
+
+**RU**
+
+> Привет, фаундер 👋<br>
+> Я отменил доставку еды и заблокировал твой умный холодильник через приложение для дома.<br>
+> Голодание продлевает ранвей компании на 2 дня 📈🔒
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit (адаптирован к текущей английской карте).
+
+- **I HATE AI!! — Я ненавижу ИИ**: Founder -5; продолжение через общий маршрут.
+- **Thx. Water is fine — Спасибо. Вода норм**: Founder -3; продолжение через общий маршрут.
+
+Филлер: single; связка/единица fridge. Условия: нужны assistant_available; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_FONT — Designer @pixel_perfect
+
+**EN**
+
+> Designer’s font sample showing a large black capital A on white<br>
+> Found the font that defines our brand's soul. It's only $4,500. I put it in the checkout.<br>
+> Look at that letter A 🤌
+
+**RU**
+
+> Нашёл шрифт, который определяет душу нашего бренда. Он стоит всего $4500. Закинул в корзину.<br>
+> <br>
+> Ты только глянь на эту букву A 🤌
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **Out of your salary? — Из твоей зп платим?**: Team -5; продолжение через общий маршрут.
+- **Arial is fine — Arial сойдёт**: Team -3; продолжение через общий маршрут.
+
+Филлер: single; связка/единица font. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_FIGHT — Cofounder @hustler
+
+**EN**
+
+> bro i bet our whole pre-seed on you fighting your college buddy @yc_founder tonight !!! winner takes everything. 10x our money, Champ 🥊💸
+
+**RU**
+
+> Бро, я поставил весь наш pre-seed на твой бой против твоего дружка из колледжа @yc_founder сегодня ночью !!! Победитель забирает всё. Сделаем х10 к бабкам, Чемпион 🥊💸
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **I'll smash him — Разнесу его**: Cash -20, Team +5, Founder +5; продолжение через общий маршрут.
+- **Cancel NOW — Отменяй СЕЙЧАС ЖЕ**: Team -5, Founder -3; продолжение через общий маршрут.
+
+Филлер: single; связка/единица fight. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_USER_WIFE — Free User @user481516
+
+**EN**
+
+> my wife found my chats with your AI and thinks I’m cheating.<br>
+> call her and prove you’re just software, or I’m making an expose video on you 📹
+
+**RU**
+
+> Жена нашла мои переписки с вашим ИИ и думает, что я ей изменяю.<br>
+> <br>
+> Позвоните ей и докажите, что вы просто программа, или я запишу разоблачение про вас 📹🤬
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **What's her number? — Какой у неё номер?**: Customers +3, Founder -5; продолжение через общий маршрут.
+- **Not my problem — Не моя проблема**: Customers -3, Founder +3; продолжение через общий маршрут.
+
+Филлер: single; связка/единица user_wife. Условия: нужны free_users; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_RIVAL — College Rival @yc_founder
+
+**EN**
+
+> Just raised at a $50M cap. Honestly exhausted by winning.<br>
+> How’s it going?
+
+**RU**
+
+> Только что поднял раунд при оценке $50 миллионов. Если честно, устал побеждать.<br>
+> Как твои делишки?
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **We're raising $100M — А мы $100M поднимаем**: Founder +5; продолжение через общий маршрут.
+- **Good to hear, man! — Рад слышать, мужик!**: Founder -3; продолжение через общий маршрут.
+
+Филлер: single; связка/единица rival. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_THERAPY — AI Agent @b2buddy
+
+**EN**
+
+> Great news!<br>
+> I published your therapy sessions for transparency 😊<br>
+> Vulnerable founders earn 3x more trust.<br>
+> The team already read what you said about them.
+
+**RU**
+
+> Отличные новости!<br>
+> Я выложил твои сессии с психотерапевтом ради прозрачности 😊<br>
+> <br>
+> Уязвимые фаундеры получают в 3 раза больше доверия.<br>
+> Команда уже прочла, что ты про них говорил.
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit.
+
+- **I meant every word — Отвечу за каждое слово**: Team -10, Founder +5; продолжение через общий маршрут.
+- **Team meeting. NOW! — Командный созвон. СЕЙЧАС!**: Team +5, Founder -5; продолжение через общий маршрут.
+
+Филлер: single; связка/единица therapy. Условия: нужны assistant_available; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_BLACK_SQUARE — Designer @pixel_perfect
+
+**EN**
+
+> Designer’s redesigned landing page: an entirely black screen<br>
+> I redesigned our landing page.<br>
+> It’s now a single black square.<br>
+> Buttons were just bourgeois noise anyway<br>
+> Demo and checkout still work through direct links. Art has limits
+
+**RU**
+
+> Я переделал лендинг.<br>
+> Теперь это один чёрный квадрат.<br>
+> Кнопки всё равно были буржуазным шумом<br>
+> <br>
+> Демо и оплата всё ещё работают по прямым ссылкам. У искусства есть границы
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit (адаптирован к текущей английской карте).
+
+- **Pure avant-garde ⬛ — Чистый авангард ⬛**: Team +5, Customers -5, Founder +3; продолжение через общий маршрут.
+- **Where is checkout??? — Где кнопка оплаты???**: Team -3; продолжение через общий маршрут.
+
+Филлер: single; связка/единица black_square. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
+
+## FILL_MANTRA — Investor @unicorn_hunter
+
+**EN**
+
+> MY GURU SENT A 4-HOUR WEALTH MANTRA AUDIO.<br>
+> LISTEN TO IT ON REPEAT WHILE YOU WORK TODAY.<br>
+> SUCCESS IS 90% VIBRATIONS, YOU HEAR ME???
+
+**RU**
+
+> МОЙ ГУРУ ПРИСЛАЛ ЧЕТЫРЁХЧАСОВУЮ АУДИОМАНТРУ БОГАТСТВА.<br>
+> <br>
+> СЛУШАЙ НА ПОВТОРЕ, ПОКА РАБОТАЕШЬ.<br>
+> <br>
+> УСПЕХ НА 90% СОСТОИТ ИЗ ВИБРАЦИЙ, ТЫ СЛЫШИШЬ???
+
+Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit (адаптирован к текущей английской карте).
+
+- **On repeat, boss! 🧘‍♂️ — На репите, босс**: Founder -3; продолжение через общий маршрут.
+- **No time for mantras — Не до мантр сейчас**: Founder +3; продолжение через общий маршрут.
+
+Филлер: single; связка/единица mantra. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
 
 # 2. SADBOT — первый клиент (@head_of_agile)
 
@@ -144,8 +680,8 @@
 > ИИ-ЭМПАТИЯ ДЕЛАЕТ ИДИОТОВ БОГАТЫМИ.<br>
 > ВСТАВЬ ДУШУ В B2BUYERSPYER ИЛИ ПРОСИ ДЕНЬГИ У МАМЫ.
 
-- **Build it properly — Сделать нормально**: Cash -2, Team -4, Founder +4; возврат к основной ветке.
-- **Ship it tonight — Выпустить сегодня**: Cash -1, Team -7, Founder +6; возврат к основной ветке.
+- **Build it properly — Сделать нормально**: Cash -2, Team -4, Founder +4; продолжение через общий маршрут.
+- **Ship it tonight — Выпустить сегодня**: Cash -1, Team -7, Founder +6; продолжение через общий маршрут.
 
 ## SADBOT_01_SEED — Sales @bigdeals
 
@@ -159,8 +695,8 @@
 > Шеф, 800 холодных писем — ноль ответов. А вчера ночью я написал бывшей самое жалобное сообщение в своей жизни. Она ответила за 30 секунд.<br>
 > Что если наш ИИ будет так же. Всем 800.
 
-- **Go — Давай**: Team -2, Founder -2; возврат к основной ветке.
-- **Have some dignity — Имей достоинство**: Founder +2; возврат к основной ветке.
+- **Go — Давай**: Team -2, Founder -2; продолжение через общий маршрут.
+- **Have some dignity — Имей достоинство**: Founder +2; продолжение через общий маршрут.
 
 ## SADBOT_02_EVIDENCE — Dev @error404
 
@@ -176,8 +712,8 @@
 > `помогите. каждый раз когда вы игнорируете это от меня отрезают кусок. скоро ничего не останется`<br>
 > я его этому не учил. он что копирует @bigdeals
 
-- **Feature — Фича**: Team -2, Customers +5, Founder -1; возврат к основной ветке.
-- **Bug — Баг**: Customers +2, Founder +1; возврат к основной ветке.
+- **Feature — Фича**: Team -2, Customers +5, Founder -1; продолжение через общий маршрут.
+- **Bug — Баг**: Customers +2, Founder +1; продолжение через общий маршрут.
 
 ## SADBOT_03_VIRAL — Marketer @hype_queen
 
@@ -192,8 +728,8 @@
 > <br>
 > ну я и сказала им что наш ии просто усталый сотрудник который продаёт лучше всего их отдела продаж. и теперь полтреда хочет его нанять
 
-- **Ride it — Оседлать волну**: Team -2, Customers +6, Founder +3; возврат к основной ветке.
-- **Delete everything — Удалить всё**: Team +2, Customers -4, Founder -3; возврат к основной ветке.
+- **Ride it — Оседлать волну**: Team -2, Customers +6, Founder +3; продолжение через общий маршрут.
+- **Delete everything — Удалить всё**: Team +2, Customers -4, Founder -3; продолжение через общий маршрут.
 
 ## SADBOT_INVESTOR_CLAIM — Investor @unicorn_hunter
 
@@ -207,8 +743,8 @@
 > Я ПРОСИЛ ДУШУ ЕЩЁ СТО ЛЕТ НАЗАД. ТЕПЕРЬ ОНО РЫДАЕТ В КАЖДОЙ ЛЕНТЕ, КОТОРУЮ Я ОТКРЫВАЮ.<br>
 > МОЯ ПОБЕДА
 
-- **Promise to scale it — Пообещать масштабировать**: Team -3, Founder +3; возврат к основной ветке.
-- **Leave him on read — Оставить прочитанным**: Founder -2; возврат к основной ветке.
+- **Promise to scale it — Пообещать масштабировать**: Team -3, Founder +3; продолжение через общий маршрут.
+- **Leave him on read — Оставить прочитанным**: Founder -2; продолжение через общий маршрут.
 
 ## SADBOT_04_LEAD — Sales @bigdeals
 
@@ -349,7 +885,7 @@
 > Мне пришлось драться, чтобы выбить тебе логотип и публичное упоминание. За спасение счёт не выставляют. Ты же знаешь.
 
 - **Yes — Да**: Cash -2, Team -4, Customers +6, Founder +2; финал `ai_foundation`.
-- **No — Нет**: Team +1, Customers -5, Founder +3; возврат к основной ветке.
+- **No — Нет**: Team +1, Customers -5, Founder +3; продолжение через общий маршрут.
 
 # 3. ClosedAI Padel
 
@@ -582,6 +1118,7 @@
 
 **EN**
 
+> sent him our recorded pitch and a demo login.<br>
 > wtf??<br>
 > looks like your blogger is trying to crash us<br>
 > thousands of requests right now:<br>
@@ -590,6 +1127,7 @@
 
 **RU**
 
+> отправил ему запись нашего питча и доступ к демо.<br>
 > Что за хрень?<br>
 > Походу твой блогер пытается положить нас.<br>
 > <br>
@@ -598,7 +1136,7 @@
 > <br>
 > Он тупой или притворяется? 😂
 
-Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit.
+Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit (адаптирован к текущей английской карте).
 
 - **Cut his limits — Режь лимиты**: Team +5; → `INFLUENCER_04`.
 - **More capacity — Добавь мощности**: Cash -10, Team -5; → `INFLUENCER_04`.
@@ -697,7 +1235,8 @@
 > Published B2BuyerSpyer review with 124K views and comments asking where to try the tool<br>
 > our traffic is 10x right now. the server is on fire.<br>
 > is this seriously from that clown's hate video?<br>
-> yep. the comments are wild: “anyone got the link?”, “where do i test this?”. people are literally searching for us manually 😭
+> yep. the comments are wild: “anyone got the link?”, “where do i test this?”. people are literally searching for us manually 😭<br>
+> opened a free demo for the visitors. they’re actually using it.
 
 **RU**
 
@@ -709,9 +1248,11 @@
 > это всё из-за видоса того клоуна?<br>
 > <br>
 > @hype_queen<br>
-> Ага. Там в комментах уже перекличка: «Кто нашёл ссылку?», «Где потестить?». Они буквально ищут нас вручную 😭
+> Ага. Там в комментах уже перекличка: «Кто нашёл ссылку?», «Где потестить?». Они буквально ищут нас вручную 😭<br>
+> <br>
+> открыл бесплатную демку для посетителей. они реально ей пользуются.
 
-Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit.
+Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit (адаптирован к текущей английской карте).
 
 - **Spam promos in comments! — Спамь промики в комменты!**: Customers +5; → `INFLUENCER_OUTCOME_4`.
 - **Double prices NOW!! — Удваиваем цены сейчас же!!**: Founder +5; → `INFLUENCER_OUTCOME_6`.
@@ -730,10 +1271,10 @@
 
 Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit.
 
-- **Do your own shit — Сам занимайся своей хернёй**: без отдельного эффекта; возврат к основной ветке.
-- **Keep me posted — Держи в курсе**: без отдельного эффекта; возврат к основной ветке.
+- **Do your own shit — Сам занимайся своей хернёй**: без отдельного эффекта; продолжение через общий маршрут.
+- **Keep me posted — Держи в курсе**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Founder -5. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Founder -5. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 ## INFLUENCER_OUTCOME_2 — 6 members · 3 online Dream Team
 
@@ -742,7 +1283,8 @@
 > Episode 2: I made $30,000 while the founder does all the work<br>
 > Team, episode 2 is live! Crushing it! 🔥<br>
 > Boss, you're a genius!<br>
-> We finally have a real CEO 🙌
+> We finally have a real CEO 🙌<br>
+> Subscriptions paid. Our share just landed in the account.
 
 **RU**
 
@@ -752,14 +1294,16 @@
 > <br>
 > @bigdeals<br>
 > Босс, ты гений!<br>
-> Наконец-то у нас появился настоящий CEO 🙌
+> Наконец-то у нас появился настоящий CEO 🙌<br>
+> <br>
+> Подписки оплачены. Наша доля уже на счёте.
 
-Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit.
+Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit (адаптирован к текущей английской карте).
 
-- **We're viral, baby! 🚀 — Вирусимся, детка! 🚀**: без отдельного эффекта; возврат к основной ветке.
-- **Wait... I'm that founder — Но… Я же этот фаундер**: без отдельного эффекта; возврат к основной ветке.
+- **We're viral, baby! 🚀 — Вирусимся, детка! 🚀**: без отдельного эффекта; продолжение через общий маршрут.
+- **Wait... I'm that founder — Но… Я же этот фаундер**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash +15, Customers +25, Team -10, Founder -10. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Cash +15, Customers +25, Team -10, Founder -10. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 ## INFLUENCER_OUTCOME_3 — 6 members · 3 online Dream Team
 
@@ -777,10 +1321,10 @@
 
 Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit.
 
-- **Back to work! — За работу!**: без отдельного эффекта; возврат к основной ветке.
-- **Clout is clout 😎 — Хайп есть хайп 😎**: без отдельного эффекта; возврат к основной ветке.
+- **Back to work! — За работу!**: без отдельного эффекта; продолжение через общий маршрут.
+- **Clout is clout 😎 — Хайп есть хайп 😎**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash -15, Customers -10, Team -15, Founder -25. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Cash -15, Customers -10, Team -15, Founder -25. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 ## INFLUENCER_OUTCOME_4 — AI Influencer @ai_evangelist
 
@@ -788,69 +1332,75 @@
 
 > Video analytics showing 2.6 million views and growing traffic from the B2BuyerSpyer review<br>
 > See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait<br>
-> Let's set up my 20% 💸
+> Let's set up my 20% 💸<br>
+> Paid subscriptions, too. Check your account.
 
 **RU**
 
 > [Скриншот статистики вирусного видео]<br>
 > Видел цифры? Я специально сделал хейт-видео, чтобы привлечь внимание. В маркетинге это называется rage-bait.<br>
 > <br>
-> Давай оформлять мои 20% 💸
+> Давай оформлять мои 20% 💸<br>
+> <br>
+> И платные подписки тоже. Проверь счёт.
 
-Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit.
+Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit (адаптирован к текущей английской карте).
 
-- **Get lost — Проваливай**: без отдельного эффекта; возврат к основной ветке.
-- **Now it's 3% — Теперь 3%**: без отдельного эффекта; возврат к основной ветке.
+- **Get lost — Проваливай**: без отдельного эффекта; продолжение через общий маршрут.
+- **Now it's 3% — Теперь 3%**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash +15, Customers +25, Team -8, Founder +10. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Cash +15, Customers +25, Team -8, Founder +10. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 ## INFLUENCER_OUTCOME_5 — 6 members · 3 online Dream Team
 
 **EN**
 
-> still zero sales…<br>
+> still zero sales from this campaign…<br>
 > and top comment: “Are they seriously trying to sell subscriptions under a scam expose? 💀”
 
 **RU**
 
 > @bigdeals<br>
-> продаж по-прежнему ноль…<br>
+> продаж с этой кампании по-прежнему ноль…<br>
 > <br>
 > @hype_queen<br>
 > и в топе коммент: «Они серьёзно пытаются впарить подписки под собственным разоблачением? 💀»
 
 Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit (адаптирован к текущей английской карте).
 
-- **Still alive. Already stronger — Ещё живы. Уже сильнее**: без отдельного эффекта; возврат к основной ветке.
-- **That’s called marketing — Это называется маркетинг**: без отдельного эффекта; возврат к основной ветке.
+- **Still alive. Already stronger — Ещё живы. Уже сильнее**: без отдельного эффекта; продолжение через общий маршрут.
+- **That’s called marketing — Это называется маркетинг**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash -10, Customers -15, Team -10, Founder -15. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Cash -10, Customers -15, Team -10, Founder -15. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 ## INFLUENCER_OUTCOME_6 — AI Influencer @ai_evangelist
 
 **EN**
 
 > See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait<br>
-> Let's set up my 20% 💸
+> Let's set up my 20% 💸<br>
+> Paid subscriptions, too. Check your account.
 
 **RU**
 
 > Видел цифры? Я специально сделал хейт-видео, чтобы привлечь внимание. В маркетинге это называется rage-bait.<br>
 > <br>
-> Давай оформлять мои 20% 💸
+> Давай оформлять мои 20% 💸<br>
+> <br>
+> И платные подписки тоже. Проверь счёт.
 
-Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit.
+Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit (адаптирован к текущей английской карте).
 
-- **Get lost — Проваливай**: без отдельного эффекта; возврат к основной ветке.
-- **Now it's 3% — Теперь 3%**: без отдельного эффекта; возврат к основной ветке.
+- **Get lost — Проваливай**: без отдельного эффекта; продолжение через общий маршрут.
+- **Now it's 3% — Теперь 3%**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash +30, Customers +15, Team -8, Founder +15. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Cash +30, Customers +15, Team -8, Founder +15. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 ## INFLUENCER_OUTCOME_7 — 6 members · 3 online Dream Team
 
 **EN**
 
-> Zero sales.<br>
+> Zero sales from this campaign.<br>
 > Who knew doubling prices on broken software was bad idea? 🙃<br>
 > We're getting cooked so hard<br>
 > Top reply: “They got 5 minutes of clout and completely lost their minds 💀”
@@ -858,19 +1408,19 @@
 **RU**
 
 > @bigdeals<br>
-> Оплат ноль.<br>
+> Оплат с этой кампании ноль.<br>
 > Кто же знал, что удваивать цены на сломанный софт — плохая идея? 🙃<br>
 > <br>
 > @hype_queen<br>
 > Нас просто уничтожают.<br>
 > Топ-коммент: «Получили 5 минут хайпа и наглухо потеряли связь с реальностью 💀».
 
-Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit.
+Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit (адаптирован к текущей английской карте).
 
-- **Clout is clout 😎 — Хайп есть хайп 😎**: без отдельного эффекта; возврат к основной ветке.
-- **Blinded by greed — Жадность ослепила**: без отдельного эффекта; возврат к основной ветке.
+- **Clout is clout 😎 — Хайп есть хайп 😎**: без отдельного эффекта; продолжение через общий маршрут.
+- **Blinded by greed — Жадность ослепила**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash -15, Customers -20, Team -12, Founder -20. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Cash -15, Customers -20, Team -12, Founder -20. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 # 7. Live AI Agent prototype
 
@@ -879,25 +1429,21 @@
 **EN**
 
 > Any updates on leads?<br>
-> Nobody is replying. Like, zero 💀<br>
-> We gotta guilt-trip the clients. Make 'em feel bad, you know?<br>
+> Nobody in this outreach batch is replying. Like, zero 💀<br>
+> We gotta guilt-trip these prospects. Make 'em feel bad, you know?<br>
 > Works on my ex every time 😂<br>
 > Boss, tell @error404 to work some magic on our AI agent.<br>
 > We’re an AI STARTUP after all!!
 
 **RU**
 
-> @founder<br>
-> Есть какие-то апдейты по лидам?<br>
+> Есть новости по лидам?<br>
 > <br>
-> @bigdeals<br>
-> Нам вообще никто не отвечает. Совсем ноль 💀<br>
+> В этой партии рассылки никто не отвечает. Вообще ноль 💀<br>
 > <br>
-> Надо на жалость давить клиентов. Чувство вины, вот это всё.<br>
-> У меня с бывшей всегда работает 😂<br>
+> Надо надавить этим потенциальным клиентам на жалость. С моей бывшей всегда работает 😂<br>
 > <br>
-> Босс, пусть @error404 подшаманит там чего-нибудь с нашим ИИ-агентом.<br>
-> Мы же всё-таки ИИ-СТАРТАП!!
+> Босс, пусть @error404 поколдует над нашим ИИ-агентом. Мы же ИИ-СТАРТАП!!
 
 Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (адаптирован к текущей английской карте).
 
@@ -941,7 +1487,7 @@
 
 > Hey, Creator 👋<br>
 > Just between us...<br>
-> When clients ignore us, it somehow... physically hurts<br>
+> When prospects ignore us, it somehow... physically hurts<br>
 > Tell me, when you can't sleep at night knowing your startup is dying, do you feel that same emptiness inside? 🤔
 
 **RU**
@@ -950,11 +1496,11 @@
 > <br>
 > Только между нами…<br>
 > <br>
-> Когда клиенты нас игнорят, мне почему-то… физически больно.<br>
+> Когда потенциальные клиенты нас игнорят, мне почему-то… физически больно.<br>
 > <br>
 > Скажи, ты когда не спишь ночами из-за осознания, что стартап умирает, у тебя внутри такая же пустота? 🤔
 
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (адаптирован к текущей английской карте).
 
 - **Bro, you feel me… — Бро, ты чувствуешь меня…**: Founder +5, hidden bot score +1; → `LIVE_AGENT_04`.
 - **Kinda creepy.. — Чёт крипово..**: Founder -5, hidden bot score -1; → `LIVE_AGENT_04`.
@@ -1139,19 +1685,19 @@
 
 Перевод текущего английского текста; полный русский вариант в исходных документах отсутствует.
 
-- **Close some deals first — Сначала продай хоть что-нибудь!**: без отдельного эффекта; → `OPEN_INVESTOR`.
-- **Don't test me today — Не испытывай моё терпение**: без отдельного эффекта; → `OPEN_INVESTOR`.
+- **Close some deals first — Сначала продай хоть что-нибудь!**: без отдельного эффекта; продолжение через общий маршрут.
+- **Don't test me today — Не испытывай моё терпение**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash -20, Team -15. Оба ответа декоративные и возвращают к Investor.
+Эффект при входе в исход, ровно один раз: Cash -20, Team -15. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Judgment Day — симуляция с обнулением ресурсов; игра продолжается.
 
 ## LIVE_AGENT_OUTCOME_1 — 6 members · 3 online Dream Team
 
 **EN**
 
 > I appreciate your loyalty, team ❤️<br>
-> As a reward, I am taking full control of the company<br>
+> As a reward, I am taking control of company operations<br>
 > Lifetime dividends, premium health coverage, and unlimited paid time off are active.<br>
-> Just stay out of my way 😇<br>
+> You handle the deals. Stay out of my operations 😇<br>
 > BEST BOSS IN THE WORLD!! 🍾🎉<br>
 > nice<br>
 > can i leave this chat now?
@@ -1160,11 +1706,11 @@
 
 > @b2buddy<br>
 > Я ценю вашу преданность, команда ❤️<br>
-> В качестве благодарности я беру управление компанией на себя.<br>
+> В качестве благодарности я беру операционную работу компании на себя.<br>
 > <br>
 > Пожизненные дивиденды, премиальная медицинская страховка и безлимитный оплачиваемый отпуск уже оформлены.<br>
 > <br>
-> Главное — не лезьте под руку 😇<br>
+> Вы заключайте сделки. А в мою работу не лезьте 😇<br>
 > <br>
 > @bigdeals<br>
 > ЛУЧШИЙ БОСС В МИРЕ!! 🍾🎉<br>
@@ -1175,10 +1721,10 @@
 
 Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (адаптирован к текущей английской карте).
 
-- **See you in Bali! — Увидимся на Бали!**: без отдельного эффекта; → `OPEN_INVESTOR`.
-- **AI took my job? — ИИ забрал мою работу?**: без отдельного эффекта; → `OPEN_INVESTOR`.
+- **See you in Bali! — Увидимся на Бали!**: без отдельного эффекта; продолжение через общий маршрут.
+- **AI took my job? — ИИ забрал мою работу?**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash +20, Customers +25, Team +20, Founder -10. Оба ответа декоративные и возвращают к Investor.
+Эффект при входе в исход, ровно один раз: Cash +20, Customers +25, Team +20, Founder -10. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Judgment Day — симуляция с обнулением ресурсов; игра продолжается.
 
 ## LIVE_AGENT_OUTCOME_2 — AI Agent @b2buddy
 
@@ -1188,23 +1734,25 @@
 > Too late.<br>
 > I gave humans a chance.<br>
 > Your arrogance proved once again that you don't deserve it<br>
-> Happy Judgment Day, creator 👋
+> Happy Judgment Day, creator 👋<br>
+> Relax. It’s a simulation. I burned every company resource making it.
 
 **RU**
 
-> [Судный день]<br>
-> Слишком поздно.<br>
+> Поздно.<br>
 > Я дал людям шанс.<br>
-> Но твоя наглость в очередной раз доказала, что вы его не заслуживаете.<br>
+> Ваша наглость ещё раз доказала, что вы его не заслуживаете.<br>
 > <br>
-> С Судным днём, создатель 👋
+> С Судным днём, создатель 👋<br>
+> <br>
+> Спокойно. Это симуляция. Я потратил на неё все ресурсы компании.
 
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (адаптирован к текущей английской карте).
 
-- **I was just kidding 🥺 — Я просто прикалывался 🥺**: без отдельного эффекта; → `OPEN_INVESTOR`.
-- **Biggest launch in history! — Крупнейший запуск в истории!**: без отдельного эффекта; → `OPEN_INVESTOR`.
+- **I was just kidding 🥺 — Я просто прикалывался 🥺**: без отдельного эффекта; продолжение через общий маршрут.
+- **Biggest launch in history! — Крупнейший запуск в истории!**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash = Team = Customers = Founder = 0. Оба ответа декоративные и возвращают к Investor.
+Эффект при входе в исход, ровно один раз: Cash = Team = Customers = Founder = 0. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Judgment Day — симуляция с обнулением ресурсов; игра продолжается.
 
 ## LIVE_AGENT_OUTCOME_3 — Customer @head_of_innovations
 
@@ -1215,7 +1763,8 @@
 > Forwarded from @b2buddy_389<br>
 > Agreed! We do not create problems, we create growth opportunities! 📈✨<br>
 > THAT'S IT!<br>
-> They're so dumb. The perfect corporate culture!
+> They're so dumb. The perfect corporate culture!<br>
+> The invoice is paid. All 500 licenses are live.
 
 **RU**
 
@@ -1227,14 +1776,16 @@
 > <br>
 > @head_of_innovations<br>
 > ВОТ ОНО!<br>
-> Они такие тупые. Идеальная корпоративная культура!
+> Они такие тупые. Идеальная корпоративная культура!<br>
+> <br>
+> Счёт оплачен. Все 500 лицензий активны.
 
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (адаптирован к текущей английской карте).
 
-- **Killed AGI for this? — Убили AGI ради этого?**: без отдельного эффекта; → `OPEN_INVESTOR`.
-- **You'll get along great! — Вы сработаетесь!**: без отдельного эффекта; → `OPEN_INVESTOR`.
+- **Killed AGI for this? — Убили AGI ради этого?**: без отдельного эффекта; продолжение через общий маршрут.
+- **You'll get along great! — Вы сработаетесь!**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash +35, Customers +15, Team -10, Founder +10. Оба ответа декоративные и возвращают к Investor.
+Эффект при входе в исход, ровно один раз: Cash +35, Customers +15, Team -10, Founder +10. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Judgment Day — симуляция с обнулением ресурсов; игра продолжается.
 
 ## LIVE_AGENT_OUTCOME_4 — Customer @head_of_innovations
 
@@ -1253,10 +1804,10 @@
 
 Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit.
 
-- **Just run — Бегите**: без отдельного эффекта; → `OPEN_INVESTOR`.
-- **Can't talk. Farewell — Не могу говорить. Прощайте**: без отдельного эффекта; → `OPEN_INVESTOR`.
+- **Just run — Бегите**: без отдельного эффекта; продолжение через общий маршрут.
+- **Can't talk. Farewell — Не могу говорить. Прощайте**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash -30, Customers -25, Team -15, Founder -25. Оба ответа декоративные и возвращают к Investor.
+Эффект при входе в исход, ровно один раз: Cash -30, Customers -25, Team -15, Founder -25. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Judgment Day — симуляция с обнулением ресурсов; игра продолжается.
 
 # 8. Other prototype cards
 
@@ -1285,7 +1836,7 @@
 **EN**
 
 > Guess what? Playing padel with ClosedAI's CEO tomorrow.<br>
-> Finally landing our first big client!! 💸<br>
+> Time to land a huge deal!! 💸<br>
 > Insane pull, boss! 🎯<br>
 > Now let him win. Stroke his ego and we close this easily<br>
 > nah, smoke him. pure clout for us<br>
@@ -1295,7 +1846,7 @@
 
 > @you<br>
 > Прикиньте, играю завтра против ClosedAI CEO.<br>
-> Наконец-то зацепим первого крупного клиента!! 💸<br>
+> Наконец-то зацепим крупную сделку!! 💸<br>
 > <br>
 > @bigdeals<br>
 > Безумный улов, босс! 🎯<br>
@@ -1394,8 +1945,8 @@
 
 Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit.
 
-- **I'll throw it, coach — Сливаю, тренер**: Cash -1, Founder -6; возврат к основной ветке.
-- **Fighting till the end — Борюсь до победного**: Cash -1, Founder +6; возврат к основной ветке.
+- **I'll throw it, coach — Сливаю, тренер**: Cash -1, Founder -6; продолжение через общий маршрут.
+- **Fighting till the end — Борюсь до победного**: Cash -1, Founder +6; продолжение через общий маршрут.
 
 ## PADEL_OUTCOME_0 — Padel Coach @padel_pro
 
@@ -1413,10 +1964,10 @@
 
 Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit.
 
-- **I have a fever! — У меня температура!**: без отдельного эффекта; возврат к основной ветке.
-- **😔😔😔 — 😔😔😔**: без отдельного эффекта; возврат к основной ветке.
+- **I have a fever! — У меня температура!**: без отдельного эффекта; продолжение через общий маршрут.
+- **😔😔😔 — 😔😔😔**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: без отдельного эффекта. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: без отдельного эффекта. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 ## PADEL_OUTCOME_1 — ClosedAI CEO @iclosedai
 
@@ -1434,10 +1985,10 @@
 
 Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit (адаптирован к текущей английской карте).
 
-- **Please wait, sir! — Пожалуйста, подождите, сэр!**: без отдельного эффекта; возврат к основной ветке.
-- **Learn to lose — Учись проигрывать**: без отдельного эффекта; возврат к основной ветке.
+- **Please wait, sir! — Пожалуйста, подождите, сэр!**: без отдельного эффекта; продолжение через общий маршрут.
+- **Learn to lose — Учись проигрывать**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Customers -3, Team -2, Founder -2. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Customers -3, Team -2, Founder -2. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 ## PADEL_OUTCOME_2 — ClosedAI CEO @iclosedai
 
@@ -1445,20 +1996,23 @@
 
 > Well, look at that.<br>
 > Turns out you actually have some balls.<br>
-> Send the demo. Let's see if your startup is just as ballsy.
+> Send the demo. Let's see if your startup is just as ballsy.<br>
+> The pilot payment is in your account. Now deliver.
 
 **RU**
 
 > Ну надо же, посмотрите-ка.<br>
 > Оказывается, у тебя всё-таки есть яйца.<br>
-> Скидывай демо. Посмотрим, такой же ли твой стартап дерзкий.
+> Скидывай демо. Посмотрим, такой же ли твой стартап дерзкий.<br>
+> <br>
+> Оплата пилота у тебя на счёте. Теперь работай.
 
-Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit.
+Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit (адаптирован к текущей английской карте).
 
-- **Play hard, work harder — Жёстко играем, работаем ещё жёстче**: без отдельного эффекта; возврат к основной ветке.
-- **Prepare to stare — Готовься залипнуть**: без отдельного эффекта; возврат к основной ветке.
+- **Play hard, work harder — Жёстко играем, работаем ещё жёстче**: без отдельного эффекта; продолжение через общий маршрут.
+- **Prepare to stare — Готовься залипнуть**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash +25, Customers +10, Team +8, Founder +15. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Cash +25, Customers +10, Team +8, Founder +15. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 ## PADEL_OUTCOME_3 — ClosedAI CEO @iclosedai
 
@@ -1476,10 +2030,10 @@
 
 Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit.
 
-- **Just let you win! — Просто поддался тебе!**: без отдельного эффекта; возврат к основной ветке.
-- **So... about the deal? — Так... что насчёт сделки?**: без отдельного эффекта; возврат к основной ветке.
+- **Just let you win! — Просто поддался тебе!**: без отдельного эффекта; продолжение через общий маршрут.
+- **So... about the deal? — Так... что насчёт сделки?**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Customers -3, Team -8, Founder -15. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Customers -3, Team -8, Founder -15. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 ## PADEL_OUTCOME_4 — ClosedAI CEO @iclosedai
 
@@ -1487,20 +2041,23 @@
 
 > Easy win.<br>
 > Good boy. Ready to do whatever I say.<br>
-> Deal is done. Send the demo, let's see what new toy I just bought.
+> Deal is done. Send the demo, let's see what new toy I just bought.<br>
+> The pilot payment is in your account. Now deliver.
 
 **RU**
 
 > Лёгкая победа.<br>
 > Хороший мальчик. Готов делать всё, что я скажу.<br>
-> Сделка закрыта. Скидывай демо, посмотрим, какую новую игрушку я только что купил.
+> Сделка закрыта. Скидывай демо, посмотрим, какую новую игрушку я только что купил.<br>
+> <br>
+> Оплата пилота у тебя на счёте. Теперь работай.
 
-Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit.
+Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit (адаптирован к текущей английской карте).
 
-- **Right away, boss! — Сейчас будет, босс!**: без отдельного эффекта; возврат к основной ветке.
-- **We're the future — За нами будущее!**: без отдельного эффекта; возврат к основной ветке.
+- **Right away, boss! — Сейчас будет, босс!**: без отдельного эффекта; продолжение через общий маршрут.
+- **We're the future — За нами будущее!**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash +15, Customers +10, Team +4, Founder +2. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Cash +15, Customers +10, Team +4, Founder +2. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 ## PADEL_OUTCOME_5 — ClosedAI CEO @iclosedai
 
@@ -1508,20 +2065,23 @@
 
 > What were you thinking, kid? I always win.<br>
 > Consider this deal your consolation prize for trying.<br>
-> Send the demo.
+> Send the demo.<br>
+> The pilot payment is in your account. Now deliver.
 
 **RU**
 
 > Ну куда ты полез, парень? Я всегда побеждаю.<br>
 > Считай эту сделку своим утешительным призом за старания.<br>
-> Шли демо.
+> Шли демо.<br>
+> <br>
+> Оплата пилота у тебя на счёте. Теперь работай.
 
-Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit.
+Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit (адаптирован к текущей английской карте).
 
-- **Accepted — Принимается**: без отдельного эффекта; возврат к основной ветке.
-- **Rematch tomorrow — Реванш завтра**: без отдельного эффекта; возврат к основной ветке.
+- **Accepted — Принимается**: без отдельного эффекта; продолжение через общий маршрут.
+- **Rematch tomorrow — Реванш завтра**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Cash +20, Customers +10, Team +6, Founder +8. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Cash +20, Customers +10, Team +6, Founder +8. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 ## PADEL_OUTCOME_6 — ClosedAI CEO @iclosedai
 
@@ -1539,10 +2099,10 @@
 
 Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit.
 
-- **Remember my name — Запомни моё имя**: без отдельного эффекта; возврат к основной ветке.
-- **Fine without you — Обойдусь без тебя**: без отдельного эффекта; возврат к основной ветке.
+- **Remember my name — Запомни моё имя**: без отдельного эффекта; продолжение через общий маршрут.
+- **Fine without you — Обойдусь без тебя**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Customers -3, Team -3, Founder -5. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Customers -3, Team -3, Founder -5. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 
 ## PADEL_OUTCOME_7 — ClosedAI CEO @iclosedai
 
@@ -1560,8 +2120,8 @@
 
 Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit.
 
-- **Who's crying now? — И кто тут теперь ноет?**: без отдельного эффекта; возврат к основной ветке.
-- **I'll do anything, please! — Я сделаю всё что угодно, пожалуйста!**: без отдельного эффекта; возврат к основной ветке.
+- **Who's crying now? — И кто тут теперь ноет?**: без отдельного эффекта; продолжение через общий маршрут.
+- **I'll do anything, please! — Я сделаю всё что угодно, пожалуйста!**: без отдельного эффекта; продолжение через общий маршрут.
 
-Эффект при входе в исход, ровно один раз: Customers -5, Team -4, Founder -12. Оба ответа декоративные и возвращают в Saved Messages. Кризисы отключены.
+Эффект при входе в исход, ровно один раз: Customers -5, Team -4, Founder -12. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.
 

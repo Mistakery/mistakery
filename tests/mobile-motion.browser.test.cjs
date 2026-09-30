@@ -1,3 +1,4 @@
+const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -8,7 +9,7 @@ const url = `${process.env.MISTAKERY_TEST_URL || pathToFileURL(path.join(root, '
 async function seed(page, id) {
   await page.evaluate(id => {
     const a = window.MistakeryApp;
-    a.state = window.MistakeryEngine.startRun(a.deck);
+    a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null };
     a.state.currentCardId = id; a.cardDelivery = null;
     a.liveAgentScore = 5; a.locked = false; a.view = 'playing';
     Math.random = () => 0; a.render();
@@ -41,6 +42,44 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
       assert.equal(await page.locator('[data-choice]:disabled').count(), 0);
     } finally { await browser.close(); }
   });
+  test(`${name}: incoming phone messages visibly fade with reduced motion, without moving history`, async () => {
+    const browser = await engine.launch();
+    try {
+      for (const motion of ['reduce', 'no-preference']) {
+        const page = await start(browser, device, motion);
+        await page.evaluate(() => { window.nativeAnimationFrame = requestAnimationFrame.bind(window); });
+        await page.clock.install(); await page.clock.pauseAt(new Date());
+        await seed(page, 'FILL_MANTRA');
+        await page.waitForTimeout(350); // Finish the first bubble's CSS entrance.
+        await page.clock.runFor(500);
+        const sample = await page.locator('[data-chat-current]').nth(1).evaluate(async node => {
+          const animation = node.getAnimations().find(a => a.playState === 'running');
+          if (!animation) return null;
+          // Let the browser play the animation: manual currentTime sampling cannot
+          // detect an animation that exists but never visibly advances on mobile.
+          const frames = [];
+          await new Promise(resolve => {
+            function frame() {
+              const style = getComputedStyle(node);
+              frames.push({ opacity: Number(style.opacity), y: new DOMMatrix(style.transform).m42 });
+              if (animation.playState === 'running') window.nativeAnimationFrame(frame);
+              else resolve();
+            }
+            window.nativeAnimationFrame(frame);
+          });
+          return frames;
+        });
+        assert.ok(sample?.length > 2, `${motion}: incoming message must visibly animate`);
+        assert.ok(sample.some(f => f.opacity > 0 && f.opacity < .95), `${motion}: intermediate opacity is visible`);
+        assert.equal(sample.at(-1).opacity, 1);
+        if (motion === 'reduce') {
+          assert.ok(sample.every(f => f.y === 0), 'reduced motion must not slide the new message');
+          assert.equal(await page.locator('[data-chat-current]').first().evaluate(n => n.getAnimations().filter(a => a.playState === 'running').length), 0);
+        }
+        await page.close();
+      }
+    } finally { await browser.close(); }
+  });
   test(`${name}: raw repeated touch cannot skip outcome in either motion mode; Back and Restart stay available`, async () => {
     const browser = await engine.launch();
     try {
@@ -49,6 +88,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
         for (const [from, side, outcome] of [['LIVE_AGENT_08', 'left', 'LIVE_AGENT_OUTCOME_1'], ['LIVE_AGENT_01', 'right', 'LIVE_AGENT_OUTCOME_0']]) {
           await seed(page, from);
           await page.locator(`[data-choice="${side}"]`).tap();
+          await completeFounderSend(page);
           const before = await page.evaluate(() => structuredClone(window.MistakeryApp.state));
           const box = await page.locator('[data-choice="left"]').boundingBox();
           await page.waitForTimeout(310);
@@ -62,6 +102,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
           }
           await page.waitForFunction(() => !window.MistakeryApp.locked, null, { timeout: 1500 });
           await page.locator('[data-choice="left"]').tap();
+          await completeFounderSend(page);
           await page.locator('[data-test-back]').tap();
           assert.equal(await page.evaluate(() => window.MistakeryApp.state.currentCardId), outcome);
           assert.equal(await page.locator('[data-game]').evaluate(n => n.classList.contains('is-outcome-entering')), false);
@@ -123,7 +164,8 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
       await page.waitForTimeout(600);
       assert.equal(await page.evaluate(() => window.motionEvents.length), 2);
       await page.locator('[data-choice="left"]').tap();
-      assert.equal(await page.evaluate(() => window.MistakeryApp.state.currentCardId), 'OPEN_INVESTOR');
+      await completeFounderSend(page);
+      assert.equal(await page.evaluate(() => window.MistakeryApp.state.route.phase), 'fillers');
     } finally { await browser.close(); }
   });
 }

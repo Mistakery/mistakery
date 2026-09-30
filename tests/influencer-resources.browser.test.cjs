@@ -1,4 +1,5 @@
 const test = require('node:test');
+const { revealMessages } = require('./chat-delivery.fixture.cjs');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -12,7 +13,7 @@ async function seed(page, id, previous = 'INFLUENCER_04', resources = base, roll
   await page.evaluate(({ id, previous, resources, roll }) => {
     const a = window.MistakeryApp;
     clearTimeout(a.introTypingTimer);
-    a.state = window.MistakeryEngine.startRun(a.deck);
+    a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null };
     a.state.currentCardId = id;
     a.state.resources = resources;
     a.state.schedulerResources = { ...resources };
@@ -34,6 +35,7 @@ async function click(page, side) {
   await page.locator(`[data-choice="${side}"]`).click();
 }
 async function preview(page, side, keys) {
+  await revealMessages(page);
   const before = await state(page);
   const button = page.locator(`[data-choice="${side}"]`);
   for (const method of ['hover', 'focus']) {
@@ -53,7 +55,7 @@ async function withPage(fn, width = 390) {
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     await page.goto(`${url}?story=live-agent`);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
     await fn(page);
     assert.deepEqual(errors, []);
   } finally { await browser.close(); }
@@ -127,7 +129,7 @@ test('all random outcomes use exact 40/60 odds, combined deltas, neutral replies
             await preview(page, reply, []);
             await click(page, reply);
             const finished = await state(page);
-            assert.equal(finished.view, 'saved');
+            assert.equal(finished.view, 'playing');
             assert.deepEqual(finished.state.resources, sum(expected));
             assert.equal(finished.draws, 1);
             assert.equal(finished.state.history.length, 2);
@@ -159,7 +161,7 @@ test('zero and upper bounds stay playable with half-Cash burn without crisis or 
         await preview(page, reply, []);
         await click(page, reply);
         const finished = await state(page);
-        assert.equal(finished.view, 'saved');
+        assert.equal(finished.view, 'playing');
         assert.deepEqual(finished.state.resources, sum(entered.state.resources));
         assert.equal(finished.state.activeCrisisId, null);
         assert.equal(finished.state.gameOver, false);
@@ -179,7 +181,7 @@ test('zero and upper bounds stay playable with half-Cash burn without crisis or 
         assert.equal(entered.state.activeCrisisId, null);
         await click(page, 'right');
         const finished = await state(page);
-        assert.equal(finished.view, 'saved');
+        assert.equal(finished.view, 'playing');
         assert.deepEqual(finished.state.resources, sum(entered.state.resources));
         assert.equal(finished.state.gameOver, false);
         assert.equal(finished.state.activeCrisisId, null);
