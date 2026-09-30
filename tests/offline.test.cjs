@@ -40,6 +40,27 @@ test('negative review screenshot is a compact cacheable WebP asset', () => {
   assert.equal(image.subarray(8, 12).toString('ascii'), 'WEBP');
 });
 
+test('all six supplied filler pictures are mapped to compact WebP assets', () => {
+  const deck = require('../cards.json');
+  let total = 0;
+  for (const [id, name] of Object.entries({
+    FILL_DOMAIN_1: 'filler-domain-hair-loss', FILL_VIDEO_2: 'filler-pitch-video',
+    FILL_COMA_2A: 'filler-fans-door', FILL_FONT: 'filler-font-a',
+    FILL_BLACK_SQUARE: 'filler-black-screen', FILL_MOM_FLYERS: 'filler-mom-flyers',
+  })) {
+    const card = deck.cards.find(c => c.id === id);
+    assert.equal(card.image?.src, `assets/${name}.webp`, id);
+    const data = fs.readFileSync(path.join(root, card.image.src));
+    assert.equal(data.subarray(0, 4).toString('ascii'), 'RIFF');
+    assert.equal(data.subarray(8, 12).toString('ascii'), 'WEBP');
+    assert.ok(data.length <= 160 * 1024, `${id}: picture exceeds 160 KiB`);
+    assert.ok(card.image.width > 0 && card.image.height > 0);
+    assert.ok(Math.max(card.image.width, card.image.height) <= 1200);
+    total += data.length;
+  }
+  assert.ok(total <= 500 * 1024, 'six filler pictures must stay below 500 KiB combined');
+});
+
 test('bilingual catalog contains every canonical card and its current English copy', () => {
   const canonical = JSON.parse(fs.readFileSync(path.join(root, 'cards.json'), 'utf8'));
   const catalog = fs.readFileSync(catalogPath, 'utf8');

@@ -4061,6 +4061,12 @@
             "customers": -5
           }
         }
+      },
+      "image": {
+        "src": "assets/filler-fans-door.webp",
+        "alt": "Fans taking a selfie with flowers and a get-well note outside the founder’s door",
+        "width": 960,
+        "height": 1200
       }
     },
     {
@@ -4193,6 +4199,12 @@
           },
           "next": "FILL_DOMAIN_2"
         }
+      },
+      "image": {
+        "src": "assets/filler-domain-hair-loss.webp",
+        "alt": "Hijacked B2BuyerSpyer website displaying a hair-loss advertisement with the founder’s face",
+        "width": 1200,
+        "height": 800
       }
     },
     {
@@ -4291,10 +4303,10 @@
         }
       },
       "image": {
-        "src": "assets/filler-pitch-video.svg",
-        "alt": "B2BuyerSpyer pitch video mistakenly published in Public Humiliation on an XXX video site",
+        "src": "assets/filler-pitch-video.webp",
+        "alt": "Investor’s photo of the B2BuyerSpyer demo listed under Public Humiliation on a video site",
         "width": 1200,
-        "height": 676
+        "height": 900
       }
     },
     {
@@ -4420,6 +4432,12 @@
             "founder": 5
           }
         }
+      },
+      "image": {
+        "src": "assets/filler-mom-flyers.webp",
+        "alt": "Computer repair flyer posted by Mom with the founder’s childhood photo",
+        "width": 936,
+        "height": 1200
       }
     },
     {
@@ -4481,6 +4499,12 @@
             "team": -3
           }
         }
+      },
+      "image": {
+        "src": "assets/filler-font-a.webp",
+        "alt": "Designer’s font sample showing a large black capital A on white",
+        "width": 1016,
+        "height": 1038
       }
     },
     {
@@ -4642,6 +4666,12 @@
             "team": -3
           }
         }
+      },
+      "image": {
+        "src": "assets/filler-black-screen.webp",
+        "alt": "Designer’s redesigned landing page: an entirely black screen",
+        "width": 1200,
+        "height": 674
       }
     },
     {

@@ -361,6 +361,7 @@ button { font: inherit; }
 .message p > span { display: block; }
 .message p > span + span { margin-top: 4px; }
 .message-clearance { height: var(--message-clearance); flex: 0 0 var(--message-clearance); }
+.messenger-scene[data-active-card^="FILL_"] .chat,
 .messenger-scene[data-active-card^="INFLUENCER_"] .chat,
 .messenger-scene[data-active-card^="LIVE_AGENT_"] .chat {
   justify-content: safe flex-end;
@@ -368,6 +369,7 @@ button { font: inherit; }
   overscroll-behavior: contain;
   scrollbar-width: none;
 }
+.messenger-scene[data-active-card^="FILL_"] .chat::-webkit-scrollbar,
 .messenger-scene[data-active-card^="INFLUENCER_"] .chat::-webkit-scrollbar,
 .messenger-scene[data-active-card^="LIVE_AGENT_"] .chat::-webkit-scrollbar { display: none; }
 .chat.has-chat-history {

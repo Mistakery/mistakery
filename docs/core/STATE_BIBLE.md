@@ -278,7 +278,7 @@ This section describes the currently playable prototype and supersedes the older
 - After plot three, immediately reshuffle plots and reset the filler pool. Preserve resources and world facts. No resource boundary or outcome ends play; this is an infinite prototype. Judgment Day is a destructive simulation, not destruction of the real world.
 - A subsequent cycle can reuse cards, but hard world conditions still apply. Completed payments never turn back into zero-client/pre-revenue copy. A free-user message requires an explicit free-demo event; high Customers alone cannot create users.
 - `product_paid` means a real product invoice/subscription/pilot was paid. `ever_customer` persists even after a refund. `optout_paid` is income without product demand. These facts gate copy and are not terminal victory conditions.
-- `pitch_sent` and `pitch_video` require narrated outreach and recording/delivery respectively. The uploaded XXX pitch screenshot is fictional, non-explicit and locally authored because the source document contains only a media marker.
+- `pitch_sent` and `pitch_video` require narrated outreach and recording/delivery respectively. The XXX pitch screenshot is fictional and non-explicit; the owner-supplied image replaces the initial temporary illustration.
 - The original bot's small personal-automation fillers are suppressed after it takes operational control or escapes. New story cycles remain active, but do not silently erase that eligibility state.
 
 The full source inventory and adaptations are documented in `docs/plans/2026-09-29-story-filler-route.md`.

@@ -245,6 +245,7 @@
 
 **EN**
 
+> Fans taking a selfie with flowers and a get-well note outside the founder’s door<br>
 > omg people are taking selfies with flowers at your door.<br>
 > lights off, don’t make a sound. you're in the hospital
 
@@ -325,6 +326,7 @@
 
 **EN**
 
+> Hijacked B2BuyerSpyer website displaying a hair-loss advertisement with the founder’s face<br>
 > Bro don't freak.<br>
 > Forgot to renew the domain.<br>
 > Someone grabbed it, it's now a hair-loss ad with your face.<br>
@@ -388,7 +390,7 @@
 
 **EN**
 
-> B2BuyerSpyer pitch video mistakenly published in Public Humiliation on an XXX video site<br>
+> Investor’s photo of the B2BuyerSpyer demo listed under Public Humiliation on a video site<br>
 > SINCE WHEN DO WE MAKE PORN???<br>
 > EXPLAIN YOURSELF RIGHT NOW!!!<br>
 > MY FRIEND JUST SENT ME THIS!!
@@ -476,6 +478,7 @@
 
 **EN**
 
+> Computer repair flyer posted by Mom with the founder’s childhood photo<br>
 > Sweetie, I’m helping your business! ❤️<br>
 > I put up computer repair flyers all over the neighborhood with your baby photo. Everyone should know what my smart boy does ❤️📱
 
@@ -516,6 +519,7 @@
 
 **EN**
 
+> Designer’s font sample showing a large black capital A on white<br>
 > Found the font that defines our brand's soul. It's only $4,500. I put it in the checkout.<br>
 > Look at that letter A 🤌
 
@@ -616,6 +620,7 @@
 
 **EN**
 
+> Designer’s redesigned landing page: an entirely black screen<br>
 > I redesigned our landing page.<br>
 > It’s now a single black square.<br>
 > Buttons were just bourgeois noise anyway<br>
