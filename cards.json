@@ -4628,7 +4628,7 @@
       "source": "@unicorn_hunter",
       "continuation": "forced",
       "oncePerRun": true,
-      "text": "MY GURU SENT A 4-HOUR WEALTH MANTRA AUDIO.\nLISTEN TO IT ON REPEAT WHILE YOU WORK TODAY.\nSUCCESS IS 90% VIBRATIONS, YOU HEAR ME???",
+      "text": "MY GURU SENT A 4-HOUR WEALTH MANTRA AUDIO.\n\nLISTEN TO IT ON REPEAT WHILE YOU WORK TODAY.\n\nSUCCESS IS 90% VIBRATIONS, YOU HEAR ME???",
       "filler": {
         "unit": "mantra",
         "role": "single",
@@ -5409,7 +5409,7 @@
       "adapted": true
     },
     "FILL_MANTRA": {
-      "text": "МОЙ ГУРУ ПРИСЛАЛ ЧЕТЫРЁХЧАСОВУЮ АУДИОМАНТРУ БОГАТСТВА.\nСЛУШАЙ НА ПОВТОРЕ, ПОКА РАБОТАЕШЬ.\nУСПЕХ НА 90% СОСТОИТ ИЗ ВИБРАЦИЙ, ТЫ СЛЫШИШЬ???",
+      "text": "МОЙ ГУРУ ПРИСЛАЛ ЧЕТЫРЁХЧАСОВУЮ АУДИОМАНТРУ БОГАТСТВА.\n\nСЛУШАЙ НА ПОВТОРЕ, ПОКА РАБОТАЕШЬ.\n\nУСПЕХ НА 90% СОСТОИТ ИЗ ВИБРАЦИЙ, ТЫ СЛЫШИШЬ???",
       "left": "На репите, босс",
       "right": "Не до мантр сейчас",
       "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",

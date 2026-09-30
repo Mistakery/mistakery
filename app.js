@@ -689,15 +689,17 @@
       <div class="message-clearance" aria-hidden="true"></div>`;
   }
 
-  function retainsPreviousChat(card, previous) {
+  function retainsPreviousChat(card, previous, side) {
     const approvedPrevious = {
       LIVE_AGENT_02: 'LIVE_AGENT_01',
       LIVE_AGENT_04: 'LIVE_AGENT_03',
       LIVE_AGENT_04B: 'LIVE_AGENT_04',
       LIVE_AGENT_07B: 'LIVE_AGENT_07',
     };
+    const linkedFiller = previous?.filler && card?.filler?.role === 'followup'
+      && card.filler.unit === previous.filler.unit && previous.choices[side]?.next === card.id;
     return Boolean(card && previous && card.mode !== 'irl'
-      && approvedPrevious[card.id] === previous.id && previous.source === card.source
+      && (approvedPrevious[card.id] === previous.id || linkedFiller) && previous.source === card.source
       && (previous.mode || 'personal') === (card.mode || 'personal'));
   }
 
@@ -712,7 +714,7 @@
     const answered = app.state.history.at(-1);
     const previousId = answered?.cardId;
     const previous = previousId && engine.cardById(app.deck, previousId);
-    if (!retainsPreviousChat(card, previous)) return null;
+    if (!retainsPreviousChat(card, previous, answered?.side)) return null;
     const template = document.createElement('template');
     template.innerHTML = card.mode === 'team'
       ? teamCardMessagesMarkup(previous)
@@ -1104,7 +1106,7 @@
     if (app.cardDelivery && !app.cardDelivery.delivered) return;
     const card = engine.cardById(app.deck, app.state.currentCardId);
     const next = engine.cardById(app.deck, card.choices[side].next);
-    if (!reducedMotion.matches && retainsPreviousChat(next, card)) return sendFounderReply(card, side);
+    if (!reducedMotion.matches && retainsPreviousChat(next, card, side)) return sendFounderReply(card, side);
     resolveCardChoice(card, side);
   }
 

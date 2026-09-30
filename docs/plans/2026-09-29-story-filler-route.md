@@ -38,3 +38,7 @@ Source: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQg
 ## Preview packaging
 
 The first deployment omitted a new root-level `route.js` while copying the new SVG under `assets/`. Its URL returned the SPA HTML fallback despite a successful Pages check. Keep the pure module at `assets/route.js`, preserve its script order after `game.js`, and verify published bytes plus a real browser route after deployment.
+
+## Filler messenger continuations (owner update, 2026-09-30)
+
+Extend the existing chat-retention rule to the selected direct link between filler cards of the same unit, sender and messenger mode. Reuse the current founder-send animation, retained context, typing, Back and timer cancellation for each link, including a third card. Preserve separate chats when the sender changes. Split FILL_MANTRA into three incoming bubbles with reading pauses, keeping one card, the same replies and effects, and matching EN/RU paragraph boundaries.
