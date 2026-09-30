@@ -251,8 +251,11 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
         await seed(page, 'LIVE_AGENT_01');
         if (reader) await page.evaluate(() => { MistakeryApp.cardDelivery.follow = false; });
         await deliver(page);
-        assert.equal(await page.evaluate(() => [...document.querySelectorAll('[data-chat-current]')]
-          .flatMap(n => n.getAnimations()).filter(a => a.playState === 'running').length), 0);
+        const running = await page.evaluate(() => [...document.querySelectorAll('[data-chat-current]')]
+          .flatMap(n => n.getAnimations()).filter(a => a.playState === 'running')
+          .map(a => a.effect.getKeyframes().map(frame => frame.transform)));
+        if (reader) assert.deepEqual(running, []);
+        else assert.deepEqual(running, [['translateY(0px)', 'translateY(0px)']], 'reduced motion fades only the new message');
       }
     } finally { await browser.close(); }
   });

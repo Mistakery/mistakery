@@ -8,7 +8,7 @@ The owner approved E ("Вместе") on 2026-09-29. This implements that choice
 
 The old independent CSS entrance is removed synchronously after the layout measurement, before the browser paints the coordinated animation. Stable isolated stacking contexts keep neighboring bubble shadows off the typing surface when transforms end. Immediate card entrances, markup and typing-dot animations remain unchanged; newly staged first messages use the same E transition. This preserves the prototype's final layout and avoids double movement.
 
-Tracked animations are cancelled on user input, resize, rerender/navigation, reveal, and changes to reduced motion. Automatic arrival motion is bypassed while reading history or when reduced motion is enabled. Delivery deadlines, decoding/preparation and the existing reveal/Back/Restart/revisit behavior remain intact.
+Tracked animations are cancelled on user input, resize, rerender/navigation, reveal, and changes to reduced motion. Automatic arrival motion is bypassed while reading history. Following the September 30 phone report, reduced motion keeps a 200 ms opacity fade for each incoming bubble and the next typing row, while existing messages remain unanimated. This replaces the previous all-or-nothing reduced-motion gate; ordinary motion is unchanged. Delivery deadlines, decoding/preparation and the existing reveal/Back/Restart/revisit behavior remain intact.
 
 ## Founder replies
 

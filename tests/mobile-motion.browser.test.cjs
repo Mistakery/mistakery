@@ -42,6 +42,44 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
       assert.equal(await page.locator('[data-choice]:disabled').count(), 0);
     } finally { await browser.close(); }
   });
+  test(`${name}: incoming phone messages visibly fade with reduced motion, without moving history`, async () => {
+    const browser = await engine.launch();
+    try {
+      for (const motion of ['reduce', 'no-preference']) {
+        const page = await start(browser, device, motion);
+        await page.evaluate(() => { window.nativeAnimationFrame = requestAnimationFrame.bind(window); });
+        await page.clock.install(); await page.clock.pauseAt(new Date());
+        await seed(page, 'FILL_MANTRA');
+        await page.waitForTimeout(350); // Finish the first bubble's CSS entrance.
+        await page.clock.runFor(500);
+        const sample = await page.locator('[data-chat-current]').nth(1).evaluate(async node => {
+          const animation = node.getAnimations().find(a => a.playState === 'running');
+          if (!animation) return null;
+          // Let the browser play the animation: manual currentTime sampling cannot
+          // detect an animation that exists but never visibly advances on mobile.
+          const frames = [];
+          await new Promise(resolve => {
+            function frame() {
+              const style = getComputedStyle(node);
+              frames.push({ opacity: Number(style.opacity), y: new DOMMatrix(style.transform).m42 });
+              if (animation.playState === 'running') window.nativeAnimationFrame(frame);
+              else resolve();
+            }
+            window.nativeAnimationFrame(frame);
+          });
+          return frames;
+        });
+        assert.ok(sample?.length > 2, `${motion}: incoming message must visibly animate`);
+        assert.ok(sample.some(f => f.opacity > 0 && f.opacity < .95), `${motion}: intermediate opacity is visible`);
+        assert.equal(sample.at(-1).opacity, 1);
+        if (motion === 'reduce') {
+          assert.ok(sample.every(f => f.y === 0), 'reduced motion must not slide the new message');
+          assert.equal(await page.locator('[data-chat-current]').first().evaluate(n => n.getAnimations().filter(a => a.playState === 'running').length), 0);
+        }
+        await page.close();
+      }
+    } finally { await browser.close(); }
+  });
   test(`${name}: raw repeated touch cannot skip outcome in either motion mode; Back and Restart stay available`, async () => {
     const browser = await engine.launch();
     try {

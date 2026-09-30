@@ -1031,7 +1031,7 @@
     function deliverNext() {
       if (!isCurrent() || delivery.delivered) return;
       cancelArrivalMotion();
-      const animate = delivery.follow !== false && !reducedMotion.matches;
+      const animate = delivery.follow !== false;
       const positions = animate
         ? Array.from(chat.querySelectorAll('[data-chat-current], [data-chat-history], [data-player-reply]'))
           .map(node => [node, node.offsetTop - chat.scrollTop]) : [];
@@ -1062,7 +1062,10 @@
         : typingTop - (arrived[0].offsetTop - chat.scrollTop);
       const start = document.timeline.currentTime;
       [...positions.map(([node]) => node), ...arrived, typing].filter(Boolean).forEach(node => {
-        animateArrival(node, delta, arrived.includes(node) || node === typing, start);
+        const fade = arrived.includes(node) || node === typing;
+        // Keep arrivals visible with reduced motion, without shifting existing text.
+        if (reducedMotion.matches && !fade) return;
+        animateArrival(node, reducedMotion.matches ? 0 : delta, fade, start);
       });
     }
     showTyping();
