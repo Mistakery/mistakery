@@ -119,7 +119,7 @@ test('AI influencer cards preserve approved copy and graph with document resourc
     right: { label: 'We need you in sales', effects: influencerEffects.INFLUENCER_02A[1], next: 'INFLUENCER_03' },
   });
 
-  assert.equal(cards.INFLUENCER_03.text, "wtf??\nlooks like your blogger is trying to crash us\n\nthousands of requests right now:\nmake me $1B right now. make zero mistakes\n\nis he dumb or just playing dumb? 😂");
+  assert.equal(cards.INFLUENCER_03.text, "wtf??\nlooks like your blogger is trying to crash us\n\nthousands of requests right now:\nmake me $1B app. make zero mistakes\n\nis he dumb or just playing dumb? 😂");
   assert.equal(cards.INFLUENCER_04.text, "Aaand it's down. Knew it 👏👏\n\nGuys, if you can't even handle my basic workflow, my traffic will literally destroy you\nDon't wanna bury your launch, but I never lie to my community\n\nGotta drop an honest video 😔");
   assert.deepEqual(withoutReasons(cards.INFLUENCER_04.choices), {
     left: { label: 'Have fun', effects: influencerEffects.INFLUENCER_04[0], next: 'INFLUENCER_06' },
@@ -163,10 +163,10 @@ test('AI influencer cards preserve approved copy and graph with document resourc
   assert.equal(cards.INFLUENCER_07.text, "Video’s live. Don’t screw this up, team!!!\n\nOr do. That’s just more views lol 😂");
   assert.deepEqual(Object.values(cards.INFLUENCER_07.choices).map((choice) => choice.label), ['DELETE THIS!!!', 'Anything for views']);
   assert.deepEqual(cards.INFLUENCER_08.messages[0].image, {
-    src: 'assets/ai-influencer-traffic-review.webp',
-    alt: 'Published B2BuyerSpyer review with 124K views and comments asking where to try the tool',
-    width: 1200,
-    height: 676,
+    src: 'assets/ai-influencer-fake-lead-review.webp',
+    alt: 'B2BuyerSpyer: Another AI Wrapper Scam? Honest Review — fake lead on screen, 124K views and comments asking where to try the tool',
+    width: 1600,
+    height: 1084,
   });
   assert.equal(Object.hasOwn(cards.INFLUENCER_08.messages[0], 'placeholder'), false);
   assert.deepEqual(Object.values(cards.INFLUENCER_08.choices).map((choice) => choice.label), ['Spam promos in comments!', 'Double prices NOW!!']);

@@ -47,7 +47,7 @@ function set(card, field, value, deck) {
 function mechanics(deck) {
   function clean(value) {
     if(Array.isArray(value)) return value.map(clean);
-    if(value && typeof value === 'object') return Object.fromEntries(Object.entries(value).filter(([k]) => !['label','lowLabel','highLabel','text','source','mode','messages','image','imageRef','placeholder','score','location','avatar','participants','preservePunctuation','actor_action','player_decision','effect_reason'].includes(k)).map(([k,v]) => [k,clean(v)]));
+    if(value && typeof value === 'object') return Object.fromEntries(Object.entries(value).filter(([k]) => !['label','lowLabel','highLabel','text','source','mode','messages','image','imageRef','placeholder','score','location','avatar','participants','preservePunctuation','italicLines','actor_action','player_decision','effect_reason'].includes(k)).map(([k,v]) => [k,clean(v)]));
     return value;
   }
   return {meta:deck.meta,initialResources:deck.initialResources,cards:deck.cards.map(clean),endings:deck.endings};

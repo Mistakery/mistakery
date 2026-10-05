@@ -1,5 +1,5 @@
 const test = require('node:test');
-const { revealMessages } = require('./chat-delivery.fixture.cjs');
+const { revealMessages, completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -33,6 +33,7 @@ async function state(page) {
 async function click(page, side) {
   await page.waitForFunction(() => !window.MistakeryApp.locked);
   await page.locator(`[data-choice="${side}"]`).click();
+  await completeFounderSend(page);
 }
 async function preview(page, side, keys) {
   await revealMessages(page);

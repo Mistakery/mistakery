@@ -548,16 +548,16 @@
     )).join('');
   }
 
-  function messageLines(text, preserveTerminalPeriod = false) {
+  function messageLines(text, preserveTerminalPeriod = false, italicLines = []) {
     const displayedText = preserveTerminalPeriod ? String(text) : withoutTerminalPeriod(text);
     return displayedText.split('\n').map((line, index, lines) => line
-      ? `<p${index > 0 && lines[index - 1] === '' ? ' class="message-paragraph-start"' : ''}>${typography(line)}</p>`
+      ? `<p${index > 0 && lines[index - 1] === '' ? ' class="message-paragraph-start"' : ''}>${italicLines.includes(line) ? `<em>${typography(line)}</em>` : typography(line)}</p>`
       : '').join('');
   }
 
-  function cardMessageMarkup(text, preserveTerminalPeriod = false) {
+  function cardMessageMarkup(text, preserveTerminalPeriod = false, italicLines = []) {
     return text.split('\n\n').map((message) => (
-      `<div class="message is-pop">${messageLines(message, preserveTerminalPeriod)}</div>`
+      `<div class="message is-pop">${messageLines(message, preserveTerminalPeriod, italicLines)}</div>`
     )).join('');
   }
 
@@ -791,7 +791,7 @@
         : message.forwardedFrom
           ? forwardedMessageMarkup(message, preserve)
           : cardMessageMarkup(message.text, preserve)).join('')
-      : cardMessageMarkup(card.text, preserve);
+      : cardMessageMarkup(card.text, preserve, card.italicLines);
     return media + messages;
   }
 
@@ -850,15 +850,20 @@
 
   function retainsPreviousChat(card, previous, side) {
     const approvedPrevious = {
-      LIVE_AGENT_02: 'LIVE_AGENT_01',
-      LIVE_AGENT_04: 'LIVE_AGENT_03',
-      LIVE_AGENT_04B: 'LIVE_AGENT_04',
-      LIVE_AGENT_07B: 'LIVE_AGENT_07',
+      LIVE_AGENT_02: ['LIVE_AGENT_01'],
+      LIVE_AGENT_04: ['LIVE_AGENT_03'],
+      LIVE_AGENT_04B: ['LIVE_AGENT_04'],
+      LIVE_AGENT_07B: ['LIVE_AGENT_07'],
+      INFLUENCER_02A: ['INFLUENCER_02'],
+      INFLUENCER_05: ['INFLUENCER_04', 'INFLUENCER_06'],
+      INFLUENCER_06: ['INFLUENCER_04', 'INFLUENCER_05'],
+      INFLUENCER_OUTCOME_5: ['INFLUENCER_08'],
+      INFLUENCER_OUTCOME_7: ['INFLUENCER_08'],
     };
     const linkedFiller = previous?.filler && card?.filler?.role === 'followup'
       && card.filler.unit === previous.filler.unit && previous.choices[side]?.next === card.id;
     return Boolean(card && previous && card.mode !== 'irl'
-      && (approvedPrevious[card.id] === previous.id || linkedFiller) && previous.source === card.source
+      && (approvedPrevious[card.id]?.includes(previous.id) || linkedFiller) && previous.source === card.source
       && (previous.mode || 'personal') === (card.mode || 'personal'));
   }
 
@@ -892,8 +897,12 @@
     reply.className = 'self-message chat-player-reply';
     reply.dataset.playerReply = '';
     const text = document.createElement('p');
-    const previousFounder = app.state.resources.founder - (answered.deltas.founder || 0);
-    text.textContent = engine.getChoiceLabel(previous.choices[answered.side], previousFounder);
+    const previousFounder = answered.resourcesBefore?.founder
+      ?? app.state.resources.founder - (answered.deltas.founder || 0);
+    const previousChoices = route.choicesFor(previous, { route: {
+      influencerPreviousCardId: app.state.history.at(-2)?.cardId || 'INFLUENCER_04',
+    } });
+    text.textContent = engine.getChoiceLabel(previousChoices[answered.side], previousFounder);
     reply.append(text);
     host.insertBefore(reply, current[0]);
     return reply;
@@ -1332,9 +1341,13 @@
     if (app.locked || app.view !== 'playing') return;
     if (app.cardDelivery && !app.cardDelivery.delivered) return;
     const card = engine.cardById(app.deck, app.state.currentCardId);
-    const next = engine.cardById(app.deck, card.choices[side].next);
-    if (retainsPreviousChat(next, card, side)) return composeFounderReply(card, side);
-    resolveCardChoice(card, side);
+    // Resolve once so contextual and random targets choose the right chat.
+    // The cloned candidate remains uncommitted during typing and can be cancelled.
+    const resolved = route.resolveChoice(app.deck, app.state, side,
+      directStoryTest ? { outcomeRng: Math.random } : {}).state;
+    const next = engine.cardById(app.deck, resolved.currentCardId);
+    if (!resolved.gameOver && retainsPreviousChat(next, card, side)) return composeFounderReply(card, side, resolved);
+    resolveCardChoice(card, side, undefined, resolved);
   }
 
   function cancelFounderSend() {
@@ -1350,13 +1363,11 @@
     return '<div class="typing-bubble founder-composer" aria-label="Founder is typing"><span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>';
   }
 
-  function composeFounderReply(card, side) {
+  function composeFounderReply(card, side, resolved) {
     cancelArrivalMotion();
     app.locked = true;
     clearPreview();
     // Resolve once on a cloned snapshot. Commit after send, or discard on cancel.
-    const resolved = route.resolveChoice(app.deck, app.state, side,
-      directStoryTest ? { outcomeRng: Math.random } : {}).state;
     cancelResourceFeedback();
     renderResources(resolved.resources, resolved.history.at(-1), resolved);
     const chat = $('[data-chat]');

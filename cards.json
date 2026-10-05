@@ -1542,7 +1542,7 @@
       "arc": "influencer",
       "source": "@error_404",
       "continuation": "forced",
-      "text": "wtf??\nlooks like your blogger is trying to crash us\n\nthousands of requests right now:\nmake me $1B right now. make zero mistakes\n\nis he dumb or just playing dumb? 😂",
+      "text": "wtf??\nlooks like your blogger is trying to crash us\n\nthousands of requests right now:\nmake me $1B app. make zero mistakes\n\nis he dumb or just playing dumb? 😂",
       "choices": {
         "left": {
           "label": "Cut his limits",
@@ -1572,7 +1572,10 @@
         "pitch_sent",
         "pitch_video"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "italicLines": [
+        "make me $1B app. make zero mistakes"
+      ]
     },
     {
       "id": "INFLUENCER_04",
@@ -1781,10 +1784,10 @@
           "source": "@bigdeals",
           "avatar": "BD",
           "image": {
-            "src": "assets/ai-influencer-traffic-review.webp",
-            "alt": "Published B2BuyerSpyer review with 124K views and comments asking where to try the tool",
-            "width": 1200,
-            "height": 676
+            "src": "assets/ai-influencer-fake-lead-review.webp",
+            "alt": "B2BuyerSpyer: Another AI Wrapper Scam? Honest Review — fake lead on screen, 124K views and comments asking where to try the tool",
+            "width": 1600,
+            "height": 1084
           },
           "text": "😔"
         },

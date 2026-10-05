@@ -1121,7 +1121,7 @@
 > wtf??<br>
 > looks like your blogger is trying to crash us<br>
 > thousands of requests right now:<br>
-> make me $1B right now. make zero mistakes<br>
+> make me $1B app. make zero mistakes<br>
 > is he dumb or just playing dumb? 😂
 
 **RU**
@@ -1229,7 +1229,7 @@
 **EN**
 
 > @bigdeals<br>
-> Published B2BuyerSpyer review with 124K views and comments asking where to try the tool<br>
+> B2BuyerSpyer: Another AI Wrapper Scam? Honest Review — fake lead on screen, 124K views and comments asking where to try the tool<br>
 > 😔<br>
 > @error404<br>
 > our traffic is 10x right now. the server is on fire<br>

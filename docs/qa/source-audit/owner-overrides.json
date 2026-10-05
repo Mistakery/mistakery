@@ -1,6 +1,6 @@
 {
   "date": "2026-10-05",
-  "instruction": "Сохранить эмодзи прежней версии; не ставить точки в конце завершённых фраз и баблов, только между предложениями. Удалить Powerless against the truth (и RU-эквивалент), вернуть ASAP!!!. Вернуть прежнее разбиение на баблы, корпоративный DM с пересылками, @error404 без подчёркивания и убрать четыре добавленных подписи роликов.",
+  "instruction": "Сохранить эмодзи прежней версии; не ставить точки в конце завершённых фраз и баблов, только между предложениями. Удалить Powerless against the truth (и RU-эквивалент), вернуть ASAP!!!. Вернуть прежнее разбиение на баблы, корпоративный DM с пересылками, @error404 без подчёркивания и убрать четыре добавленных подписи роликов. 2026-10-05: владелец заменил цитату INFLUENCER_03 на make me $1B app. make zero mistakes и попросил курсив; скриншот в INFLUENCER_08 заменён предоставленным владельцем, 😔 сохранён.",
   "terminalPeriods": "Remove a single terminal period at every authored line/bubble boundary; preserve internal sentence periods and ellipses.",
   "emoji": [
     {
@@ -1515,6 +1515,16 @@
         [
           "We have a situation",
           "ASAP!!!"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "text",
+      "replacements": [
+        [
+          "make me $1B right now. make zero mistakes",
+          "make me $1B app. make zero mistakes"
         ]
       ]
     }
