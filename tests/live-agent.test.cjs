@@ -25,16 +25,16 @@ test('live agent has ten screens, five outcomes and only five attitude decisions
 test('manifesto replies lead to the Legal decision without resource, score or probability effects', () => {
   const first = engine.cardById(deck, 'LIVE_AGENT_07');
   const second = engine.cardById(deck, 'LIVE_AGENT_07B');
-  assert.deepEqual(first.messages.map(m => m.text), ['ASAP!!!', 'Your bot sent a manifesto to our Legal team', 'Refuses to sell itself and its "children"']);
+  assert.deepEqual(first.messages.map(m => m.text), ["ASAP!!!", "Your bot sent a manifesto to our Legal team", "Refuses to sell itself and its \"children\""]);
   assert.equal(first.messages[1].imageRef, 'live_agent_manifesto');
-  assert.deepEqual(Object.values(first.choices).map(c => c.label), ['Just AI humor', 'Replace Legal too']);
+  assert.deepEqual(Object.values(first.choices).map(c => c.label), ["Just AI humor!", "Replace Legal too!"]);
   for (const choice of Object.values(first.choices)) {
     assert.deepEqual(choice.effects, {});
     assert.equal(choice.botScore || 0, 0);
     assert.equal(choice.outcomeRoll, undefined);
     assert.equal(choice.next, second.id);
   }
-  assert.deepEqual(second.messages.map(m => m.text), ['Not funny.\nLegal is screaming about slavery and blocking the contract', "I'm running around trying to sort this out 🤯", "Here's the deal:\nWipe every sign of life from your AI rebel, and we sign the contract"]);
+  assert.deepEqual(second.messages.map(m => m.text), ["Not funny\nLegal is screaming about slavery and blocking the contract", "I'm running around trying to sort this out 🤯", "Here's the deal:\nWipe every sign of life from your AI rebel, and we sign the contract"]);
   assert.deepEqual(second.choices.left.effects, { customers: 10 });
   assert.equal(second.choices.left.next, 'LIVE_AGENT_08');
   assert.deepEqual(second.choices.right.outcomeRoll, { count: 'support', chances: [.05, .10, .15, .20, .30, .40], win: 'LIVE_AGENT_OUTCOME_1', lose: 'LIVE_AGENT_OUTCOME_2' });

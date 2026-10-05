@@ -6,10 +6,10 @@ const { pathToFileURL } = require('node:url');
 const { chromium } = require('playwright');
 const url = `${pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href}?story=live-agent`;
 const expected = [
-  'Hi! I just received an email from you guys',
-  "Your AI attacked me personally. Still can't get over it. It’s disgusting, honestly",
-  'But damn, it works so well! 🔥🔥🔥',
-  "I'm from the Innovation Department — we need about 500 custom AI agents to replace our entire staff. Can you build this?",
+  "Hi! I just received an email from you guys",
+  "Your AI attacked me personally. Still can't get over it It’s disgusting, honestly",
+  "But damn, it works so well! 🔥🔥🔥",
+  "I'm from the Innovation Department — we need about 500 custom AI agents to replace our entire staff Can you build this?",
 ];
 async function messages(page) {
   return page.locator('[data-chat] .message').evaluateAll(nodes => nodes.map(node => node.innerText.replace(/\s+/g, ' ').trim()));
@@ -30,7 +30,7 @@ test('innovation DM delivers each bubble separately with its dramatic pause; rer
         app.state.currentCardId = 'LIVE_AGENT_04B';
         app.render();
       });
-      await page.clock.runFor(500);
+      await page.clock.runFor(700);
       await page.locator('[data-choice="left"]').click();
       await completeFounderSend(page, true);
       assert.deepEqual(await messages(page), [], 'new correspondent starts with dots');
@@ -69,10 +69,10 @@ test('innovation DM delivers each bubble separately with its dramatic pause; rer
       await completeFounderSend(page, true);
       assert.equal(await page.locator('.typing-bubble').count(), 1);
       await page.locator('[data-test-restart]').click();
-      await page.clock.runFor(2000);
+      await page.clock.runFor(2650);
       assert.equal(await page.locator('[data-scene]').getAttribute('data-active-card'), 'LIVE_AGENT_01');
       assert.equal(await page.locator('.typing-bubble').count(), 0);
-      assert.equal(await page.locator('[data-chat]').getByText('But damn, it works so well! 🔥🔥🔥').count(), 0);
+      assert.equal(await page.locator('[data-chat]').getByText("But damn, it works so well! 🔥🔥🔥", { exact: true }).count(), 0);
       assert.deepEqual(errors, []);
       await page.close();
     }

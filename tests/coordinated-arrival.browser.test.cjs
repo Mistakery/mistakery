@@ -150,11 +150,14 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       }
     } finally { await browser.close(); }
   });
-  test(`${name}: a new team author can open with dots while outgoing messages stay immediate`, async () => {
+  test(`${name}: a new team author can open with dots while outgoing messages have founder dots`, async () => {
     const browser = await engine.launch();
     try {
       const page = await open(browser);
       await seed(page, 'LIVE_AGENT_01');
+      assert.equal(await page.locator('[data-chat-current]').count(), 0);
+      assert.equal(await page.locator('.founder-composer i').count(), 3);
+      await page.clock.runFor(650);
       assert.equal(await page.locator('[data-chat-current]').count(), 1);
       await page.locator('button.typing-bubble').press('Enter');
       await page.locator('[data-choice="left"]').click();
@@ -168,7 +171,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.equal(await page.locator('[data-chat-current]').count(), 1);
     } finally { await browser.close(); }
   });
-  test(`${name}: changing chats gives the first incoming text a short lead-in without delaying continuations`, async () => {
+  test(`${name}: resource attention reuses chat lead-ins and preserves subsequent reading pauses`, async () => {
     const browser = await engine.launch();
     try {
       const page = await open(browser);
@@ -198,14 +201,31 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
         await page.locator('button.typing-bubble').press('Space');
         assert.deepEqual(await page.evaluate(() => MistakeryApp.state), state);
       }
-      // Same-thread continuation and the photo entry still appear immediately.
-      for (const [previous, card] of [['LIVE_AGENT_07', 'LIVE_AGENT_07B'], ['LIVE_AGENT_03', 'LIVE_AGENT_04'], ['INFLUENCER_04', 'INFLUENCER_05']]) {
+      // Reply feedback gets a brief opening window; existing photo entries stay
+      // immediate. Verify exact deadlines, not a relaxed eventual-visibility check.
+      for (const [previous, card, attentionMs, nextPause] of [
+        ['LIVE_AGENT_07', 'LIVE_AGENT_07B', 200, 500],
+        ['LIVE_AGENT_03', 'LIVE_AGENT_04', 0, 900],
+        ['INFLUENCER_04', 'INFLUENCER_05', 420, 600],
+      ]) {
         await seed(page, previous);
         await page.locator('button.typing-bubble').press('Enter');
         await page.locator(`[data-choice="${previous === 'INFLUENCER_04' ? 'right' : 'left'}"]`).click();
         await completeFounderSend(page, true);
         assert.equal(await page.locator('[data-scene]').getAttribute('data-active-card'), card);
+        if (attentionMs) {
+          const state = await page.evaluate(() => structuredClone(MistakeryApp.state));
+          assert.equal(await page.locator('[data-chat-current]').count(), 0);
+          assert.equal(await page.locator('[data-resource="cash"]').getAttribute('data-direction'), 'down');
+          assert.match(await page.locator('[data-resource-announcement]').textContent(), /Cash −0\.5\./);
+          await page.clock.runFor(attentionMs - 1);
+          assert.equal(await page.locator('[data-chat-current]').count(), 0, `${card}: attention deadline`);
+          await page.clock.runFor(1);
+          assert.deepEqual(await page.evaluate(() => MistakeryApp.state), state, 'attention does not resolve another choice');
+        }
         assert.equal(await page.locator('[data-chat-current]').count(), 1);
+        assert.equal(await page.evaluate(() => MistakeryApp.cardDelivery.deadline - Date.now()), nextPause,
+          `${card}: authored reading pause remains intact`);
       }
       await seed(page, 'LIVE_AGENT_02');
       await page.locator('button.typing-bubble').press('Enter');
@@ -264,10 +284,10 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
     try {
       const page = await open(browser);
       const expected = {
-        LIVE_AGENT_01: [600, 500, 700], LIVE_AGENT_03: [1000, 2000, 500],
+        LIVE_AGENT_01: [650, 600, 500, 700], LIVE_AGENT_03: [1000, 2000, 500],
         LIVE_AGENT_05: [500, 2000, 500], LIVE_AGENT_07: [2000, 900],
         LIVE_AGENT_07B: [500, 1250], INFLUENCER_02: [700, 900],
-        INFLUENCER_05: [600, 1100], INFLUENCER_08: [1000, 800, 800],
+        INFLUENCER_05: [600, 1100], INFLUENCER_08: [1000, 800],
       };
       for (const [card, pauses] of Object.entries(expected)) {
         await seed(page, card);

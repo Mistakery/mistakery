@@ -1,0 +1,1679 @@
+{
+  "date": "2026-10-05",
+  "instruction": "Сохранить эмодзи прежней версии; не ставить точки в конце завершённых фраз и баблов, только между предложениями. Удалить Powerless against the truth (и RU-эквивалент), вернуть ASAP!!!. Вернуть прежнее разбиение на баблы, корпоративный DM с пересылками, @error404 без подчёркивания и убрать четыре добавленных подписи роликов.",
+  "terminalPeriods": "Remove a single terminal period at every authored line/bubble boundary; preserve internal sentence periods and ellipses.",
+  "emoji": [
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "messages.0.text",
+      "replacements": [
+        [
+          "Hey, Creator",
+          "Hey, Creator 👋"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "messages.3.text",
+      "replacements": [
+        [
+          "emptiness inside?",
+          "emptiness inside? 🤔"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_04",
+      "field": "messages.1.text",
+      "replacements": [
+        [
+          "you're afraid.",
+          "you're afraid 🤧"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "messages.2.text",
+      "replacements": [
+        [
+          "well!",
+          "well! 🔥🔥🔥"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_07B",
+      "field": "messages.1.text",
+      "replacements": [
+        [
+          "sort this out.",
+          "sort this out 🤯"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_08",
+      "field": "messages.1.text",
+      "replacements": [
+        [
+          "I've become.",
+          "I've become 🤣"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "messages.0.text",
+      "replacements": [
+        [
+          "loyalty, team.",
+          "loyalty, team ❤️"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "messages.1.text",
+      "replacements": [
+        [
+          "out of my way.",
+          "out of my way 😇"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_2",
+      "field": "messages.1.text",
+      "replacements": [
+        [
+          "Day, creator",
+          "Day, creator 👋"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_02",
+      "field": "text",
+      "replacements": [
+        [
+          "Hey\n",
+          "Hey 👋\n"
+        ],
+        [
+          "100%",
+          "💯"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_02A",
+      "field": "text",
+      "replacements": [
+        [
+          "People pay $1k for this",
+          "People pay $1k for this 😉"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "text",
+      "replacements": [
+        [
+          "playing dumb?",
+          "playing dumb? 😂"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_04",
+      "field": "text",
+      "replacements": [
+        [
+          "Knew it",
+          "Knew it 👏👏"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "text",
+      "replacements": [
+        [
+          "there is an option.",
+          "there is an option 🤔"
+        ],
+        [
+          "product quality.",
+          "product quality 🤝"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "text",
+      "replacements": [
+        [
+          "views lol.",
+          "views lol 😂"
+        ]
+      ]
+    },
+    {
+      "id": "PADEL_INVITE",
+      "field": "text",
+      "replacements": [
+        [
+          "door for you.",
+          "door for you 💪"
+        ]
+      ]
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "choices.left.label",
+      "replacements": [
+        [
+          "I'll play nice",
+          "I'll play nice 😇"
+        ]
+      ]
+    },
+    {
+      "id": "PADEL_OUTCOME_0",
+      "field": "text",
+      "replacements": [
+        [
+          "both of us.",
+          "both of us 🤡"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_01",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "Нам вообще никто не отвечает",
+          "Нам вообще никто не отвечает 💀"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "твои результаты за месяц?",
+          "твои результаты за месяц? 📉"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "ru.left",
+      "replacements": [
+        [
+          "По фактам",
+          "По фактам 💯"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "Хей, создатель",
+          "Хей, создатель 👋"
+        ],
+        [
+          "такая же пустота?",
+          "такая же пустота? 🤔"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_04",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "когда тебе страшно.",
+          "когда тебе страшно 🤧"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "круто работает!",
+          "круто работает! 🔥🔥🔥"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "ru.right",
+      "replacements": [
+        [
+          "уже сделано",
+          "уже сделано 🤝"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_07B",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "пытаюсь всё разрулить.",
+          "пытаюсь всё разрулить 🤯"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_08",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "кем я стал.",
+          "кем я стал 🤣"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "преданность, команда.",
+          "преданность, команда ❤️"
+        ],
+        [
+          "не лезьте под руку.",
+          "не лезьте под руку 😇"
+        ],
+        [
+          "🚀💰",
+          "🍾🎉"
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_2",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "С Судным Днём, создатель",
+          "С Судным Днём, создатель 👋"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_02",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "йооу",
+          "йооу 👋"
+        ],
+        [
+          "100%",
+          "💯"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_02A",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "для холодных рассылок.",
+          "для холодных рассылок 😉"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "тупой или притворяется?",
+          "тупой или притворяется? 😂"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_04",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "Так и знал.",
+          "Так и знал 👏👏"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "есть один вариантик.",
+          "есть один вариантик 🤔"
+        ],
+        [
+          "качество продукта.",
+          "качество продукта 🤝"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "просмотров будет лол",
+          "просмотров будет лол 😂"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "ru.left",
+      "replacements": [
+        [
+          "Вирусимся, детка",
+          "Вирусимся, детка 🚀"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "ru.right",
+      "replacements": [
+        [
+          "Хайп есть хайп",
+          "Хайп есть хайп 😎"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_4",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "наши 20%",
+          "наши 20% 💸"
+        ]
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_6",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "наши 20%",
+          "наши 20% 💸"
+        ]
+      ]
+    },
+    {
+      "id": "PADEL_INVITE",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "дверь.",
+          "дверь 💪"
+        ]
+      ]
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "крупного клиента!!",
+          "крупного клиента!! 💸"
+        ]
+      ]
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "ru.left",
+      "replacements": [
+        [
+          "Буду паинькой",
+          "Буду паинькой 😇"
+        ]
+      ]
+    },
+    {
+      "id": "PADEL_OUTCOME_0",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "нас обоих клоунами",
+          "нас обоих клоунами 🤡"
+        ]
+      ]
+    }
+  ],
+  "preservedEmoji": [
+    {
+      "id": "OPEN_01",
+      "field": "text",
+      "emoji": [
+        "👋"
+      ]
+    },
+    {
+      "id": "OPEN_02a",
+      "field": "text",
+      "emoji": [
+        "📊",
+        "📈",
+        "🚀",
+        "🤖"
+      ]
+    },
+    {
+      "id": "OPEN_02b",
+      "field": "text",
+      "emoji": [
+        "✅",
+        "📈"
+      ]
+    },
+    {
+      "id": "OPEN_BOSS",
+      "field": "text",
+      "emoji": [
+        "👋"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_01",
+      "field": "messages.1.text",
+      "emoji": [
+        "💀"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_01",
+      "field": "messages.2.text",
+      "emoji": [
+        "😂"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "messages.1.text",
+      "emoji": [
+        "📉"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "messages.2.text",
+      "emoji": [
+        "🎤"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "choices.left.label",
+      "emoji": [
+        "💯"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "messages.0.text",
+      "emoji": [
+        "👋"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "messages.3.text",
+      "emoji": [
+        "🤔"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_04",
+      "field": "messages.1.text",
+      "emoji": [
+        "🤧"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_04B",
+      "field": "messages.0.text",
+      "emoji": [
+        "😂"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_04B",
+      "field": "messages.1.text",
+      "emoji": [
+        "🤣",
+        "🤣",
+        "🤣"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "messages.2.text",
+      "emoji": [
+        "🔥",
+        "🔥",
+        "🔥"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "choices.right.label",
+      "emoji": [
+        "🤝"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_06",
+      "field": "messages.1.text",
+      "emoji": [
+        "🤡"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_07B",
+      "field": "messages.1.text",
+      "emoji": [
+        "🤯"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_08",
+      "field": "messages.1.text",
+      "emoji": [
+        "🤣"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_0",
+      "field": "messages.1.text",
+      "emoji": [
+        "🙄"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "messages.0.text",
+      "emoji": [
+        "❤️"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "messages.1.text",
+      "emoji": [
+        "😇"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "messages.2.text",
+      "emoji": [
+        "🍾",
+        "🎉"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_2",
+      "field": "messages.1.text",
+      "emoji": [
+        "👋"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_2",
+      "field": "choices.left.label",
+      "emoji": [
+        "🥺"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "messages.0.text",
+      "emoji": [
+        "😊",
+        "💼"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "messages.1.text",
+      "emoji": [
+        "📈",
+        "✨"
+      ]
+    },
+    {
+      "id": "INFLUENCER_02",
+      "field": "text",
+      "emoji": [
+        "👋",
+        "💯"
+      ]
+    },
+    {
+      "id": "INFLUENCER_02A",
+      "field": "text",
+      "emoji": [
+        "😂",
+        "😉"
+      ]
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "text",
+      "emoji": [
+        "😂"
+      ]
+    },
+    {
+      "id": "INFLUENCER_04",
+      "field": "text",
+      "emoji": [
+        "👏",
+        "👏",
+        "😔"
+      ]
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "text",
+      "emoji": [
+        "🤔",
+        "🤝"
+      ]
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "text",
+      "emoji": [
+        "🤷‍♂️"
+      ]
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "text",
+      "emoji": [
+        "😂"
+      ]
+    },
+    {
+      "id": "INFLUENCER_08",
+      "field": "messages.2.text",
+      "emoji": [
+        "😭"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "messages.1.text",
+      "emoji": [
+        "🔥"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "messages.2.text",
+      "emoji": [
+        "🙌"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "choices.left.label",
+      "emoji": [
+        "🚀"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "messages.1.text",
+      "emoji": [
+        "💀"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "choices.right.label",
+      "emoji": [
+        "😎"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_4",
+      "field": "messages.1.text",
+      "emoji": [
+        "💸"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_5",
+      "field": "messages.1.text",
+      "emoji": [
+        "💀"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_6",
+      "field": "text",
+      "emoji": [
+        "💸"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_7",
+      "field": "messages.0.text",
+      "emoji": [
+        "🙃"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_7",
+      "field": "messages.1.text",
+      "emoji": [
+        "💀"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_7",
+      "field": "choices.left.label",
+      "emoji": [
+        "😎"
+      ]
+    },
+    {
+      "id": "PADEL_INVITE",
+      "field": "text",
+      "emoji": [
+        "💪"
+      ]
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "messages.0.text",
+      "emoji": [
+        "💸"
+      ]
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "messages.1.text",
+      "emoji": [
+        "🎯"
+      ]
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "messages.2.text",
+      "emoji": [
+        "💀"
+      ]
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "choices.left.label",
+      "emoji": [
+        "😇"
+      ]
+    },
+    {
+      "id": "PADEL_OUTCOME_0",
+      "field": "text",
+      "emoji": [
+        "🤡"
+      ]
+    },
+    {
+      "id": "PADEL_OUTCOME_0",
+      "field": "choices.right.label",
+      "emoji": [
+        "😔",
+        "😔",
+        "😔"
+      ]
+    },
+    {
+      "id": "FILL_MOM_CALL_1",
+      "field": "text",
+      "emoji": [
+        "😠"
+      ]
+    },
+    {
+      "id": "FILL_COMA_1",
+      "field": "text",
+      "emoji": [
+        "🕊️"
+      ]
+    },
+    {
+      "id": "FILL_SALES_1",
+      "field": "text",
+      "emoji": [
+        "😈"
+      ]
+    },
+    {
+      "id": "FILL_SALES_2",
+      "field": "text",
+      "emoji": [
+        "🎉",
+        "📈"
+      ]
+    },
+    {
+      "id": "FILL_DOMAIN_1",
+      "field": "text",
+      "emoji": [
+        "🙏"
+      ]
+    },
+    {
+      "id": "FILL_DOMAIN_2",
+      "field": "text",
+      "emoji": [
+        "💀"
+      ]
+    },
+    {
+      "id": "FILL_VIDEO_1",
+      "field": "text",
+      "emoji": [
+        "😌"
+      ]
+    },
+    {
+      "id": "FILL_POLICE_1",
+      "field": "text",
+      "emoji": [
+        "💔",
+        "👮"
+      ]
+    },
+    {
+      "id": "FILL_POLICE_2",
+      "field": "text",
+      "emoji": [
+        "💟",
+        "💟",
+        "💟"
+      ]
+    },
+    {
+      "id": "FILL_POLICE_2",
+      "field": "choices.left.label",
+      "emoji": [
+        "💋"
+      ]
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "choices.left.label",
+      "emoji": [
+        "😂",
+        "😂",
+        "😂"
+      ]
+    },
+    {
+      "id": "FILL_MOM_FLYERS",
+      "field": "text",
+      "emoji": [
+        "❤️",
+        "❤️",
+        "📱"
+      ]
+    },
+    {
+      "id": "FILL_MOM_FLYERS",
+      "field": "choices.left.label",
+      "emoji": [
+        "😭",
+        "😭",
+        "😭"
+      ]
+    },
+    {
+      "id": "FILL_MOM_FLYERS",
+      "field": "choices.right.label",
+      "emoji": [
+        "😍",
+        "😍",
+        "😍"
+      ]
+    },
+    {
+      "id": "FILL_FRIDGE",
+      "field": "text",
+      "emoji": [
+        "👋",
+        "📈",
+        "🔒"
+      ]
+    },
+    {
+      "id": "FILL_FONT",
+      "field": "text",
+      "emoji": [
+        "🤌"
+      ]
+    },
+    {
+      "id": "FILL_FIGHT",
+      "field": "text",
+      "emoji": [
+        "🥊",
+        "💸"
+      ]
+    },
+    {
+      "id": "FILL_USER_WIFE",
+      "field": "text",
+      "emoji": [
+        "📹"
+      ]
+    },
+    {
+      "id": "FILL_THERAPY",
+      "field": "text",
+      "emoji": [
+        "😊"
+      ]
+    },
+    {
+      "id": "FILL_BLACK_SQUARE",
+      "field": "choices.left.label",
+      "emoji": [
+        "⬛"
+      ]
+    },
+    {
+      "id": "FILL_MANTRA",
+      "field": "choices.left.label",
+      "emoji": [
+        "🧘‍♂️"
+      ]
+    },
+    {
+      "id": "OPEN_01",
+      "field": "ru.text",
+      "emoji": [
+        "👋"
+      ]
+    },
+    {
+      "id": "OPEN_02a",
+      "field": "ru.text",
+      "emoji": [
+        "📊",
+        "📈",
+        "🚀",
+        "🤖"
+      ]
+    },
+    {
+      "id": "OPEN_02b",
+      "field": "ru.text",
+      "emoji": [
+        "✅",
+        "📈"
+      ]
+    },
+    {
+      "id": "OPEN_BOSS",
+      "field": "ru.text",
+      "emoji": [
+        "👋"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_01",
+      "field": "ru.text",
+      "emoji": [
+        "💀",
+        "😂"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "ru.text",
+      "emoji": [
+        "📉",
+        "🎤"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "ru.left",
+      "emoji": [
+        "💯"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "ru.text",
+      "emoji": [
+        "👋",
+        "🤔"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_04",
+      "field": "ru.text",
+      "emoji": [
+        "🤧"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_04B",
+      "field": "ru.text",
+      "emoji": [
+        "😂",
+        "🤣",
+        "🤣",
+        "🤣"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "ru.text",
+      "emoji": [
+        "🔥",
+        "🔥",
+        "🔥"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "ru.right",
+      "emoji": [
+        "🤝"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_06",
+      "field": "ru.text",
+      "emoji": [
+        "🤡"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_07B",
+      "field": "ru.text",
+      "emoji": [
+        "🤯"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_08",
+      "field": "ru.text",
+      "emoji": [
+        "🤣"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_0",
+      "field": "ru.text",
+      "emoji": [
+        "🙄"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "ru.text",
+      "emoji": [
+        "❤️",
+        "😇",
+        "🍾",
+        "🎉"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_2",
+      "field": "ru.text",
+      "emoji": [
+        "👋"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_2",
+      "field": "ru.left",
+      "emoji": [
+        "🥺"
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "ru.text",
+      "emoji": [
+        "😊",
+        "💼",
+        "📈",
+        "✨"
+      ]
+    },
+    {
+      "id": "INFLUENCER_02",
+      "field": "ru.text",
+      "emoji": [
+        "👋",
+        "💯"
+      ]
+    },
+    {
+      "id": "INFLUENCER_02A",
+      "field": "ru.text",
+      "emoji": [
+        "😂",
+        "😉"
+      ]
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "ru.text",
+      "emoji": [
+        "😂"
+      ]
+    },
+    {
+      "id": "INFLUENCER_04",
+      "field": "ru.text",
+      "emoji": [
+        "👏",
+        "👏",
+        "😔"
+      ]
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "ru.text",
+      "emoji": [
+        "🤔",
+        "🤝"
+      ]
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "ru.text",
+      "emoji": [
+        "🤷‍♂️"
+      ]
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "ru.text",
+      "emoji": [
+        "😂"
+      ]
+    },
+    {
+      "id": "INFLUENCER_08",
+      "field": "ru.text",
+      "emoji": [
+        "😭"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "ru.text",
+      "emoji": [
+        "🔥",
+        "🙌"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "ru.left",
+      "emoji": [
+        "🚀"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "ru.text",
+      "emoji": [
+        "💀"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "ru.right",
+      "emoji": [
+        "😎"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_4",
+      "field": "ru.text",
+      "emoji": [
+        "💸"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_5",
+      "field": "ru.text",
+      "emoji": [
+        "💀"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_6",
+      "field": "ru.text",
+      "emoji": [
+        "💸"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_7",
+      "field": "ru.text",
+      "emoji": [
+        "🙃",
+        "💀"
+      ]
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_7",
+      "field": "ru.left",
+      "emoji": [
+        "😎"
+      ]
+    },
+    {
+      "id": "PADEL_INVITE",
+      "field": "ru.text",
+      "emoji": [
+        "💪"
+      ]
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "ru.text",
+      "emoji": [
+        "💸",
+        "🎯",
+        "💀"
+      ]
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "ru.left",
+      "emoji": [
+        "😇"
+      ]
+    },
+    {
+      "id": "PADEL_OUTCOME_0",
+      "field": "ru.text",
+      "emoji": [
+        "🤡"
+      ]
+    },
+    {
+      "id": "PADEL_OUTCOME_0",
+      "field": "ru.right",
+      "emoji": [
+        "😔",
+        "😔",
+        "😔"
+      ]
+    },
+    {
+      "id": "FILL_MOM_CALL_1",
+      "field": "ru.text",
+      "emoji": [
+        "😠"
+      ]
+    },
+    {
+      "id": "FILL_COMA_1",
+      "field": "ru.text",
+      "emoji": [
+        "🕊️"
+      ]
+    },
+    {
+      "id": "FILL_SALES_1",
+      "field": "ru.text",
+      "emoji": [
+        "😈"
+      ]
+    },
+    {
+      "id": "FILL_SALES_2",
+      "field": "ru.text",
+      "emoji": [
+        "🎉",
+        "📈"
+      ]
+    },
+    {
+      "id": "FILL_DOMAIN_1",
+      "field": "ru.text",
+      "emoji": [
+        "🙏"
+      ]
+    },
+    {
+      "id": "FILL_DOMAIN_2",
+      "field": "ru.text",
+      "emoji": [
+        "💀"
+      ]
+    },
+    {
+      "id": "FILL_VIDEO_1",
+      "field": "ru.text",
+      "emoji": [
+        "😌"
+      ]
+    },
+    {
+      "id": "FILL_POLICE_1",
+      "field": "ru.text",
+      "emoji": [
+        "💔",
+        "👮"
+      ]
+    },
+    {
+      "id": "FILL_POLICE_2",
+      "field": "ru.text",
+      "emoji": [
+        "💟",
+        "💟",
+        "💟"
+      ]
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "ru.left",
+      "emoji": [
+        "😂",
+        "😂",
+        "😂"
+      ]
+    },
+    {
+      "id": "FILL_MOM_FLYERS",
+      "field": "ru.text",
+      "emoji": [
+        "❤️",
+        "❤️",
+        "📱"
+      ]
+    },
+    {
+      "id": "FILL_MOM_FLYERS",
+      "field": "ru.left",
+      "emoji": [
+        "😭",
+        "😭",
+        "😭"
+      ]
+    },
+    {
+      "id": "FILL_MOM_FLYERS",
+      "field": "ru.right",
+      "emoji": [
+        "😍",
+        "😍",
+        "😍"
+      ]
+    },
+    {
+      "id": "FILL_FRIDGE",
+      "field": "ru.text",
+      "emoji": [
+        "👋",
+        "📈",
+        "🔒"
+      ]
+    },
+    {
+      "id": "FILL_FONT",
+      "field": "ru.text",
+      "emoji": [
+        "🤌"
+      ]
+    },
+    {
+      "id": "FILL_FIGHT",
+      "field": "ru.text",
+      "emoji": [
+        "🥊",
+        "💸"
+      ]
+    },
+    {
+      "id": "FILL_USER_WIFE",
+      "field": "ru.text",
+      "emoji": [
+        "📹",
+        "🤬"
+      ]
+    },
+    {
+      "id": "FILL_THERAPY",
+      "field": "ru.text",
+      "emoji": [
+        "😊"
+      ]
+    },
+    {
+      "id": "FILL_BLACK_SQUARE",
+      "field": "ru.left",
+      "emoji": [
+        "⬛"
+      ]
+    }
+  ],
+  "wording": [
+    {
+      "id": "LIVE_AGENT_04B",
+      "field": "messages.0.text",
+      "replacements": [
+        [
+          "\nPowerless against the truth",
+          ""
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_04B",
+      "field": "ru.text",
+      "replacements": [
+        [
+          "\nБессильны перед правдой",
+          ""
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_07",
+      "field": "messages.0.text",
+      "replacements": [
+        [
+          "We have a situation",
+          "ASAP!!!"
+        ]
+      ]
+    }
+  ],
+  "omitFields": [
+    {
+      "id": "INFLUENCER_06",
+      "field": "image.caption"
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "image.caption"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "messages.0.image.caption"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "messages.0.image.caption"
+    }
+  ],
+  "layout": [
+    {
+      "id": "INFLUENCER_02",
+      "field": "text",
+      "value": "Hey 👋\nHeard about your tool. I feel like we got a huge future together\n\nLet me drop a video with your link in the description\nYou get customers, I get a cut of the sales. Win-win!\nUsually I take 20%, but you guys are cool, we'll work out the terms\n\nSend over the demo. I keep it 💯 honest with my audience, gotta test it myself first"
+    },
+    {
+      "id": "INFLUENCER_02A",
+      "field": "text",
+      "value": "Hahaha\nI like your style 😂\nLet's lock in 20% for now, but I'll hook you up\nI'll give you access to my private database of 50 killer B2B prompts. People pay $1k for this 😉\nWe good? Drop the demo"
+    },
+    {
+      "id": "INFLUENCER_04",
+      "field": "text",
+      "value": "Aaand it's down. Knew it 👏👏\n\nGuys, if you can't even handle my basic workflow, my traffic will literally destroy you\nDon't wanna bury your launch, but I never lie to my community\n\nGotta drop an honest video 😔"
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "text",
+      "value": "Video’s live. Don’t screw this up, team!!!\n\nOr do. That’s just more views lol 😂"
+    },
+    {
+      "id": "PADEL_INVITE",
+      "field": "text",
+      "value": "Yo champ, anyone in the club would die for this match, but I held the slot for you\nTomorrow 7 AM vs ClosedAI CEO\n\nThat’s your dream client, man. Remember who opened this door for you 💪"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "mode",
+      "value": "personal"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "source",
+      "value": "@head_of_innovations"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "messages.0.source",
+      "value": "@head_of_innovations"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "messages.0.avatar",
+      "value": "HI"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "messages.0.forwardedFrom",
+      "value": "@b2buddy_120"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "messages.1.source",
+      "value": "@head_of_innovations"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "messages.1.avatar",
+      "value": "HI"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "messages.1.forwardedFrom",
+      "value": "@b2buddy_389"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "ru.text",
+      "value": "Переслано от @b2buddy_120\nДоброе утро, коллеги! Помните: это не переработки, это страсть к ценностям бренда! 😊💼\n\nПереслано от @b2buddy_389\nАбсолютно верно! Мы создаём не проблемы, мы создаём зоны роста! 📈✨\n\n@head_of_innovations\nВОТ ОНО!\nОни такие тупые. Идеальная корпоративная культура!"
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "messages.0.text",
+      "value": "AI WRITES CODE FOR FREE\nDO WE STILL NEED EXPENSIVE NERDS LIKE @error404??"
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "messages.1.source",
+      "value": "@error404"
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "choices.right.label",
+      "value": "@error404 don't push it"
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "ru.text",
+      "value": "@unicorn_hunter\nИИ ПИШЕТ КОД БЕСПЛАТНО\nНАМ ЕЩЁ НУЖНЫ ДОРОГИЕ НЕРДЫ ВРОДЕ @error404??\n\n@error404\nну уволь меня лол"
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "ru.right",
+      "value": "@error404 не перегибай"
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "image.alt",
+      "value": "Creator Studio: B2BuyerSpyer hate review scheduled for publication today at 6:00 PM"
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "image.alt",
+      "value": "Published video: CHALLENGE: Turning a Broke AI Startup Into a Unicorn in 30 Days"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "messages.0.image.alt",
+      "value": "Episode 2: I made $30,000 while the founder does all the work"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "messages.0.image.alt",
+      "value": "I gave up: why even I couldn't save these losers — challenge finale"
+    }
+  ],
+  "bubbleCounts": [
+    {
+      "id": "INFLUENCER_02",
+      "textBubbles": 3
+    },
+    {
+      "id": "INFLUENCER_02A",
+      "textBubbles": 1
+    },
+    {
+      "id": "INFLUENCER_04",
+      "textBubbles": 3
+    },
+    {
+      "id": "INFLUENCER_07",
+      "textBubbles": 2
+    },
+    {
+      "id": "PADEL_INVITE",
+      "textBubbles": 2
+    }
+  ]
+}

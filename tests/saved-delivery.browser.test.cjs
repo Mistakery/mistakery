@@ -21,6 +21,7 @@ async function start(page) {
   await page.getByRole('button', { name: 'Open the Masterplan' }).click();
   assert.equal(await page.locator('[data-card-id]').textContent(), 'SAVED_01_PLAN');
   assert.equal(await notes(page).count(), 1);
+  assert.equal(await notes(page).first().evaluate(n => n.getAnimations().length), 0, 'first Saved has no entrance');
   assert.equal(await replies(page).filter({ hasText: 'Right on track' }).isEnabled(), true);
   await page.getByRole('button', { name: 'Right on track' }).click();
   assert.equal(await page.locator('[data-card-id]').textContent(), 'SAVED_02_UPDATE');
@@ -48,12 +49,15 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
         assert.equal(await replies(page).first().isDisabled(), true);
         await page.clock.runFor(1);
         assert.equal(await notes(page).count(), 2);
+        assert.equal(await page.locator('[aria-label="Founder is typing"]').count(), 0);
+        assert.equal(await notes(page).last().evaluate(n => n.getAnimations().length), 0, 'typing ends in a steady bubble');
         assert.equal(await notes(page).first().evaluate(node => node === window.firstSavedBubble), true, 'first bubble must not animate again');
         assert.match((await notes(page).last().innerText()).replace(/\u00a0/g, ' '), /IN PROGRESS:\s*9\. Unicorn 🦄🎯 \(30 DAYS UNTIL WE'RE BROKE!!\)/);
         assert.equal(await replies(page).first().isEnabled(), true);
         await page.clock.runFor(2000);
         await page.evaluate(() => window.MistakeryApp.render());
         assert.equal(await notes(page).count(), 2);
+        assert.equal(await notes(page).evaluateAll(ns => ns.flatMap(n => n.getAnimations()).length), 0, 'render cannot replay Saved');
         await replies(page).first().focus();
         await page.keyboard.press('Enter');
         assert.equal(await page.evaluate(() => window.MistakeryApp.view), 'playing');

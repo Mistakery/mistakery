@@ -1,3 +1,4 @@
+const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -15,6 +16,7 @@ async function open(page, suffix) {
 async function click(page, side = 'left') {
   await page.clock.runFor(6000);
   await page.locator(`[data-choice="${side}"]`).click();
+  await completeFounderSend(page, true);
 }
 const snapshot = page => page.evaluate(() => structuredClone(MistakeryApp.state));
 for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) {
@@ -46,13 +48,16 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
       assert.deepEqual(states[0], states[1]);
     } finally { await browser.close(); }
   });
-  test(`${name}: all six plot orders finish two filler gaps, Back and Restart replay exactly`, async () => {
+  test(`${name}: scheduling fixture covers six plot orders, filler gaps, Back and Restart`, async () => {
     const browser = await browserType.launch();
     try {
       for (const seed of seeds) {
         const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
         const errors = []; page.on('pageerror', e => errors.push(e.message));
         await open(page, `?test=route&seed=${seed}`);
+        // Exercise the scheduler independently of terminal losses. The production
+        // deck and actual endings are exercised in resource-endings.browser.test.
+        await page.evaluate(() => { MistakeryApp.deck.meta.route.resourceEndings = []; });
         const initial = await snapshot(page);
         await click(page); await click(page);
         let count = 0;

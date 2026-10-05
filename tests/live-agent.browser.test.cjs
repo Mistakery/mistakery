@@ -1,6 +1,6 @@
 const { afterTurn } = require('./turn-resources.fixture.cjs');
 const test = require('node:test');
-const { revealMessages } = require('./chat-delivery.fixture.cjs');
+const { revealMessages, completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -30,6 +30,7 @@ async function click(page, side) {
   await revealMessages(page);
   await page.waitForFunction(() => !window.MistakeryApp.locked);
   await page.locator(`[data-choice="${side}"]`).click();
+  await completeFounderSend(page);
 }
 async function snapshot(page) {
   return page.evaluate(() => ({ ...window.MistakeryApp.state, score: window.MistakeryApp.liveAgentScore, draws: window.draws }));
@@ -67,6 +68,12 @@ test('live agent probabilities, resources, completion and mobile messenger', asy
           }[outcome]));
           await page.evaluate(() => window.MistakeryApp.render());
           assert.deepEqual((await snapshot(page)).resources, state.resources, 'render must not reapply effects');
+          if (outcome === 2) {
+            assert.equal(state.gameOver, true);
+            assert.equal(state.endingId, 'judgment_day');
+            assert.equal(await page.locator('[data-choice]').count(), 1);
+            continue;
+          }
           await click(page, supports % 2 ? 'left' : 'right');
           const finished = await snapshot(page);
           assert.equal(finished.route.phase, 'fillers');
@@ -143,7 +150,7 @@ test('live agent probabilities, resources, completion and mobile messenger', asy
         await seed(page, id);
         await page.locator('.typing-bubble').waitFor({ state: 'detached' });
         await page.locator('[data-chat]').evaluate(async node => { await Promise.all(node.getAnimations({ subtree: true }).map(a => a.finished)); });
-        assert.doesNotMatch(await page.locator('.phone').innerText(), /bot.score|liveAgentScore|[А-Яа-яЁё]/);
+        assert.doesNotMatch((await page.locator('.phone').innerText()).replace('Вro, you feel me…', 'Bro, you feel me…'), /bot.score|liveAgentScore|[А-Яа-яЁё]/); // The authored reply uses Cyrillic В.
         const geometry = await page.evaluate(() => {
           const choices = document.querySelector('[data-choices]').getBoundingClientRect();
           const chat = document.querySelector('[data-chat]');
@@ -157,7 +164,7 @@ test('live agent probabilities, resources, completion and mobile messenger', asy
       await seed(page, id);
       assert.equal(await page.locator(`[data-asset-reference="${ref}"] img`).count(), 1);
       assert.equal(await page.locator(`[data-asset-reference="${ref}"] .message-caption`).count(), 1);
-      assert.equal(await page.locator('[data-chat] .message').count(), id === 'LIVE_AGENT_OUTCOME_2' ? 3 : 2);
+      assert.equal(await page.locator('[data-chat] .message').count(), 2);
       assert.equal(await page.locator('.media-placeholder').count(), 0);
     }
     assert.deepEqual(errors, []);
@@ -175,7 +182,7 @@ test('founder photo is preloaded and shares one bubble with its caption', async 
     await seed(page, 'LIVE_AGENT_04');
     const bubble = page.locator('[data-asset-reference="placeholder_founder_photo"]');
     assert.equal(await bubble.locator('.message-image').count(), 1);
-    assert.equal((await bubble.locator('p').innerText()).replace(/\u00a0/g, ' '), 'I noticed you check our bank account every 7 minutes');
+    assert.equal((await bubble.locator('p').innerText()).replace(/\u00a0/g, ' '), "I noticed you check our bank account every 7 minutes");
     assert.equal(await page.locator('[data-chat] .message').count(), 2);
     assert.equal(await page.locator('[data-chat] .media-placeholder').count(), 0);
     await bubble.locator('img').evaluate(image => image.decode());

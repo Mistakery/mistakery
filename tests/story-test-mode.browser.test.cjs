@@ -1,3 +1,4 @@
+const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const { afterTurn } = require('./turn-resources.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -15,6 +16,7 @@ async function state(page) {
 async function choose(page, side) {
   await page.waitForFunction(() => !window.MistakeryApp.locked);
   await page.locator(`[data-choice="${side}"]`).click();
+  await completeFounderSend(page);
 }
 
 test('direct story test supports exact undo, alternate answers, outcome undo and clean restart', async () => {
@@ -66,10 +68,9 @@ test('direct story test supports exact undo, alternate answers, outcome undo and
     const outcome = await state(page);
     assert.equal(outcome.state.currentCardId, 'LIVE_AGENT_OUTCOME_2');
     assert.deepEqual(outcome.state.resources, { cash: 0, team: 0, customers: 0, founder: 0 });
-    await choose(page, 'left');
-    assert.equal((await state(page)).state.route.phase, 'fillers');
-    await page.locator('[data-test-back]').click();
-    assert.deepEqual(await state(page), outcome, 'undo completion restores chosen outcome and hidden score');
+    assert.equal(outcome.state.gameOver, true);
+    assert.equal(outcome.view, 'ended');
+    assert.equal(outcome.state.endingId, 'judgment_day');
     assert.equal(await page.evaluate(() => window.draws), 1, 'going back never rerolls an outcome');
     await page.locator('[data-test-back]').click();
     assert.deepEqual(await state(page), beforeFinal, 'undo finale restores resources before zeroing');

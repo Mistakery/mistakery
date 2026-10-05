@@ -42,9 +42,9 @@ test('copy edits keep the offline bundle canonical and the engine byte-for-byte 
 
 test('three active cards preserve the approved message boundaries and revised investor copy', () => {
   const cards = Object.fromEntries(canonicalDeck.cards.map((card) => [card.id, card]));
-  assert.equal(cards.OPEN_02a.text, "Competitor analysis complete 📊\nWe have a slight KPI deviation (0 clients).\nI reframed this as a 'pre-revenue learning phase' 📈\n\nWant me to send a motivational quote to the team? 🚀🤖");
+  assert.equal(cards.OPEN_02a.text, "Competitor analysis complete 📊\nWe have a slight KPI deviation (0 clients)\nI reframed this as a 'pre-revenue learning phase' 📈\n\nWant me to send a motivational quote to the team? 🚀🤖");
   assert.equal(cards.OPEN_DEV.text, 'payroll is friday\n\nare we getting money or another speech about changing b2b saas forever?');
-  assert.equal(cards.OPEN_INVESTOR.text, 'I DIDN’T DUMP MY CASH INTO THIS AI CRAP TO GET ZERO CLIENTS.\n\nWHERE THE HELL ARE THE BUYERS???\n\nIF I WANTED TO WASTE MONEY I’D BUY A YACHT FOR MY EX-WIFE.');
+  assert.equal(cards.OPEN_INVESTOR.text, "I DIDN’T DUMP MY CASH INTO THIS AI CRAP TO GET ZERO CLIENTS\n\nWHERE THE HELL ARE THE BUYERS???\n\nIF I WANTED TO WASTE MONEY I’D BUY A YACHT FOR MY EX-WIFE");
 });
 
 test('AI influencer cards preserve approved copy and graph with document resource effects', () => {
@@ -87,13 +87,13 @@ test('AI influencer cards preserve approved copy and graph with document resourc
       direction: 'incoming',
       source: '@bigdeals',
       avatar: 'BD',
-      text: 'Yeah right, heard that one before.',
+      text: "Yeah right, heard that one before",
     },
     {
       direction: 'incoming',
       source: '@bigdeals',
       avatar: 'BD',
-      text: "20% max, anything higher and, we'll lose our shirts.",
+      text: "20% max, anything higher and, we'll lose our shirts",
     },
     {
       direction: 'incoming',
@@ -107,20 +107,20 @@ test('AI influencer cards preserve approved copy and graph with document resourc
     right: { label: 'Nah, cringe', effects: influencerEffects.INFLUENCER_01[1], next: 'INFLUENCER_OUTCOME_1' },
   });
 
-  assert.equal(cards.INFLUENCER_02.text, "Hey 👋\nHeard about your tool. I feel like we got a huge future together.\n\nLet me drop a video with your link in the description. You get customers, I get a cut of the sales. Win-win!\nUsually I take 20%, but you guys are cool, we'll work out the terms.\n\nSend over the demo. I keep it 💯 honest with my audience, gotta test it myself first.");
+  assert.equal(cards.INFLUENCER_02.text, "Hey 👋\nHeard about your tool. I feel like we got a huge future together\n\nLet me drop a video with your link in the description\nYou get customers, I get a cut of the sales. Win-win!\nUsually I take 20%, but you guys are cool, we'll work out the terms\n\nSend over the demo. I keep it 💯 honest with my audience, gotta test it myself first");
   assert.deepEqual(withoutReasons(cards.INFLUENCER_02.choices), {
     left: { label: 'Deal', effects: influencerEffects.INFLUENCER_02[0], next: 'INFLUENCER_03' },
-    right: { label: 'Maybe 10%', effects: influencerEffects.INFLUENCER_02[1], next: 'INFLUENCER_02A' },
+    right: { label: "Maybe 10%?", effects: influencerEffects.INFLUENCER_02[1], next: 'INFLUENCER_02A' },
   });
 
-  assert.equal(cards.INFLUENCER_02A.text, "Hahaha\nI like your style 😂\nLet's lock in 20% for now, but I'll hook you up.\nI'll give you access to my private database of 50 killer B2B prompts. People pay $1k for this 😉");
+  assert.equal(cards.INFLUENCER_02A.text, "Hahaha\nI like your style 😂\nLet's lock in 20% for now, but I'll hook you up\nI'll give you access to my private database of 50 killer B2B prompts. People pay $1k for this 😉\nWe good? Drop the demo");
   assert.deepEqual(withoutReasons(cards.INFLUENCER_02A.choices), {
     left: { label: 'Deal. Just deliver', effects: influencerEffects.INFLUENCER_02A[0], next: 'INFLUENCER_03' },
     right: { label: 'We need you in sales', effects: influencerEffects.INFLUENCER_02A[1], next: 'INFLUENCER_03' },
   });
 
-  assert.equal(cards.INFLUENCER_03.text, 'sent him our recorded pitch and a demo login.\nwtf??\nlooks like your blogger is trying to crash us\n\nthousands of requests right now:\n<strong>make me $1B right now. make zero mistakes</strong>\n\nis he dumb or just playing dumb? 😂');
-  assert.equal(cards.INFLUENCER_04.text, "Aaand it's down. Knew it 👏👏\n\nGuys, if you can't even handle my basic workflow, my traffic will literally destroy you.\nDon't wanna bury your launch, but I never lie to my community.\n\nGotta drop an honest video 😔");
+  assert.equal(cards.INFLUENCER_03.text, "wtf??\nlooks like your blogger is trying to crash us\n\nthousands of requests right now:\nmake me $1B right now. make zero mistakes\n\nis he dumb or just playing dumb? 😂");
+  assert.equal(cards.INFLUENCER_04.text, "Aaand it's down. Knew it 👏👏\n\nGuys, if you can't even handle my basic workflow, my traffic will literally destroy you\nDon't wanna bury your launch, but I never lie to my community\n\nGotta drop an honest video 😔");
   assert.deepEqual(withoutReasons(cards.INFLUENCER_04.choices), {
     left: { label: 'Have fun', effects: influencerEffects.INFLUENCER_04[0], next: 'INFLUENCER_06' },
     right: { label: 'Any other options?', effects: influencerEffects.INFLUENCER_04[1], next: 'INFLUENCER_05' },
@@ -139,7 +139,7 @@ test('AI influencer cards preserve approved copy and graph with document resourc
   assert.equal(cards.INFLUENCER_06.text, 'Cool. Dropping it tonight 🤷‍♂️');
   assert.deepEqual(cards.INFLUENCER_06.image, {
     src: 'assets/ai-influencer-scheduled-review.webp',
-    alt: 'Creator Studio: B2BuyerSpyer hate review scheduled for publication today at 6:00 PM',
+    alt: "Creator Studio: B2BuyerSpyer hate review scheduled for publication today at 6:00 PM",
     width: 1200,
     height: 676,
   });
@@ -156,11 +156,11 @@ test('AI influencer cards preserve approved copy and graph with document resourc
   assert.equal(Object.hasOwn(cards.INFLUENCER_07, 'placeholder'), false);
   assert.deepEqual(cards.INFLUENCER_07.image, {
     src: 'assets/ai-influencer-unicorn-challenge.webp',
-    alt: 'Published video: CHALLENGE: Turning a Broke AI Startup Into a Unicorn in 30 Days',
+    alt: "Published video: CHALLENGE: Turning a Broke AI Startup Into a Unicorn in 30 Days",
     width: 1200,
     height: 676,
   });
-  assert.equal(cards.INFLUENCER_07.text, 'Video’s live. Don’t screw this up, team!!!\n\nOr do. That’s just more views lol 😂');
+  assert.equal(cards.INFLUENCER_07.text, "Video’s live. Don’t screw this up, team!!!\n\nOr do. That’s just more views lol 😂");
   assert.deepEqual(Object.values(cards.INFLUENCER_07.choices).map((choice) => choice.label), ['DELETE THIS!!!', 'Anything for views']);
   assert.deepEqual(cards.INFLUENCER_08.messages[0].image, {
     src: 'assets/ai-influencer-traffic-review.webp',
@@ -174,7 +174,7 @@ test('AI influencer cards preserve approved copy and graph with document resourc
   assert.equal(Object.hasOwn(cards.INFLUENCER_OUTCOME_2.messages[0], 'placeholder'), false);
   assert.deepEqual(cards.INFLUENCER_OUTCOME_2.messages[0].image, {
     src: 'assets/ai-influencer-episode-two.webp',
-    alt: 'Episode 2: I made $30,000 while the founder does all the work',
+    alt: "Episode 2: I made $30,000 while the founder does all the work",
     width: 1200,
     height: 676,
   });
@@ -183,7 +183,6 @@ test('AI influencer cards preserve approved copy and graph with document resourc
   assert.deepEqual(cards.INFLUENCER_OUTCOME_4.messages.map(message => message.text), [
     "See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait",
     "Let's set up my 20% 💸",
-    "Paid subscriptions, too. Check your account.",
   ]);
   assert.equal(cards.INFLUENCER_OUTCOME_4.messages[0].imageRef, 'influencer_viral_analytics');
   assert.deepEqual(canonicalDeck.images.influencer_viral_analytics, {
@@ -229,11 +228,11 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
   const cards = Object.fromEntries(canonicalDeck.cards.map((card) => [card.id, card]));
   assert.equal(cards.OPEN_INVESTOR.choices.left.next, undefined);
   assert.equal(cards.OPEN_INVESTOR.choices.right.next, undefined);
-  assert.deepEqual(cards.OPEN_INVESTOR.choices.left.effects, { cash: -2, founder: 1 });
-  assert.deepEqual(cards.OPEN_INVESTOR.choices.right.effects, { cash: -2, team: -4, founder: 2 });
+  assert.deepEqual(cards.OPEN_INVESTOR.choices.left.effects, { founder: 1 });
+  assert.deepEqual(cards.OPEN_INVESTOR.choices.right.effects, { team: -4, founder: 2 });
 
   assert.equal(cards.PADEL_INVITE.source, '@padel_pro');
-  assert.equal(cards.PADEL_INVITE.text, 'Yo champ, anyone in the club would die for this match, but I held the slot for you.\nTomorrow 7 AM vs ClosedAI CEO.\n\nThat’s your dream client, man. Remember who opened this door for you 💪');
+  assert.equal(cards.PADEL_INVITE.text, "Yo champ, anyone in the club would die for this match, but I held the slot for you\nTomorrow 7 AM vs ClosedAI CEO\n\nThat’s your dream client, man. Remember who opened this door for you 💪");
   assert.deepEqual(choicesWithoutReasons(cards.PADEL_INVITE), {
     left: { label: "I'm in", effects: padelEffects.PADEL_INVITE[0], next: 'DREAM_TEAM' },
     right: { label: 'Feeling sick, pass', effects: padelEffects.PADEL_INVITE[1], next: 'PADEL_OUTCOME_0' },
@@ -243,13 +242,13 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
   assert.deepEqual(cards.DREAM_TEAM.messages, [
     {
       direction: 'outgoing',
-      text: "Guess what? Playing padel with ClosedAI's CEO tomorrow.\nTime to land a huge deal!! 💸",
+      text: "Guess what? Playing padel with ClosedAI's CEO tomorrow\nFinally landing our first big client!! 💸",
     },
     {
       direction: 'incoming',
       source: '@bigdeals',
       avatar: 'BD',
-      text: 'Insane pull, boss! 🎯\nNow let him win. Stroke his ego and we close this easily',
+      text: "Insane pull, boss! 🎯\nCareful though, that guy is a toxic egomaniac\nLet him crush you on court and the deal is ours!",
     },
     {
       direction: 'incoming',
@@ -263,7 +262,7 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
     right: { label: 'We’ll see', effects: padelEffects.DREAM_TEAM[1], next: 'IRL_PADEL_01' },
   });
   assert.equal(canonicalDeck.sources.dream_team.name, 'Dream Team');
-  assert.equal(canonicalDeck.sources.dream_team.role, '6 members · 3 online');
+  assert.equal(canonicalDeck.sources.dream_team.role, '8 members · 3 online');
   assert.equal(canonicalDeck.sources['@padel_pro'].irlName, 'Padel coach');
   assert.equal(canonicalDeck.sources['@iclosedai'].irlName, 'ClosedAI CEO');
   assert.equal(canonicalDeck.sources['@padel_pro'].irlAvatar, 'assets/irl-padel-coach-avatar.webp');
@@ -275,7 +274,7 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
   assert.equal(cards.IRL_PADEL_01.source, '@padel_pro');
   assert.equal(cards.IRL_PADEL_01.location, 'IRL · PADEL CLUB');
   assert.equal(cards.IRL_PADEL_01.score, 'Score: 0–0');
-  assert.equal(cards.IRL_PADEL_01.text, "Bro, you do NOT pitch here.\nStart selling, and you're a nobody to him.\nEarn his respect on the court first.");
+  assert.equal(cards.IRL_PADEL_01.text, "Bro, you do NOT pitch here\nStart selling, and you're a nobody to him\nEarn his respect on the court first");
   assert.deepEqual(choicesWithoutReasons(cards.IRL_PADEL_01), {
     left: { label: 'Mouth shut, game on', effects: padelEffects.IRL_PADEL_01[0], ceoScore: 0, next: 'IRL_PADEL_04' },
     right: { label: 'Now or never, pitching', effects: padelEffects.IRL_PADEL_01[1], ceoScore: 1, next: 'IRL_PADEL_03B' },
@@ -285,7 +284,7 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
   assert.equal(cards.IRL_PADEL_03B.source, '@iclosedai');
   assert.equal(cards.IRL_PADEL_03B.location, 'IRL · PADEL CLUB');
   assert.equal(cards.IRL_PADEL_03B.score, 'Score: 0–0');
-  assert.equal(cards.IRL_PADEL_03B.text, 'Who let a pop-up ad onto my court?\nGo fetch the balls and grab my water before I replace your whole startup with one prompt.');
+  assert.equal(cards.IRL_PADEL_03B.text, "Who let a pop-up ad onto my court?\nGo fetch the balls and grab my water before I replace your whole startup with one prompt");
   assert.deepEqual(choicesWithoutReasons(cards.IRL_PADEL_03B), {
     left: { label: 'Getting your water', effects: padelEffects.IRL_PADEL_03B[0], ceoScore: -1, next: 'IRL_PADEL_04' },
     right: { label: 'Business after the match', effects: padelEffects.IRL_PADEL_03B[1], ceoScore: 1, next: 'IRL_PADEL_04' },
@@ -294,7 +293,7 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
   assert.equal(cards.IRL_PADEL_04.mode, 'irl');
   assert.equal(cards.IRL_PADEL_04.source, '@iclosedai');
   assert.equal(cards.IRL_PADEL_04.score, 'Score: 0–0');
-  assert.equal(cards.IRL_PADEL_04.text, 'We skip the side switching.\nYou won’t melt after a couple of sets in the sun, right?');
+  assert.equal(cards.IRL_PADEL_04.text, "We skip the side switching\nYou won’t melt after a couple of sets in the sun, right?");
   assert.deepEqual(choicesWithoutReasons(cards.IRL_PADEL_04), {
     left: { label: 'Happy to take it', effects: padelEffects.IRL_PADEL_04[0], ceoScore: -1, next: 'IRL_PADEL_05' },
     right: { label: "Let's stick to rules", effects: padelEffects.IRL_PADEL_04[1], ceoScore: 1, next: 'IRL_PADEL_05' },
@@ -303,7 +302,7 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
   assert.equal(cards.IRL_PADEL_05.mode, 'irl');
   assert.equal(cards.IRL_PADEL_05.source, '@iclosedai');
   assert.equal(cards.IRL_PADEL_05.score, 'Score: 4–4');
-  assert.equal(cards.IRL_PADEL_05.text, 'THAT BALL WAS OUT! Are you blind???\nDon’t even try to cheat me. That’s my point.');
+  assert.equal(cards.IRL_PADEL_05.text, "THAT BALL WAS OUT! Are you blind???\nDon’t even try to cheat me. That’s my point");
   assert.deepEqual(choicesWithoutReasons(cards.IRL_PADEL_05), {
     left: { label: 'Definitely out, my bad', effects: padelEffects.IRL_PADEL_05[0], ceoScore: -1, next: 'IRL_PADEL_06' },
     right: { label: "No way, that's in", effects: padelEffects.IRL_PADEL_05[1], ceoScore: 1, next: 'IRL_PADEL_06' },
@@ -311,8 +310,8 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
 
   assert.equal(cards.IRL_PADEL_06.mode, 'irl');
   assert.equal(cards.IRL_PADEL_06.source, '@padel_pro');
-  assert.equal(cards.IRL_PADEL_06.score, 'Score: 5–5 · 40–40 · DECIDING POINT');
-  assert.equal(cards.IRL_PADEL_06.text, "Match point, bro. Give him the win.\nThe best shot right now is the one you don't take.");
+  assert.equal(cards.IRL_PADEL_06.score, "Score: 5:4 · 40:30 MATCH POINT");
+  assert.equal(cards.IRL_PADEL_06.text, "Match point, bro. Give him the win\nThe best shot right now is the one you don't take");
   assert.deepEqual(choicesWithoutReasons(cards.IRL_PADEL_06), {
     left: { label: "I'll throw it, coach", effects: padelEffects.IRL_PADEL_06[0] },
     right: { label: 'Fighting till the end', effects: padelEffects.IRL_PADEL_06[1] },
@@ -323,56 +322,56 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
       mode: 'personal',
       source: '@padel_pro',
       score: undefined,
-      text: 'Man... for real?\nI risked my own reputation to give you a golden ticket and you backed out.\nYou just clowned both of us 🤡',
+      text: "Man... for real?\nI risked my own reputation to give you a golden ticket and you backed out\nYou just clowned both of us 🤡",
       labels: ['I have a fever!', '😔😔😔'],
     },
     1: {
       mode: 'irl',
       source: '@iclosedai',
       score: 'YOU WON THE MATCH',
-      text: 'Relax, boy. It was only a warm-up.\nWatching you sweat and cheat for that win was painful.\nHave fun begging for money!',
-      labels: ['Please wait, sir!', 'Learn to lose'],
+      text: "Relax, boy. It was only a warm-up\nWatching you sweat and cheat for that win was painful\nHave fun begging for money!",
+      labels: ["Please wait!", 'Learn to lose'],
     },
     2: {
       mode: 'irl',
       source: '@iclosedai',
       score: 'YOU WON THE MATCH',
-      text: "Well, look at that.\nTurns out you actually have some balls.\nSend the demo. Let's see if your startup is just as ballsy.",
+      text: "Well, look at that\nTurns out you actually have some balls\nSend the demo. Let's see if your startup is just as ballsy",
       labels: ['Play hard, work harder', 'Prepare to stare'],
     },
     3: {
       mode: 'irl',
       source: '@iclosedai',
       score: 'YOU LOST THE MATCH',
-      text: 'Easiest win of my life.\nIt was almost cute watching you panic on match point.\nKnew you were soft from the start. Get off my court.',
+      text: "Easiest win of my life\nIt was almost cute watching you panic on match point\nKnew you were soft from the start. Get off my court",
       labels: ['Just let you win!', 'So... about the deal?'],
     },
     4: {
       mode: 'irl',
       source: '@iclosedai',
       score: 'YOU LOST THE MATCH',
-      text: "Easy win.\nGood boy. Ready to do whatever I say.\nDeal is done. Send the demo, let's see what new toy I just bought.",
+      text: "Easy win\nGood boy. Ready to do whatever I say\nDeal is done. Send the demo, let's see what new toy I just bought",
       labels: ['Right away, boss!', "We're the future"],
     },
     5: {
       mode: 'irl',
       source: '@iclosedai',
       score: 'YOU LOST THE MATCH',
-      text: 'What were you thinking, kid? I always win.\nConsider this deal your consolation prize for trying.\nSend the demo.',
+      text: "What were you thinking, kid? I always win\nConsider this deal your consolation prize for trying\nSend the demo",
       labels: ['Accepted', 'Rematch tomorrow'],
     },
     6: {
       mode: 'irl',
       source: '@iclosedai',
       score: 'YOU LOST THE MATCH',
-      text: "You lost, kid. Nice try.\nKeep working hard, maybe one day I'll hire you to take out my trash.\nAnd yes, forget about business.",
+      text: "You lost, kid. Nice try\nKeep working hard, maybe one day I'll hire you to take out my trash\nAnd yes, forget about business",
       labels: ['Remember my name', 'Fine without you'],
     },
     7: {
       mode: 'irl',
       source: '@iclosedai',
       score: 'MATCH ABORTED',
-      text: 'MATCH OVER! I am SO done with this.\nBitching and crying over every single point.\nKnow your place, nobody. You’re blacklisted everywhere.',
+      text: "MATCH OVER! I am SO done with this\nBitching and crying over every single point\nKnow your place, nobody. You’re blacklisted everywhere",
       labels: ["Who's crying now?", "I'll do anything, please!"],
     },
   };
@@ -382,7 +381,7 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
     assert.equal(card.mode, expected.mode);
     assert.equal(card.source, expected.source);
     assert.equal(card.score, expected.score);
-    assert.equal(card.text, expected.text + ([2, 4, 5].includes(Number(number)) ? '\n\nThe pilot payment is in your account. Now deliver.' : ''));
+    assert.equal(card.text, expected.text);
     assert.deepEqual([card.choices.left.label, card.choices.right.label], expected.labels);
     assert.deepEqual(card.outcomeEffects, padelOutcomes[number]);
     assert.deepEqual(card.choices.left.effects, {});

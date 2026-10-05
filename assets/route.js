@@ -26,7 +26,8 @@
       phase: 'plot', cycle: 1, cycleStart: 0, lastCycle: null, order: Object.keys(deck.meta.route.plots), completed: [],
       randomState: hashSeed(seed), usedUnits: [], gap: null, gaps: [],
       recentAuthors: [], recentThemes: [], liveAgentScore: 0, padelCeoScore: 0,
-      influencerPreviousCardId: null,
+      influencerPreviousCardId: null, resourceLedger: null,
+      recentFillerUnits: [...(options.recentFillerUnits || [])],
     };
     for (let i = state.route.order.length - 1; i > 0; i--) {
       const j = Math.floor(random(state) * (i + 1));
@@ -40,9 +41,29 @@
     if (options.firstPlot) {
       if (!deck.meta.route.plots[options.firstPlot]) throw new Error('Unknown first plot');
       state.route.order = [options.firstPlot, ...state.route.order.filter(plot => plot !== options.firstPlot)];
+    } else if (!options.order && state.route.order[0] === options.avoidFirstPlot) {
+      const j = 1 + Math.floor(random(state) * (state.route.order.length - 1));
+      [state.route.order[0], state.route.order[j]] = [state.route.order[j], state.route.order[0]];
     }
+    state.route.initialPlot = state.route.order[0];
     openPlot(deck, state);
     return state;
+  }
+  function nextRun(deck, current) {
+    // Derive a fresh layout from the previous seed so Back can also replay a
+    // transition between attempts. URL seeds pin only the first attempt.
+    let seed = hashSeed(`${current.seed}:next`);
+    if (String(seed) === String(current.seed)) seed = (seed + 1) >>> 0;
+    const recent = [...(current.route.recentFillerUnits || [])];
+    for (const id of [...current.history.map(step => step.cardId), current.currentCardId]) {
+      const unit = cardById(deck, id)?.filler?.unit;
+      if (!unit) continue;
+      const index = recent.indexOf(unit);
+      if (index !== -1) recent.splice(index, 1);
+      recent.push(unit);
+    }
+    return startRun(deck, { seed, avoidFirstPlot: current.route.initialPlot || current.route.order[0],
+      recentFillerUnits: recent.slice(-8) });
   }
   function openPlot(deck, state) {
     const plot = state.route.order.find(id => !state.route.completed.includes(id));
@@ -86,7 +107,8 @@
         const themeVariety = route.recentThemes.includes(card.filler.theme) ? .45 : 1;
         const finalSingle = role === 'single' && route.gap?.played.length === route.gap.target - 1;
         const affinity = finalSingle && card.filler.affinity?.includes(nextPlot) ? 1.8 : 1;
-        return { card, weight: (card.weight || 1) * authorVariety * themeVariety * affinity / (1 + pressure * pressure * 3) };
+        const previousAttempt = route.recentFillerUnits.includes(card.filler.unit) ? .2 : 1;
+        return { card, weight: (card.weight || 1) * authorVariety * themeVariety * affinity * previousAttempt / (1 + pressure * pressure * 3) };
       });
   }
   function pickFiller(deck, state, role) {
@@ -174,6 +196,29 @@
   function enterFacts(state, card) {
     state.flags = [...new Set([...state.flags.filter(flag => !(card.clearEnterFlags || []).includes(flag)), ...(card.enterFlags || [])])];
   }
+  function finishRun(state, endingId, causes = []) {
+    state.gameOver = true;
+    state.win = false;
+    state.endingId = endingId;
+    state.activeCrisisId = null;
+    state.route.phase = 'ended';
+    state.route.ending = { causes, rawResources: { ...(state.route.resourceLedger || state.resources) } };
+  }
+  function settleEpisode(deck, state) {
+    const raw = state.route.resourceLedger || state.resources;
+    // The configured order is the tie-breaker; retain every cause for inspection.
+    const causes = (deck.meta.route.resourceEndings || []).filter(id => {
+      const { resource, edge } = deck.endings[id];
+      const config = deck.resources[resource];
+      return edge === 'low' ? raw[resource] <= config.min : raw[resource] >= config.max;
+    });
+    if (causes.length) {
+      finishRun(state, causes[0], causes);
+      return true;
+    }
+    state.route.resourceLedger = null;
+    return false;
+  }
   function resolveChoice(deck, current, side, options = {}) {
     if (current.gameOver) return { state: structuredClone(current), deltas: Object.fromEntries(engine.RESOURCE_KEYS.map(key => [key, 0])) };
     // Engine.cloneState predates route state. Clone the complete snapshot here.
@@ -184,6 +229,10 @@
     if (!choice) throw new Error(`Missing choice ${side} on ${card.id}`);
     const next = selectTarget(deck, state, card, side, options.outcomeRng || (() => random(state)));
     const target = next && cardById(deck, next);
+    const before = { ...state.resources };
+    const accounting = Boolean(deck.meta.route.resourceEndings?.length);
+    const rawBefore = { ...(state.route.resourceLedger || before) };
+    if (accounting) state.resources = { ...rawBefore };
     const effects = { ...choice.effects };
     if (target?.outcomeTone) for (const key of engine.RESOURCE_KEYS) {
       effects[key] = target.resetResources === 0 ? -state.resources[key]
@@ -196,8 +245,20 @@
     } };
     const scoped = { ...deck, crises: {}, meta: { ...deck.meta, maxTurns: Number.MAX_SAFE_INTEGER },
       cards: deck.cards.map(c => c.id === card.id ? resolved : c) };
+    // Keep every cost inside the episode. A later payment must cover its losses,
+    // including the part below zero that cannot be displayed by the HUD.
+    if (accounting) scoped.resources = Object.fromEntries(engine.RESOURCE_KEYS.map(key =>
+      [key, { ...deck.resources[key], min: -Number.MAX_SAFE_INTEGER, max: Number.MAX_SAFE_INTEGER }]));
     const result = engine.resolveChoice(scoped, state, side, { rng: () => 0 });
     state = result.state;
+    if (target?.resetResources === 0) state.resources = Object.fromEntries(engine.RESOURCE_KEYS.map(key => [key, 0]));
+    if (accounting) state.route.resourceLedger = { ...state.resources };
+    for (const key of engine.RESOURCE_KEYS) {
+      state.resources[key] = Math.max(deck.resources[key].min, Math.min(deck.resources[key].max, state.resources[key]));
+      result.deltas[key] = state.resources[key] - before[key];
+    }
+    Object.assign(state.history.at(-1), { deltas: { ...result.deltas }, resourcesBefore: before,
+      resourcesAfter: { ...state.resources }, rawBefore, rawAfter: { ...(state.route.resourceLedger || state.resources) } });
     state.route.liveAgentScore += Number(choice.botScore || 0);
     state.route.padelCeoScore += Number(choice.ceoScore || 0);
     state.route.influencerPreviousCardId = card.plot === 'influencer' ? card.id : null;
@@ -213,6 +274,8 @@
           throw new Error(`Illegal filler continuation ${card.id} → ${next}`);
         }
         state.currentCardId = next;
+      } else if (settleEpisode(deck, state)) {
+        return { state, deltas: result.deltas };
       } else if (gap.played.length >= gap.target) {
         state.route.gaps.push(structuredClone(gap));
         openPlot(deck, state);
@@ -222,14 +285,16 @@
       state.route.liveAgentScore = 0;
       state.route.padelCeoScore = 0;
       state.route.influencerPreviousCardId = null;
+      if (settleEpisode(deck, state)) return { state, deltas: result.deltas };
       if (state.route.completed.length === state.route.order.length) beginCycle(deck, state);
       else beginGap(deck, state);
     } else {
       if (!target || target.plot !== card.plot) throw new Error(`Plot escaped its route: ${card.id} → ${next}`);
       state.currentCardId = next;
       enterFacts(state, target);
+      if (target.terminalEnding) finishRun(state, target.terminalEnding);
     }
     return { state, deltas: result.deltas };
   }
-  return { startRun, resolveChoice, choicesFor, choiceTargets, fillerPool };
+  return { startRun, nextRun, resolveChoice, choicesFor, choiceTargets, fillerPool };
 });

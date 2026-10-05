@@ -5,7 +5,7 @@ const { pathToFileURL } = require('node:url');
 const { chromium } = require('playwright');
 const url = `${pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href}?story=live-agent`;
 const expected = [
-  'Not funny. Legal is screaming about slavery and blocking the contract',
+  "Not funny Legal is screaming about slavery and blocking the contract",
   "I'm running around trying to sort this out 🤯",
   "Here's the deal: Wipe every sign of life from your AI rebel, and we sign the contract",
 ];
@@ -33,8 +33,9 @@ test('Legal continuation delivers three bubbles with two pauses and preserves th
       await page.evaluate(() => { const a = window.MistakeryApp; a.state.currentCardId = 'LIVE_AGENT_07'; a.render(); });
       await page.clock.runFor(2900);
       await page.locator('[data-choice="left"]').click();
+      await page.clock.runFor(650);
       assert.deepEqual(await current(page), expected.slice(0, 1));
-      assert.equal(await page.locator('[data-player-reply]').innerText(), 'Just AI humor');
+      assert.equal(await page.locator('[data-player-reply]').innerText(), 'Just AI humor!');
       assert.equal(await page.locator('[data-chat-history]').count(), 2);
       for (let stage = 1; stage <= 2; stage++) {
         assert.equal(await page.locator('.typing-bubble').count(), 1);
@@ -60,6 +61,7 @@ test('Legal continuation delivers three bubbles with two pauses and preserves th
       assert.equal(await page.locator('.typing-bubble').count(), 0);
       await page.locator('[data-test-back]').click();
       await page.locator('[data-choice="right"]').click();
+      await page.clock.runFor(650);
       await page.clock.runFor(600);
       assert.deepEqual(await current(page), expected.slice(0, 2));
       await assertVisibleInChat(page, '.typing-bubble');

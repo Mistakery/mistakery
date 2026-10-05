@@ -6,15 +6,19 @@
     <meta name="theme-color" content="#bdd5e8">
     <title>Mistakery</title>
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="style.css?v=d9f0929d658f">
+    <link rel="stylesheet" href="style.css?v=49923204b864">
+    <link rel="stylesheet" href="assets/endings.css?v=d24baa197a26">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-founder.webp" fetchpriority="high">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-manifesto.webp?v=91aac6e47bbd">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-judgment-day.webp">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-hasta-la-vista.webp">
-    <script src="cards.bundle.js?v=a2450345de33" defer></script>
+    <script src="cards.bundle.js?v=812a0379fd75" defer></script>
     <script src="game.js?v=4587f9034eb5" defer></script>
-    <script src="assets/route.js?v=760680d96403" defer></script>
-  <script src="app.js?v=1c23968310c4" defer></script>
+    <script src="assets/route.js?v=692c8feaf11c" defer></script>
+    <script src="assets/loss-preview-data.js?v=281b17208e66" defer></script>
+    <script src="assets/loss-finale-data.js?v=4cde78a47b01" defer></script>
+    <link rel="stylesheet" href="assets/loss-preview.css?v=6448d8830b7b">
+  <script src="app.js?v=028937abc063" defer></script>
   </head>
   <body>
     <main class="app" data-app>
@@ -24,12 +28,16 @@
         <button type="button" data-test-inspect aria-label="Перевод и ресурсы" aria-haspopup="dialog">RU / ±</button>
         <button type="button" data-test-back disabled>← Back</button>
         <button type="button" data-test-restart>Restart story</button>
+        <div class="hud-switcher" role="group" aria-label="Вид ресурсов" hidden>
+          <button type="button" data-hud-variant="pulse" aria-pressed="true">Пульс шкал</button>
+          <button type="button" data-hud-variant="icons" aria-pressed="false">Живые иконки</button>
+        </div>
       </nav>
       <div class="frame">
         <section class="phone" data-game data-view="loading" data-shell-stage="intro" aria-label="Mistakery game">
           <header class="top" data-top hidden>
             <div class="brand"><b>B2BuyerSpyer</b><span>AI-POWERED</span></div>
-            <button class="quit" type="button" data-restart-run disabled>Back to 9–5</button>
+            <button class="quit" type="button" data-restart-run disabled>Relaunch</button>
           </header>
 
           <div class="resources" data-resources aria-label="Startup resources" hidden></div>
@@ -47,9 +55,11 @@
               <span><small></small><b data-location-score></b></span>
             </div>
 
-            <div class="outcome-banner" data-outcome-banner role="status" hidden>
-              <b data-outcome-label></b>
-            </div>
+            <section class="run-ending" data-ending-summary role="status" hidden>
+              <small>GAME OVER · YOU LOST</small>
+              <h2 data-ending-title></h2>
+              <p data-ending-cause></p>
+            </section>
 
             <div class="chat" data-chat aria-live="polite">
               <span class="sr-only" data-card-id></span>

@@ -5,6 +5,7 @@
   const app = {
     deck: null,
     state: null,
+    runStartState: null,
     view: 'loading',
     onboardingIndex: 0,
     noteIndex: 0,
@@ -24,16 +25,20 @@
   const params = new URLSearchParams(window.location.search);
   const directStoryTest = params.get('story') === 'live-agent';
   const routeTest = params.get('test') === 'route';
-  const storyTestEnabled = directStoryTest || routeTest;
-  const runSeed = params.get('seed') ?? (directStoryTest ? 'live-agent-preview' : Math.floor(Math.random() * 4294967296));
+  const lossPreviewEnabled = params.get('preview') === 'losses';
+  const storyTestEnabled = directStoryTest || routeTest || lossPreviewEnabled;
+  // Park the icon HUD; restore with MISTAKERY_FEATURES.iconHud = true before app.js.
+  const iconHudEnabled = window.MISTAKERY_FEATURES?.iconHud === true;
+  app.resourceVariant = iconHudEnabled && params.get('hud') === 'icons' ? 'icons' : 'pulse';
+  const initialSeed = params.get('seed') ?? (directStoryTest ? 'live-agent-preview' : Math.floor(Math.random() * 4294967296));
   for (const [name, initial] of Object.entries({ liveAgentScore: 0, padelCeoScore: 0, influencerPreviousCardId: null })) {
     Object.defineProperty(app, name, {
       get: () => app.state?.route?.[name] ?? initial,
       set: value => { if (app.state?.route) app.state.route[name] = value; },
     });
   }
-  function newRun() {
-    return route.startRun(app.deck, { seed: runSeed, firstPlot: directStoryTest ? 'live_agent' : undefined });
+  function initialRun() {
+    return route.startRun(app.deck, { seed: initialSeed, firstPlot: directStoryTest ? 'live_agent' : undefined });
   }
   const landscapeTouch = window.matchMedia('(pointer: coarse) and (orientation: landscape)');
   function updatePortraitDirection() {
@@ -49,10 +54,19 @@
   landscapeTouch.addEventListener('change', updatePortraitDirection);
   const testHistory = [];
   const presentedOutcomes = new WeakSet();
+  const lossPresentations = new WeakMap();
+  const resourceLossCards = Object.freeze({ cash_low: 'DOC_LOSS_1', team_low: 'DOC_LOSS_2',
+    team_high: 'DOC_LOSS_3', customers_low: 'DOC_LOSS_4', founder_low: 'DOC_LOSS_5', founder_high: 'DOC_LOSS_6' });
+  function resourceLossCard() {
+    return app.state?.gameOver && window.MISTAKERY_LOSS_PREVIEW.cards.find(card => card.id === resourceLossCards[app.state.endingId]);
+  }
+  function isLossCard() { return lossPreviewEnabled || Boolean(resourceLossCard()); }
+
   let choiceUnlockTimer = null;
   let cardTypingTimer = null;
   let savedDeliveryTimer = null;
   let founderSendTimer = null;
+  let resourceFeedback = null;
   let sentReplyPositions = null;
   let revealCardMessages = () => {};
   let cancelOutcomeImageMotion = () => {};
@@ -72,21 +86,40 @@
     animation.finished.then(() => arrivalAnimations.delete(animation), () => arrivalAnimations.delete(animation));
     return animation;
   }
+
   ['pointerdown', 'wheel', 'keydown'].forEach(type => {
     document.addEventListener(type, cancelArrivalMotion, { capture: true, passive: true });
   });
   window.addEventListener('resize', cancelArrivalMotion);
   reducedMotion.addEventListener('change', cancelArrivalMotion);
+  reducedMotion.addEventListener('change', () => {
+    resourceFeedback?.animations.forEach(animation => animation.cancel());
+  });
+  let resourcesVisible = true;
+  function updateResourceMotionVisibility() {
+    $('[data-resources]').classList.toggle('is-motion-paused', document.hidden || !resourcesVisible);
+  }
+  document.addEventListener('visibilitychange', updateResourceMotionVisibility);
+  new IntersectionObserver(([entry]) => {
+    resourcesVisible = entry.isIntersecting;
+    updateResourceMotionVisibility();
+  }).observe($('[data-resources]'));
   let padelImagesPreloaded = false;
   const INITIAL_RESOURCES = Object.freeze({ cash: 25, team: 60, customers: 15, founder: 65 });
   const OPTIMISTIC_RESOURCES = Object.freeze({ cash: 100, team: 100, customers: 100, founder: 100 });
   const INTRO_TYPING_MS = 620;
+  // Exact Lucide 1.17.0 geometry used by the approved motion prototype.
+  // Stroke geometry preserves the interior area for the translucent level fill.
+  // License: assets/lucide-LICENSE.txt.
   const RESOURCE_ICONS = Object.freeze({
-    cash: 'M216,64H56a8,8,0,0,1,0-16H192a8,8,0,0,0,0-16H56A24,24,0,0,0,32,56V184a24,24,0,0,0,24,24H216a16,16,0,0,0,16-16V80A16,16,0,0,0,216,64Zm0,128H56a8,8,0,0,1-8-8V78.63A23.84,23.84,0,0,0,56,80H216Zm-48-60a12,12,0,1,1,12,12A12,12,0,0,1,168,132Z',
-    team: 'M244.8,150.4a8,8,0,0,1-11.2-1.6A51.6,51.6,0,0,0,192,128a8,8,0,0,1-7.37-4.89,8,8,0,0,1,0-6.22A8,8,0,0,1,192,112a24,24,0,1,0-23.24-30,8,8,0,1,1-15.5-4A40,40,0,1,1,219,117.51a67.94,67.94,0,0,1,27.43,21.68A8,8,0,0,1,244.8,150.4ZM190.92,212a8,8,0,1,1-13.84,8,57,57,0,0,0-98.16,0,8,8,0,1,1-13.84-8,72.06,72.06,0,0,1,33.74-29.92,48,48,0,1,1,58.36,0A72.06,72.06,0,0,1,190.92,212ZM128,176a32,32,0,1,0-32-32A32,32,0,0,0,128,176ZM72,120a8,8,0,0,0-8-8A24,24,0,1,1,87.24,82a8,8,0,1,0,15.5-4A40,40,0,1,0,37,117.51,67.94,67.94,0,0,0,9.6,139.19a8,8,0,1,0,12.8,9.61A51.6,51.6,0,0,1,64,128,8,8,0,0,0,72,120Z',
-    customers: 'M254.3,107.91,228.78,56.85a16,16,0,0,0-21.47-7.15L182.44,62.13,130.05,48.27a8.14,8.14,0,0,0-4.1,0L73.56,62.13,48.69,49.7a16,16,0,0,0-21.47,7.15L1.7,107.9a16,16,0,0,0,7.15,21.47l27,13.51,55.49,39.63a8.06,8.06,0,0,0,2.71,1.25l64,16a8,8,0,0,0,7.6-2.1l55.07-55.08,26.42-13.21a16,16,0,0,0,7.15-21.46Zm-54.89,33.37L165,113.72a8,8,0,0,0-10.68.61C136.51,132.27,116.66,130,104,122L147.24,80h31.81l27.21,54.41ZM41.53,64,62,74.22,36.43,125.27,16,115.06Zm116,119.13L99.42,168.61l-49.2-35.14,28-56L128,64.28l9.8,2.59-45,43.68-.08.09a16,16,0,0,0,2.72,24.81c20.56,13.13,45.37,11,64.91-5L188,152.66Zm62-57.87-25.52-51L214.47,64,240,115.06Zm-87.75,92.67a8,8,0,0,1-7.75,6.06,8.13,8.13,0,0,1-1.95-.24L80.41,213.33a7.89,7.89,0,0,1-2.71-1.25L51.35,193.26a8,8,0,0,1,9.3-13l25.11,17.94L126,208.24A8,8,0,0,1,131.82,217.94Z',
-    founder: 'M215.79,118.17a8,8,0,0,0-5-5.66L153.18,90.9l14.66-73.33a8,8,0,0,0-13.69-7l-112,120a8,8,0,0,0,3,13l57.63,21.61L88.16,238.43a8,8,0,0,0,13.69,7l112-120A8,8,0,0,0,215.79,118.17ZM109.37,214l10.47-52.38a8,8,0,0,0-5-9.06L62,132.71l84.62-90.66L136.16,94.43a8,8,0,0,0,5,9.06l52.8,19.8Z',
+    cash: '<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path>',
+    team: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle>',
+    customers: '<path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0 2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0 2 2 0 0 1 0-2.828l2.823-2.762"></path>',
+    founder: '<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>',
   });
+  function resourceIconMarkup(key, className = '') {
+    return `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">${RESOURCE_ICONS[key]}</svg>`;
+  }
   const BOOKMARK_SVG = '<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-5.2L5 21V4a1 1 0 0 1 1-1z"/></svg>';
 
   const INTRO_STEPS = Object.freeze([
@@ -156,7 +189,14 @@
       savedDeliveryTimer = null;
       app.savedDelivery = null;
     }
+    const finale = $('[data-loss-finale]');
+    if (finale?.open) finale.close();
+    finale?.remove();
+    app.lossPreviewObserver?.disconnect();
+    $('[data-loss-flash]')?.remove();
+    delete $('[data-game]').dataset.lossPreview;
     cancelFounderSend();
+    cancelResourceFeedback();
     sentReplyPositions = null;
     cancelArrivalMotion();
     cancelOutcomeImageMotion();
@@ -170,7 +210,7 @@
     const phone = $('[data-game]');
     delete phone.dataset.outcome;
     phone.classList.remove('is-outcome-entering');
-    $('[data-outcome-banner]').hidden = true;
+    $('[data-ending-summary]').hidden = true;
     phone.dataset.view = view;
     phone.dataset.shellStage = shellStage;
     $('[data-top]').hidden = shellStage === 'intro';
@@ -180,13 +220,15 @@
     $('[data-app]').classList.toggle('is-story-test', storyTestEnabled);
     $('[data-test-controls]').hidden = !storyTestEnabled;
     $('[data-test-back]').disabled = testHistory.length === 0;
-    $('[data-test-inspect]').disabled = !['playing', 'saved'].includes(view);
+    $('[data-test-inspect]').disabled = !['playing', 'saved', 'ended'].includes(view);
   }
 
   function recordTestStep(scrollTop = $('[data-chat]').scrollTop) {
     if (!storyTestEnabled) return;
     testHistory.push({
       state: structuredClone(app.state),
+      lossPresentation: structuredClone(lossPresentations.get(app.state) || null),
+      runStartState: structuredClone(app.runStartState),
       view: app.view,
       noteIndex: app.noteIndex,
       savedDelivery: app.savedDelivery ? { ...app.savedDelivery } : null,
@@ -198,13 +240,13 @@
     });
   }
 
-  function unlockAfterChoice() {
+  function unlockAfterChoice(minimumDelay = 0) {
     window.clearTimeout(choiceUnlockTimer);
     const tone = engine.cardById(app.deck, app.state.currentCardId)?.outcomeTone;
     // Cover the entrance (900 ms success / 620 ms failure) and swallow a second tap.
     // A bounded timer also works when CSS motion is disabled or interrupted.
     const delay = !tone ? 280 : tone === 'success' ? 950 : 670;
-    choiceUnlockTimer = window.setTimeout(() => { app.locked = false; }, delay);
+    choiceUnlockTimer = window.setTimeout(() => { app.locked = false; }, Math.max(delay, minimumDelay));
   }
 
   function backInStoryTest() {
@@ -212,8 +254,9 @@
     if (!storyTestEnabled || !testHistory.length) return;
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
-    const { scrollTop, ...saved } = testHistory.pop();
+    const { scrollTop, lossPresentation, ...saved } = testHistory.pop();
     Object.assign(app, structuredClone(saved), { locked: false });
+    if (lossPresentation) lossPresentations.set(app.state, structuredClone(lossPresentation));
     // Restored outcomes retain their styling but never replay their entrance.
     presentedOutcomes.add(app.state);
     clearPreview();
@@ -222,12 +265,14 @@
   }
 
   function startStoryTest() {
+    if (lossPreviewEnabled) return openLossPreview(app.lossPreviewIndex);
     if (!storyTestEnabled) return;
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
     testHistory.length = 0;
     app.cardDelivery = null;
-    app.state = newRun();
+    app.state = structuredClone(app.runStartState || initialRun());
+    app.runStartState = structuredClone(app.state);
     app.liveAgentScore = 0;
     app.padelCeoScore = 0;
     app.influencerPreviousCardId = null;
@@ -253,17 +298,117 @@
     $('[data-chat]').classList.toggle('irl-chat', irl);
   }
 
-  function renderResources(values) {
+  function resourceNumber(value) {
+    return String(Math.round(Math.abs(value) * 100) / 100);
+  }
+
+  function signedResourceNumber(value) {
+    return `${value < 0 ? '−' : '+'}${resourceNumber(value)}`;
+  }
+
+  function cancelResourceFeedback() {
+    if (resourceFeedback) {
+      window.clearTimeout(resourceFeedback.timer);
+      resourceFeedback.animations.forEach(animation => animation.cancel());
+      resourceFeedback = null;
+    }
+    document.querySelectorAll('[data-resource]').forEach(node => {
+      delete node.dataset.impact;
+      delete node.dataset.direction;
+    });
+    const announcement = $('[data-resource-announcement]');
+    if (announcement) announcement.textContent = '';
+  }
+
+  function setResourceVariant(variant, updateUrl = false) {
+    app.resourceVariant = iconHudEnabled && variant === 'icons' ? 'icons' : 'pulse';
+    $('[data-resources]').dataset.variant = app.resourceVariant;
+    document.querySelectorAll('[data-hud-variant]').forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.hudVariant === app.resourceVariant));
+    });
+    // A presentation change must not rerender a card, restart delivery or roll RNG.
+    resourceFeedback?.animations.forEach(animation => animation.cancel());
+    if (updateUrl) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('hud', app.resourceVariant);
+      window.history.replaceState(window.history.state, '', url);
+    }
+  }
+
+  function renderResources(values, feedback = null) {
     const host = $('[data-resources]');
-    host.innerHTML = engine.RESOURCE_KEYS.map((key) => {
+    // Keep the same bars across replies: the old fill must exist to animate it.
+    if (!host.children.length) {
+      host.innerHTML = engine.RESOURCE_KEYS.map(key => `<div class="resource" data-resource="${key}" role="group" aria-label="${app.deck.resources[key].label}">
+        <div class="resource-icon-meter" aria-hidden="true">
+          ${resourceIconMarkup(key, 'resource-icon-empty')}
+          <span class="resource-icon-fill">${resourceIconMarkup(key)}</span>
+        </div>
+        <span class="resource-label"><i class="resource-glyph resource-glyph--${key}" aria-hidden="true">${resourceIconMarkup(key)}</i>${app.deck.resources[key].label}</span>
+        <div class="bar" aria-hidden="true"><i></i></div>
+        <span class="sr-only" data-value></span>
+      </div>`).join('') + '<span class="sr-only" data-resource-announcement role="status" aria-live="polite" aria-atomic="true"></span>';
+    }
+    host.dataset.variant = app.resourceVariant;
+    const scope = feedback ? { animations: [], timer: null } : null;
+    resourceFeedback = scope;
+    const announcements = [];
+    for (const key of engine.RESOURCE_KEYS) {
+      const node = host.querySelector(`[data-resource="${key}"]`);
+      const config = app.deck.resources[key];
       const value = Number(values[key]);
-      const low = value <= 25 ? ' low' : '';
-      return `<div class="resource${low}" data-resource="${key}" data-fill="${value}">
-        <span class="resource-label"><i class="resource-glyph resource-glyph--${key}" aria-hidden="true"><svg viewBox="0 0 256 256"><path d="${RESOURCE_ICONS[key]}"></path></svg></i>${app.deck.resources[key].label}</span>
-        <div class="bar" aria-hidden="true"><i style="width:${value}%"></i></div>
-        <span class="sr-only" data-value>${value}%</span>
-      </div>`;
-    }).join('');
+      const raw = Number(app.state.route?.resourceLedger?.[key] ?? value);
+      const fatalEdges = app.deck.meta.route.resourceEndings.map(id => app.deck.endings[id])
+        .filter(ending => ending.resource === key);
+      const margin = (config.max - config.min) * .15;
+      const risk = app.view === 'onboarding' ? null : fatalEdges.find(ending => ending.edge === 'low'
+        ? raw <= config.min + margin : raw >= config.max - margin)?.edge;
+      node.classList.remove('low', 'is-fatal', 'is-preview');
+      if (risk) node.dataset.risk = risk;
+      else delete node.dataset.risk;
+      const outside = raw < config.min || raw > config.max;
+      const balance = `${raw < 0 ? '−' : ''}${resourceNumber(raw)}`;
+      const description = `${config.label}: ${value} / ${config.max}${outside ? `; balance ${balance}` : ''}${risk ? `; ${risk} — at risk when this episode ends` : ''}`;
+      node.querySelector('[data-value]').textContent = description;
+      node.dataset.fill = value;
+      const fill = node.querySelector('.bar i');
+      const iconFill = node.querySelector('.resource-icon-fill');
+      fill.style.width = `${value}%`;
+      iconFill.style.clipPath = `inset(${100 - value}% 0 0)`;
+      if (!feedback) continue;
+      // HUD differences are clipped. The episode ledger preserves the whole cost,
+      // and also records recovery while a meter is still pinned to an edge.
+      const amount = feedback.rawAfter[key] - feedback.rawBefore[key];
+      if (!amount) continue;
+      const text = signedResourceNumber(amount);
+      node.dataset.impact = Math.abs(amount) < 2 ? 'small' : 'large';
+      node.dataset.direction = amount < 0 ? 'down' : 'up';
+      const actualBalance = feedback.rawAfter[key];
+      const explanation = `${config.label} ${text}. Balance ${actualBalance}; meter ${value} / ${config.max}${risk ? `; ${risk} risk` : ''}.`;
+      announcements.push(explanation);
+      if (!reducedMotion.matches) {
+        const icons = app.resourceVariant === 'icons';
+        if (feedback.resourcesBefore[key] !== value) {
+          const frames = icons
+            ? [{ clipPath: `inset(${100 - feedback.resourcesBefore[key]}% 0 0)` }, { clipPath: `inset(${100 - value}% 0 0)` }]
+            : [{ width: `${feedback.resourcesBefore[key]}%` }, { width: `${value}%` }];
+          scope.animations.push((icons ? iconFill : fill).animate(frames,
+            { duration: 420, easing: 'cubic-bezier(.2,0,.2,1)' }));
+        }
+        // Even a subpixel expense or recovery beyond the meter's bounds gets
+        // an acknowledgement, without exaggerating the actual resource level.
+        const cue = node.querySelector(icons ? '.resource-icon-empty' : '.bar');
+        scope.animations.push(cue.animate([
+          { opacity: 1 }, { opacity: .35, offset: .3 }, { opacity: 1 },
+        ], { duration: Math.abs(amount) < 2 ? 430 : 520, easing: 'ease-out' }));
+      }
+    }
+    if (scope) {
+      $('[data-resource-announcement]').textContent = announcements.join(' ');
+      scope.timer = window.setTimeout(() => {
+        if (resourceFeedback === scope) cancelResourceFeedback();
+      }, 1800);
+    }
   }
 
   function setContact({ name, role = '', avatar = '' }) {
@@ -427,10 +572,11 @@
   }
 
   function mediaImageMarkup(image, decoding = 'sync') {
+    const caption = image.caption ? `<div class="message-caption">${messageLines(htmlAttribute(image.caption), true)}</div>` : '';
     if (storyImageSources.has(image.src) && !readyStoryImages.has(image.src)) {
-      return `<span class="media-placeholder__label" role="img" aria-label="${htmlAttribute(image.alt)}">Image unavailable</span>`;
+      return `<span class="media-placeholder__label" role="img" aria-label="${htmlAttribute(image.alt)}">Image unavailable</span>${caption}`;
     }
-    return `<img class="message-image" src="${htmlAttribute(image.src)}" alt="${htmlAttribute(image.alt)}" width="${Number(image.width)}" height="${Number(image.height)}" style="--image-ratio: ${Number(image.width)} / ${Number(image.height)}" decoding="${decoding}" fetchpriority="high" draggable="false">`;
+    return `<img class="message-image" src="${htmlAttribute(image.src)}" alt="${htmlAttribute(image.alt)}" width="${Number(image.width)}" height="${Number(image.height)}" style="--image-ratio: ${Number(image.width)} / ${Number(image.height)}" decoding="${decoding}" fetchpriority="high" draggable="false">${caption}`;
   }
 
   // References resolve to the same media renderers used by existing cards.
@@ -460,7 +606,9 @@
     hideIrlLocation();
     setReplyHint(false);
     setCardId(`ONBOARDING_${delivered}`);
-    setContact({ name: 'Mistakery', role: 'online', avatar: 'M' });
+    const narrator = sourceFor('@b2buddy');
+    const narratorAvatar = characterAvatar(narrator);
+    setContact({ name: narrator.name, role: narrator.role, avatar: narratorAvatar });
 
     if (step.shellStage === 'optimistic') renderResources(OPTIMISTIC_RESOURCES);
     if (step.shellStage === 'real') renderResources(INITIAL_RESOURCES);
@@ -469,11 +617,11 @@
       `<div class="message">${messageParagraphs(INTRO_STEPS[index].text)}</div>`
     )).join('');
     const typingBubble = typing
-      ? '<div class="typing-bubble" aria-label="Mistakery is typing"><i></i><i></i><i></i></div>'
+      ? '<div class="typing-bubble" aria-label="@b2buddy is typing"><i></i><i></i><i></i></div>'
       : '';
     $('[data-chat]').innerHTML = `<span class="sr-only" data-card-id>ONBOARDING_${app.onboardingIndex + 1}</span>
       <div class="message-row">
-        <div class="mini-avatar message-avatar" data-message-avatar aria-hidden="true">M</div>
+        <div class="mini-avatar message-avatar" data-message-avatar aria-hidden="true">${narratorAvatar}</div>
         <div class="message-stack" data-message-stack>${messages}${typingBubble}</div>
       </div>`;
     if (typing) {
@@ -514,7 +662,7 @@
   }
 
   function savedMessageMarkup(message) {
-    return `<div class="message note-message is-pop"><p>${noteLineMarkup(message)}</p><span class="stamp">15:54</span></div>`;
+    return `<div class="message note-message"><p>${noteLineMarkup(message)}</p><span class="stamp">15:54</span></div>`;
   }
 
   function chooseSaved() {
@@ -534,7 +682,8 @@
   function renderSaved() {
     const note = NOTE_SCREENS[app.noteIndex];
     const delivery = app.savedDelivery;
-    const delivered = app.noteIndex !== 1 || delivery?.delivered || Date.now() >= delivery.deadline;
+    const newlyDelivered = app.noteIndex === 1 && delivery && !delivery.delivered && Date.now() >= delivery.deadline;
+    const delivered = app.noteIndex !== 1 || delivery?.delivered || newlyDelivered;
     if (delivery && delivered) delivery.delivered = true;
     window.clearTimeout(savedDeliveryTimer);
     savedDeliveryTimer = null;
@@ -552,20 +701,25 @@
         <div class="message-stack" data-message-stack>${messages}</div>
       </div>
       <div class="message-clearance" aria-hidden="true"></div>`;
+    keepDeliveryVisible($('[data-message-stack]').lastElementChild);
     setChoices(note.buttons, chooseSaved, { disabled: !delivered });
     if (!delivered) {
+      $('[data-message-stack]').insertAdjacentHTML('beforeend', founderTypingMarkup());
+      keepDeliveryVisible($('[data-message-stack]').lastElementChild);
       savedDeliveryTimer = window.setTimeout(() => {
         if (app.view !== 'saved' || app.noteIndex !== 1 || app.savedDelivery !== delivery) return;
         delivery.delivered = true;
         savedDeliveryTimer = null;
+        $('[data-message-stack] .founder-composer')?.remove();
         $('[data-message-stack]').insertAdjacentHTML('beforeend', savedMessageMarkup(note.messages[1]));
+        keepDeliveryVisible($('[data-message-stack]').lastElementChild);
         setChoices(note.buttons, chooseSaved);
       }, Math.max(0, delivery.deadline - Date.now()));
     }
   }
 
   function beginRun() {
-    app.state = newRun();
+    // Saved is navigation inside the prepared attempt, not another shuffle.
     app.padelCeoScore = 0;
     app.influencerPreviousCardId = null;
     app.liveAgentScore = 0;
@@ -661,13 +815,15 @@
 
   function teamCardMessagesMarkup(card) {
     return card.messages.map((message) => {
+      if (message.system) return `<div class="date-chip is-pop" data-system-event${message.leftChannel ? ` data-left-member="${htmlAttribute(message.leftChannel)}"` : ''}>${messageLines(htmlAttribute(message.text), true)}</div>`;
       const body = message.image
-        ? mediaImageMarkup(message.image)
+        ? mediaImageMarkup(message.image) + (message.text ? `<div class="message-caption">${messageLines(message.text, card.preservePunctuation)}</div>` : '')
         : message.placeholder
           ? mediaPlaceholderMarkup(message.placeholder)
           : messageLines(message.text, card.preservePunctuation || card.id.startsWith('INFLUENCER_'));
       const mediaClass = message.image ? ' image-bubble' : message.placeholder ? ' media-placeholder' : '';
       if (message.direction === 'outgoing') {
+        if (isLossCard()) return previewOutgoingMessageMarkup(message);
         return `<div class="self-message${mediaClass} is-pop">${body}</div>`;
       }
       const member = sourceFor(message.source);
@@ -764,10 +920,48 @@
     const avatar = characterAvatar(source, name.slice(0, 1).toUpperCase(), source.irlAvatar);
     setContact({ name, role: '', avatar });
     $('[data-chat]').innerHTML = `<span class="sr-only" data-card-id>${card.id}</span>
-      <div class="irl-dialog is-pop">${messageLines(card.text)}</div>`;
+      <div class="irl-dialog is-pop">${messageLines(card.text, card.preservePunctuation)}</div>`;
   }
 
-  function renderCard() {
+  function endingReaction() {
+    const ending = app.deck.endings[app.state.endingId];
+    const fallback = ending.fallbackReaction;
+    const useFallback = fallback && !app.state.flags.includes(fallback.requiresMissing);
+    return { id: `ENDING_${app.state.endingId}`, mode: 'personal',
+      source: useFallback ? fallback.source : ending.source,
+      text: useFallback ? fallback.text : ending.reaction,
+      textRu: useFallback ? fallback.textRu : ending.reactionRu };
+  }
+
+  function renderEnding(feedback = null) {
+    const lossCard = resourceLossCard();
+    if (lossCard) return renderLossCard(lossCard, feedback);
+    const ending = app.deck.endings[app.state.endingId];
+    const storyCard = engine.cardById(app.deck, app.state.currentCardId);
+    const card = storyCard?.terminalEnding === app.state.endingId ? storyCard : endingReaction();
+    setView('ended', 'real');
+    renderResources(app.state.resources, feedback);
+    clearPreview();
+    setSceneMode('personal');
+    hideIrlLocation();
+    setReplyHint(false);
+    setCardId(card.id);
+    renderPersonalCard(card);
+    setThread(card.source, 'Game over');
+    $('[data-game]').dataset.outcome = 'failure';
+    $('[data-ending-title]').textContent = ending.title;
+    $('[data-ending-cause]').textContent = ending.cause;
+    $('[data-ending-summary]').hidden = false;
+    for (const id of app.state.route.ending.causes) {
+      const key = app.deck.endings[id].resource;
+      $(`[data-resource="${key}"]`).classList.add('is-fatal');
+    }
+    setChoices(['Start again'], () => { if (!app.locked) restartRun(); });
+    $('[data-chat]').scrollTop = 0;
+  }
+
+  function renderCard(feedback = null) {
+    if (app.state.gameOver) return renderEnding(feedback);
     const sent = sentReplyPositions;
     const card = engine.cardById(app.deck, app.state.currentCardId);
     if (!card || !app.activeCardIds.includes(card.id)) {
@@ -783,7 +977,7 @@
     const readingHistory = app.cardDelivery?.key === deliveryKey && app.cardDelivery.follow === false;
     const previousScroll = $('[data-chat]').scrollTop;
     setView(complete ? 'irl-complete' : 'playing', 'real');
-    renderResources(app.state.resources);
+    renderResources(app.state.resources, feedback);
     setSceneMode(card.mode);
     if (card.mode === 'irl') showIrlLocation(card);
     else hideIrlLocation();
@@ -806,7 +1000,11 @@
     const right = engine.getChoiceLabel(choices.right, app.state.resources.founder);
     setChoices([left, right], () => {}, { disabled: complete });
     bindCardChoices(card, choices, complete);
-    stageCardMessages(card);
+    const attentionMs = resourceAttentionMs(feedback);
+    stageCardMessages(card, attentionMs);
+    // IRL has no messenger delivery queue; its existing entrance can hold the
+    // text briefly without inventing a typing bubble over the court.
+    if (card.mode === 'irl' && attentionMs) $('.irl-dialog').style.animationDelay = `${attentionMs}ms`;
     if (playerReply && app.cardDelivery && historyMediaWidths) app.cardDelivery.historyMediaWidths = historyMediaWidths;
     if (playerReply) {
       focusContinuation();
@@ -848,11 +1046,7 @@
     if (!card.outcomeTone) return;
     const phone = $('[data-game]');
     phone.dataset.outcome = card.outcomeTone;
-    if (card.outcomeBanner !== false) {
-      hideIrlLocation();
-      $('[data-outcome-label]').textContent = card.outcomeTone === 'success' ? 'SUCCESS' : 'FAILURE';
-      $('[data-outcome-banner]').hidden = false;
-    }
+    if (card.outcomeBanner !== false) hideIrlLocation();
     if (presentedOutcomes.has(app.state)) return;
     presentedOutcomes.add(app.state);
     // Flush the cleared class so consecutive outcomes also get one entrance.
@@ -934,25 +1128,39 @@
     updateHistoryVisibility();
   }
 
-  function stageCardMessages(card) {
+  function stageCardMessages(card, attentionMs = 0) {
     const chat = $('[data-chat]');
-    const stack = card.mode === 'team' ? chat : chat.querySelector('[data-message-stack]');
+    const stack = card.mode === 'team' || card.previewMixedPersonal ? chat : chat.querySelector('[data-message-stack]');
     const nodes = Array.from(chat.querySelectorAll('[data-chat-current]'));
     const repeated = app.state.history.slice(app.state.route.cycleStart).some(step => step.cardId === card.id);
-    const pauses = card.mode === 'irl' || repeated ? [] : defaultTypingPauses(card, nodes);
-    if (!pauses.length) {
-      app.cardDelivery = null;
-      if (repeated) nodes.forEach(node => node.classList.remove('is-pop'));
-      return;
-    }
     const key = `${card.id}:${app.state.history.length}`;
     const restoring = app.cardDelivery?.key === key;
+    const pauses = restoring && app.cardDelivery.pauses ? app.cardDelivery.pauses
+      : card.mode === 'irl' || repeated ? [] : defaultTypingPauses(card, nodes);
+    const startsWithMedia = nodes[0]?.matches('.image-bubble, .media-placeholder') || nodes[0]?.querySelector('.message-image');
+    if (!restoring && attentionMs && card.mode !== 'irl' && !startsWithMedia) {
+      // Reuse the opening wait instead of stacking another delay onto it.
+      if (pauses[0]?.after === 0) pauses[0] = { ...pauses[0], durationMs: Math.max(attentionMs, pauses[0].durationMs) };
+      else pauses.unshift({ after: 0, durationMs: attentionMs });
+    }
+    if (!pauses.length) {
+      const outgoing = nodes.filter(node => node.matches('.self-message'));
+      app.cardDelivery = outgoing.length ? { key, pauses, delivered: true } : null;
+      outgoing.forEach(node => {
+        node.classList.remove('is-pop');
+        if (!restoring && !repeated && !reducedMotion.matches) animateArrival(node, 16, true, document.timeline.currentTime);
+      });
+      if (repeated) nodes.forEach(node => node.classList.remove('is-pop'));
+      if (isLossCard()) showLossPreviewDefeat();
+      return;
+    }
     if (app.cardDelivery?.key !== key) {
-      app.cardDelivery = { key, delivered: false, pauseIndex: 0, deadline: Date.now() + pauses[0].durationMs, follow: true };
+      app.cardDelivery = { key, pauses, delivered: false, pauseIndex: 0, deadline: Date.now() + pauses[0].durationMs, follow: true };
     }
     const delivery = app.cardDelivery;
     if (delivery.delivered) {
       nodes.forEach(node => { node.classList.remove('is-pop'); node.style.animationDelay = ''; });
+      if (isLossCard()) showLossPreviewDefeat();
       return;
     }
     const pending = nodes.slice(pauses[delivery.pauseIndex].after);
@@ -961,13 +1169,13 @@
       node.classList.remove('is-pop'); node.style.animationDelay = '';
     });
     let typing;
-    const anchor = card.mode === 'team' ? chat.querySelector('.message-clearance') : null;
+    const anchor = card.mode === 'team' || card.previewMixedPersonal ? chat.querySelector('.message-clearance') : null;
     const append = node => stack.insertBefore(node, typing || anchor);
     const buttons = Array.from(document.querySelectorAll('[data-choice]'));
     buttons.forEach(button => { button.disabled = true; });
     chat.setAttribute('aria-busy', 'true');
     $('.reply-hint__text').textContent = 'Tap chat to show all';
-    function isCurrent() { return app.view === 'playing' && app.cardDelivery === delivery && stack.isConnected; }
+    function isCurrent() { return (app.view === 'playing' || app.view === 'ended' && isLossCard()) && app.cardDelivery === delivery && stack.isConnected; }
     function followDelivery() {
       if (delivery.follow === false) { updateHistoryVisibility(); return; }
       if (chat.classList.contains('has-chat-history')) focusContinuation();
@@ -981,6 +1189,7 @@
       $('.reply-hint__text').textContent = 'Choose a reply...';
       buttons.forEach(button => { button.disabled = false; });
       revealCardMessages = () => {};
+      if (isLossCard()) showLossPreviewDefeat();
     }
     revealCardMessages = () => {
       if (!isCurrent() || delivery.delivered) return;
@@ -995,13 +1204,14 @@
     function showTyping() {
       const next = pending[0];
       const sourceId = next.dataset.source || card.source;
-      if (typing?.dataset.source === sourceId) return;
+      const outgoing = next.matches('.self-message');
+      if (typing?.dataset.source === sourceId && typing.dataset.outgoing === String(outgoing)) return;
       typing?.remove(); typing = null;
-      if (next.matches('.self-message')) return;
+      if (next.matches('[data-system-event]')) return;
       const source = sourceFor(sourceId);
       const indicator = document.createElement('button');
       indicator.type = 'button'; indicator.className = 'typing-bubble';
-      indicator.setAttribute('aria-label', `${source.name} is typing`);
+      indicator.setAttribute('aria-label', outgoing ? 'Founder is typing' : `${source.name} is typing`);
       indicator.title = 'Show all messages';
       indicator.setAttribute('aria-description', 'Show all messages');
       indicator.innerHTML = '<span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span>';
@@ -1011,7 +1221,10 @@
           || Math.abs(chatGesture.scroll - chat.scrollTop) > 10)) return;
         revealCardMessages();
       });
-      if (card.mode === 'team') {
+      if (outgoing) {
+        indicator.classList.add('preview-composer', 'founder-composer');
+        typing = indicator;
+      } else if (card.mode === 'team') {
         typing = document.createElement('div');
         typing.className = 'team-row typing-row'; typing.dataset.source = sourceId;
         const initials = card.messages.find(message => message.source === sourceId)?.avatar;
@@ -1026,6 +1239,7 @@
         indicator.prepend(meta); typing.append(indicator);
       } else typing = indicator;
       typing.dataset.source = sourceId;
+      typing.dataset.outgoing = String(outgoing);
       stack.insertBefore(typing, anchor);
     }
     function deliverNext() {
@@ -1068,6 +1282,10 @@
         animateArrival(node, reducedMotion.matches ? 0 : delta, fade, start);
       });
     }
+    nodes.filter(node => node.isConnected && node.matches('.self-message')).forEach(node => {
+      node.classList.remove('is-pop');
+      if (!restoring && !reducedMotion.matches) animateArrival(node, 16, true, document.timeline.currentTime);
+    });
     showTyping();
     cardTypingTimer = window.setTimeout(deliverNext, Math.max(0, delivery.deadline - Date.now()));
   }
@@ -1080,7 +1298,9 @@
     // Briefly cue a new conversation or a different speaker taking over a team thread.
     const newTeamAuthor = card.mode === 'team' && previousCard?.source === card.source
       && previousCard.messages?.at(-1)?.source !== nodes[0]?.dataset.source;
-    const opening = firstText && (nodes.length === 1 || newTeamAuthor || previousCard && previousCard.source !== card.source)
+    const opening = nodes[0]?.matches('.self-message')
+      ? [{ after: 0, durationMs: nodes[0].matches('.preview-attachment') ? 850 : 650 }]
+      : firstText && (nodes.length === 1 || newTeamAuthor || previousCard && previousCard.source !== card.source)
       ? [{ after: 0, durationMs: 500 }] : [];
     return opening.concat(nodes.slice(1).map((next, index) => {
       const previous = nodes[index];
@@ -1090,7 +1310,8 @@
       const words = Array.from(previous.querySelectorAll('p')).map(p => p.textContent).join(' ').trim().split(/\s+/).length;
       const media = previous.matches('.image-bubble, .media-placeholder') || previous.querySelector('.message-image, .media-placeholder');
       const readingMs = media || words > 28 ? 900 : words > 12 ? 700 : 500;
-      const durationMs = next.matches('.self-message') ? 0
+      const durationMs = next.matches('.self-message')
+        ? authored.find(pause => pause.after === index + 1)?.durationMs || readingMs + 200
         : authored.find(pause => pause.after === index + 1)?.durationMs || readingMs + (changedAuthor ? 100 : 0);
       return { after: index + 1, durationMs };
     }).filter(pause => pause.durationMs > 0));
@@ -1109,7 +1330,7 @@
     if (app.cardDelivery && !app.cardDelivery.delivered) return;
     const card = engine.cardById(app.deck, app.state.currentCardId);
     const next = engine.cardById(app.deck, card.choices[side].next);
-    if (!reducedMotion.matches && retainsPreviousChat(next, card, side)) return sendFounderReply(card, side);
+    if (retainsPreviousChat(next, card, side)) return composeFounderReply(card, side);
     resolveCardChoice(card, side);
   }
 
@@ -1119,18 +1340,55 @@
     founderSendTimer = null;
     app.locked = false;
     $('[data-chat]').classList.remove('is-sending');
+    $('[data-composing-reply]')?.remove();
   }
 
-  function sendFounderReply(card, side) {
+  function founderTypingMarkup() {
+    return '<div class="typing-bubble founder-composer" aria-label="Founder is typing"><span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>';
+  }
+
+  function composeFounderReply(card, side) {
     cancelArrivalMotion();
     app.locked = true;
     clearPreview();
     const chat = $('[data-chat]');
-    const scrollTop = chat.scrollTop;
+    const originalScroll = chat.scrollTop;
+    const rows = Array.from(chat.querySelectorAll('[data-chat-current], [data-chat-history], [data-player-reply], .message-avatar'));
+    const positions = rows.map(node => node.offsetTop - chat.scrollTop);
+    chat.classList.add('is-sending');
+    const composer = document.createElement('div');
+    composer.innerHTML = founderTypingMarkup();
+    const dots = composer.firstElementChild;
+    dots.dataset.composingReply = '';
+    chat.insertBefore(dots, chat.querySelector('.message-clearance'));
+    chat.scrollTop = chat.scrollHeight;
+    if (!reducedMotion.matches) {
+      const start = document.timeline.currentTime;
+      rows.forEach((node, index) => animateArrival(node, positions[index] - (node.offsetTop - chat.scrollTop), false, start));
+    }
+    document.querySelectorAll('[data-choice]').forEach(button => { button.disabled = true; });
+    if (storyTestEnabled) $('[data-test-back]').disabled = false;
+    founderSendTimer = window.setTimeout(() => {
+      founderSendTimer = null;
+      if (reducedMotion.matches) {
+        dots.remove();
+        chat.classList.remove('is-sending');
+        resolveCardChoice(card, side, originalScroll);
+      } else sendFounderReply(card, side, dots, originalScroll);
+    }, 650);
+  }
+
+  function sendFounderReply(card, side, composer, originalScroll) {
+    cancelArrivalMotion();
+    app.locked = true;
+    clearPreview();
+    const chat = $('[data-chat]');
+    const scrollTop = originalScroll;
     const rows = Array.from(chat.querySelectorAll('[data-chat-current], [data-chat-history], [data-player-reply]'));
     const positions = rows.map(node => node.offsetTop - chat.scrollTop);
     const avatar = chat.querySelector('.message-avatar');
     const avatarTop = avatar?.offsetTop - chat.scrollTop;
+    composer.remove();
     const host = card.mode === 'team' ? chat : chat.querySelector('[data-message-stack]');
     chat.classList.add('is-sending');
     const reply = document.createElement('div');
@@ -1174,29 +1432,231 @@
     clearPreview();
     app.state = route.resolveChoice(app.deck, app.state, side,
       directStoryTest ? { outcomeRng: Math.random } : {}).state;
-    renderCard();
-    unlockAfterChoice();
+    const feedback = app.state.history.at(-1);
+    renderCard(feedback);
+    const nextCard = engine.cardById(app.deck, app.state.currentCardId);
+    unlockAfterChoice(nextCard?.mode === 'irl' ? resourceAttentionMs(feedback) : 0);
   }
 
-  function restartRun() {
+  function resourceAttentionMs(feedback) {
+    if (!feedback || reducedMotion.matches) return 0;
+    const largest = Math.max(...engine.RESOURCE_KEYS.map(key => Math.abs(feedback.rawAfter[key] - feedback.rawBefore[key])));
+    return largest >= 2 ? 420 : largest > 0 ? 200 : 0;
+  }
+
+  function restartRun({ skipSaved = false } = {}) {
+    if (lossPreviewEnabled) return openLossPreview(app.lossPreviewIndex);
     recordTestStep();
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
     app.cardDelivery = null;
-    app.state = newRun();
+    app.state = route.nextRun(app.deck, app.state);
+    app.runStartState = structuredClone(app.state);
     app.locked = false;
-    startSaved(0);
+    if (skipSaved) beginRun();
+    else startSaved(0);
+  }
+
+  // Document review owns its own fixtures and replies. Never resolve a gameplay
+  // choice, settle resources, or draw from the ordinary route in this mode.
+  function setupLossPreview() {
+    const controls = $('[data-test-controls]');
+    $('[data-test-back]').hidden = true;
+    $('[data-test-restart]').hidden = true;
+    $('[data-test-controls] > span').hidden = true;
+    $('[data-restart-run]').textContent = 'Replay card';
+    $('[data-test-inspect]').textContent = 'RU';
+    $('[data-test-inspect]').setAttribute('aria-label', 'Перевод из документа');
+    const select = document.createElement('select');
+    select.dataset.lossSelect = '';
+    select.setAttribute('aria-label', 'Карта из документа');
+    window.MISTAKERY_LOSS_PREVIEW.cards.forEach(card => {
+      const option = document.createElement('option');
+      option.value = card.id; option.textContent = card.title; select.append(option);
+    });
+    select.addEventListener('change', () => openLossPreview(
+      window.MISTAKERY_LOSS_PREVIEW.cards.findIndex(card => card.id === select.value)));
+    controls.prepend(select);
+    for (const [direction, label, step] of [['prev', '← Previous', -1], ['next', 'Next →', 1]]) {
+      const button = document.createElement('button');
+      button.type = 'button'; button.dataset[direction === 'prev' ? 'lossPrev' : 'lossNext'] = '';
+      button.textContent = label;
+      button.addEventListener('click', () => openLossPreview(app.lossPreviewIndex + step));
+      controls.append(button);
+    }
+    const note = document.createElement('p');
+    note.className = 'loss-preview-note'; note.dataset.lossNote = ''; controls.append(note);
+    const requested = window.MISTAKERY_LOSS_PREVIEW.cards.findIndex(card => card.id === params.get('card'));
+    openLossPreview(requested < 0 ? 0 : requested);
+  }
+
+  function openLossPreview(index) {
+    const cards = window.MISTAKERY_LOSS_PREVIEW.cards;
+    app.lossPreviewIndex = Math.max(0, Math.min(cards.length - 1, index ?? 0));
+    const card = cards[app.lossPreviewIndex];
+    app.cardDelivery = null;
+    app.lossPreviewReply = null;
+    app.state = { currentCardId: card.id, resources: { cash: 50, team: 50, customers: 50, founder: 50, ...card.fixture },
+      flags: [], history: [], gameOver: false, route: { cycleStart: 0 } };
+    app.locked = false;
+    const url = new URL(window.location.href); url.searchParams.set('card', card.id);
+    window.history.replaceState(window.history.state, '', url);
+    renderLossPreview();
+  }
+
+  function renderLossPreview() {
+    return renderLossCard(window.MISTAKERY_LOSS_PREVIEW.cards[app.lossPreviewIndex]);
+  }
+
+  function renderLossCard(card, feedback = null) {
+    setView(lossPreviewEnabled ? 'playing' : 'ended', 'real');
+    $('[data-game]').dataset.lossPreview = '';
+    if (lossPreviewEnabled) {
+      $('[data-test-controls] > span').textContent = `Document preview · ${app.lossPreviewIndex + 1}/${window.MISTAKERY_LOSS_PREVIEW.cards.length}`;
+      $('[data-loss-select]').value = card.id;
+      $('[data-loss-prev]').disabled = app.lossPreviewIndex === 0;
+      $('[data-loss-next]').disabled = app.lossPreviewIndex === window.MISTAKERY_LOSS_PREVIEW.cards.length - 1;
+      $('[data-loss-note]').textContent = 'Любой ответ открывает финальную реплику b2buddy. Оба финальных выбора только закрывают попап.';
+    }
+    if (!lossPresentations.has(app.state)) lossPresentations.set(app.state, { reply: null, defeated: false });
+    const presentation = lossPresentations.get(app.state);
+    const flash = document.createElement('div');
+    flash.className = 'loss-preview-defeat'; flash.dataset.lossFlash = '';
+    flash.setAttribute('aria-hidden', 'true'); document.body.append(flash);
+    renderResources(app.state.resources, feedback);
+    clearPreview();
+    setSceneMode(card.mode); hideIrlLocation(); setReplyHint(true); setCardId(card.id);
+    if (card.mode === 'team') renderTeamCard(card);
+    else {
+      setThread(card.source, 'typing...');
+      $('[data-chat]').innerHTML = `<span class="sr-only" data-card-id>${card.id}</span>` + card.messages.map(message => {
+        if (message.direction === 'outgoing') return previewOutgoingMessageMarkup(message);
+        return `<div class="message-row" data-source="${htmlAttribute(message.source)}"><div class="mini-avatar message-avatar" aria-hidden="true">${characterAvatar(sourceFor(message.source))}</div><div class="message-stack">${cardMessageMarkup(htmlAttribute(message.text), true)}</div></div>`;
+      }).join('') + '<div class="message-clearance" aria-hidden="true"></div>';
+    }
+    const chat = $('[data-chat]');
+    Array.from(chat.children).filter(node => !node.matches('.sr-only, .message-clearance'))
+      .forEach(node => { node.dataset.chatCurrent = ''; });
+    const appendReply = text => {
+      const reply = document.createElement('div'); reply.className = 'self-message chat-player-reply'; reply.dataset.playerReply = '';
+      reply.innerHTML = messageLines(htmlAttribute(text), true);
+      chat.insertBefore(reply, chat.querySelector('.message-clearance'));
+      document.querySelectorAll('[data-choice]').forEach(button => { button.disabled = true; });
+      keepDeliveryVisible(reply);
+      return reply;
+    };
+    setChoices(card.replies.map(reply => reply.en), side => {
+      if (presentation.reply || app.cardDelivery && !app.cardDelivery.delivered) return;
+      presentation.reply = card.replies[side === 'left' ? 0 : 1].en;
+      app.lossPreviewReply = presentation.reply;
+      const reply = appendReply(presentation.reply);
+      if (!reducedMotion.matches) animateArrival(reply, 16, true, document.timeline.currentTime);
+      showLossPreviewFinale(card.id);
+    });
+    stageCardMessages({ ...card, previewMixedPersonal: card.mode === 'personal' });
+    if (presentation.reply) appendReply(presentation.reply);
+    if (card.initialMembers) {
+      const updateMembers = () => {
+        const left = chat.querySelectorAll('[data-left-member]').length;
+        $('[data-status]').textContent = `${(parseInt(sourceFor(card.source).role, 10) || card.initialMembers) - left} members`;
+      };
+      app.lossPreviewObserver = new MutationObserver(updateMembers);
+      app.lossPreviewObserver.observe(chat, { childList: true });
+      updateMembers();
+    }
+    chat.scrollTop = 0;
+  }
+
+  function showLossPreviewDefeat() {
+    const flash = $('[data-loss-flash]');
+    const presentation = lossPresentations.get(app.state);
+    if (!flash || !presentation) return;
+    flash.dataset.card = lossPreviewEnabled ? app.state.currentCardId : resourceLossCard().id;
+    flash.classList.toggle('is-restored', presentation.defeated);
+    flash.classList.add('is-defeated');
+    const phone = $('[data-game]');
+    phone.dataset.outcome = 'failure';
+    if (!presentation.defeated) phone.classList.add('is-outcome-entering');
+    presentation.defeated = true;
+  }
+
+  function showLossPreviewFinale(cardId) {
+    const data = window.MISTAKERY_LOSS_FINALE;
+    const finale = data.cards.find(card => card.id === cardId);
+    const source = sourceFor('@b2buddy');
+    const dialog = document.createElement('dialog');
+    dialog.className = 'loss-finale'; dialog.dataset.lossFinale = ''; dialog.dataset.card = cardId;
+    dialog.setAttribute('aria-labelledby', 'loss-finale-sender');
+    dialog.innerHTML = `<header class="loss-finale__head">
+      <div class="avatar" aria-hidden="true">${characterAvatar(source)}</div>
+      <div class="contact__text"><b id="loss-finale-sender">${htmlAttribute(source.name)}</b><i>${htmlAttribute(source.role)}</i></div>
+    </header>
+    <div class="loss-finale__body" tabindex="0" autofocus aria-label="Message from ${htmlAttribute(source.name)}">
+      <div class="message">${finale.en.map((text, index) => `<p>${index === finale.en.length - 1
+        ? `<strong>${htmlAttribute(text)}</strong>` : htmlAttribute(text)}</p>`).join('')}</div>
+    </div>
+    <footer class="choices">${data.choices.en.map((label, index) => `<button type="button" class="choice${index ? ' choice--right' : ''}" data-finale-choice>${htmlAttribute(label)}</button>`).join('')}</footer>`;
+    // The answered source choices are disabled; return to an available control.
+    const dismiss = () => {
+      dialog.close();
+      $('[data-restart-run]').focus({ preventScroll: true });
+    };
+    dialog.querySelectorAll('[data-finale-choice]').forEach(button => {
+      button.addEventListener('click', () => {
+        if (lossPreviewEnabled) dismiss();
+        else restartRun({ skipSaved: true });
+      });
+    });
+    dialog.addEventListener('cancel', event => { event.preventDefault(); dismiss(); });
+    document.body.append(dialog);
+    dialog.showModal();
+  }
+
+  function previewOutgoingMessageMarkup(message) {
+    const file = message.attachment;
+    const attachment = file ? `<div class="preview-file" aria-label="${htmlAttribute(file.filename)}, ${htmlAttribute(file.type)} document">
+      <span class="preview-file__icon" aria-hidden="true"><svg viewBox="0 0 32 40" fill="none"><path d="M5 1h15l11 11v25a2 2 0 0 1-2 2H5a3 3 0 0 1-3-3V4a3 3 0 0 1 3-3Z" fill="currentColor" opacity=".22"/><path d="M20 1v11h11M9 21h15M9 27h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="preview-file__label"><b>${htmlAttribute(file.filename)}</b><small>${htmlAttribute(file.type)}</small></span>
+    </div>` : '';
+    return `<div class="self-message is-pop${file ? ' preview-attachment' : ''}" data-preview-outgoing data-source="${htmlAttribute(message.source)}">${attachment}${messageLines(htmlAttribute(message.text), true)}</div>`;
+  }
+
+  function showLossPreviewDetails(card = window.MISTAKERY_LOSS_PREVIEW.cards[app.lossPreviewIndex]) {
+    $('[data-details-id]').textContent = card.title;
+    const body = $('[data-details-body]'); body.replaceChildren();
+    const copy = document.createElement('div'); copy.className = 'test-details__translation'; copy.dataset.detailsTranslation = '';
+    copy.textContent = card.textRu; body.append(copy);
+    card.replies.forEach((reply, index) => {
+      const line = document.createElement('p'); line.textContent = `${index + 1}. ${reply.ru}`; body.append(line);
+    });
+    const finale = window.MISTAKERY_LOSS_FINALE.cards.find(item => item.id === card.id);
+    const finaleHeading = document.createElement('h3'); finaleHeading.textContent = '@b2buddy · AI Agent'; body.append(finaleHeading);
+    finale.ru.forEach((text, index) => {
+      const line = document.createElement('p');
+      if (index === finale.ru.length - 1) { const emphasis = document.createElement('strong'); emphasis.textContent = text; line.append(emphasis); }
+      else line.textContent = text;
+      body.append(line);
+    });
+    const finaleChoices = document.createElement('p'); finaleChoices.textContent = window.MISTAKERY_LOSS_FINALE.choices.ru.join(' / '); body.append(finaleChoices);
+    const note = document.createElement('p'); note.className = 'test-details__note';
+    note.textContent = card.copyEdited
+      ? 'Русский текст — исходный перевод документа. В английском предпросмотре применены ваши локальные правки. Ответы не расходуют ресурсы.'
+      : 'Текст документа без редакторских изменений. Шкалы — отдельные preview fixtures; ответы не расходуют ресурсы.';
+    body.append(note); $('[data-test-details]').showModal(); body.scrollTop = 0;
   }
 
   function render() {
     if (!app.deck || !app.state) return;
+    if (lossPreviewEnabled) return renderLossPreview();
     if (app.view === 'onboarding') renderOnboarding();
     else if (app.view === 'saved') renderSaved();
     else renderCard();
   }
 
   function showTestDetails() {
-    if (!storyTestEnabled || !['playing', 'saved'].includes(app.view)) return;
+    if (lossPreviewEnabled) return showLossPreviewDetails();
+    if (resourceLossCard()) return showLossPreviewDetails(resourceLossCard());
+    if (!storyTestEnabled || !['playing', 'saved', 'ended'].includes(app.view)) return;
     const id = app.view === 'saved' ? NOTE_SCREENS[app.noteIndex].id : app.state.currentCardId;
     const translation = app.deck.testTranslations[id];
     const card = app.view === 'playing' ? engine.cardById(app.deck, id) : null;
@@ -1219,16 +1679,32 @@
     function totalEffects(choice, target) {
       return Object.fromEntries(engine.RESOURCE_KEYS.map(key => {
         const before = app.state.resources[key];
+        const balance = app.state.route.resourceLedger?.[key] ?? before;
         const after = target?.resetResources === 0 ? 0 : Math.max(0, Math.min(100,
-          before + (choice.effects[key] || 0) + (target?.outcomeEffects?.[key] || 0)
+          balance + (choice.effects[key] || 0) + (target?.outcomeEffects?.[key] || 0)
           + (key === 'cash' ? app.deck.meta.baseCashBurn : 0)));
         return [key, after - before];
       }));
     }
+    if (app.view === 'ended') {
+      const ending = app.deck.endings[app.state.endingId];
+      $('[data-details-id]').textContent = app.state.endingId;
+      add(body, 'h3', 'ИГРА ОКОНЧЕНА — ТЫ ПРОИГРАЛ');
+      add(body, 'p', ending.causeRu);
+      add(body, 'div', ending.reactionRu ? endingReaction().textRu : translation.text, 'test-details__translation');
+      const causes = app.state.route.ending.causes;
+      if (causes.length > 1) add(body, 'p', 'Также: ' + causes.slice(1).map(id => app.deck.endings[id].causeRu).join(' '));
+      add(body, 'p', 'Баланс в конце эпизода: ' + engine.RESOURCE_KEYS.map(key =>
+        `${app.deck.resources[key].label} ${app.state.route.ending.rawResources[key]}`).join(' · '));
+      add(body, 'p', 'Перезапуск не расходует ресурсы.', 'test-details__note');
+      $('[data-test-details]').showModal();
+      body.scrollTop = 0;
+      return;
+    }
     const translated = add(body, 'div', translation.text, 'test-details__translation');
     translated.dataset.detailsTranslation = '';
     const provenance = add(body, 'p', translation.source
-      ? (translation.adapted ? 'Перевод из документа, адаптирован к текущей карте. ' : 'Перевод по документу. ')
+      ? (translation.sourceGaps?.length ? 'Русский источник неполный; для отмеченных полей сохранён прежний перевод. ' : translation.ownerPresentation ? 'Текст документа; эмодзи и финальная пунктуация сохранены по правилам владельца. ' : translation.adapted ? 'Перевод из документа, адаптирован к текущей карте. ' : 'Точный русский текст документа. ')
       : 'Перевод текущего английского текста; в документах нет полного русского варианта.', 'test-details__note');
     if (translation.source) {
       const source = add(provenance, 'a', 'Источник');
@@ -1241,7 +1717,9 @@
       add(body, 'p', 'Навигация не меняет ресурсы.', 'test-details__note');
       for (const [index, side] of ['left', 'right'].entries()) add(body, 'p', `${index + 1}. ${labels[side]}`);
     } else {
-      add(body, 'p', `Каждый ответ: ${effectsText({ cash: app.deck.meta.baseCashBurn })}. Итог учитывает пределы 0–100. Просмотр не делает ход.`, 'test-details__note');
+      add(body, 'p', `Каждый ответ: ${effectsText({ cash: app.deck.meta.baseCashBurn })}. Шкалы показывают 0–100; внутри эпизода расходы ниже нуля и избыток выше 100 сохраняются. Проигрыш проверяется после развязки или всей связки. Просмотр не делает ход.`, 'test-details__note');
+      if (app.state.route.resourceLedger) add(body, 'p', 'Баланс эпизода: ' + engine.RESOURCE_KEYS.map(key =>
+        `${app.deck.resources[key].label} ${app.state.route.resourceLedger[key]}`).join(' · '));
       if (card.outcomeEffects) {
         const entry = add(body, 'section', '', 'test-details__entry');
         entry.dataset.detailsEntry = '';
@@ -1308,11 +1786,18 @@
   $('[data-test-inspect]').addEventListener('click', showTestDetails);
   $('[data-details-close]').addEventListener('click', () => $('[data-test-details]').close());
   $('[data-test-restart]').addEventListener('click', startStoryTest);
+  $('.hud-switcher').hidden = !iconHudEnabled;
+  document.querySelectorAll('[data-hud-variant]').forEach(button => {
+    button.addEventListener('click', () => setResourceVariant(button.dataset.hudVariant, true));
+  });
+  setResourceVariant(app.resourceVariant, !iconHudEnabled && params.get('hud') === 'icons');
   $('[data-restart-run]').addEventListener('click', () => { if (app.view !== 'onboarding') restartRun(); });
 
   document.addEventListener('keydown', (event) => {
+    if (event.target.closest?.('[data-test-controls]')) return;
     if ($('[data-test-details]').open) return;
-    if (app.view !== 'playing') return;
+    if ($('[data-loss-finale]')?.open) return;
+    if (app.view !== 'playing' && !(app.view === 'ended' && isLossCard())) return;
     if (event.key === 'ArrowLeft') $('[data-choice="left"]')?.click();
     if (event.key === 'ArrowRight') $('[data-choice="right"]')?.click();
   });
@@ -1331,11 +1816,16 @@
       app.deck = deck;
       app.activeCardIds = deck.cards.filter(card => card.plot || card.filler).map(card => card.id);
       await Promise.all([warmCharacterAvatars(), warmStoryImages()]);
+      if (lossPreviewEnabled) {
+        setupLossPreview();
+        return;
+      }
       if (storyTestEnabled) {
         startStoryTest();
         return;
       }
-      app.state = newRun();
+      app.state = initialRun();
+      app.runStartState = structuredClone(app.state);
       app.onboardingIndex = 0;
       deliverOnboardingMessage();
     })

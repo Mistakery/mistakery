@@ -1,6 +1,10 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const deck = require('../cards.json');
+// Isolate scheduling/topology from deaths. Production endings have their own
+// boundary tests and real-route reachability replay tests.
+const deck = structuredClone(require('../cards.json'));
+deck.meta.route.resourceEndings = [];
+deck.cards.forEach(card => { delete card.terminalEnding; });
 const fs = require('node:fs');
 const path = require('node:path');
 const routePath = path.resolve(__dirname, '../assets/route.js');

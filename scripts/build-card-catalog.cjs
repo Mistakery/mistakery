@@ -100,7 +100,7 @@ function cardVisibleLines(card) {
     ...(card.image ? [card.image.alt] : []),
     ...(typeof card.text === 'string' ? card.text.split('\n') : []),
     ...(card.messages || []).flatMap((message) => [
-      ...(message.forwardedFrom ? [`Forwarded from ${deck.sources[message.forwardedFrom].name}`] : []),
+      ...(message.forwardedFrom ? [`Forwarded from ${deck.sources[message.forwardedFrom].name}`] : card.mode === 'team' ? [message.direction === 'outgoing' ? '@founder' : deck.sources[message.source].name] : []),
       ...(message.imageRef ? [deck.images[message.imageRef].placeholder || deck.images[message.imageRef].alt] : []),
       ...(message.placeholder ? [message.placeholder] : []),
       ...(message.image ? [message.image.alt] : []),
@@ -125,7 +125,7 @@ const lines = [
   '',
   'Числовые эффекты ниже предназначены для редакторской проверки. В обычной игре игрок видит текущие проценты и подсветку ресурсов. В тестовой версии кнопка RU / ± показывает перевод и точные эффекты текущей карты.',
   '',
-  'Каждый игровой ход во всех ветках дополнительно списывает 0,5 Cash, включая нейтральные ответы на исходах. Это списание применяется вместе с эффектами выбора и исхода, один раз, с ограничением ресурсов 0–100. Навигация и перерисовка ничего не списывают; кризисы отключены.',
+  'Каждый игровой ход дополнительно списывает 0,5 Cash, включая ответы на исходах. Внутри эпизода сохраняется полный баланс, в том числе ниже 0 и выше 100; шкалы показывают 0–100. Шесть ресурсных концовок проверяются после сюжетной развязки или всей филлерной связки. Навигация, финальная реакция и перерисовка ничего не списывают. Последнего шанса нет. Судный день заканчивает игру сразу.',
   '',
 ];
 
@@ -150,17 +150,18 @@ for (const [title, predicate] of sections) {
       : '**RU**';
     lines.push(`## ${card.id} — ${source.role} ${source.name}`, '', '**EN**', '', quote(englishLines, translation.exactEnglishOnly), '', translationHeading, '', quote(translation.text, translation.exactEnglishOnly), '');
     if (reference) lines.push(reference.source
-      ? `Источник перевода: ${reference.source}${reference.adapted ? ' (адаптирован к текущей английской карте)' : ''}.`
+      ? `Источник перевода: ${reference.source}${reference.sourceGaps?.length ? ` (в документе отсутствуют RU-поля: ${reference.sourceGaps.join(', ')}; сохранён прежний перевод)` : reference.ownerPresentation ? ' (эмодзи и финальная пунктуация по правилам владельца)' : reference.adapted ? ' (адаптирован к текущей английской карте)' : ''}.`
       : 'Перевод текущего английского текста; полный русский вариант в исходных документах отсутствует.', '');
+    if (card.terminalEnding) lines.push('Ниже сохранены старые ответы из исходной карточки; в терминальном экране они заменены одной кнопкой Start again.', '');
     for (const side of ['left', 'right']) {
       const choice = card.choices[side];
       lines.push(`- **${choice.label} — ${translation[side]}**: ${effects(choice)}; ${route(choice)}.`);
     }
     if (card.filler) lines.push('', `Филлер: ${card.filler.role}; связка/единица ${card.filler.unit}. Условия: нужны ${(card.requires || []).join(', ') || 'нет'}; исключены ${(card.excludes || []).join(', ') || 'нет'}. Продолжение связки немедленно; каждый экран считается отдельной картой.`);
     if (card.outcome) {
-      lines.push('', `Эффект при входе в исход, ровно один раз: ${card.resetResources === 0 ? 'Cash = Team = Customers = Founder = 0' : effects({ effects: card.outcomeEffects })}. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Judgment Day — симуляция с обнулением ресурсов; игра продолжается.`);
+      lines.push('', `Эффект при входе в исход, ровно один раз: ${card.resetResources === 0 ? 'Cash = Team = Customers = Founder = 0' : effects({ effects: card.outcomeEffects })}. ${card.terminalEnding ? 'Мир уничтожен. Игра окончена сразу; только перезапуск.' : 'Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.'}`);
     } else if (card.id.startsWith('PADEL_OUTCOME_') || card.id.startsWith('INFLUENCER_OUTCOME_')) {
-      lines.push('', `Эффект при входе в исход, ровно один раз: ${effects({ effects: card.outcomeEffects })}. Ответ завершает сюжет: затем блок филлеров или новый цикл после третьего сюжета. Ресурсы не завершают игру; кризисы отключены.`);
+      lines.push('', `Эффект при входе в исход, ровно один раз: ${effects({ effects: card.outcomeEffects })}. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.`);
     }
     for (const [previousCardId, contextualChoices] of Object.entries(card.contextualChoices || {})) {
       for (const side of ['left', 'right']) {
@@ -173,4 +174,14 @@ for (const [title, predicate] of sections) {
   }
 }
 
+lines.push('# 9. Используемые ресурсные концовки', '', 'Каждая — финальная реакция персонажа, причина проигрыша и одна кнопка Start again. Другие архивные ending-определения в этом маршруте не используются.', '');
+for (const id of deck.meta.route.resourceEndings) {
+  const ending = deck.endings[id];
+  lines.push(`## ${id} — ${ending.title}`, '', `${ending.source} · ${ending.resource} ${ending.edge === 'low' ? 0 : 100}`, '',
+    '**EN**', '', quote(ending.reaction.split('\n')), '', ending.cause, '', '**RU**', '', quote(ending.reactionRu.split('\n')), '', ending.causeRu, '');
+  if (ending.fallbackReaction) {
+    const fallback = ending.fallbackReaction;
+    lines.push(`Если оригинальный бот недоступен, ту же концовку сообщает ${fallback.source}:`, '', quote(fallback.text.split('\n')), '', quote(fallback.textRu.split('\n')), '');
+  }
+}
 fs.writeFileSync(path.join(root, 'MISTAKERY_CARDS_EN_RU.md'), `${lines.join('\n')}\n`);

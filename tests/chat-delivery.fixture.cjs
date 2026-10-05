@@ -7,8 +7,8 @@ async function revealMessages(page) {
   await page.waitForFunction(() => !document.querySelector('[data-choice]:disabled'));
 }
 async function completeFounderSend(page, controlledClock = false) {
-  if (!await page.locator('[data-sending-reply]').count()) return;
-  if (controlledClock) await page.clock.runFor(200);
-  else await page.locator('[data-sending-reply]').waitFor({ state: 'detached' });
+  if (!await page.locator('[data-sending-reply], [data-composing-reply]').count()) return;
+  if (controlledClock) await page.clock.runFor(850);
+  else await page.waitForFunction(() => !document.querySelector('[data-composing-reply], [data-sending-reply]'));
 }
 module.exports = { revealMessages, completeFounderSend };

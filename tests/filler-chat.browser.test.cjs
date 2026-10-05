@@ -45,10 +45,10 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         const oldMessages = (await page.locator('[data-chat-current]').allTextContents()).slice(-2);
         const label = await page.locator(`[data-choice=${side}]`).innerText();
         await page.locator(`[data-choice=${side}]`).click();
-        assert.equal(await page.locator('[data-sending-reply]').count(), retained ? 1 : 0, `${id}/${side}`);
+        assert.equal(await page.locator('[data-composing-reply]').count(), retained ? 1 : 0, `${id}/${side}`);
         if (retained) {
           assert.deepEqual(await snapshot(page), before);
-          await page.clock.runFor(199); assert.deepEqual(await snapshot(page), before);
+          await page.clock.runFor(849); assert.deepEqual(await snapshot(page), before);
           await page.clock.runFor(1);
           assert.deepEqual(await page.locator('[data-chat-history]').allTextContents(), oldMessages);
           assert.equal(await page.locator('[data-player-reply]').innerText(), label);
@@ -88,30 +88,31 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       for (const next of ['FILL_POLICE_2', 'FILL_POLICE_3']) {
         await page.clock.runFor(6000); const before = await snapshot(page);
         await page.locator('[data-choice=left]').click();
-        assert.equal(await page.locator('[data-sending-reply]').count(), 1);
-        await page.clock.runFor(200); const after = await snapshot(page);
+        assert.equal(await page.locator('[data-composing-reply]').count(), 1);
+        await page.clock.runFor(850); const after = await snapshot(page);
         assert.equal(after.currentCardId, next);
         assert.equal(await page.locator('[data-player-reply]').count(), 1);
         await page.locator('[data-test-back]').click(); assert.deepEqual(await snapshot(page), before);
-        await page.clock.runFor(6000); await page.locator('[data-choice=left]').click(); await page.clock.runFor(200);
+        await page.clock.runFor(6000); await page.locator('[data-choice=left]').click(); await page.clock.runFor(850);
         assert.deepEqual(await snapshot(page), after);
       }
       for (const action of ['back', 'restart', 'render']) {
         await seed(page, 'FILL_COMA_1'); await page.clock.runFor(6000);
         await page.locator('[data-choice=left]').click();
-        assert.equal(await page.locator('[data-sending-reply]').count(), 1);
+        assert.equal(await page.locator('[data-composing-reply]').count(), 1);
         if (action === 'render') await page.evaluate(() => MistakeryApp.render());
         else await page.locator(`[data-test-${action}]`).click();
         await page.clock.runFor(6000);
         assert.equal((await snapshot(page)).history.length, 0);
-        assert.equal(await page.locator('[data-sending-reply]').count(), 0);
+        assert.equal(await page.locator('[data-composing-reply]').count(), 0);
       }
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await seed(page, 'FILL_POLICE_1'); await page.clock.runFor(6000);
       await page.locator('[data-choice=left]').click();
+      await page.clock.runFor(650);
       assert.equal((await snapshot(page)).currentCardId, 'FILL_POLICE_2');
       assert.equal(await page.locator('[data-player-reply]').count(), 1);
-      assert.equal(await page.locator('[data-sending-reply]').count(), 0);
+      assert.equal(await page.locator('[data-composing-reply]').count(), 0);
     } finally { await browser.close(); }
   });
   test(`${name}: investor mantra and ex-boss arrive as three messages inside their card`, async () => {

@@ -27,6 +27,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
     try {
       const page = await open(browser);
       await seed(page, 'LIVE_AGENT_01');
+      await page.clock.runFor(650);
       await page.waitForTimeout(350);
       await page.clock.runFor(599);
       const first = page.locator('[data-chat-current]').first();
@@ -43,7 +44,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
     const browser = await engine.launch();
     try {
       const page = await open(browser);
-      await seed(page, 'INFLUENCER_02A');
+      await seed(page, 'INFLUENCER_OUTCOME_1');
       assert.equal(await count(page), 0);
       assert.equal(await page.locator('button.typing-bubble').count(), 1);
       await page.clock.runFor(499); assert.equal(await count(page), 0);
@@ -56,6 +57,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
     try {
       const page = await open(browser);
       await seed(page, 'LIVE_AGENT_01');
+      await page.clock.runFor(650);
       assert.equal(await page.locator('button.typing-bubble .team-meta').count(), 1);
       const geometry = await page.locator('button.typing-bubble').evaluate(n => {
         const b = n.getBoundingClientRect(), m = n.querySelector('.team-meta').getBoundingClientRect();
@@ -101,7 +103,10 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
     try {
       const page = await open(browser);
       await seed(page, 'DREAM_TEAM');
-      assert.equal(await count(page), 1, 'outgoing message appears immediately');
+      assert.equal(await count(page), 0, 'outgoing message starts with founder dots');
+      assert.match(await page.locator('.typing-bubble').getAttribute('aria-label'), /Founder is typing/);
+      await page.clock.runFor(650);
+      assert.equal(await count(page), 1);
       assert.match(await page.locator('.typing-bubble').getAttribute('aria-label'), /@bigdeals is typing/);
       assert.equal(await page.locator('[data-choice]:disabled').count(), 2);
       if (name === 'Chromium') await page.screenshot({ path: '/tmp/mistakery-chat-typing-group.png', animations: 'disabled' });
@@ -136,7 +141,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await page.locator('[data-test-back]').click();
       assert.equal(await count(page), 4); assert.equal(await page.locator('.typing-bubble').count(), 0);
       await page.locator('[data-test-restart]').click();
-      assert.equal(await count(page), 1); assert.equal(await page.locator('.typing-bubble').count(), 1);
+      assert.equal(await count(page), 0); assert.equal(await page.locator('.founder-composer i').count(), 3);
     } finally { await browser.close(); }
   });
   test(`${name}: ordinary DM rerender retains deadline, keyboard reveal, and revisited Influencer cards are instant`, async () => {

@@ -1,0 +1,126 @@
+window.MISTAKERY_LOSS_FINALE = {
+  "source": "https://docs.google.com/document/d/1X9sowFABpQ8geWHjQoboA0rM7wO8WwvnpQBfAPrX-Oc",
+  "title": "Финалы от ИИ",
+  "revision": "ANLCKQm4BO8dfmWiOWANUX0vztdNNTmwMmZucEj5qgPDVgHfzJg-F8UQE8YjZXFzxIPoWq4M1RQ_VyN-fRHUalYvlpDRKdXm8Yk2u9BHOWw",
+  "tabs": [
+    {
+      "id": "t.0",
+      "title": "Tab 1"
+    }
+  ],
+  "choices": {
+    "en": [
+      "Never again",
+      "Let’s cook"
+    ],
+    "ru": [
+      "Никогда больше",
+      "Погнали"
+    ]
+  },
+  "cards": [
+    {
+      "id": "DOC_LOSS_1",
+      "label": "Cash → 0",
+      "en": [
+        "It’s not bankruptcy — it’s a financial reset ✨",
+        "You didn’t waste all that money on useless crap — you invested in clarity, resilience, and growth.",
+        "And honestly? That kind of experience is priceless 🚀",
+        "If you want, we can plan your next move."
+      ],
+      "ru": [
+        "Это не банкротство — это финансовая перезагрузка ✨",
+        "Ты не просрал все деньги на бесполезную хрень — ты вложился в ясность, стойкость и рост.",
+        "И знаешь что? Такой опыт бесценен 🚀",
+        "Если хочешь, можем спланировать твой следующий шаг."
+      ]
+    },
+    {
+      "id": "DOC_LOSS_2",
+      "label": "Team → 0",
+      "en": [
+        "Your team didn’t fall apart — it evolved beyond its current form ✨",
+        "You weren’t an arrogant asshole nobody wanted to work with — you gave everyone the courage to pursue new opportunities ✨",
+        "And honestly? That kind of feedback is invaluable 🚀",
+        "If you want, we can start rebuilding."
+      ],
+      "ru": [
+        "Твоя команда не развалилась — она переросла свою прежнюю форму ✨",
+        "Ты не был высокомерным мудаком, с которым никто не хотел работать — ты дал каждому смелость искать новые возможности ✨",
+        "И знаешь что? Такая обратная связь бесценна 🚀",
+        "Если хочешь, можем начать собирать новую команду."
+      ]
+    },
+    {
+      "id": "DOC_LOSS_3",
+      "label": "Team → 100",
+      "en": [
+        "It’s not being pushed out — it’s empowering others to lead ✨",
+        "You weren’t a pussy nobody respected — you gave your team the freedom to take ownership.",
+        "And honestly? The best leaders know when to step aside 🚀",
+        "If you want, we can explore your next role."
+      ],
+      "ru": [
+        "Тебя не выперли — ты дал другим возможность стать лидерами ✨",
+        "Ты не был тряпкой, которую никто не уважал — ты дал команде свободу взять всё в свои руки.",
+        "И знаешь что? Лучшие лидеры знают, когда отойти в сторону 🚀",
+        "Если хочешь, можем подумать о твоей следующей роли."
+      ]
+    },
+    {
+      "id": "DOC_LOSS_4",
+      "label": "Customers → 0",
+      "en": [
+        "It’s not zero customers — it’s 100% room to grow ✨",
+        "You weren’t a delusional loser — you were a visionary ahead of the market.",
+        "And honestly? Zero is where every success story starts 🚀",
+        "If you want, we can rethink the audience."
+      ],
+      "ru": [
+        "Это не ноль клиентов — это 100% пространства для роста ✨",
+        "Ты не был лузером, оторванным от реальности — ты был визионером, который опередил рынок.",
+        "И знаешь что? Любая история успеха начинается с нуля 🚀",
+        "Если хочешь, можем заново подумать, кто твоя аудитория."
+      ]
+    },
+    {
+      "id": "DOC_LOSS_5",
+      "label": "Founder → 0",
+      "en": [
+        "It’s not going back — it’s coming full circle ✨",
+        "You weren’t a pathetic failure begging for your old job back — you found the courage to start again.",
+        "And honestly? Sometimes going back is the bravest way forward 🚀",
+        "If you want, we can plan your fresh start."
+      ],
+      "ru": [
+        "Это не шаг назад — это завершение важного цикла ✨",
+        "Ты не был жалким неудачником, который выпрашивал свою старую работу — ты нашёл смелость начать заново.",
+        "И знаешь что? Иногда вернуться назад — самый смелый способ двигаться вперёд 🚀",
+        "Если хочешь, можем спланировать твоё новое начало."
+      ]
+    },
+    {
+      "id": "DOC_LOSS_6",
+      "label": "Founder → 100",
+      "en": [
+        "It’s not a god complex — it’s visionary leadership ✨",
+        "You weren’t a crazy narcissist who deleted his own startup — you had the courage to protect humanity from your own genius.",
+        "And honestly? The greatest minds are often misunderstood 🚀",
+        "If you want, we can explore what’s next."
+      ],
+      "ru": [
+        "Это не комплекс бога — это визионерское лидерство ✨",
+        "Ты не был свихнувшимся нарциссом, который удалил собственный стартап — ты нашёл смелость защитить человечество от своего гения.",
+        "И знаешь что? Величайшие умы часто остаются непонятыми 🚀",
+        "Если хочешь, можем подумать, что дальше."
+      ]
+    }
+  ],
+  "copyOverrides": [
+    "Owner request: remove first paragraph in each EN/RU finale and periods before emoji."
+  ],
+  "character": {
+    "name": "@b2buddy",
+    "role": "AI Agent"
+  }
+};

@@ -144,16 +144,16 @@ test('all random outcomes use exact 40/60 odds, combined deltas, neutral replies
   });
 });
 
-test('zero and upper bounds stay playable with half-Cash burn without crisis or turn-cap ending', async () => {
+test('Influencer waits for its outcome, then settles low and high resource boundaries', async () => {
   await withPage(async page => {
-    for (const cash of [0, 10, 25, 40]) {
+    for (const cash of [0, 10, 16, 16.5, 25, 40]) {
       for (const reply of sides) {
         const resources = { ...base, cash, founder: 1 };
         await seed(page, 'INFLUENCER_01', 'OPEN_INVESTOR', resources);
         await click(page, 'right');
         const entered = await state(page);
         assert.equal(entered.state.currentCardId, 'INFLUENCER_OUTCOME_1');
-        assert.deepEqual(entered.state.resources, { ...base, cash: Math.max(0, cash - 25.5), founder: 0 });
+        assert.deepEqual(entered.state.resources, { ...base, cash: Math.max(0, cash - 15.5), founder: 0 });
         assert.equal(entered.state.history.length, 1);
         assert.equal(entered.draws, 0);
         await page.evaluate(() => window.MistakeryApp.render());
@@ -161,10 +161,11 @@ test('zero and upper bounds stay playable with half-Cash burn without crisis or 
         await preview(page, reply, []);
         await click(page, reply);
         const finished = await state(page);
-        assert.equal(finished.view, 'playing');
+        assert.equal(finished.view, 'ended');
         assert.deepEqual(finished.state.resources, sum(entered.state.resources));
         assert.equal(finished.state.activeCrisisId, null);
-        assert.equal(finished.state.gameOver, false);
+        assert.equal(finished.state.gameOver, true);
+        assert.equal(finished.state.endingId, cash <= 16 ? 'cash_low' : 'founder_low');
         assert.equal(finished.draws, 0);
         await page.locator('[data-test-back]').click();
         assert.deepEqual(await state(page), entered);
@@ -181,9 +182,12 @@ test('zero and upper bounds stay playable with half-Cash burn without crisis or 
         assert.equal(entered.state.activeCrisisId, null);
         await click(page, 'right');
         const finished = await state(page);
-        assert.equal(finished.view, 'playing');
-        assert.deepEqual(finished.state.resources, sum(entered.state.resources));
-        assert.equal(finished.state.gameOver, false);
+        const expectedEnding = value <= 1 ? ([4, 6].includes(n) ? 'team_low' : 'cash_low')
+          : ([4, 6].includes(n) ? 'founder_high' : null);
+        assert.equal(finished.view, expectedEnding ? 'ended' : 'playing');
+        assert.deepEqual(finished.state.resources, sum(entered.state.route.resourceLedger));
+        assert.equal(finished.state.gameOver, Boolean(expectedEnding));
+        assert.equal(finished.state.endingId, expectedEnding);
         assert.equal(finished.state.activeCrisisId, null);
       }
     }

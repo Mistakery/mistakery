@@ -1,0 +1,3877 @@
+{
+  "readDate": "2026-10-05",
+  "entries": [
+    {
+      "id": "LIVE_AGENT_01",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 4,
+      "end": 4,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_01",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 7,
+      "end": 7,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_01",
+      "field": "messages.2.text",
+      "doc": 2,
+      "start": 9,
+      "end": 10,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_01",
+      "field": "messages.3.text",
+      "doc": 2,
+      "start": 12,
+      "end": 13,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_01",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 15,
+      "end": 23,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_01",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 26,
+      "end": 26,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_01",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 27,
+      "end": 27,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_01",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 28,
+      "end": 28,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_01",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 29,
+      "end": 29,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 33,
+      "end": 35,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 38,
+      "end": 39,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "messages.2.text",
+      "doc": 2,
+      "start": 42,
+      "end": 42,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 46,
+      "end": 54,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 56,
+      "end": 56,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 57,
+      "end": 57,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 58,
+      "end": 58,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_02",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 59,
+      "end": 59,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 63,
+      "end": 63,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 64,
+      "end": 64,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "messages.2.text",
+      "doc": 2,
+      "start": 65,
+      "end": 65,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "messages.3.text",
+      "doc": 2,
+      "start": 66,
+      "end": 66,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 69,
+      "end": 72,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 74,
+      "end": 74,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 75,
+      "end": 75,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 76,
+      "end": 76,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_03",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 77,
+      "end": 77,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_04",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 82,
+      "end": 82,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_04",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 83,
+      "end": 83,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_04",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 86,
+      "end": 87,
+      "kind": "text",
+      "ranges": [
+        [
+          80,
+          80
+        ],
+        [
+          86,
+          87
+        ]
+      ]
+    },
+    {
+      "id": "LIVE_AGENT_04",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 89,
+      "end": 89,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_04",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 90,
+      "end": 90,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_04",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 91,
+      "end": 91,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_04",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 92,
+      "end": 92,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_04B",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 95,
+      "end": 96,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_04B",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 97,
+      "end": 98,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_04B",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 100,
+      "end": 103,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_04B",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 105,
+      "end": 105,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_04B",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 106,
+      "end": 106,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_04B",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 107,
+      "end": 107,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_04B",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 108,
+      "end": 108,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 113,
+      "end": 114,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 116,
+      "end": 117,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "messages.2.text",
+      "doc": 2,
+      "start": 119,
+      "end": 119,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "messages.3.text",
+      "doc": 2,
+      "start": 120,
+      "end": 121,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 125,
+      "end": 130,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 132,
+      "end": 132,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 133,
+      "end": 133,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 134,
+      "end": 134,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_05",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 135,
+      "end": 135,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_06",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 139,
+      "end": 140,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_06",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 141,
+      "end": 142,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_06",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 145,
+      "end": 149,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_06",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 151,
+      "end": 151,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_06",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 152,
+      "end": 152,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_06",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 153,
+      "end": 153,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_06",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 154,
+      "end": 154,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_07",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 158,
+      "end": 158,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_07",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 160,
+      "end": 160,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_07",
+      "field": "messages.2.text",
+      "doc": 2,
+      "start": 161,
+      "end": 161,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_07",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 165,
+      "end": 167,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_07",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 170,
+      "end": 170,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_07",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 171,
+      "end": 171,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_07",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 172,
+      "end": 172,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_07",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 173,
+      "end": 173,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_07B",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 176,
+      "end": 177,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_07B",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 178,
+      "end": 178,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_07B",
+      "field": "messages.2.text",
+      "doc": 2,
+      "start": 180,
+      "end": 181,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_07B",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 183,
+      "end": 188,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_07B",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 191,
+      "end": 191,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_07B",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 192,
+      "end": 192,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_07B",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 193,
+      "end": 193,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_07B",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 196,
+      "end": 196,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_08",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 202,
+      "end": 202,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_08",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 203,
+      "end": 203,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_08",
+      "field": "messages.2.text",
+      "doc": 2,
+      "start": 206,
+      "end": 207,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_08",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 210,
+      "end": 216,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_08",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 219,
+      "end": 219,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_08",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 222,
+      "end": 222,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_08",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 223,
+      "end": 223,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_08",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 226,
+      "end": 226,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_0",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 270,
+      "end": 270,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_0",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 271,
+      "end": 271,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_0",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 274,
+      "end": 274,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_0",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 275,
+      "end": 275,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_0",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 276,
+      "end": 276,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_0",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 277,
+      "end": 277,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 287,
+      "end": 288,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 290,
+      "end": 291,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "messages.2.text",
+      "doc": 2,
+      "start": 294,
+      "end": 294,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "messages.3.text",
+      "doc": 2,
+      "start": 297,
+      "end": 298,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 302,
+      "end": 313,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 316,
+      "end": 316,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 317,
+      "end": 317,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 318,
+      "end": 318,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_1",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 319,
+      "end": 319,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_2",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 326,
+      "end": 328,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_2",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 330,
+      "end": 330,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_2",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 334,
+      "end": 339,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_2",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 343,
+      "end": 343,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_2",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 344,
+      "end": 344,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_2",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 345,
+      "end": 345,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_2",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 346,
+      "end": 346,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 354,
+      "end": 354,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 357,
+      "end": 357,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "messages.2.text",
+      "doc": 2,
+      "start": 360,
+      "end": 361,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 363,
+      "end": 371,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 374,
+      "end": 374,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 375,
+      "end": 375,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 376,
+      "end": 376,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 377,
+      "end": 377,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_4",
+      "field": "messages.0.text",
+      "doc": 2,
+      "start": 388,
+      "end": 389,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_4",
+      "field": "messages.1.text",
+      "doc": 2,
+      "start": 391,
+      "end": 392,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_4",
+      "field": "ru.text",
+      "doc": 2,
+      "start": 396,
+      "end": 402,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_4",
+      "field": "choices.left.label",
+      "doc": 2,
+      "start": 405,
+      "end": 405,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_4",
+      "field": "ru.left",
+      "doc": 2,
+      "start": 406,
+      "end": 406,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_4",
+      "field": "choices.right.label",
+      "doc": 2,
+      "start": 407,
+      "end": 407,
+      "kind": "choice"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_4",
+      "field": "ru.right",
+      "doc": 2,
+      "start": 408,
+      "end": 408,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_01",
+      "field": "messages.0.text",
+      "doc": 3,
+      "start": 5,
+      "end": 6,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_01",
+      "field": "messages.1.text",
+      "doc": 3,
+      "start": 8,
+      "end": 8,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_01",
+      "field": "messages.2.text",
+      "doc": 3,
+      "start": 9,
+      "end": 9,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_01",
+      "field": "messages.3.text",
+      "doc": 3,
+      "start": 11,
+      "end": 11,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_01",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 15,
+      "end": 22,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_01",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 24,
+      "end": 24,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_01",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 25,
+      "end": 25,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_01",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 26,
+      "end": 26,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_01",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 27,
+      "end": 27,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_02",
+      "field": "text",
+      "doc": 3,
+      "start": 31,
+      "end": 37,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_02",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 41,
+      "end": 49,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_02",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 51,
+      "end": 51,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_02",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 52,
+      "end": 52,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_02",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 53,
+      "end": 53,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_02",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 54,
+      "end": 54,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_02A",
+      "field": "text",
+      "doc": 3,
+      "start": 57,
+      "end": 63,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_02A",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 67,
+      "end": 71,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_02A",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 74,
+      "end": 74,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_02A",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 75,
+      "end": 75,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_02A",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 76,
+      "end": 76,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_02A",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 77,
+      "end": 77,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "text",
+      "doc": 3,
+      "start": 80,
+      "end": 86,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 90,
+      "end": 96,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 99,
+      "end": 99,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 100,
+      "end": 100,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 101,
+      "end": 101,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 102,
+      "end": 102,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_04",
+      "field": "text",
+      "doc": 3,
+      "start": 105,
+      "end": 109,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_04",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 113,
+      "end": 117,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_04",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 119,
+      "end": 119,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_04",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 120,
+      "end": 120,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_04",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 121,
+      "end": 121,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_04",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 122,
+      "end": 122,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "text",
+      "doc": 3,
+      "start": 125,
+      "end": 130,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 134,
+      "end": 138,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 141,
+      "end": 141,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 142,
+      "end": 142,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 143,
+      "end": 143,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 144,
+      "end": 144,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "text",
+      "doc": 3,
+      "start": 154,
+      "end": 154,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 158,
+      "end": 159,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 162,
+      "end": 162,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 163,
+      "end": 163,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 164,
+      "end": 164,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 165,
+      "end": 165,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "text",
+      "doc": 3,
+      "start": 178,
+      "end": 179,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 183,
+      "end": 186,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 189,
+      "end": 189,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 190,
+      "end": 190,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 191,
+      "end": 191,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 192,
+      "end": 192,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_1",
+      "field": "text",
+      "doc": 3,
+      "start": 257,
+      "end": 258,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_1",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 261,
+      "end": 262,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_1",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 264,
+      "end": 264,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_1",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 265,
+      "end": 265,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_1",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 266,
+      "end": 266,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_1",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 267,
+      "end": 267,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_6",
+      "field": "text",
+      "doc": 3,
+      "start": 362,
+      "end": 364,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_6",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 367,
+      "end": 367,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_6",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 369,
+      "end": 369,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_6",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 370,
+      "end": 370,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_6",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 371,
+      "end": 371,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_6",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 372,
+      "end": 372,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "contextualChoices.INFLUENCER_06.left.label",
+      "doc": 3,
+      "start": 146,
+      "end": 146,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "ru.contextual.INFLUENCER_06.left",
+      "doc": 3,
+      "start": 147,
+      "end": 147,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "contextualChoices.INFLUENCER_06.right.label",
+      "doc": 3,
+      "start": 148,
+      "end": 148,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_05",
+      "field": "ru.contextual.INFLUENCER_06.right",
+      "doc": 3,
+      "start": 149,
+      "end": 149,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "contextualChoices.INFLUENCER_05.left.label",
+      "doc": 3,
+      "start": 168,
+      "end": 168,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "ru.contextual.INFLUENCER_05.left",
+      "doc": 3,
+      "start": 169,
+      "end": 169,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "contextualChoices.INFLUENCER_05.right.label",
+      "doc": 3,
+      "start": 170,
+      "end": 170,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "ru.contextual.INFLUENCER_05.right",
+      "doc": 3,
+      "start": 171,
+      "end": 171,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_08",
+      "field": "messages.0.text",
+      "doc": 3,
+      "start": 196,
+      "end": 196,
+      "kind": "mediaEmotion"
+    },
+    {
+      "id": "INFLUENCER_08",
+      "field": "messages.1.text",
+      "doc": 3,
+      "start": 199,
+      "end": 200,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_08",
+      "field": "messages.2.text",
+      "doc": 3,
+      "start": 203,
+      "end": 203,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_08",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 207,
+      "end": 214,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_08",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 217,
+      "end": 217,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_08",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 218,
+      "end": 218,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_08",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 219,
+      "end": 219,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_08",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 220,
+      "end": 220,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_06",
+      "field": "image.caption",
+      "doc": 3,
+      "start": 153,
+      "end": 153,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "image.caption",
+      "doc": 3,
+      "start": 176,
+      "end": 176,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "messages.0.image.caption",
+      "doc": 3,
+      "start": 274,
+      "end": 274,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "messages.1.text",
+      "doc": 3,
+      "start": 275,
+      "end": 275,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "messages.2.text",
+      "doc": 3,
+      "start": 278,
+      "end": 279,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 283,
+      "end": 290,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 293,
+      "end": 293,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 294,
+      "end": 294,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 295,
+      "end": 295,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_2",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 296,
+      "end": 296,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "messages.0.image.caption",
+      "doc": 3,
+      "start": 304,
+      "end": 304,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "messages.1.text",
+      "doc": 3,
+      "start": 306,
+      "end": 306,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 310,
+      "end": 313,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 316,
+      "end": 316,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 317,
+      "end": 317,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 318,
+      "end": 318,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_3",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 319,
+      "end": 319,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_4",
+      "field": "messages.0.text",
+      "doc": 3,
+      "start": 325,
+      "end": 325,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_4",
+      "field": "messages.1.text",
+      "doc": 3,
+      "start": 327,
+      "end": 327,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_4",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 330,
+      "end": 330,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_4",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 332,
+      "end": 332,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_4",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 333,
+      "end": 333,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_4",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 334,
+      "end": 334,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_4",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 335,
+      "end": 335,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_5",
+      "field": "messages.0.text",
+      "doc": 3,
+      "start": 342,
+      "end": 342,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_5",
+      "field": "messages.1.text",
+      "doc": 3,
+      "start": 345,
+      "end": 345,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_5",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 349,
+      "end": 351,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_5",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 354,
+      "end": 354,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_5",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 355,
+      "end": 355,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_5",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 356,
+      "end": 356,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_5",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 357,
+      "end": 357,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_7",
+      "field": "messages.0.text",
+      "doc": 3,
+      "start": 379,
+      "end": 380,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_7",
+      "field": "messages.1.text",
+      "doc": 3,
+      "start": 383,
+      "end": 384,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_7",
+      "field": "ru.text",
+      "doc": 3,
+      "start": 387,
+      "end": 393,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_7",
+      "field": "choices.left.label",
+      "doc": 3,
+      "start": 396,
+      "end": 396,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_7",
+      "field": "ru.left",
+      "doc": 3,
+      "start": 397,
+      "end": 397,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_7",
+      "field": "choices.right.label",
+      "doc": 3,
+      "start": 398,
+      "end": 398,
+      "kind": "choice"
+    },
+    {
+      "id": "INFLUENCER_OUTCOME_7",
+      "field": "ru.right",
+      "doc": 3,
+      "start": 399,
+      "end": 399,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_INVITE",
+      "field": "text",
+      "doc": 1,
+      "start": 3,
+      "end": 5,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_INVITE",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 6,
+      "end": 8,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_INVITE",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 10,
+      "end": 10,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_INVITE",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 11,
+      "end": 11,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_INVITE",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 13,
+      "end": 13,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_INVITE",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 14,
+      "end": 14,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "messages.0.text",
+      "doc": 1,
+      "start": 17,
+      "end": 18,
+      "kind": "text"
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "messages.1.text",
+      "doc": 1,
+      "start": 21,
+      "end": 23,
+      "kind": "text"
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "messages.2.text",
+      "doc": 1,
+      "start": 28,
+      "end": 29,
+      "kind": "text"
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 19,
+      "end": 31,
+      "kind": "text",
+      "ranges": [
+        [
+          19,
+          19
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          24,
+          26
+        ],
+        [
+          27,
+          27
+        ],
+        [
+          30,
+          31
+        ]
+      ]
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 33,
+      "end": 33,
+      "kind": "choice"
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 34,
+      "end": 34,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 36,
+      "end": 36,
+      "kind": "choice"
+    },
+    {
+      "id": "DREAM_TEAM",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 37,
+      "end": 37,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "IRL_PADEL_01",
+      "field": "text",
+      "doc": 1,
+      "start": 41,
+      "end": 43,
+      "kind": "text"
+    },
+    {
+      "id": "IRL_PADEL_01",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 44,
+      "end": 45,
+      "kind": "text"
+    },
+    {
+      "id": "IRL_PADEL_01",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 47,
+      "end": 47,
+      "kind": "choice"
+    },
+    {
+      "id": "IRL_PADEL_01",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 48,
+      "end": 48,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "IRL_PADEL_01",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 50,
+      "end": 50,
+      "kind": "choice"
+    },
+    {
+      "id": "IRL_PADEL_01",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 51,
+      "end": 51,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "IRL_PADEL_03B",
+      "field": "text",
+      "doc": 1,
+      "start": 57,
+      "end": 58,
+      "kind": "text"
+    },
+    {
+      "id": "IRL_PADEL_03B",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 60,
+      "end": 61,
+      "kind": "text"
+    },
+    {
+      "id": "IRL_PADEL_03B",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 63,
+      "end": 63,
+      "kind": "choice"
+    },
+    {
+      "id": "IRL_PADEL_03B",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 64,
+      "end": 64,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "IRL_PADEL_03B",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 66,
+      "end": 66,
+      "kind": "choice"
+    },
+    {
+      "id": "IRL_PADEL_03B",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 67,
+      "end": 67,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "IRL_PADEL_04",
+      "field": "text",
+      "doc": 1,
+      "start": 72,
+      "end": 73,
+      "kind": "text"
+    },
+    {
+      "id": "IRL_PADEL_04",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 74,
+      "end": 75,
+      "kind": "text"
+    },
+    {
+      "id": "IRL_PADEL_04",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 77,
+      "end": 77,
+      "kind": "choice"
+    },
+    {
+      "id": "IRL_PADEL_04",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 78,
+      "end": 78,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "IRL_PADEL_04",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 80,
+      "end": 80,
+      "kind": "choice"
+    },
+    {
+      "id": "IRL_PADEL_04",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 81,
+      "end": 81,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "IRL_PADEL_05",
+      "field": "text",
+      "doc": 1,
+      "start": 86,
+      "end": 87,
+      "kind": "text"
+    },
+    {
+      "id": "IRL_PADEL_05",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 88,
+      "end": 89,
+      "kind": "text"
+    },
+    {
+      "id": "IRL_PADEL_05",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 91,
+      "end": 91,
+      "kind": "choice"
+    },
+    {
+      "id": "IRL_PADEL_05",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 92,
+      "end": 92,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "IRL_PADEL_05",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 94,
+      "end": 94,
+      "kind": "choice"
+    },
+    {
+      "id": "IRL_PADEL_05",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 95,
+      "end": 95,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "IRL_PADEL_06",
+      "field": "text",
+      "doc": 1,
+      "start": 101,
+      "end": 102,
+      "kind": "text"
+    },
+    {
+      "id": "IRL_PADEL_06",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 104,
+      "end": 105,
+      "kind": "text"
+    },
+    {
+      "id": "IRL_PADEL_06",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 107,
+      "end": 107,
+      "kind": "choice"
+    },
+    {
+      "id": "IRL_PADEL_06",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 108,
+      "end": 108,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "IRL_PADEL_06",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 110,
+      "end": 110,
+      "kind": "choice"
+    },
+    {
+      "id": "IRL_PADEL_06",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 111,
+      "end": 111,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_0",
+      "field": "text",
+      "doc": 1,
+      "start": 141,
+      "end": 143,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_0",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 145,
+      "end": 147,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_0",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 149,
+      "end": 149,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_0",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 150,
+      "end": 150,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_0",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 151,
+      "end": 151,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_0",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 151,
+      "end": 151,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_1",
+      "field": "text",
+      "doc": 1,
+      "start": 242,
+      "end": 244,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_1",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 245,
+      "end": 247,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_1",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 262,
+      "end": 262,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_1",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 263,
+      "end": 263,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_1",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 264,
+      "end": 264,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_1",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 265,
+      "end": 265,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_2",
+      "field": "text",
+      "doc": 1,
+      "start": 271,
+      "end": 273,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_2",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 274,
+      "end": 276,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_2",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 278,
+      "end": 278,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_2",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 279,
+      "end": 279,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_2",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 280,
+      "end": 280,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_2",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 281,
+      "end": 281,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_3",
+      "field": "text",
+      "doc": 1,
+      "start": 190,
+      "end": 192,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_3",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 193,
+      "end": 195,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_3",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 206,
+      "end": 206,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_3",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 207,
+      "end": 207,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_3",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 208,
+      "end": 208,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_3",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 209,
+      "end": 209,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_4",
+      "field": "text",
+      "doc": 1,
+      "start": 215,
+      "end": 217,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_4",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 218,
+      "end": 220,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_4",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 232,
+      "end": 232,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_4",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 233,
+      "end": 233,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_4",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 234,
+      "end": 234,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_4",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 235,
+      "end": 235,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_5",
+      "field": "text",
+      "doc": 1,
+      "start": 318,
+      "end": 320,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_5",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 321,
+      "end": 323,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_5",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 325,
+      "end": 325,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_5",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 326,
+      "end": 326,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_5",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 327,
+      "end": 327,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_5",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 328,
+      "end": 328,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_6",
+      "field": "text",
+      "doc": 1,
+      "start": 287,
+      "end": 289,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_6",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 290,
+      "end": 292,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_6",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 309,
+      "end": 309,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_6",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 310,
+      "end": 310,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_6",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 311,
+      "end": 311,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_6",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 312,
+      "end": 312,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_7",
+      "field": "text",
+      "doc": 1,
+      "start": 158,
+      "end": 160,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_7",
+      "field": "ru.text",
+      "doc": 1,
+      "start": 162,
+      "end": 164,
+      "kind": "text"
+    },
+    {
+      "id": "PADEL_OUTCOME_7",
+      "field": "choices.left.label",
+      "doc": 1,
+      "start": 181,
+      "end": 181,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_7",
+      "field": "ru.left",
+      "doc": 1,
+      "start": 182,
+      "end": 182,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "PADEL_OUTCOME_7",
+      "field": "choices.right.label",
+      "doc": 1,
+      "start": 183,
+      "end": 183,
+      "kind": "choice"
+    },
+    {
+      "id": "PADEL_OUTCOME_7",
+      "field": "ru.right",
+      "doc": 1,
+      "start": 184,
+      "end": 184,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_PAYROLL_1",
+      "field": "messages.0.text",
+      "doc": 4,
+      "start": 7,
+      "end": 9,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_PAYROLL_1",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 10,
+      "end": 12,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_PAYROLL_1",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 13,
+      "end": 13,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_PAYROLL_1",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 14,
+      "end": 14,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_PAYROLL_1",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 15,
+      "end": 15,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_PAYROLL_1",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 16,
+      "end": 16,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_PAYROLL_2",
+      "field": "messages.0.text",
+      "doc": 4,
+      "start": 18,
+      "end": 19,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_PAYROLL_2",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 20,
+      "end": 21,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_PAYROLL_2",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 22,
+      "end": 22,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_PAYROLL_2",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 23,
+      "end": 23,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_PAYROLL_2",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 24,
+      "end": 24,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_PAYROLL_2",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 25,
+      "end": 25,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_MOM_CALL_1",
+      "field": "text",
+      "doc": 4,
+      "start": 29,
+      "end": 30,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_MOM_CALL_1",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 31,
+      "end": 32,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_MOM_CALL_1",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 33,
+      "end": 33,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_MOM_CALL_1",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 34,
+      "end": 34,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_MOM_CALL_1",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 35,
+      "end": 35,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_MOM_CALL_1",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 36,
+      "end": 36,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_MOM_CALL_2",
+      "field": "text",
+      "doc": 4,
+      "start": 38,
+      "end": 39,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_MOM_CALL_2",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 40,
+      "end": 40,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_MOM_CALL_2",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 41,
+      "end": 41,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_MOM_CALL_2",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 42,
+      "end": 42,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_MOM_CALL_2",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 43,
+      "end": 43,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_MOM_CALL_2",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 43,
+      "end": 43,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_COMA_1",
+      "field": "text",
+      "doc": 4,
+      "start": 47,
+      "end": 49,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_COMA_1",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 50,
+      "end": 52,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_COMA_1",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 53,
+      "end": 53,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_COMA_1",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 54,
+      "end": 54,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_COMA_1",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 55,
+      "end": 55,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_COMA_1",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 56,
+      "end": 56,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_COMA_2A",
+      "field": "text",
+      "doc": 4,
+      "start": 58,
+      "end": 59,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_COMA_2A",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 60,
+      "end": 61,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_COMA_2A",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 62,
+      "end": 62,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_COMA_2A",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 63,
+      "end": 63,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_COMA_2A",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 64,
+      "end": 64,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_COMA_2A",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 65,
+      "end": 65,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_COMA_2B",
+      "field": "text",
+      "doc": 4,
+      "start": 67,
+      "end": 69,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_COMA_2B",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 70,
+      "end": 72,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_COMA_2B",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 73,
+      "end": 73,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_COMA_2B",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 74,
+      "end": 74,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_COMA_2B",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 75,
+      "end": 75,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_COMA_2B",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 76,
+      "end": 76,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_SALES_1",
+      "field": "text",
+      "doc": 4,
+      "start": 80,
+      "end": 81,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_SALES_1",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 82,
+      "end": 82,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_SALES_1",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 83,
+      "end": 83,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_SALES_1",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 84,
+      "end": 84,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_SALES_1",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 85,
+      "end": 85,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_SALES_1",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 86,
+      "end": 86,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_SALES_2",
+      "field": "text",
+      "doc": 4,
+      "start": 88,
+      "end": 90,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_SALES_2",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 91,
+      "end": 93,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_SALES_2",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 94,
+      "end": 94,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_SALES_2",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 95,
+      "end": 95,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_DOMAIN_1",
+      "field": "text",
+      "doc": 4,
+      "start": 99,
+      "end": 102,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_DOMAIN_1",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 103,
+      "end": 106,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_DOMAIN_1",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 107,
+      "end": 107,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_DOMAIN_1",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 108,
+      "end": 108,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_DOMAIN_1",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 109,
+      "end": 109,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_DOMAIN_1",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 110,
+      "end": 110,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_DOMAIN_2",
+      "field": "text",
+      "doc": 4,
+      "start": 112,
+      "end": 114,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_DOMAIN_2",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 115,
+      "end": 115,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_DOMAIN_2",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 116,
+      "end": 116,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_VIDEO_1",
+      "field": "text",
+      "doc": 4,
+      "start": 120,
+      "end": 121,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_VIDEO_1",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 122,
+      "end": 122,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_VIDEO_1",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 123,
+      "end": 123,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_VIDEO_1",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 124,
+      "end": 124,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_VIDEO_1",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 125,
+      "end": 125,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_VIDEO_1",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 126,
+      "end": 126,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_VIDEO_2",
+      "field": "text",
+      "doc": 4,
+      "start": 129,
+      "end": 132,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_VIDEO_2",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 128,
+      "end": 138,
+      "kind": "text",
+      "ranges": [
+        [
+          128,
+          128
+        ],
+        [
+          135,
+          138
+        ]
+      ]
+    },
+    {
+      "id": "FILL_VIDEO_2",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 139,
+      "end": 139,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_VIDEO_2",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 140,
+      "end": 140,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_VIDEO_2",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 141,
+      "end": 141,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_VIDEO_2",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 142,
+      "end": 142,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_POLICE_1",
+      "field": "text",
+      "doc": 4,
+      "start": 147,
+      "end": 149,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_POLICE_1",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 150,
+      "end": 152,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_POLICE_1",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 153,
+      "end": 153,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_POLICE_1",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 154,
+      "end": 154,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_POLICE_1",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 155,
+      "end": 155,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_POLICE_1",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 156,
+      "end": 156,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_POLICE_2",
+      "field": "text",
+      "doc": 4,
+      "start": 158,
+      "end": 159,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_POLICE_2",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 160,
+      "end": 160,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_POLICE_2",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 161,
+      "end": 161,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_POLICE_2",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 162,
+      "end": 162,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_POLICE_2",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 163,
+      "end": 163,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_MOM_FLYERS",
+      "field": "text",
+      "doc": 4,
+      "start": 180,
+      "end": 181,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_MOM_FLYERS",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 183,
+      "end": 185,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_MOM_FLYERS",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 186,
+      "end": 186,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_MOM_FLYERS",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 186,
+      "end": 186,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_MOM_FLYERS",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 187,
+      "end": 187,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_MOM_FLYERS",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 187,
+      "end": 187,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_FRIDGE",
+      "field": "text",
+      "doc": 4,
+      "start": 190,
+      "end": 192,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_FRIDGE",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 193,
+      "end": 196,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_FRIDGE",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 197,
+      "end": 197,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_FRIDGE",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 198,
+      "end": 198,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_FRIDGE",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 199,
+      "end": 199,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_FRIDGE",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 200,
+      "end": 200,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_FONT",
+      "field": "text",
+      "doc": 4,
+      "start": 203,
+      "end": 205,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_FONT",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 207,
+      "end": 207,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_FONT",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 208,
+      "end": 208,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_FONT",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 209,
+      "end": 209,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_FONT",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 210,
+      "end": 210,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_FONT",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 211,
+      "end": 211,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_FIGHT",
+      "field": "text",
+      "doc": 4,
+      "start": 215,
+      "end": 215,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_FIGHT",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 216,
+      "end": 216,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_FIGHT",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 217,
+      "end": 217,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_FIGHT",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 218,
+      "end": 218,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_FIGHT",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 219,
+      "end": 219,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_FIGHT",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 220,
+      "end": 220,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_USER_WIFE",
+      "field": "text",
+      "doc": 4,
+      "start": 222,
+      "end": 224,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_USER_WIFE",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 226,
+      "end": 226,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_USER_WIFE",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 227,
+      "end": 227,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_USER_WIFE",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 228,
+      "end": 228,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_USER_WIFE",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 229,
+      "end": 229,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_USER_WIFE",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 230,
+      "end": 230,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_RIVAL",
+      "field": "text",
+      "doc": 4,
+      "start": 233,
+      "end": 234,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_RIVAL",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 236,
+      "end": 236,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_RIVAL",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 237,
+      "end": 237,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_RIVAL",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 238,
+      "end": 238,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_RIVAL",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 239,
+      "end": 239,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_RIVAL",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 240,
+      "end": 240,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_THERAPY",
+      "field": "text",
+      "doc": 4,
+      "start": 243,
+      "end": 247,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_THERAPY",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 248,
+      "end": 252,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_THERAPY",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 253,
+      "end": 253,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_THERAPY",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 254,
+      "end": 254,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_THERAPY",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 255,
+      "end": 255,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_THERAPY",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 256,
+      "end": 256,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_BLACK_SQUARE",
+      "field": "text",
+      "doc": 4,
+      "start": 259,
+      "end": 261,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_BLACK_SQUARE",
+      "field": "ru.text",
+      "doc": 4,
+      "start": 262,
+      "end": 264,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_BLACK_SQUARE",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 265,
+      "end": 265,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_BLACK_SQUARE",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 266,
+      "end": 266,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_BLACK_SQUARE",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 267,
+      "end": 267,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_BLACK_SQUARE",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 268,
+      "end": 268,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_MANTRA",
+      "field": "text",
+      "doc": 4,
+      "start": 271,
+      "end": 273,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_MANTRA",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 274,
+      "end": 274,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_MANTRA",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 275,
+      "end": 275,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_MANTRA",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 276,
+      "end": 276,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_MANTRA",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 277,
+      "end": 277,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "messages.0.text",
+      "doc": 4,
+      "start": 169,
+      "end": 170,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "messages.1.text",
+      "doc": 4,
+      "start": 173,
+      "end": 173,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "choices.left.label",
+      "doc": 4,
+      "start": 175,
+      "end": 175,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "ru.left",
+      "doc": 4,
+      "start": 175,
+      "end": 175,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "choices.right.label",
+      "doc": 4,
+      "start": 176,
+      "end": 176,
+      "kind": "choice"
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "ru.right",
+      "doc": 4,
+      "start": 177,
+      "end": 177,
+      "kind": "ruChoice"
+    },
+    {
+      "id": "FILL_AI_DEV",
+      "field": "messages.1.source",
+      "doc": 4,
+      "start": 172,
+      "end": 172,
+      "kind": "text"
+    },
+    {
+      "id": "IRL_PADEL_06",
+      "field": "score",
+      "doc": 1,
+      "start": 99,
+      "end": 99,
+      "kind": "score"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "messages.0.source",
+      "doc": 2,
+      "start": 353,
+      "end": 353,
+      "kind": "text"
+    },
+    {
+      "id": "LIVE_AGENT_OUTCOME_3",
+      "field": "messages.1.source",
+      "doc": 2,
+      "start": 356,
+      "end": 356,
+      "kind": "text"
+    }
+  ],
+  "translationGaps": [
+    [
+      "LIVE_AGENT_OUTCOME_0",
+      "ru.text"
+    ],
+    [
+      "FILL_DOMAIN_2",
+      "ru.text"
+    ],
+    [
+      "FILL_DOMAIN_2",
+      "ru.left"
+    ],
+    [
+      "FILL_DOMAIN_2",
+      "ru.right"
+    ],
+    [
+      "FILL_POLICE_2",
+      "ru.text"
+    ],
+    [
+      "FILL_MANTRA",
+      "ru.text"
+    ],
+    [
+      "FILL_AI_DEV",
+      "ru.text"
+    ],
+    [
+      "FILL_SALES_2",
+      "ru.left"
+    ],
+    [
+      "FILL_SALES_2",
+      "ru.right"
+    ]
+  ],
+  "unmappedCards": [
+    "OPEN_01",
+    "OPEN_02a",
+    "OPEN_02b",
+    "OPEN_BOSS",
+    "OPEN_DEV",
+    "OPEN_INVESTOR"
+  ]
+}
