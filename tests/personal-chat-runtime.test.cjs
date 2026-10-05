@@ -14,10 +14,10 @@ const css = read('style.css');
 const canonicalDeck = require('../cards.json');
 const bundledDeck = require('../cards.bundle.js');
 const failedChallengeImage = {
-  src: 'assets/ai-influencer-challenge-failed.webp',
+  src: 'assets/ai-influencer-challenge-finale.webp',
   alt: "I gave up: why even I couldn't save these losers — challenge finale",
-  width: 1200,
-  height: 567,
+  width: 1410,
+  height: 816,
 };
 
 function sha256(name) {
