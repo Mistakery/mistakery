@@ -329,7 +329,7 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
       mode: 'irl',
       source: '@iclosedai',
       score: 'YOU WON THE MATCH',
-      text: "Relax, boy. It was only a warm-up\nWatching you sweat and cheat for that win was painful\nHave fun begging for money!",
+      text: "Relax, it was only a warm-up\nYou killed yourself for that win, I almost called an ambulance\nBut hey, with that desperation, you'll definitely sell your AI wrapper to some sucker",
       labels: ["Please wait!", 'Learn to lose'],
     },
     2: {
@@ -364,7 +364,7 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
       mode: 'irl',
       source: '@iclosedai',
       score: 'YOU LOST THE MATCH',
-      text: "You lost, kid. Nice try\nKeep working hard, maybe one day I'll hire you to take out my trash\nAnd yes, forget about business",
+      text: "You lost, kid. Nice try\nHonestly, I'm used to working with much stronger partners\nKeep practicing if you really want to reach the big leagues",
       labels: ['Remember my name', 'Fine without you'],
     },
     7: {

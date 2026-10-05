@@ -1964,9 +1964,9 @@
 
 **EN**
 
-> Relax, boy. It was only a warm-up<br>
-> Watching you sweat and cheat for that win was painful<br>
-> Have fun begging for money!
+> Relax, it was only a warm-up<br>
+> You killed yourself for that win, I almost called an ambulance<br>
+> But hey, with that desperation, you'll definitely sell your AI wrapper to some sucker
 
 **RU**
 
@@ -2070,8 +2070,8 @@
 **EN**
 
 > You lost, kid. Nice try<br>
-> Keep working hard, maybe one day I'll hire you to take out my trash<br>
-> And yes, forget about business
+> Honestly, I'm used to working with much stronger partners<br>
+> Keep practicing if you really want to reach the big leagues
 
 **RU**
 

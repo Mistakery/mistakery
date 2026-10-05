@@ -1,6 +1,6 @@
 {
   "date": "2026-10-05",
-  "instruction": "Сохранить эмодзи прежней версии; не ставить точки в конце завершённых фраз и баблов, только между предложениями. Удалить Powerless against the truth (и RU-эквивалент), вернуть ASAP!!!. Вернуть прежнее разбиение на баблы, корпоративный DM с пересылками, @error404 без подчёркивания и убрать четыре добавленных подписи роликов. 2026-10-05: владелец заменил цитату INFLUENCER_03 на make me $1B app. make zero mistakes и попросил курсив; скриншот в INFLUENCER_08 заменён предоставленным владельцем, 😔 сохранён. Владелец уточнил: INFLUENCER_07 публикуется в общем Dream Team, автор всех трёх баблов @ai_evangelist, изображение/тексты/emoji/ответы сохранены.",
+  "instruction": "Сохранить эмодзи прежней версии; не ставить точки в конце завершённых фраз и баблов, только между предложениями. Удалить Powerless against the truth (и RU-эквивалент), вернуть ASAP!!!. Вернуть прежнее разбиение на баблы, корпоративный DM с пересылками, @error404 без подчёркивания и убрать четыре добавленных подписи роликов. 2026-10-05: владелец заменил цитату INFLUENCER_03 на make me $1B app. make zero mistakes и попросил курсив; скриншот в INFLUENCER_08 заменён предоставленным владельцем, 😔 сохранён. Владелец уточнил: INFLUENCER_07 публикуется в общем Dream Team, автор всех трёх баблов @ai_evangelist, изображение/тексты/emoji/ответы сохранены. Владелец прислал и утвердил новые английские тексты PADEL_OUTCOME_1 и PADEL_OUTCOME_6; PADEL_OUTCOME_5 уже совпадает по словам. Прежнее правило без конечных точек сохранено.",
   "terminalPeriods": "Remove a single terminal period at every authored line/bubble boundary; preserve internal sentence periods and ellipses.",
   "emoji": [
     {
@@ -1525,6 +1525,26 @@
         [
           "make me $1B right now. make zero mistakes",
           "make me $1B app. make zero mistakes"
+        ]
+      ]
+    },
+    {
+      "id": "PADEL_OUTCOME_1",
+      "field": "text",
+      "replacements": [
+        [
+          "Relax, boy. It was only a warm-up\nWatching you sweat and cheat for that win was painful\nHave fun begging for money!",
+          "Relax, it was only a warm-up\nYou killed yourself for that win, I almost called an ambulance\nBut hey, with that desperation, you'll definitely sell your AI wrapper to some sucker"
+        ]
+      ]
+    },
+    {
+      "id": "PADEL_OUTCOME_6",
+      "field": "text",
+      "replacements": [
+        [
+          "You lost, kid. Nice try\nKeep working hard, maybe one day I'll hire you to take out my trash\nAnd yes, forget about business",
+          "You lost, kid. Nice try\nHonestly, I'm used to working with much stronger partners\nKeep practicing if you really want to reach the big leagues"
         ]
       ]
     }

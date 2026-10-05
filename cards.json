@@ -2433,7 +2433,7 @@
       "continuation": "forced",
       "location": "IRL · PADEL CLUB",
       "score": "YOU WON THE MATCH",
-      "text": "Relax, boy. It was only a warm-up\nWatching you sweat and cheat for that win was painful\nHave fun begging for money!",
+      "text": "Relax, it was only a warm-up\nYou killed yourself for that win, I almost called an ambulance\nBut hey, with that desperation, you'll definitely sell your AI wrapper to some sucker",
       "actor_action": "The CEO dismisses the founder's win and rejects the business pitch.",
       "player_decision": "Plead or answer back; either reply ends the Padel branch.",
       "choices": {
@@ -2603,7 +2603,7 @@
       "continuation": "forced",
       "location": "IRL · PADEL CLUB",
       "score": "YOU LOST THE MATCH",
-      "text": "You lost, kid. Nice try\nKeep working hard, maybe one day I'll hire you to take out my trash\nAnd yes, forget about business",
+      "text": "You lost, kid. Nice try\nHonestly, I'm used to working with much stronger partners\nKeep practicing if you really want to reach the big leagues",
       "actor_action": "The CEO wins the match, humiliates the founder, and rejects the business pitch.",
       "player_decision": "Answer with defiance or indifference; either reply ends the Padel branch.",
       "choices": {
