@@ -1204,12 +1204,15 @@
 - **Actually, 60% is ok — Вообще-то 60% было норм** (контекст после `INFLUENCER_05`): Founder -15, Team -5; → `INFLUENCER_07`.
 - **Try me, buddy — Ну попробуй, дружочек** (контекст после `INFLUENCER_05`): Founder +7; → `INFLUENCER_08`.
 
-## INFLUENCER_07 — AI Influencer @ai_evangelist
+## INFLUENCER_07 — 8 members · 3 online Dream Team
 
 **EN**
 
+> @ai_evangelist<br>
 > Published video: CHALLENGE: Turning a Broke AI Startup Into a Unicorn in 30 Days<br>
+> @ai_evangelist<br>
 > Video’s live. Don’t screw this up, team!!!<br>
+> @ai_evangelist<br>
 > Or do. That’s just more views lol 😂
 
 **RU**

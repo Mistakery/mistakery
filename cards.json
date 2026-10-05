@@ -1747,9 +1747,8 @@
       "id": "INFLUENCER_07",
       "kind": "story",
       "arc": "influencer",
-      "source": "@ai_evangelist",
+      "source": "dream_team",
       "continuation": "forced",
-      "text": "Video’s live. Don’t screw this up, team!!!\n\nOr do. That’s just more views lol 😂",
       "choices": {
         "left": {
           "label": "DELETE THIS!!!",
@@ -1762,14 +1761,34 @@
           "next": "INFLUENCER_OUTCOME_2"
         }
       },
-      "image": {
-        "src": "assets/ai-influencer-unicorn-challenge.webp",
-        "alt": "Published video: CHALLENGE: Turning a Broke AI Startup Into a Unicorn in 30 Days",
-        "width": 1200,
-        "height": 676
-      },
       "plot": "influencer",
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "mode": "team",
+      "messages": [
+        {
+          "direction": "incoming",
+          "source": "@ai_evangelist",
+          "avatar": "AI",
+          "image": {
+            "src": "assets/ai-influencer-unicorn-challenge.webp",
+            "alt": "Published video: CHALLENGE: Turning a Broke AI Startup Into a Unicorn in 30 Days",
+            "width": 1200,
+            "height": 676
+          }
+        },
+        {
+          "direction": "incoming",
+          "source": "@ai_evangelist",
+          "avatar": "AI",
+          "text": "Video’s live. Don’t screw this up, team!!!"
+        },
+        {
+          "direction": "incoming",
+          "source": "@ai_evangelist",
+          "avatar": "AI",
+          "text": "Or do. That’s just more views lol 😂"
+        }
+      ]
     },
     {
       "id": "INFLUENCER_08",

@@ -1309,9 +1309,17 @@
     },
     {
       "id": "INFLUENCER_07",
-      "field": "text",
+      "field": "messages.1.text",
       "doc": 3,
       "start": 178,
+      "end": 178,
+      "kind": "text"
+    },
+    {
+      "id": "INFLUENCER_07",
+      "field": "messages.2.text",
+      "doc": 3,
+      "start": 179,
       "end": 179,
       "kind": "text"
     },
@@ -1589,7 +1597,7 @@
     },
     {
       "id": "INFLUENCER_07",
-      "field": "image.caption",
+      "field": "messages.0.image.caption",
       "doc": 3,
       "start": 176,
       "end": 176,

@@ -27,7 +27,7 @@ for(const [name,type]of [['Chromium',chromium],['WebKit',webkit]])test(`${name}:
    for(const side of ['left','right'])assert.equal((await page.locator(`[data-choice="${side}"]`).textContent()).replaceAll('\u00a0',' '),card.choices[side].label,`${id}.${side}`);
    if(card.mode==='team')assert.deepEqual(await page.locator('[data-chat] .team-row').evaluateAll(ns=>ns.map(n=>n.dataset.source)),card.messages.filter(m=>m.direction!=='outgoing').map(m=>m.source),`${id} speakers`);
    const grouping=ownerOverrides.bubbleCounts?.find(item=>item.id===id);
-   if(grouping)assert.equal(await page.locator('[data-chat-current]').count(),grouping.textBubbles+Number(Boolean(card.image)),`${id}: original bubbles`);
+   if(grouping)assert.equal(await page.locator('[data-chat-current]').count(),grouping.textBubbles+Number(Boolean(card.image))+(card.messages||[]).filter(m=>m.image||m.imageRef).length,`${id}: original bubbles`);
    if(id==='LIVE_AGENT_OUTCOME_3'){
     assert.equal(await page.locator('[data-chat] .team-row').count(),0);
     assert.deepEqual(await page.locator('[data-forwarded-from]').evaluateAll(ns=>ns.map(n=>n.dataset.forwardedFrom)),['@b2buddy_120','@b2buddy_389']);

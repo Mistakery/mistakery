@@ -20,6 +20,37 @@ async function seed(page, id, previous = 'INFLUENCER_04', target, side = 'left')
   }, { id, previous, target, side });
   await page.clock.runFor(10000);
 }
+for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
+  test(`${name}: accepted Influencer deal publishes the challenge in Dream Team`, async () => {
+    const browser = await type.launch();
+    try {
+      const page = await open(browser);
+      for (const [id, previous] of [['INFLUENCER_05', 'INFLUENCER_04'], ['INFLUENCER_05', 'INFLUENCER_06'], ['INFLUENCER_06', 'INFLUENCER_05']]) {
+        await seed(page, id, previous);
+        const before = await snapshot(page);
+        await page.locator('[data-choice=left]').click();
+        assert.equal((await snapshot(page)).currentCardId, 'INFLUENCER_07');
+        assert.equal(await page.locator('[data-sender]').innerText(), 'Dream Team');
+        assert.equal(await page.locator('[data-chat-history], [data-player-reply]').count(), 0);
+        assert.equal(await page.locator('[data-chat-current].team-row .message-image').count(), 1);
+        assert.equal(await page.locator('[data-choice=left]').isDisabled(), true);
+        await page.clock.runFor(10000);
+        assert.deepEqual(await page.locator('[data-chat-current]').evaluateAll(ns => ns.map(n => n.dataset.source)), ['@ai_evangelist', '@ai_evangelist', '@ai_evangelist']);
+        assert.deepEqual(await page.locator('[data-chat-current] p').evaluateAll(ns => ns.map(n => n.textContent.replaceAll('\u00a0', ' '))), ['Video’s live. Don’t screw this up, team!!!', 'Or do. That’s just more views lol 😂']);
+        assert.equal(await page.locator('[data-chat] .message-caption').count(), 0);
+        assert.equal(await page.locator('[data-choice=left]').innerText(), 'DELETE THIS!!!');
+        assert.equal(await page.locator('[data-choice=right]').innerText(), 'Anything for views');
+        const after = await snapshot(page);
+        await page.evaluate(() => MistakeryApp.render());
+        assert.equal(await page.locator('[data-chat-current]').count(), 3);
+        assert.deepEqual(await snapshot(page), after);
+        await page.locator('[data-test-back]').click();
+        assert.deepEqual(await snapshot(page), before);
+        assert.equal(await page.locator('[data-sender]').innerText(), '@ai_evangelist');
+      }
+    } finally { await browser.close(); }
+  });
+}
 async function open(browser, motion = 'no-preference') {
   const page = await browser.newPage({ viewport: { width: 320, height: 650 }, reducedMotion: motion });
   await page.goto(url); await page.waitForFunction(() => MistakeryApp?.state);

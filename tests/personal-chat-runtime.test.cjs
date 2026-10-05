@@ -154,13 +154,13 @@ test('AI influencer cards preserve approved copy and graph with document resourc
   });
 
   assert.equal(Object.hasOwn(cards.INFLUENCER_07, 'placeholder'), false);
-  assert.deepEqual(cards.INFLUENCER_07.image, {
+  assert.deepEqual(cards.INFLUENCER_07.messages[0].image, {
     src: 'assets/ai-influencer-unicorn-challenge.webp',
     alt: "Published video: CHALLENGE: Turning a Broke AI Startup Into a Unicorn in 30 Days",
     width: 1200,
     height: 676,
   });
-  assert.equal(cards.INFLUENCER_07.text, "Video’s live. Don’t screw this up, team!!!\n\nOr do. That’s just more views lol 😂");
+  assert.equal(cards.INFLUENCER_07.messages.slice(1).map(m => m.text).join("\n\n"), "Video’s live. Don’t screw this up, team!!!\n\nOr do. That’s just more views lol 😂");
   assert.deepEqual(Object.values(cards.INFLUENCER_07.choices).map((choice) => choice.label), ['DELETE THIS!!!', 'Anything for views']);
   assert.deepEqual(cards.INFLUENCER_08.messages[0].image, {
     src: 'assets/ai-influencer-fake-lead-review.webp',
