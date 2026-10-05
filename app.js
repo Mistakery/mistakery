@@ -183,7 +183,7 @@
 
   let continuationResizeObserver;
 
-  function setView(view, shellStage = 'real') {
+  function setView(view, shellStage = 'real', feedback = null) {
     if (view !== 'saved') {
       window.clearTimeout(savedDeliveryTimer);
       savedDeliveryTimer = null;
@@ -196,7 +196,7 @@
     $('[data-loss-flash]')?.remove();
     delete $('[data-game]').dataset.lossPreview;
     cancelFounderSend();
-    cancelResourceFeedback();
+    if (resourceFeedback?.feedback !== feedback) cancelResourceFeedback();
     sentReplyPositions = null;
     cancelArrivalMotion();
     cancelOutcomeImageMotion();
@@ -335,7 +335,9 @@
     }
   }
 
-  function renderResources(values, feedback = null) {
+  function renderResources(values, feedback = null, resourceState = app.state) {
+    // A retained reply already started its meter feedback at the click.
+    if (feedback && resourceFeedback?.feedback === feedback) return;
     const host = $('[data-resources]');
     // Keep the same bars across replies: the old fill must exist to animate it.
     if (!host.children.length) {
@@ -350,14 +352,14 @@
       </div>`).join('') + '<span class="sr-only" data-resource-announcement role="status" aria-live="polite" aria-atomic="true"></span>';
     }
     host.dataset.variant = app.resourceVariant;
-    const scope = feedback ? { animations: [], timer: null } : null;
+    const scope = feedback ? { feedback, animations: [], timer: null } : null;
     resourceFeedback = scope;
     const announcements = [];
     for (const key of engine.RESOURCE_KEYS) {
       const node = host.querySelector(`[data-resource="${key}"]`);
       const config = app.deck.resources[key];
       const value = Number(values[key]);
-      const raw = Number(app.state.route?.resourceLedger?.[key] ?? value);
+      const raw = Number(resourceState.route?.resourceLedger?.[key] ?? value);
       const fatalEdges = app.deck.meta.route.resourceEndings.map(id => app.deck.endings[id])
         .filter(ending => ending.resource === key);
       const margin = (config.max - config.min) * .15;
@@ -677,6 +679,7 @@
     app.noteIndex = index;
     app.savedDelivery = index === 1 ? { deadline: Date.now() + 1000, delivered: false } : null;
     renderSaved();
+    if (index === 1) animateArrival($('.note-message'), reducedMotion.matches ? 0 : 16, true, document.timeline.currentTime);
   }
 
   function renderSaved() {
@@ -939,7 +942,7 @@
     const ending = app.deck.endings[app.state.endingId];
     const storyCard = engine.cardById(app.deck, app.state.currentCardId);
     const card = storyCard?.terminalEnding === app.state.endingId ? storyCard : endingReaction();
-    setView('ended', 'real');
+    setView('ended', 'real', feedback);
     renderResources(app.state.resources, feedback);
     clearPreview();
     setSceneMode('personal');
@@ -976,7 +979,7 @@
       || (app.cardDelivery?.key === deliveryKey ? app.cardDelivery.historyMediaWidths : null);
     const readingHistory = app.cardDelivery?.key === deliveryKey && app.cardDelivery.follow === false;
     const previousScroll = $('[data-chat]').scrollTop;
-    setView(complete ? 'irl-complete' : 'playing', 'real');
+    setView(complete ? 'irl-complete' : 'playing', 'real', feedback);
     renderResources(app.state.resources, feedback);
     setSceneMode(card.mode);
     if (card.mode === 'irl') showIrlLocation(card);
@@ -1351,6 +1354,11 @@
     cancelArrivalMotion();
     app.locked = true;
     clearPreview();
+    // Resolve once on a cloned snapshot. Commit after send, or discard on cancel.
+    const resolved = route.resolveChoice(app.deck, app.state, side,
+      directStoryTest ? { outcomeRng: Math.random } : {}).state;
+    cancelResourceFeedback();
+    renderResources(resolved.resources, resolved.history.at(-1), resolved);
     const chat = $('[data-chat]');
     const originalScroll = chat.scrollTop;
     const rows = Array.from(chat.querySelectorAll('[data-chat-current], [data-chat-history], [data-player-reply], .message-avatar'));
@@ -1373,12 +1381,12 @@
       if (reducedMotion.matches) {
         dots.remove();
         chat.classList.remove('is-sending');
-        resolveCardChoice(card, side, originalScroll);
-      } else sendFounderReply(card, side, dots, originalScroll);
+        resolveCardChoice(card, side, originalScroll, resolved);
+      } else sendFounderReply(card, side, dots, originalScroll, resolved);
     }, 650);
   }
 
-  function sendFounderReply(card, side, composer, originalScroll) {
+  function sendFounderReply(card, side, composer, originalScroll, resolved) {
     cancelArrivalMotion();
     app.locked = true;
     clearPreview();
@@ -1422,15 +1430,15 @@
           .map(node => (node.matches('.image-bubble') ? node : node.querySelector('.image-bubble'))?.offsetWidth || null),
       };
       chat.classList.remove('is-sending');
-      resolveCardChoice(card, side, scrollTop);
+      resolveCardChoice(card, side, scrollTop, resolved);
     }, 200);
   }
 
-  function resolveCardChoice(card, side, scrollTop) {
+  function resolveCardChoice(card, side, scrollTop, resolved) {
     recordTestStep(scrollTop);
     app.locked = true;
     clearPreview();
-    app.state = route.resolveChoice(app.deck, app.state, side,
+    app.state = resolved || route.resolveChoice(app.deck, app.state, side,
       directStoryTest ? { outcomeRng: Math.random } : {}).state;
     const feedback = app.state.history.at(-1);
     renderCard(feedback);
@@ -1509,7 +1517,7 @@
   }
 
   function renderLossCard(card, feedback = null) {
-    setView(lossPreviewEnabled ? 'playing' : 'ended', 'real');
+    setView(lossPreviewEnabled ? 'playing' : 'ended', 'real', feedback);
     $('[data-game]').dataset.lossPreview = '';
     if (lossPreviewEnabled) {
       $('[data-test-controls] > span').textContent = `Document preview · ${app.lossPreviewIndex + 1}/${window.MISTAKERY_LOSS_PREVIEW.cards.length}`;
