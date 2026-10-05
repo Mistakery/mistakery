@@ -713,9 +713,21 @@
         if (app.view !== 'saved' || app.noteIndex !== 1 || app.savedDelivery !== delivery) return;
         delivery.delivered = true;
         savedDeliveryTimer = null;
+        cancelArrivalMotion();
+        const chat = $('[data-chat]');
+        const positions = Array.from(chat.querySelectorAll('.note-message'))
+          .map(node => [node, node.offsetTop - chat.scrollTop]);
         $('[data-message-stack] .founder-composer')?.remove();
         $('[data-message-stack]').insertAdjacentHTML('beforeend', savedMessageMarkup(note.messages[1]));
-        keepDeliveryVisible($('[data-message-stack]').lastElementChild);
+        const arrived = $('[data-message-stack]').lastElementChild;
+        keepDeliveryVisible(arrived);
+        // Use the chat's shared arrival motion: the new note takes the dots'
+        // position while the existing note shifts with it, preserving their gap.
+        const last = positions.at(-1);
+        const delta = last[1] - (last[0].offsetTop - chat.scrollTop);
+        const start = document.timeline.currentTime;
+        if (!reducedMotion.matches) positions.forEach(([node]) => animateArrival(node, delta, false, start));
+        animateArrival(arrived, reducedMotion.matches ? 0 : delta, true, start);
         setChoices(note.buttons, chooseSaved);
       }, Math.max(0, delivery.deadline - Date.now()));
     }
