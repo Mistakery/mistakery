@@ -25,7 +25,17 @@ test(`${name}: document preview keeps replies, navigation and restart outside th
       const before = await page.evaluate(() => structuredClone(MistakeryApp.state));
       assert.equal(before.currentCardId, id);
       assert.equal(before.history.length, 0);
-      if (id === 'DOC_LOSS_1') assert.equal(await page.locator('.team-row[data-source="@unicorn_hunter"]').count(), 2);
+      if (id === 'DOC_LOSS_1') {
+        assert.equal(await page.locator('.team-row[data-source="@unicorn_hunter"]').count(), 2);
+        assert.deepEqual(await page.locator('.team-row[data-source="@bigdeals"] p').allTextContents()
+          .then(lines => lines.map(line => line.replaceAll('\u00a0', ' '))),
+          ["Guys, don't panic!", 'We got this! 🔥💪']);
+        const devBubbles = page.locator('.team-row[data-source="@error404"]');
+        assert.equal(await devBubbles.count(), 2, 'developer replies arrive in two separate bubbles');
+        assert.deepEqual(await devBubbles.locator('p').allTextContents()
+          .then(lines => lines.map(line => line.replaceAll('\u00a0', ' '))),
+          ['lol you have a final interview at an AI unicorn in an hour', 'send them my github pls']);
+      }
       if (id === 'DOC_LOSS_2') {
         assert.equal(await page.locator('[data-system-event]').count(), 5);
         assert.equal(await page.locator('.team-row[data-source="@hype_queen"]').count(), 3);

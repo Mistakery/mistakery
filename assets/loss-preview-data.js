@@ -26,11 +26,15 @@ window.MISTAKERY_LOSS_PREVIEW = {
         },
         {
           "source": "@bigdeals",
-          "text": "Well. I have an interview in 30 minutes at an AI unicorn with free lunches"
+          "text": "Guys, don't panic!\nWe got this! 🔥💪"
         },
         {
           "source": "@error404",
-          "text": "forward them my github"
+          "text": "lol you have a final interview at an AI unicorn in an hour"
+        },
+        {
+          "source": "@error404",
+          "text": "send them my github pls"
         }
       ],
       "textRu": "@unicorn_hunter:\nНА ЧТО ВЫ ПРОСРАЛИ ВСЕ МОИ БАБКИ, ПРИДУРКИ??\nВЫ ВСЕ УВОЛЕНЫ. ИДИТЕ ИЩИТЕ НОРМАЛЬНУЮ РАБОТУ.\n\n@hype_queen:\n🤩🤩\nвсех с днём зарплаты 💅\n\n@bigdeals:\nЧто ж. У меня через 30 минут собес в AI-единороге с бесплатными обедами.\n\n@error404:\nзакинь им мой гитхаб тоже",
