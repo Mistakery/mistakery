@@ -26,7 +26,7 @@ test('offline bundle contains exactly the canonical JSON deck', () => {
 });
 
 test('runtime asset URLs track file content so cached scripts cannot hide new card captions', () => {
-  for (const file of ['style.css', 'cards.bundle.js', 'game.js', 'assets/route.js', 'assets/sound.js', 'assets/sound.css', 'app.js']) {
+  for (const file of ['style.css', 'cards.bundle.js', 'game.js', 'assets/route.js', 'assets/sound-samples.js', 'assets/sound.js', 'assets/sound.css', 'app.js']) {
     const version = createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex').slice(0, 12);
     assert.ok(index.includes(`${file}?v=${version}`), `Stale runtime URL for ${file}: rebuild the offline deck`);
   }
@@ -131,4 +131,27 @@ test('uses the Mistakery brand without the Validation label and includes a messa
   assert.match(indexSource, /<h1>Mistakery<\/h1>/);
   assert.doesNotMatch(indexSource, />Validation</);
   assert.match(indexSource, /data-message-avatar/);
+});
+
+
+test('offline audio embeds exactly the seven approved CC0 PCM clips', () => {
+  const vm = require('node:vm');
+  const window = {};
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/sound-samples.js'), 'utf8'), { window });
+  const sources = JSON.parse(fs.readFileSync(path.join(root, 'assets/audio/sources.json'), 'utf8'));
+  assert.equal(sources.length, 7);
+  assert.deepEqual(Object.keys(window.MISTAKERY_SOUND_SAMPLES).sort(), ['incoming', 'send', 'story-loss', 'resource-loss', 'ai-finale', 'story-win', 'padel'].sort());
+  assert.ok(index.indexOf('assets/sound-samples.js') < index.indexOf('assets/sound.js'), 'samples load before player');
+  for (const source of sources) {
+    const wav = fs.readFileSync(path.join(root, 'assets/audio', source.file));
+    const pcm = wav.subarray(44);
+    assert.equal(source.license, 'CC0-1.0');
+    assert.equal(source.owner_approved_on, '2026-10-10');
+    assert.equal(createHash('sha256').update(wav).digest('hex'), source.wav_sha256);
+    assert.equal(createHash('sha256').update(pcm).digest('hex'), source.pcm_sha256);
+    assert.equal(pcm.length, source.frames * 2);
+    assert.equal(window.MISTAKERY_SOUND_SAMPLES[source.kind].sampleRate, 48000);
+    assert.deepEqual(Buffer.from(window.MISTAKERY_SOUND_SAMPLES[source.kind].pcm, 'base64'), pcm);
+    assert.ok(source.duration_seconds < .5, 'single cue, without audition repeats');
+  }
 });

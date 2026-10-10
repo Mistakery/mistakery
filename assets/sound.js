@@ -2,13 +2,16 @@
   let enabled = true;
   try { enabled = window.localStorage.getItem('mistakery.sound') !== 'off'; } catch { /* Private browsing may deny storage. */ }
   let context, master;
-  const cues = {
-    // Familiar messenger vocabulary: a bubble pop, an ascending ding-ding,
-    // and a lower descending warning. Fixed pitches; no random bleeps.
-    click: [[900, 220, .045, .028, 0]],
-    message: [[880, 880, .095, .023, 0], [1174.66, 1174.66, .15, .023, .105]],
-    alert: [[659.25, 659.25, .12, .025, 0], [523.25, 523.25, .17, .025, .14]],
-  };
+  const buffers = new Map();
+  const active = new Set();
+  function stopAll() {
+    for (const source of active) {
+      try { source.stop(); } catch { /* An already finished source is harmless. */ }
+      source.disconnect();
+    }
+    active.clear();
+  }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stopAll(); });
   function unlock() {
     if (!enabled) return Promise.resolve();
     try {
@@ -23,27 +26,32 @@
     } catch { /* Sound is optional; the game must remain playable. */ }
     return Promise.resolve();
   }
-  function play(kind) {
+  function play(kind, delay = 0) {
     if (!enabled || document.hidden || context?.state !== 'running') return;
     try {
-      for (const [from, to, duration, volume, delay] of cues[kind] || []) {
-        const start = context.currentTime + delay;
-        const oscillator = context.createOscillator();
-        const envelope = context.createGain();
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(from, start);
-        oscillator.frequency.exponentialRampToValueAtTime(to, start + duration);
-        envelope.gain.setValueAtTime(.0001, start);
-        envelope.gain.exponentialRampToValueAtTime(volume, start + .005);
-        envelope.gain.exponentialRampToValueAtTime(.0001, start + duration);
-        oscillator.connect(envelope); envelope.connect(master);
-        oscillator.onended = () => { oscillator.disconnect(); envelope.disconnect(); };
-        oscillator.start(start); oscillator.stop(start + duration + .01);
+      if (!buffers.has(kind)) {
+        const sample = window.MISTAKERY_SOUND_SAMPLES?.[kind];
+        if (!sample) return;
+        const pcm = atob(sample.pcm);
+        const buffer = context.createBuffer(1, pcm.length / 2, sample.sampleRate);
+        const channel = buffer.getChannelData(0);
+        for (let i = 0; i < channel.length; i++) {
+          const value = pcm.charCodeAt(i * 2) | pcm.charCodeAt(i * 2 + 1) << 8;
+          channel[i] = (value >= 32768 ? value - 65536 : value) / 32768;
+        }
+        buffers.set(kind, buffer);
       }
+      const source = context.createBufferSource();
+      source.buffer = buffers.get(kind);
+      source.connect(master);
+      source.onended = () => { active.delete(source); source.disconnect(); };
+      active.add(source);
+      source.start(context.currentTime + Math.max(0, delay));
     } catch { /* Unsupported or interrupted audio never blocks a choice. */ }
   }
   function setEnabled(value) {
     enabled = Boolean(value);
+    if (!enabled) stopAll();
     if (master) master.gain.setValueAtTime(enabled ? 1 : 0, context.currentTime);
     try { window.localStorage.setItem('mistakery.sound', enabled ? 'on' : 'off'); } catch { /* Keep the session preference. */ }
   }

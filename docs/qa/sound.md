@@ -1,11 +1,25 @@
-# Messenger sound · 2026-10-10
+# Approved sound set · 2026-10-10
 
-The regular game uses three short, quiet synthesized sine cues: a 45 ms bubble pop for buttons, a familiar ascending two-note ding-ding (A5 → D6, 255 ms) for incoming messages, and a lower descending two-note warning (E5 → C5, 310 ms). These require no downloads and work with the offline entry. Fixed musical intervals and short envelopes give each event a recognizable messenger meaning; there are no random pitches. Web Audio was chosen over recorded assets (extra requests/licensing) and browser media elements (less reliable short overlapping cues).
+The owner approved incoming B, padel P1, and all five event samples before integration. These are recorded CC0 clips at exactly their auditioned gain and speed, replacing the rejected synthetic cues. There is no separate message/notification volume rule. `assets/audio/sources.json` records authors, source URLs, license verification, processing and hashes; the official Kenney license is preserved alongside the WAVs.
 
-The speaker button occupies the existing trailing slot in the contact header. It exposes its current state with aria-pressed, a label and a tooltip. Sound defaults to enabled but the AudioContext is created/resumed only after user activation. Muting silences the active master gain immediately and stores `mistakery.sound=off`; storage/audio errors fail quietly. Hidden tabs omit cues and never queue them for later.
+| Event | Approved clip | Trigger |
+|---|---|---|
+| Incoming | B: deadrobotmusic, Notification Sound 1 | Actual fresh incoming message/image/system delivery; one cue per reveal-all batch |
+| Send / choice button | Kenney maximize_008 | One accepted reply/choice, including Intro/Saved/resource-loss replies and finale choices; no second cue when the reply animation finishes |
+| Story loss | Kenney error_008 | Failure/catastrophic outcome entrance, including Judgment Day |
+| Resource loss | Kenney minimize_006 | Resource defeat after the document card finishes delivery |
+| Final AI bot card | Kenney question_004 | @b2buddy finale popup |
+| Story win | Kenney confirmation_001 | Existing successful story outcome; no new overall winning ending |
+| Every IRL padel card | P1: Luisa_Sanchez, Padel | One impact per fresh IRL card, including outcome cards |
 
-Incoming cues follow actual delivery, including image bubbles and team messages, and exclude outgoing replies and IRL dialogue. Reveal-all emits one cue for the batch. System events, outcome entrances, defeat and the final popup use the alert cue. Saved notes are the founder's own notes and do not trigger incoming sounds. Resource animation and hover remain silent.
+Story outcomes use their result signal instead of also emitting B. For IRL padel outcomes, P1 plays first and the result starts 360 ms later, after the impact. Resource defeat waits 450 ms after the last incoming delivery; the finale waits 230 ms after the accepted reply so the short clips do not stack. The ball recording does not specify the exact struck surface. Messenger padel invitations/refusals retain their messenger/result cues.
 
-Played event keys belong to a state in a WeakMap; Back snapshots and restores these keys along with delivery progress. Rerender never restarts a sound. An unfinished delivery may still announce its genuinely new messages. Restart creates a new presentation. Audio does not change route resolution, RNG, copy, resource accounting or delivery delays.
+Ordinary controls (inspect, close, Back, restart and sound toggle), hover, resource motion, typing and the founder's automatic outgoing bubbles remain quiet. No music or random pitches. The approved timbre, pitch, playback rate and gain are preserved; only audition silence/repetitions are removed.
 
-Verification: `tests/sound.test.cjs` covers activation, mute, storage, hidden tabs and unavailable audio. `tests/sound.browser.test.cjs` exercises real AudioContext oscillators in Chromium/WebKit, incoming delivery, rerender, Back, defeat, finale and persisted mute. Existing game checks remain required via `npm test`.
+The speaker button retains aria-pressed, accessible label and tooltip. Audio defaults to enabled, but the AudioContext is created/resumed only after activation. Mute cancels active and scheduled clips immediately and persists `mistakery.sound=off`. Hidden tabs discard both immediate and scheduled audio, with no playback when returning. Audio/storage errors cannot block play.
+
+`assets/sound-samples.js` embeds the exact approved mono PCM16 at 48 kHz. `node scripts/build-offline-deck.cjs` generates it from the WAVs and refreshes content-hashed runtime URLs. Direct `file://` play uses the same buffers without fetch, external audio requests or async decoding. The single master gain does not alter the auditioned levels except for muting.
+
+Played event keys belong to each state in a WeakMap; Back snapshots/restores them together with delivery progress. Rerender and Back do not replay arrivals/results. Genuinely new messages in an unfinished delivery can still sound; a new attempt has new presentation keys. Audio never changes choices, RNG, text, resources or delivery timing.
+
+Verification: `tests/sound.test.cjs` covers PCM decoding, activation, mute, scheduled cancellation, hidden tabs, unavailable audio and denied storage. `tests/offline.test.cjs` checks cache URLs and source/bundle PCM integrity. `tests/sound.browser.test.cjs` checks actual AudioBufferSource playback in Chromium/WebKit, all seven event mappings, every IRL padel card, a real retained reply, deduplication, Back and persisted mute. Full `npm test` remains required.

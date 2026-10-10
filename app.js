@@ -24,12 +24,12 @@
   const $ = (selector) => document.querySelector(selector);
   const sound = window.MistakerySound;
   const soundEvents = new WeakMap();
-  function soundOnce(key, kind) {
+  function soundOnce(key, kind, delay = 0) {
     if (!soundEvents.has(app.state)) soundEvents.set(app.state, new Set());
     const events = soundEvents.get(app.state);
     if (events.has(key)) return false;
     events.add(key);
-    if (kind) sound.play(kind);
+    if (kind) sound.play(kind, delay);
     return true;
   }
   function updateSoundControl() {
@@ -43,13 +43,13 @@
   $('[data-sound-toggle]').addEventListener('click', () => {
     sound.setEnabled(!sound.enabled);
     updateSoundControl();
-    if (sound.enabled) sound.unlock().then(() => sound.play('click'));
+    if (sound.enabled) sound.unlock();
   });
   // Capture the activation before a choice can replace its button or deliver content.
   document.addEventListener('click', event => {
     const button = event.target.closest('button');
     if (!button || button.disabled || button.matches('[data-sound-toggle]')) return;
-    sound.unlock().then(() => sound.play('click'));
+    sound.unlock();
   }, true);
   document.addEventListener('pointerdown', event => { if (event.isTrusted) sound.unlock(); }, { passive: true });
   document.addEventListener('keydown', event => { if (event.isTrusted) sound.unlock(); }, { passive: true });
@@ -678,13 +678,14 @@
     window.clearTimeout(app.introTypingTimer);
     app.introTypingTimer = window.setTimeout(() => {
       renderOnboarding();
-      sound.play('message');
+      sound.play('incoming');
       app.locked = false;
     }, INTRO_TYPING_MS);
   }
 
   function advanceOnboarding() {
     if (app.locked) return;
+    sound.unlock().then(() => sound.play('send'));
     if (app.onboardingIndex < INTRO_STEPS.length - 1) {
       app.onboardingIndex += 1;
       deliverOnboardingMessage();
@@ -702,6 +703,7 @@
   }
 
   function chooseSaved() {
+    sound.unlock().then(() => sound.play('send'));
     recordTestStep();
     if (app.noteIndex === 0) startSaved(1);
     else beginRun();
@@ -994,7 +996,7 @@
   function renderEnding(feedback = null) {
     const lossCard = resourceLossCard();
     if (lossCard) return renderLossCard(lossCard, feedback);
-    soundOnce('ending-alert', 'alert');
+    soundOnce('ending-alert', 'story-loss');
     const ending = app.deck.endings[app.state.endingId];
     const storyCard = engine.cardById(app.deck, app.state.currentCardId);
     const card = storyCard?.terminalEnding === app.state.endingId ? storyCard : endingReaction();
@@ -1108,7 +1110,8 @@
     if (card.outcomeBanner !== false) hideIrlLocation();
     if (presentedOutcomes.has(app.state)) return;
     presentedOutcomes.add(app.state);
-    soundOnce('outcome-alert', 'alert');
+    // Every IRL padel card starts with P1; let its impact finish before the result.
+    soundOnce('outcome-alert', card.outcomeTone === 'success' ? 'story-win' : 'story-loss', card.mode === 'irl' ? .36 : 0);
     // Flush the cleared class so consecutive outcomes also get one entrance.
     void phone.offsetWidth;
     phone.classList.add('is-outcome-entering');
@@ -1193,12 +1196,13 @@
     const stack = card.mode === 'team' || card.previewMixedPersonal ? chat : chat.querySelector('[data-message-stack]');
     const nodes = Array.from(chat.querySelectorAll('[data-chat-current]'));
     function announceIncoming(arrived) {
+      // Story outcomes already have their own approved signal.
+      if (card.outcomeTone) return;
       let cue;
       arrived.forEach(node => {
         if (node.matches('.self-message')) return;
         if (!soundOnce(`incoming:${card.id}:${nodes.indexOf(node)}`)) return;
-        if (node.matches('[data-system-event]')) cue = 'alert';
-        else if (cue !== 'alert') cue = 'message';
+        cue = 'incoming';
       });
       if (cue) sound.play(cue);
     }
@@ -1214,7 +1218,8 @@
       else pauses.unshift({ after: 0, durationMs: attentionMs });
     }
     if (!pauses.length) {
-      if (card.mode !== 'irl') announceIncoming(nodes);
+      if (card.mode === 'irl') soundOnce(`padel:${key}`, 'padel');
+      else announceIncoming(nodes);
       const outgoing = nodes.filter(node => node.matches('.self-message'));
       app.cardDelivery = outgoing.length ? { key, pauses, delivered: true } : null;
       outgoing.forEach(node => {
@@ -1403,6 +1408,7 @@
   function choose(side) {
     if (app.locked || app.view !== 'playing') return;
     if (app.cardDelivery && !app.cardDelivery.delivered) return;
+    sound.unlock().then(() => sound.play('send'));
     const card = engine.cardById(app.deck, app.state.currentCardId);
     // Resolve once so contextual and random targets choose the right chat.
     // The cloned candidate remains uncommitted during typing and can be cancelled.
@@ -1629,6 +1635,7 @@
     };
     setChoices(card.replies.map(reply => reply.en), side => {
       if (presentation.reply || app.cardDelivery && !app.cardDelivery.delivered) return;
+      sound.play('send');
       presentation.reply = card.replies[side === 'left' ? 0 : 1].en;
       app.lossPreviewReply = presentation.reply;
       const reply = appendReply(presentation.reply);
@@ -1659,7 +1666,7 @@
     const phone = $('[data-game]');
     phone.dataset.outcome = 'failure';
     if (!presentation.defeated) phone.classList.add('is-outcome-entering');
-    if (!presentation.defeated) soundOnce('defeat-alert', 'alert');
+    if (!presentation.defeated) soundOnce('defeat-alert', 'resource-loss', .45);
     presentation.defeated = true;
   }
 
@@ -1707,6 +1714,7 @@
     };
     dialog.querySelectorAll('[data-finale-choice]').forEach(button => {
       button.addEventListener('click', () => {
+        sound.play('send');
         if (lossPreviewEnabled) dismiss();
         else restartRun({ skipSaved: true });
       });
@@ -1714,7 +1722,7 @@
     dialog.addEventListener('cancel', event => { event.preventDefault(); dismiss(); });
     document.body.append(dialog);
     dialog.showModal();
-    soundOnce('finale-alert', 'alert');
+    soundOnce('finale-alert', 'ai-finale', .23);
   }
 
   function previewOutgoingMessageMarkup(message) {
