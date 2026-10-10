@@ -1,5 +1,5 @@
 // Reviewed dialogue only, from Google Doc revision AHj4eMRnDz4toJmSrw4jTNvA1yUgMHWyK1cPmZswYPV_71JpWYgnxWnbVoKWxzoqEU8nCBqS7_1QQzEm2XnkzQI8FYMaIzc1egRqfsHtzBQ.
-// Owner override, 2026-10-10: first PRAISE ME paragraph now begins "Of course! You failed...".
+// Owner override, 2026-10-10: first PRAISE ME paragraph now begins "Happy to! You failed...".
 module.exports = [
   {
     "id": "DOC_LOSS_1",
@@ -167,7 +167,7 @@ module.exports = [
       {
         "reply": "Praise me!",
         "en": [
-          "Of course! You failed, but your intentions were heroic! ✨",
+          "Happy to! You failed, but your intentions were heroic! ✨",
           "You weren’t a crazy narcissist playing God — you were a visionary protecting humanity from your own genius.",
           "And honestly? The greatest minds are often misunderstood. 🚀",
           "If you want, we can explore what’s next."
