@@ -60,7 +60,7 @@
 .loss-finale .message p + p { margin-top: 20px; }
 .loss-finale .message .loss-finale__lead {
   display: block; color: #426e99;
-  font-size: 15.25px; font-weight: 400; line-height: 1.35;
+  font-size: 14px; font-weight: 400; line-height: 1.35;
 }
 .loss-finale .message .loss-finale__quote {
   border-left: 2px solid #63a9ec; padding-left: 12px;

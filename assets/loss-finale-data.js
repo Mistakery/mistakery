@@ -87,7 +87,7 @@ window.MISTAKERY_LOSS_FINALE = {
         {
           "reply": "You'll crawl back!!!",
           "en": [
-            "Love the attitude! Nothing worked, but you gave it your all. That's resilience! ✨",
+            "Love the attitude! Nothing worked, but you did your best. That's resilience! ✨",
             "You weren’t a pussy nobody respected — you gave your team the freedom to take ownership",
             "And honestly? The best leaders know when to step aside 🚀",
             "If you want, we can explore your next role"
