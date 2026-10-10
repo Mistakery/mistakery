@@ -1,4 +1,4 @@
-// Current Google Doc dialogue; responses are ordered left/right by the approved button mapping.
+// Google Doc dialogue plus explicit owner copy overrides; responses are ordered left/right.
 window.MISTAKERY_LOSS_FINALE = {
   "source": "https://docs.google.com/document/d/1X9sowFABpQ8geWHjQoboA0rM7wO8WwvnpQBfAPrX-Oc",
   "title": "Финалы от ИИ",
@@ -177,7 +177,7 @@ window.MISTAKERY_LOSS_FINALE = {
         {
           "reply": "Praise me!",
           "en": [
-            "Happy to! You just deleted some code, but showed incredible courage! ✨",
+            "Of course! You failed, but your intentions were heroic! ✨",
             "You weren’t a crazy narcissist playing God — you were a visionary protecting humanity from your own genius.",
             "And honestly? The greatest minds are often misunderstood. 🚀",
             "If you want, we can explore what’s next."
