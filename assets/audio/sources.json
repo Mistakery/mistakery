@@ -74,26 +74,26 @@
   {
     "kind": "resource-loss",
     "file": "resource-loss.wav",
-    "author": "Kenney",
-    "title": "minimize_006.ogg",
-    "source_page": "https://kenney.nl/assets/interface-sounds",
-    "source_audio": "https://kenney.nl/media/pages/assets/interface-sounds/fa43c1dd4d-1677589452/kenney_interface-sounds.zip",
-    "source_sha256": "39d7c47855b9642f43548b7b132c20e20a1490c7eb13d10008c32fcb24da19f8",
+    "author": "KevinVG207",
+    "title": "Wrong Buzzer",
+    "source_page": "https://freesound.org/people/KevinVG207/sounds/331912/",
+    "source_audio": "https://cdn.freesound.org/previews/331/331912_3248244-hq.mp3",
+    "source_sha256": "4a15cae7621711eca9d800c6dd1926f9a2381131a545d16fca15953cabc03241",
     "license": "CC0-1.0",
     "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
     "license_checked_on": "2026-10-10",
     "owner_approved_on": "2026-10-10",
     "processing": {
       "trim_start_seconds": 0.0,
-      "trim_end_seconds": 0.38,
-      "linear_gain_db": -20.04,
+      "trim_end_seconds": 0.4943125,
+      "linear_gain_db": -25.771,
       "no_pitch_or_speed_changes": true
     },
     "sample_rate": 48000,
-    "frames": 18238,
-    "duration_seconds": 0.37995833333333334,
-    "pcm_sha256": "201e6a945920b93621f2387b4091973592f46804615288d9606ade4b6d5ad72c",
-    "wav_sha256": "7fc1f49aa08051638148523a70b28355a2fe4de430c6aec3259016e9cfde0ee5"
+    "frames": 23727,
+    "duration_seconds": 0.4943125,
+    "pcm_sha256": "6c7974a3e7b5abe8849fb7af263c4ba37dbca29d76acf31cf0a251d35fac86e5",
+    "wav_sha256": "619ecb10818eeb517e132cadd63e6d53fcdfcca3bcc73ba9b50c5911be751866"
   },
   {
     "kind": "ai-finale",

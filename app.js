@@ -24,12 +24,12 @@
   const $ = (selector) => document.querySelector(selector);
   const sound = window.MistakerySound;
   const soundEvents = new WeakMap();
-  function soundOnce(key, kind, delay = 0) {
+  function soundOnce(key, kind) {
     if (!soundEvents.has(app.state)) soundEvents.set(app.state, new Set());
     const events = soundEvents.get(app.state);
     if (events.has(key)) return false;
     events.add(key);
-    if (kind) sound.play(kind, delay);
+    if (kind) sound.play(kind);
     return true;
   }
   function updateSoundControl() {
@@ -282,8 +282,9 @@
   }
 
   function backInStoryTest() {
-    if (storyTestEnabled && founderSendTimer !== null) { render(); return; }
+    if (storyTestEnabled && founderSendTimer !== null) { sound.stop(); render(); return; }
     if (!storyTestEnabled || !testHistory.length) return;
+    sound.stop();
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
     const { scrollTop, lossPresentation, soundPlayed, ...saved } = testHistory.pop();
@@ -300,6 +301,7 @@
   function startStoryTest() {
     if (lossPreviewEnabled) return openLossPreview(app.lossPreviewIndex);
     if (!storyTestEnabled) return;
+    sound.stop();
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
     testHistory.length = 0;
@@ -685,7 +687,8 @@
 
   function advanceOnboarding() {
     if (app.locked) return;
-    sound.unlock().then(() => sound.play('send'));
+    sound.unlock();
+    sound.play('send');
     if (app.onboardingIndex < INTRO_STEPS.length - 1) {
       app.onboardingIndex += 1;
       deliverOnboardingMessage();
@@ -703,7 +706,8 @@
   }
 
   function chooseSaved() {
-    sound.unlock().then(() => sound.play('send'));
+    sound.unlock();
+    sound.play('send');
     recordTestStep();
     if (app.noteIndex === 0) startSaved(1);
     else beginRun();
@@ -1110,8 +1114,8 @@
     if (card.outcomeBanner !== false) hideIrlLocation();
     if (presentedOutcomes.has(app.state)) return;
     presentedOutcomes.add(app.state);
-    // Every IRL padel card starts with P1; let its impact finish before the result.
-    soundOnce('outcome-alert', card.outcomeTone === 'success' ? 'story-win' : 'story-loss', card.mode === 'irl' ? .36 : 0);
+    // Result feedback takes precedence over send/arrival in the same transition.
+    soundOnce('outcome-alert', card.outcomeTone === 'success' ? 'story-win' : 'story-loss');
     // Flush the cleared class so consecutive outcomes also get one entrance.
     void phone.offsetWidth;
     phone.classList.add('is-outcome-entering');
@@ -1408,7 +1412,8 @@
   function choose(side) {
     if (app.locked || app.view !== 'playing') return;
     if (app.cardDelivery && !app.cardDelivery.delivered) return;
-    sound.unlock().then(() => sound.play('send'));
+    sound.unlock();
+    sound.play('send');
     const card = engine.cardById(app.deck, app.state.currentCardId);
     // Resolve once so contextual and random targets choose the right chat.
     // The cloned candidate remains uncommitted during typing and can be cancelled.
@@ -1533,6 +1538,7 @@
   }
 
   function restartRun({ skipSaved = false } = {}) {
+    sound.stop();
     if (lossPreviewEnabled) return openLossPreview(app.lossPreviewIndex);
     recordTestStep();
     window.clearTimeout(choiceUnlockTimer);
@@ -1579,6 +1585,7 @@
   }
 
   function openLossPreview(index) {
+    sound.stop();
     const cards = window.MISTAKERY_LOSS_PREVIEW.cards;
     app.lossPreviewIndex = Math.max(0, Math.min(cards.length - 1, index ?? 0));
     const card = cards[app.lossPreviewIndex];
@@ -1666,7 +1673,7 @@
     const phone = $('[data-game]');
     phone.dataset.outcome = 'failure';
     if (!presentation.defeated) phone.classList.add('is-outcome-entering');
-    if (!presentation.defeated) soundOnce('defeat-alert', 'resource-loss', .45);
+    if (!presentation.defeated) soundOnce('defeat-alert', 'resource-loss');
     presentation.defeated = true;
   }
 
@@ -1709,20 +1716,21 @@
     <footer class="choices">${data.choices.en.map((label, index) => `<button type="button" class="choice${index ? ' choice--right' : ''}" data-finale-choice>${htmlAttribute(label)}</button>`).join('')}</footer>`;
     // The answered source choices are disabled; return to an available control.
     const dismiss = () => {
+      sound.stop();
       dialog.close();
       $('[data-restart-run]').focus({ preventScroll: true });
     };
     dialog.querySelectorAll('[data-finale-choice]').forEach(button => {
       button.addEventListener('click', () => {
-        sound.play('send');
         if (lossPreviewEnabled) dismiss();
         else restartRun({ skipSaved: true });
+        sound.play('send');
       });
     });
     dialog.addEventListener('cancel', event => { event.preventDefault(); dismiss(); });
     document.body.append(dialog);
     dialog.showModal();
-    soundOnce('finale-alert', 'ai-finale', .23);
+    soundOnce('finale-alert', 'ai-finale');
   }
 
   function previewOutgoingMessageMarkup(message) {
