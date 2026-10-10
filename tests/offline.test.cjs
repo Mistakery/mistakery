@@ -26,7 +26,7 @@ test('offline bundle contains exactly the canonical JSON deck', () => {
 });
 
 test('runtime asset URLs track file content so cached scripts cannot hide new card captions', () => {
-  for (const file of ['style.css', 'cards.bundle.js', 'game.js', 'assets/route.js', 'app.js']) {
+  for (const file of ['style.css', 'cards.bundle.js', 'game.js', 'assets/route.js', 'assets/sound.js', 'assets/sound.css', 'app.js']) {
     const version = createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex').slice(0, 12);
     assert.ok(index.includes(`${file}?v=${version}`), `Stale runtime URL for ${file}: rebuild the offline deck`);
   }

@@ -18,7 +18,9 @@
     <script src="assets/loss-preview-data.js?v=7d549b6b4789" defer></script>
     <script src="assets/loss-finale-data.js?v=1a459e659c5b" defer></script>
     <link rel="stylesheet" href="assets/loss-preview.css?v=55526c21ce80">
-  <script src="app.js?v=c223cc7476e0" defer></script>
+    <link rel="stylesheet" href="assets/sound.css?v=ce610bd1c7e7">
+    <script src="assets/sound.js?v=9a736935026e" defer></script>
+  <script src="app.js?v=c54c6fd3b6af" defer></script>
   </head>
   <body>
     <main class="app" data-app>
@@ -47,7 +49,9 @@
             <header class="contact">
               <div class="avatar" data-avatar aria-hidden="true">M</div>
               <div class="contact__text"><b data-sender>Mistakery</b><i data-status>typing...</i></div>
-              <span class="more" aria-hidden="true">⋯</span>
+              <button class="sound-toggle" type="button" data-sound-toggle aria-label="Mute sounds" aria-pressed="true" title="Mute sounds">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4Z"/><g class="sound-on"><path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></g><path class="sound-off" d="m16 9 5 6m0-6-5 6"/></svg>
+              </button>
             </header>
 
             <div class="irl-location" data-location hidden>

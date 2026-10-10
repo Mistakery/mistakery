@@ -22,6 +22,37 @@
   window.MistakeryApp = app;
 
   const $ = (selector) => document.querySelector(selector);
+  const sound = window.MistakerySound;
+  const soundEvents = new WeakMap();
+  function soundOnce(key, kind) {
+    if (!soundEvents.has(app.state)) soundEvents.set(app.state, new Set());
+    const events = soundEvents.get(app.state);
+    if (events.has(key)) return false;
+    events.add(key);
+    if (kind) sound.play(kind);
+    return true;
+  }
+  function updateSoundControl() {
+    const button = $('[data-sound-toggle]');
+    const label = sound.enabled ? 'Mute sounds' : 'Enable sounds';
+    button.setAttribute('aria-pressed', String(sound.enabled));
+    button.setAttribute('aria-label', label);
+    button.title = label;
+  }
+  updateSoundControl();
+  $('[data-sound-toggle]').addEventListener('click', () => {
+    sound.setEnabled(!sound.enabled);
+    updateSoundControl();
+    if (sound.enabled) sound.unlock().then(() => sound.play('click'));
+  });
+  // Capture the activation before a choice can replace its button or deliver content.
+  document.addEventListener('click', event => {
+    const button = event.target.closest('button');
+    if (!button || button.disabled || button.matches('[data-sound-toggle]')) return;
+    sound.unlock().then(() => sound.play('click'));
+  }, true);
+  document.addEventListener('pointerdown', event => { if (event.isTrusted) sound.unlock(); }, { passive: true });
+  document.addEventListener('keydown', event => { if (event.isTrusted) sound.unlock(); }, { passive: true });
   const params = new URLSearchParams(window.location.search);
   const directStoryTest = params.get('story') === 'live-agent';
   const routeTest = params.get('test') === 'route';
@@ -226,6 +257,7 @@
   function recordTestStep(scrollTop = $('[data-chat]').scrollTop) {
     if (!storyTestEnabled) return;
     testHistory.push({
+      soundPlayed: [...(soundEvents.get(app.state) || [])],
       state: structuredClone(app.state),
       lossPresentation: structuredClone(lossPresentations.get(app.state) || null),
       runStartState: structuredClone(app.runStartState),
@@ -254,8 +286,9 @@
     if (!storyTestEnabled || !testHistory.length) return;
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
-    const { scrollTop, lossPresentation, ...saved } = testHistory.pop();
+    const { scrollTop, lossPresentation, soundPlayed, ...saved } = testHistory.pop();
     Object.assign(app, structuredClone(saved), { locked: false });
+    soundEvents.set(app.state, new Set(soundPlayed));
     if (lossPresentation) lossPresentations.set(app.state, structuredClone(lossPresentation));
     // Restored outcomes retain their styling but never replay their entrance.
     presentedOutcomes.add(app.state);
@@ -645,6 +678,7 @@
     window.clearTimeout(app.introTypingTimer);
     app.introTypingTimer = window.setTimeout(() => {
       renderOnboarding();
+      sound.play('message');
       app.locked = false;
     }, INTRO_TYPING_MS);
   }
@@ -960,6 +994,7 @@
   function renderEnding(feedback = null) {
     const lossCard = resourceLossCard();
     if (lossCard) return renderLossCard(lossCard, feedback);
+    soundOnce('ending-alert', 'alert');
     const ending = app.deck.endings[app.state.endingId];
     const storyCard = engine.cardById(app.deck, app.state.currentCardId);
     const card = storyCard?.terminalEnding === app.state.endingId ? storyCard : endingReaction();
@@ -1073,6 +1108,7 @@
     if (card.outcomeBanner !== false) hideIrlLocation();
     if (presentedOutcomes.has(app.state)) return;
     presentedOutcomes.add(app.state);
+    soundOnce('outcome-alert', 'alert');
     // Flush the cleared class so consecutive outcomes also get one entrance.
     void phone.offsetWidth;
     phone.classList.add('is-outcome-entering');
@@ -1156,6 +1192,16 @@
     const chat = $('[data-chat]');
     const stack = card.mode === 'team' || card.previewMixedPersonal ? chat : chat.querySelector('[data-message-stack]');
     const nodes = Array.from(chat.querySelectorAll('[data-chat-current]'));
+    function announceIncoming(arrived) {
+      let cue;
+      arrived.forEach(node => {
+        if (node.matches('.self-message')) return;
+        if (!soundOnce(`incoming:${card.id}:${nodes.indexOf(node)}`)) return;
+        if (node.matches('[data-system-event]')) cue = 'alert';
+        else if (cue !== 'alert') cue = 'message';
+      });
+      if (cue) sound.play(cue);
+    }
     const repeated = app.state.history.slice(app.state.route.cycleStart).some(step => step.cardId === card.id);
     const key = `${card.id}:${app.state.history.length}`;
     const restoring = app.cardDelivery?.key === key;
@@ -1168,6 +1214,7 @@
       else pauses.unshift({ after: 0, durationMs: attentionMs });
     }
     if (!pauses.length) {
+      if (card.mode !== 'irl') announceIncoming(nodes);
       const outgoing = nodes.filter(node => node.matches('.self-message'));
       app.cardDelivery = outgoing.length ? { key, pauses, delivered: true } : null;
       outgoing.forEach(node => {
@@ -1192,6 +1239,7 @@
     if (restoring) nodes.filter(node => node.isConnected).forEach(node => {
       node.classList.remove('is-pop'); node.style.animationDelay = '';
     });
+    announceIncoming(nodes.filter(node => node.isConnected));
     let typing;
     const anchor = card.mode === 'team' || card.previewMixedPersonal ? chat.querySelector('.message-clearance') : null;
     const append = node => stack.insertBefore(node, typing || anchor);
@@ -1218,7 +1266,9 @@
     revealCardMessages = () => {
       if (!isCurrent() || delivery.delivered) return;
       cancelArrivalMotion();
-      pending.splice(0).forEach(node => {
+      const revealed = pending.splice(0);
+      announceIncoming(revealed);
+      revealed.forEach(node => {
         node.style.animationDelay = '';
         node.classList.remove('is-pop');
         append(node);
@@ -1278,6 +1328,7 @@
       const nextPause = pauses[++delivery.pauseIndex];
       const count = nextPause ? nextPause.after - previousPause.after : pending.length;
       const arrived = pending.splice(0, count);
+      announceIncoming(arrived);
       arrived.forEach(node => {
         node.style.animationDelay = '';
         append(node);
@@ -1608,6 +1659,7 @@
     const phone = $('[data-game]');
     phone.dataset.outcome = 'failure';
     if (!presentation.defeated) phone.classList.add('is-outcome-entering');
+    if (!presentation.defeated) soundOnce('defeat-alert', 'alert');
     presentation.defeated = true;
   }
 
@@ -1662,6 +1714,7 @@
     dialog.addEventListener('cancel', event => { event.preventDefault(); dismiss(); });
     document.body.append(dialog);
     dialog.showModal();
+    soundOnce('finale-alert', 'alert');
   }
 
   function previewOutgoingMessageMarkup(message) {
