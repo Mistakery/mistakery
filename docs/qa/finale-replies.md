@@ -8,12 +8,12 @@ The shared game/preview callback passes the selected side to the popup. Each end
 |---|---|---|
 | Cash 0 | Need CEO? → Need CEO? | Never give up! → Never give up! |
 | Team 0 | Solo founder! → Solo founder! | Anyone here? → Anyone here? |
-| Team 100 | Delete chat → You'll crawl back!!! | Report spam → Report spam |
-| Customers 0 | Vision matters! → VISION MATTERS | Any open roles? → Any open roles? |
-| Founder 0 | Bringing you coffee. → Bringing you coffee | Excel 😍 → Wrong chat |
-| Founder 100 | Bless you. → Praise me! | Who's sick? → Who's sick? |
+| Team 100 | You'll crawl back!!! → You'll crawl back!!! | Report spam → Report spam |
+| Customers 0 | VISION MATTERS → VISION MATTERS | Any open roles? → Any open roles? |
+| Founder 0 | Bringing you coffee. → Bringing you coffee | Wrong chat → Wrong chat |
+| Founder 100 | PRAISE ME → Praise me! | Who's sick? → Who's sick? |
 
-The owner explicitly confirmed the three differing button labels on 2026-10-10. The existing source-card buttons remain unchanged. Resource cards, including the Cash 0 bubbles from 11a6caa, are unchanged.
+The owner clarified on 2026-10-10 that the four source-card buttons must also be renamed. Use the exact labels above, including uppercase VISION MATTERS and PRAISE ME. Left/right positions and corresponding finale responses are unchanged. All other resource-card copy, including the Cash 0 bubbles from 11a6caa, is unchanged.
 
 `tests/loss-finale-branch.browser.test.cjs` checks both replies for all six endings in preview and the seeded gameplay renderer in Chromium/WebKit against independent literal source dialogue. It also checks current RU copy, cancelled/repeated delivery, Escape, repeat render, a single retained reply, disabled source choices and unchanged game state. Existing resource-ending tests traverse real seeded routes and cover both final restart buttons, history/Back, RNG/baseline, fresh attempts and pending delivery cleanup. Existing preview tests cover both dismiss buttons, modal focus, small-screen geometry and normal/reduced motion.
 
