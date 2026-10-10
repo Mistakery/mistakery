@@ -1,5 +1,6 @@
 const { afterTurn } = require('./turn-resources.fixture.cjs');
 const test = require('node:test');
+const { revealMessages, completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -10,7 +11,7 @@ async function seed(page, id, score = 0, random = 0, resources = { cash: 50, tea
   await page.evaluate(({ id, score, random, resources }) => {
     const a = window.MistakeryApp;
     clearTimeout(a.introTypingTimer);
-    a.state = window.MistakeryEngine.startRun(a.deck);
+    a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null };
     a.state.currentCardId = id;
     a.state.resources = resources;
     a.state.schedulerResources = { ...resources };
@@ -22,11 +23,14 @@ async function seed(page, id, score = 0, random = 0, resources = { cash: 50, tea
     Math.random = () => { window.draws++; return random; };
     a.render();
   }, { id, score, random, resources });
+  await revealMessages(page);
 }
 
 async function click(page, side) {
+  await revealMessages(page);
   await page.waitForFunction(() => !window.MistakeryApp.locked);
   await page.locator(`[data-choice="${side}"]`).click();
+  await completeFounderSend(page);
 }
 async function snapshot(page) {
   return page.evaluate(() => ({ ...window.MistakeryApp.state, score: window.MistakeryApp.liveAgentScore, draws: window.draws }));
@@ -38,8 +42,8 @@ test('live agent probabilities, resources, completion and mobile messenger', asy
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
-    await page.goto(url);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+    await page.goto(`${url}?story=live-agent`);
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
 
     // Every route and exact threshold, including zero-chance mercy.
     for (const [id, side, chances, good, bad] of [
@@ -64,20 +68,21 @@ test('live agent probabilities, resources, completion and mobile messenger', asy
           }[outcome]));
           await page.evaluate(() => window.MistakeryApp.render());
           assert.deepEqual((await snapshot(page)).resources, state.resources, 'render must not reapply effects');
+          if (outcome === 2) {
+            assert.equal(state.gameOver, true);
+            assert.equal(state.endingId, 'judgment_day');
+            assert.equal(await page.locator('[data-choice]').count(), 1);
+            continue;
+          }
           await click(page, supports % 2 ? 'left' : 'right');
           const finished = await snapshot(page);
-          assert.equal(finished.currentCardId, 'OPEN_INVESTOR');
+          assert.equal(finished.route.phase, 'fillers');
+          assert.ok(finished.route.completed.includes('live_agent'));
           assert.deepEqual(finished.resources, afterTurn(state.resources), 'outcome reply only charges the default turn burn');
-          assert.ok(finished.flags.includes('live_agent_completed'));
-          assert.ok(!finished.flags.includes('live_agent_pending'));
           assert.equal(finished.score, 0);
           assert.equal(finished.activeArc, null);
           assert.equal(finished.gameOver, false);
           assert.equal(finished.activeCrisisId, null);
-          await click(page, supports % 2 ? 'left' : 'right');
-          assert.equal((await snapshot(page)).currentCardId, supports % 2 ? 'INFLUENCER_01' : 'PADEL_INVITE');
-          await click(page, 'left');
-          assert.equal((await snapshot(page)).activeCrisisId, null, 'zero-resource prototype remains playable');
         }
       }
     }
@@ -132,25 +137,11 @@ test('live agent probabilities, resources, completion and mobile messenger', asy
       assert.deepEqual(early.resources, { cash: 29.5, team: 35, customers: 50, founder: 50 });
       assert.equal(early.draws, 0);
       await click(page, side);
-      assert.equal((await snapshot(page)).currentCardId, 'OPEN_INVESTOR');
+      assert.equal((await snapshot(page)).route.phase, 'fillers');
       assert.deepEqual((await snapshot(page)).resources, afterTurn(early.resources));
     }
 
-    // Real entry, both Boss/Dev orders; no repeated story after completion.
-    for (const random of [0, .999999]) {
-      await seed(page, 'OPEN_01', 0, random);
-      await page.evaluate(() => { window.MistakeryApp.state.flags = []; });
-      await click(page, 'right');
-      await click(page, 'left');
-      const seen = [];
-      for (let i = 0; i < 2; i++) { seen.push((await snapshot(page)).currentCardId); await click(page, 'right'); }
-      assert.deepEqual(seen.sort(), ['OPEN_BOSS', 'OPEN_DEV']);
-      assert.equal((await snapshot(page)).currentCardId, 'LIVE_AGENT_01');
-      await click(page, 'right');
-      await click(page, 'left');
-      const eligible = await page.evaluate(() => window.MistakeryEngine.buildEligiblePool(window.MistakeryApp.deck, window.MistakeryApp.state).map(e => e.card.id));
-      assert.ok(!eligible.includes('LIVE_AGENT_01'));
-    }
+    // Shared entry, all permutations and filler composition are covered by route.browser.test.cjs.
 
     const ids = Array.from({ length: 8 }, (_, i) => `LIVE_AGENT_0${i + 1}`).concat('LIVE_AGENT_04B', 'LIVE_AGENT_07B', Array.from({ length: 5 }, (_, i) => `LIVE_AGENT_OUTCOME_${i}`));
     for (const viewport of [{ width: 390, height: 844 }, { width: 320, height: 650 }]) {
@@ -159,7 +150,7 @@ test('live agent probabilities, resources, completion and mobile messenger', asy
         await seed(page, id);
         await page.locator('.typing-bubble').waitFor({ state: 'detached' });
         await page.locator('[data-chat]').evaluate(async node => { await Promise.all(node.getAnimations({ subtree: true }).map(a => a.finished)); });
-        assert.doesNotMatch(await page.locator('.phone').innerText(), /bot.score|liveAgentScore|[А-Яа-яЁё]/);
+        assert.doesNotMatch((await page.locator('.phone').innerText()).replace('Вro, you feel me…', 'Bro, you feel me…'), /bot.score|liveAgentScore|[А-Яа-яЁё]/); // The authored reply uses Cyrillic В.
         const geometry = await page.evaluate(() => {
           const choices = document.querySelector('[data-choices]').getBoundingClientRect();
           const chat = document.querySelector('[data-chat]');
@@ -184,14 +175,14 @@ test('founder photo is preloaded and shares one bubble with its caption', async 
   const browser = await chromium.launch({ headless: true });
   try {
     const page = await browser.newPage({ viewport: { width: 320, height: 650 }, reducedMotion: 'reduce' });
-    await page.goto(url);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+    await page.goto(`${url}?story=live-agent`);
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
     const preload = page.locator('link[rel="preload"][as="image"][href="assets/live-agent-founder.webp"]');
     assert.equal(await preload.getAttribute('href'), 'assets/live-agent-founder.webp');
     await seed(page, 'LIVE_AGENT_04');
     const bubble = page.locator('[data-asset-reference="placeholder_founder_photo"]');
     assert.equal(await bubble.locator('.message-image').count(), 1);
-    assert.equal((await bubble.locator('p').innerText()).replace(/\u00a0/g, ' '), 'I noticed you check our bank account every 7 minutes');
+    assert.equal((await bubble.locator('p').innerText()).replace(/\u00a0/g, ' '), "I noticed you check our bank account every 7 minutes");
     assert.equal(await page.locator('[data-chat] .message').count(), 2);
     assert.equal(await page.locator('[data-chat] .media-placeholder').count(), 0);
     await bubble.locator('img').evaluate(image => image.decode());

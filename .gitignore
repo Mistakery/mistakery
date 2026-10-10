@@ -3,3 +3,11 @@ node_modules/
 .worktrees/
 coverage/
 
+
+# Local author documents and obsolete design comparisons
+docs/qa/source-audit/doc[1-4].txt
+docs/qa/source-audit/doc[1-4].json
+docs/qa/source-audit/corrections.json
+docs/qa/source-copy-audit.md
+docs/prototypes/
+node_modules

@@ -1,0 +1,20 @@
+.phone[data-view="ended"]:not([data-loss-preview]) .messenger-scene {
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+}
+.run-ending {
+  margin: 0 12px 8px;
+  padding: 13px 15px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, .88);
+  color: #752f38;
+}
+.run-ending small { font-size: 11px; font-weight: 800; letter-spacing: .09em; }
+.run-ending h2 { margin: 6px 0; font-size: 20px; line-height: 1.1; letter-spacing: -.02em; }
+.run-ending p { margin: 0; font-size: 13px; line-height: 1.4; }
+.phone[data-view="ended"]:not([data-loss-preview]) .choices { grid-template-columns: 1fr; }
+.phone[data-view="ended"]:not([data-loss-preview]) .quit { visibility: hidden; }
+.phone[data-view="ended"] .chat { overflow-y: auto; }
+.resource.is-fatal { color: var(--red); }
+.resource.is-fatal .resource-glyph { color: var(--red); }
+.resource.is-fatal .bar { box-shadow: 0 0 0 1px var(--red); }
+.resource.is-fatal .bar i { background: var(--red); }

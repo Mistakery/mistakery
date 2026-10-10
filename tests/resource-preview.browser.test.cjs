@@ -9,7 +9,7 @@ test('Live Agent previews outcome resources without drawing or applying an outco
   try {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
     await page.goto(`${pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href}?story=live-agent`);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
     for (const [id, sides] of [
       ['LIVE_AGENT_01', { left: ['customers', 'team'], right: ['cash', 'team'] }],
       ['LIVE_AGENT_04', { left: [], right: [] }],
@@ -21,7 +21,7 @@ test('Live Agent previews outcome resources without drawing or applying an outco
       await page.mouse.move(0, 0);
       await page.evaluate(id => {
         const a = window.MistakeryApp;
-        a.state = window.MistakeryEngine.startRun(a.deck);
+        a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null };
         a.state.currentCardId = id;
         a.state.resources = { cash: 50, team: 50, customers: 50, founder: 50 };
         a.state.schedulerResources = { ...a.state.resources };

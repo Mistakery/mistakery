@@ -6,14 +6,22 @@
     <meta name="theme-color" content="#bdd5e8">
     <title>Mistakery</title>
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="style.css?v=f32d2c654fc3">
+    <link rel="stylesheet" href="style.css?v=49923204b864">
+    <link rel="stylesheet" href="assets/endings.css?v=d24baa197a26">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-founder.webp" fetchpriority="high">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-manifesto.webp?v=91aac6e47bbd">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-judgment-day.webp">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-hasta-la-vista.webp">
-    <script src="cards.bundle.js?v=49d1c68e6757" defer></script>
+    <script src="cards.bundle.js?v=0ce69393452c" defer></script>
     <script src="game.js?v=4587f9034eb5" defer></script>
-    <script src="app.js?v=d59402acbb00" defer></script>
+    <script src="assets/route.js?v=692c8feaf11c" defer></script>
+    <script src="assets/loss-preview-data.js?v=7d549b6b4789" defer></script>
+    <script src="assets/loss-finale-data.js?v=1a459e659c5b" defer></script>
+    <link rel="stylesheet" href="assets/loss-preview.css?v=55526c21ce80">
+    <link rel="stylesheet" href="assets/sound.css?v=ce610bd1c7e7">
+    <script src="assets/sound-samples.js?v=95b7708d569c" defer></script>
+    <script src="assets/sound.js?v=d495624bc3f0" defer></script>
+  <script src="app.js?v=6dd9ff939754" defer></script>
   </head>
   <body>
     <main class="app" data-app>
@@ -23,12 +31,16 @@
         <button type="button" data-test-inspect aria-label="Перевод и ресурсы" aria-haspopup="dialog">RU / ±</button>
         <button type="button" data-test-back disabled>← Back</button>
         <button type="button" data-test-restart>Restart story</button>
+        <div class="hud-switcher" role="group" aria-label="Вид ресурсов" hidden>
+          <button type="button" data-hud-variant="pulse" aria-pressed="true">Пульс шкал</button>
+          <button type="button" data-hud-variant="icons" aria-pressed="false">Живые иконки</button>
+        </div>
       </nav>
       <div class="frame">
         <section class="phone" data-game data-view="loading" data-shell-stage="intro" aria-label="Mistakery game">
           <header class="top" data-top hidden>
             <div class="brand"><b>B2BuyerSpyer</b><span>AI-POWERED</span></div>
-            <button class="quit" type="button" data-restart-run disabled>Back to 9–5</button>
+            <button class="quit" type="button" data-restart-run disabled>Relaunch</button>
           </header>
 
           <div class="resources" data-resources aria-label="Startup resources" hidden></div>
@@ -38,17 +50,21 @@
             <header class="contact">
               <div class="avatar" data-avatar aria-hidden="true">M</div>
               <div class="contact__text"><b data-sender>Mistakery</b><i data-status>typing...</i></div>
-              <span class="more" aria-hidden="true">⋯</span>
+              <button class="sound-toggle" type="button" data-sound-toggle aria-label="Mute sounds" aria-pressed="true" title="Mute sounds">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4Z"/><g class="sound-on"><path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></g><path class="sound-off" d="m16 9 5 6m0-6-5 6"/></svg>
+              </button>
             </header>
 
-            <button class="pinned" type="button" data-pinned hidden>
-              <span class="pin" aria-hidden="true">📌</span>
-              <span><small>PINNED</small><b data-pinned-title>5 MONTHS AS A FOUNDER 🚀</b></span>
-            </button>
-
-            <div class="outcome-banner" data-outcome-banner role="status" hidden>
-              <b data-outcome-label></b>
+            <div class="irl-location" data-location hidden>
+              <span class="pin" aria-hidden="true">📍</span>
+              <span><small></small><b data-location-score></b></span>
             </div>
+
+            <section class="run-ending" data-ending-summary role="status" hidden>
+              <small>GAME OVER · YOU LOST</small>
+              <h2 data-ending-title></h2>
+              <p data-ending-cause></p>
+            </section>
 
             <div class="chat" data-chat aria-live="polite">
               <span class="sr-only" data-card-id></span>
@@ -72,15 +88,6 @@
             <footer class="choices" data-choices></footer>
           </section>
 
-          <div class="pin-sheet" data-pin-sheet hidden>
-            <div class="pin-sheet__card" role="dialog" aria-label="Pinned message">
-              <header class="pin-sheet__head">
-                <span>📌 Pinned</span>
-                <button class="pin-sheet__close" type="button" data-pin-close aria-label="Close">✕</button>
-              </header>
-              <div class="message note-message"><p data-pin-text></p></div>
-            </div>
-          </div>
         </section>
       </div>
     </main>

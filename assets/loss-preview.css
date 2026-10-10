@@ -1,0 +1,92 @@
+.test-controls [data-loss-select] {
+  width: 100%; min-width: 0; min-height: 36px; padding: 7px 8px;
+  border: 1px solid #607385; border-radius: 10px;
+  background: #202d38; color: #f3f7fb; font: inherit;
+}
+.test-controls [data-loss-select]:focus-visible { outline: 2px solid #9fcfff; outline-offset: 2px; }
+.loss-preview-note { flex-basis: 100%; margin: 0; font-size: 10px; line-height: 1.3; }
+[data-loss-note] { display: none; }
+.phone[data-loss-preview] .chat {
+  justify-content: safe flex-end; overflow-y: auto;
+  overscroll-behavior: contain; scrollbar-width: none;
+}
+.phone[data-loss-preview] .chat::-webkit-scrollbar { display: none; }
+.phone[data-loss-preview] .chat > * { flex-shrink: 0; }
+.phone[data-loss-preview] .date-chip { max-width: 100%; text-align: center; overflow-wrap: anywhere; }
+.phone[data-loss-preview] .date-chip p { margin: 0; font: inherit; line-height: 1.34; }
+.phone[data-loss-preview] .date-chip .mention { font-weight: 700; }
+.phone[data-loss-preview] .self-message .mention { color: #fff; font-weight: 700; }
+.phone[data-loss-preview] .preview-file { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.phone[data-loss-preview] .preview-file__icon { flex: 0 0 32px; width: 32px; height: 40px; color: #fff; }
+.phone[data-loss-preview] .preview-file__icon svg { display: block; width: 100%; height: 100%; }
+.phone[data-loss-preview] .preview-file__label { min-width: 0; display: grid; gap: 3px; }
+.phone[data-loss-preview] .preview-file__label b { font-size: var(--message-font-size); overflow-wrap: anywhere; }
+.phone[data-loss-preview] .preview-file__label small { font-size: 10px; color: rgba(255,255,255,.8); }
+.phone[data-loss-preview] .preview-composer {
+  align-self: flex-end; width: 64px; justify-content: center; padding: 15px 16px;
+  border-radius: 16px 16px 6px 16px; background: #edf6ff; color: #1877ca;
+  box-shadow: 0 7px 18px rgba(22,119,210,.12);
+}
+.phone[data-loss-preview] .preview-composer .typing-dots i { background: currentColor; }
+.loss-preview-defeat {
+  position: fixed; inset: 0; z-index: 10000; pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(ellipse at center, transparent 25%, rgba(184,53,66,.12) 65%, rgba(150,30,47,.42) 100%);
+}
+.loss-preview-defeat::before {
+  content: ""; position: absolute; inset: 0; opacity: 0;
+  background: rgba(184,53,66,.36);
+  box-shadow: inset 0 0 14vmin 4vmin rgba(150,30,47,.65);
+}
+.loss-preview-defeat.is-defeated { opacity: 1; }
+.loss-preview-defeat.is-defeated::before { animation: lossPreviewDefeat 1.3s ease-out both; }
+.loss-finale {
+  width: min(308px, calc(100vw - 32px)); max-width: none;
+  max-height: calc(100svh - 32px); margin: auto; padding: 0;
+  color: var(--ink); border: 1px solid rgba(255,255,255,.85); border-radius: 24px;
+  background: linear-gradient(150deg,#d2e4f0,#edf4f8 62%,#f5f8fa);
+  box-shadow: 0 20px 60px #07132166; overflow: hidden;
+}
+.loss-finale[open] { display: flex; flex-direction: column; }
+.loss-finale::backdrop { background: rgba(19,25,34,.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+.loss-finale__head {
+  display: flex; flex-shrink: 0; gap: 10px; align-items: center;
+  padding: 18px 17px 14px; border-bottom: 1px solid #bdd2e180; background: #ffffff60;
+}
+.loss-finale__head .avatar { width: 42px; height: 42px; }
+.loss-finale__body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 16px 13px; }
+.loss-finale .message { padding: 13px 14px; box-shadow: 0 6px 20px #234d7210; }
+.loss-finale .message p { font-size: 12.5px; font-weight: 400; line-height: 1.43; white-space: normal; overflow-wrap: anywhere; }
+.loss-finale .message p + p { margin-top: 20px; }
+.loss-finale .message .loss-finale__lead {
+  display: block; color: #426e99;
+  font-size: 14px; font-weight: 400; line-height: 1.35;
+}
+.loss-finale .message .loss-finale__quote {
+  border-left: 2px solid #63a9ec; padding-left: 12px;
+}
+.loss-finale .message em { font-weight: 400; }
+.loss-finale .message .loss-finale__honestly { display: block; }
+.loss-finale .message .loss-finale__emoji-tail { display: inline; white-space: nowrap; }
+.loss-finale .message .loss-finale__contrast-tail { display: inline; white-space: nowrap; }
+.loss-finale .message .loss-finale__invitation {
+  border-top: 1px solid #d0dde7; padding-top: 13px;
+}
+.loss-finale .choices { flex-shrink: 0; padding: 4px 13px 15px; gap: 8px; }
+.loss-finale .choice { min-height: 50px; font-size: 12px; padding: 10px 8px; }
+.loss-finale .choice:focus-visible { outline: 2px solid var(--blue); outline-offset: -3px; }
+.loss-finale__body:focus-visible { outline: 2px solid var(--blue); outline-offset: -3px; }
+@keyframes lossPreviewDefeat {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  55% { opacity: .6; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .phone[data-loss-preview] .preview-composer .typing-dots i { animation: none; opacity: .65; }
+  .loss-preview-defeat.is-defeated::before { animation: none; }
+  .phone[data-loss-preview].is-outcome-entering .scene--card,
+  .phone[data-loss-preview].is-outcome-entering .scene--card::after { animation: none; }
+}
+
+.loss-preview-defeat.is-restored::before { animation: none; }

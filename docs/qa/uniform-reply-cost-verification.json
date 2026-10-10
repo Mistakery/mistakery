@@ -1,0 +1,61 @@
+{
+  "verifiedAt": "2026-10-03T13:08:15.204Z",
+  "baseCashBurn": -0.5,
+  "removedDuplicateTimeCharges": [
+    "OPEN_INVESTOR.left",
+    "OPEN_INVESTOR.right",
+    "PADEL_INVITE.left",
+    "DREAM_TEAM.left",
+    "DREAM_TEAM.right",
+    "IRL_PADEL_01.left",
+    "IRL_PADEL_01.right",
+    "IRL_PADEL_03B.left",
+    "IRL_PADEL_03B.right",
+    "IRL_PADEL_04.left",
+    "IRL_PADEL_04.right",
+    "IRL_PADEL_05.left",
+    "IRL_PADEL_05.right",
+    "IRL_PADEL_06.left",
+    "IRL_PADEL_06.right"
+  ],
+  "allOtherDeckDataUnchanged": true,
+  "routeAndEngineUnchanged": true,
+  "fullSuite": {
+    "command": "npm test",
+    "passed": 169,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 222922.033583
+  },
+  "padelFullConversationCashCost": [
+    3.5,
+    4
+  ],
+  "investorCashCostPerReply": 0.5,
+  "localPreview": {
+    "url": "http://127.0.0.1:8791/",
+    "matchingFiles": [
+      "cards.json",
+      "cards.bundle.js",
+      "index.html"
+    ]
+  },
+  "endingSample": {
+    "sampleSize": 3000,
+    "counts": {
+      "cash_low": 1966,
+      "judgment_day": 895,
+      "founder_high": 104,
+      "founder_low": 15,
+      "team_high": 13,
+      "team_low": 7
+    },
+    "allSevenWitnessesReplayed": true
+  },
+  "hashes": {
+    "cards.json": "f05dbdeba12dfef9f475fa471cf6986b33eb210b857e11eab5a9f3a96668012a",
+    "cards.bundle.js": "4b63007daec70d56c2c27748f8d323619310f0af561df69784072d4aab8eb92a",
+    "assets/route.js": "692c8feaf11cced90310b1079c78282d0a10cc3585874f3ceea94f5a64171840",
+    "game.js": "4587f9034eb5e83e639c2a96e2bf21d4531511bc6c48234d5a025d94c245e466"
+  }
+}

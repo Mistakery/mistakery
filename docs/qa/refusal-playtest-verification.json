@@ -1,0 +1,58 @@
+{
+  "verifiedAt": "2026-10-03T12:44:48.035Z",
+  "scope": [
+    "INFLUENCER_01.right.effects.cash: -25 -> -15",
+    "PADEL_INVITE.right.effects.cash: -25 -> -15"
+  ],
+  "deckHasNoOtherChanges": true,
+  "routeAndEngineUnchanged": true,
+  "fullSuite": {
+    "command": "npm test",
+    "passed": 167,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 223826.036333
+  },
+  "initialRefusal": {
+    "plots": [
+      "padel",
+      "influencer"
+    ],
+    "cashBefore": 25,
+    "cashAtOutcome": 9.5,
+    "cashAfterAcknowledgement": 9,
+    "continuesToFillers": true,
+    "browsers": [
+      "Chromium",
+      "WebKit"
+    ]
+  },
+  "localPreview": {
+    "url": "http://127.0.0.1:8791/",
+    "matchingFiles": [
+      "cards.json",
+      "cards.bundle.js",
+      "index.html"
+    ]
+  },
+  "endingSample": {
+    "command": "node scripts/check-resource-endings.cjs",
+    "sampleSize": 3000,
+    "counts": {
+      "cash_low": 2039,
+      "judgment_day": 842,
+      "founder_high": 93,
+      "team_high": 13,
+      "founder_low": 5,
+      "customers_low": 2,
+      "team_low": 6
+    },
+    "allSevenEndingsReplayed": true
+  },
+  "hashes": {
+    "cards.json": "4c4ca78cfdf2d7f7fb9f14cbe8a61ca09e4b258766c95bf065bb650c98f11c16",
+    "cards.bundle.js": "dcb7918b0e2553115a1dc40af2f2e15eed703687a5672f1b4a9dc248d4e51b24",
+    "assets/route.js": "692c8feaf11cced90310b1079c78282d0a10cc3585874f3ceea94f5a64171840",
+    "game.js": "4587f9034eb5e83e639c2a96e2bf21d4531511bc6c48234d5a025d94c245e466"
+  }
+}
