@@ -1631,8 +1631,7 @@
     <div class="loss-finale__body" tabindex="0" autofocus aria-label="Message from ${htmlAttribute(source.name)}">
       <div class="message">${lines.map((text, index) => {
         if (index === 0) {
-          const opening = text.match(/^(.+?[!?])(\s+.+)$/u);
-          return `<p class="loss-finale__opening"><span class="loss-finale__lead">${opening ? htmlAttribute(opening[1] + ' ') : lossFinaleText(text)}</span>${opening ? lossFinaleText(opening[2].trimStart()) : ''}</p>`;
+          return `<p class="loss-finale__opening"><span class="loss-finale__lead">${lossFinaleText(text)}</span></p>`;
         }
         if (index === 1) {
           const contrast = text.match(/^(You (?:weren’t|didn’t) )(.+?)( — .+)$/u);

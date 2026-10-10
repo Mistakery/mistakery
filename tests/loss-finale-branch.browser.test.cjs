@@ -49,6 +49,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
             await page.locator(`[data-choice="${side}"]`).click();
             const expected = source.find(card => card.id === id).responses[order[index]].en;
             assert.deepEqual(await page.locator('[data-loss-finale] .message p').allTextContents(), expected, `${preview ? 'preview' : 'game'} ${id} ${side}`);
+            assert.equal(await page.locator('.loss-finale__lead').textContent(), expected[0], 'the whole opening paragraph is highlighted');
             const formatting = await page.locator('[data-loss-finale] .message').evaluate(node => {
               const lead = node.querySelector('.loss-finale__lead');
               const paragraphs = [...node.querySelectorAll('p')];
