@@ -1582,7 +1582,7 @@
       app.lossPreviewReply = presentation.reply;
       const reply = appendReply(presentation.reply);
       if (!reducedMotion.matches) animateArrival(reply, 16, true, document.timeline.currentTime);
-      showLossPreviewFinale(card.id);
+      showLossPreviewFinale(card.id, side);
     });
     stageCardMessages({ ...card, previewMixedPersonal: card.mode === 'personal' });
     if (presentation.reply) appendReply(presentation.reply);
@@ -1611,9 +1611,10 @@
     presentation.defeated = true;
   }
 
-  function showLossPreviewFinale(cardId) {
+  function showLossPreviewFinale(cardId, side) {
     const data = window.MISTAKERY_LOSS_FINALE;
     const finale = data.cards.find(card => card.id === cardId);
+    const lines = finale.responses[side === 'left' ? 0 : 1].en;
     const source = sourceFor('@b2buddy');
     const dialog = document.createElement('dialog');
     dialog.className = 'loss-finale'; dialog.dataset.lossFinale = ''; dialog.dataset.card = cardId;
@@ -1623,7 +1624,7 @@
       <div class="contact__text"><b id="loss-finale-sender">${htmlAttribute(source.name)}</b><i>${htmlAttribute(source.role)}</i></div>
     </header>
     <div class="loss-finale__body" tabindex="0" autofocus aria-label="Message from ${htmlAttribute(source.name)}">
-      <div class="message">${finale.en.map((text, index) => `<p>${index === finale.en.length - 1
+      <div class="message">${lines.map((text, index) => `<p>${index === lines.length - 1
         ? `<strong>${htmlAttribute(text)}</strong>` : htmlAttribute(text)}</p>`).join('')}</div>
     </div>
     <footer class="choices">${data.choices.en.map((label, index) => `<button type="button" class="choice${index ? ' choice--right' : ''}" data-finale-choice>${htmlAttribute(label)}</button>`).join('')}</footer>`;
