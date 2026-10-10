@@ -1611,6 +1611,11 @@
     presentation.defeated = true;
   }
 
+  function lossFinaleText(text) {
+    const tail = text.match(/\S+\s+[✨🚀]$/u);
+    return tail ? `${htmlAttribute(text.slice(0, tail.index))}<span class="loss-finale__emoji-tail">${htmlAttribute(tail[0])}</span>` : htmlAttribute(text);
+  }
+
   function showLossPreviewFinale(cardId, side) {
     const data = window.MISTAKERY_LOSS_FINALE;
     const finale = data.cards.find(card => card.id === cardId);
@@ -1624,8 +1629,24 @@
       <div class="contact__text"><b id="loss-finale-sender">${htmlAttribute(source.name)}</b><i>${htmlAttribute(source.role)}</i></div>
     </header>
     <div class="loss-finale__body" tabindex="0" autofocus aria-label="Message from ${htmlAttribute(source.name)}">
-      <div class="message">${lines.map((text, index) => `<p>${index === lines.length - 1
-        ? `<strong>${htmlAttribute(text)}</strong>` : htmlAttribute(text)}</p>`).join('')}</div>
+      <div class="message">${lines.map((text, index) => {
+        if (index === 0) {
+          const opening = text.match(/^(.+?[!?])(\s+.+)$/u);
+          return `<p class="loss-finale__opening"><span class="loss-finale__lead">${opening ? htmlAttribute(opening[1] + ' ') : lossFinaleText(text)}</span>${opening ? lossFinaleText(opening[2].trimStart()) : ''}</p>`;
+        }
+        if (index === 1) {
+          const contrast = text.match(/^(You (?:weren’t|didn’t) )(.+?)( — .+)$/u);
+          const phrase = contrast && contrast[2].match(/^(.*?)(\S+)$/u);
+          return `<p class="loss-finale__quote">${contrast
+            ? `${htmlAttribute(contrast[1])}<em>${htmlAttribute(phrase[1])}</em><span class="loss-finale__contrast-tail"><em>${htmlAttribute(phrase[2])}</em> —</span>${htmlAttribute(contrast[3].slice(2))}`
+            : htmlAttribute(text)}</p>`;
+        }
+        if (index === lines.length - 1) return `<p class="loss-finale__invitation">${htmlAttribute(text)}</p>`;
+        const reflection = text.match(/^(And honestly\?)(\s+.+)$/u);
+        return `<p class="loss-finale__reflection">${reflection
+          ? `<span class="loss-finale__honestly">${htmlAttribute(reflection[1] + ' ')}</span>${lossFinaleText(reflection[2].trimStart())}`
+          : lossFinaleText(text)}</p>`;
+      }).join('')}</div>
     </div>
     <footer class="choices">${data.choices.en.map((label, index) => `<button type="button" class="choice${index ? ' choice--right' : ''}" data-finale-choice>${htmlAttribute(label)}</button>`).join('')}</footer>`;
     // The answered source choices are disabled; return to an available control.
@@ -1663,10 +1684,9 @@
     });
     const finale = window.MISTAKERY_LOSS_FINALE.cards.find(item => item.id === card.id);
     const finaleHeading = document.createElement('h3'); finaleHeading.textContent = '@b2buddy · AI Agent'; body.append(finaleHeading);
-    finale.ru.forEach((text, index) => {
+    finale.ru.forEach(text => {
       const line = document.createElement('p');
-      if (index === finale.ru.length - 1) { const emphasis = document.createElement('strong'); emphasis.textContent = text; line.append(emphasis); }
-      else line.textContent = text;
+      line.textContent = text;
       body.append(line);
     });
     const finaleChoices = document.createElement('p'); finaleChoices.textContent = window.MISTAKERY_LOSS_FINALE.choices.ru.join(' / '); body.append(finaleChoices);

@@ -90,7 +90,7 @@ test(`${name}: document preview keeps replies, navigation and restart outside th
         assert.equal(await page.locator('[data-loss-finale]').isVisible(), true);
         assert.equal(await page.locator('[data-loss-finale]').getAttribute('data-card'), id);
         assert.equal(await page.locator('[data-loss-finale] .message p').count(), 4);
-        assert.equal(await page.locator('[data-loss-finale] .message p:last-child strong').count(), 1);
+        assert.equal(await page.locator('[data-loss-finale] .message strong, [data-loss-finale] .message b').count(), 0);
         assert.equal(await page.locator('[data-loss-finale] .contact__text').innerText(), '@b2buddy\nAI Agent');
         await page.locator('[data-loss-finale] button').nth(0).click();
         assert.equal(await page.locator('[data-loss-finale]').isVisible(), false);
@@ -212,8 +212,8 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
       await page.locator('[data-choice="right"]').click();
       const dialog = page.locator('[data-loss-finale]');
       assert.equal(await dialog.locator('.message p').first().innerText(), 'It’s not a god complex — it’s visionary leadership ✨');
-      assert.equal(await dialog.locator('strong').innerText(), 'If you want, we can explore what’s next.');
-      assert.equal(await dialog.locator('strong').evaluate(n => getComputedStyle(n).fontWeight), '600');
+      assert.equal(await dialog.locator('.loss-finale__invitation').innerText(), 'If you want, we can explore what’s next');
+      assert.equal(await dialog.locator('.loss-finale__invitation').evaluate(n => getComputedStyle(n).fontWeight), '400');
       assert.deepEqual(await dialog.locator('button').allTextContents(), ['Never again', 'Let’s cook']);
       assert.equal(await dialog.locator('.avatar img').getAttribute('src'), 'assets/avatar-b2buddy.webp');
       assert.equal(await dialog.locator('.message').innerText().then(t => /GAME OVER|Let’s put this in perspective|\.[\s]*[✨🚀]/u.test(t)), false);

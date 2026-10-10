@@ -49,6 +49,27 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
             await page.locator(`[data-choice="${side}"]`).click();
             const expected = source.find(card => card.id === id).responses[order[index]].en;
             assert.deepEqual(await page.locator('[data-loss-finale] .message p').allTextContents(), expected, `${preview ? 'preview' : 'game'} ${id} ${side}`);
+            const formatting = await page.locator('[data-loss-finale] .message').evaluate(node => {
+              const lead = node.querySelector('.loss-finale__lead');
+              const paragraphs = [...node.querySelectorAll('p')];
+              return { leadSize: lead && parseFloat(getComputedStyle(lead).fontSize),
+                bodySize: parseFloat(getComputedStyle(paragraphs[1]).fontSize),
+                leadColor: lead && getComputedStyle(lead).color,
+                weights: [...node.querySelectorAll('p, span, em')].map(n => getComputedStyle(n).fontWeight),
+                emphasis: node.querySelectorAll('strong, b').length,
+                quoteBorder: getComputedStyle(paragraphs[1]).borderLeftWidth,
+                invitationBorder: getComputedStyle(paragraphs[3]).borderTopWidth,
+                whitespace: paragraphs.map(p => getComputedStyle(p).whiteSpace),
+                contrastLines: new Set([...node.querySelector('.loss-finale__contrast-tail').getClientRects()].map(rect => Math.round(rect.top))).size };
+            });
+            assert.ok(formatting.leadSize > formatting.bodySize, 'opening uses size rather than bold');
+            assert.equal(formatting.leadColor, 'rgb(66, 110, 153)');
+            assert.ok(formatting.weights.every(weight => weight === '400'));
+            assert.equal(formatting.emphasis, 0);
+            assert.equal(formatting.quoteBorder, '2px');
+            assert.equal(formatting.invitationBorder, '1px');
+            assert.ok(formatting.whitespace.every(value => value === 'normal'));
+            assert.equal(formatting.contrastLines, 1, 'contrast word and dash stay on one line');
             assert.deepEqual(await page.evaluate(() => structuredClone(MistakeryApp.state)), before);
             await page.keyboard.press('Escape');
             await page.evaluate(() => MistakeryApp.render());

@@ -56,8 +56,23 @@
 .loss-finale__head .avatar { width: 42px; height: 42px; }
 .loss-finale__body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 16px 13px; }
 .loss-finale .message { padding: 13px 14px; box-shadow: 0 6px 20px #234d7210; }
-.loss-finale .message p { font-size: 12.5px; line-height: 1.43; white-space: pre-wrap; overflow-wrap: anywhere; }
-.loss-finale .message strong { font-weight: 600; }
+.loss-finale .message p { font-size: 12.5px; font-weight: 400; line-height: 1.43; white-space: normal; overflow-wrap: anywhere; }
+.loss-finale .message p + p { margin-top: 20px; }
+.loss-finale .message .loss-finale__lead {
+  display: block; margin-bottom: 7px; color: #426e99;
+  font-size: 15.25px; font-weight: 400; line-height: 1.35;
+}
+.loss-finale .message .loss-finale__lead:only-child { margin-bottom: 0; }
+.loss-finale .message .loss-finale__quote {
+  border-left: 2px solid #63a9ec; padding-left: 12px;
+}
+.loss-finale .message em { font-weight: 400; }
+.loss-finale .message .loss-finale__honestly { display: block; }
+.loss-finale .message .loss-finale__emoji-tail { display: inline; white-space: nowrap; }
+.loss-finale .message .loss-finale__contrast-tail { display: inline; white-space: nowrap; }
+.loss-finale .message .loss-finale__invitation {
+  border-top: 1px solid #d0dde7; padding-top: 13px;
+}
 .loss-finale .choices { flex-shrink: 0; padding: 4px 13px 15px; gap: 8px; }
 .loss-finale .choice { min-height: 50px; font-size: 12px; padding: 10px 8px; }
 .loss-finale .choice:focus-visible { outline: 2px solid var(--blue); outline-offset: -3px; }
