@@ -64,7 +64,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       }
       await assertExclusive();
       // Fixtures change presentation only; the normal choice path above covers real sending.
-      async function show(id, endingId) {
+      async function show(id, endingId, complete = true) {
         await page.evaluate(({ id, endingId }) => {
           MistakerySound.stop();
           const app = MistakeryApp;
@@ -75,7 +75,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
           app.cardDelivery = null; app.locked = false; app.view = 'playing';
           audioClips.length = 0; audioEvents.length = 0; app.render();
         }, { id, endingId });
-        await page.clock.runFor(15000);
+        if (complete) await page.clock.runFor(15000);
         return page.evaluate(() => audioClips);
       }
       assert.deepEqual(await show('LIVE_AGENT_OUTCOME_4'), ['story-loss']);
@@ -118,6 +118,24 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.deepEqual(await page.evaluate(() => audioClips), [], 'enabling sound does not replay old arrivals');
       await page.locator('[data-choice="left"]').click();
       await page.waitForFunction(() => audioClips.includes('send'));
+      // Use real time: the browser clock does not advance AudioContext.currentTime.
+      // These are authored deliveries without a choice click, including a PDF and four consecutive sends.
+      for (const fixture of [
+        { id: 'LIVE_AGENT_01', sends: 1 }, { id: 'DREAM_TEAM', sends: 1 },
+        { id: 'LIVE_AGENT_01', ending: 'founder_low', sends: 1 },
+        { id: 'LIVE_AGENT_01', ending: 'founder_high', sends: 4 },
+      ]) {
+        await show(fixture.id, fixture.ending, false);
+        const before = await page.evaluate(() => structuredClone(MistakeryApp.state));
+        await page.waitForFunction(() => MistakeryApp.cardDelivery?.delivered);
+        const clips = await page.evaluate(() => audioClips);
+        assert.equal(clips.filter(kind => kind === 'send').length, fixture.sends,
+          `${fixture.ending || fixture.id}: each automatic outgoing delivery has its send cue`);
+        await assertExclusive();
+        await page.evaluate(() => MistakeryApp.render());
+        assert.deepEqual(await page.evaluate(() => audioClips), clips, 'rerender never repeats automatic sends');
+        assert.deepEqual(await page.evaluate(() => MistakeryApp.state), before, 'automatic audio never changes gameplay');
+      }
       assert.deepEqual(errors, []);
       assert.ok((await page.evaluate(() => audioClips)).every(kind => kind !== 'unrecognized'));
       if (process.env.MISTAKERY_SOUND_SCREENSHOT) await page.screenshot({ path: process.env.MISTAKERY_SOUND_SCREENSHOT.replace('.png', `-${name}.png`) });

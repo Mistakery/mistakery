@@ -1199,14 +1199,16 @@
     const chat = $('[data-chat]');
     const stack = card.mode === 'team' || card.previewMixedPersonal ? chat : chat.querySelector('[data-message-stack]');
     const nodes = Array.from(chat.querySelectorAll('[data-chat-current]'));
-    function announceIncoming(arrived) {
+    function announceDelivery(arrived) {
       // Story outcomes already have their own approved signal.
       if (card.outcomeTone) return;
       let cue;
       arrived.forEach(node => {
-        if (node.matches('.self-message')) return;
-        if (!soundOnce(`incoming:${card.id}:${nodes.indexOf(node)}`)) return;
-        cue = 'incoming';
+        const outgoing = node.matches('.self-message');
+        const direction = outgoing ? 'outgoing' : 'incoming';
+        if (!soundOnce(`${direction}:${card.id}:${nodes.indexOf(node)}`)) return;
+        // A reveal-all batch has one cue for its last fresh bubble.
+        cue = outgoing ? 'send' : 'incoming';
       });
       if (cue) sound.play(cue);
     }
@@ -1223,7 +1225,7 @@
     }
     if (!pauses.length) {
       if (card.mode === 'irl') soundOnce(`padel:${key}`, 'padel');
-      else announceIncoming(nodes);
+      else announceDelivery(nodes);
       const outgoing = nodes.filter(node => node.matches('.self-message'));
       app.cardDelivery = outgoing.length ? { key, pauses, delivered: true } : null;
       outgoing.forEach(node => {
@@ -1248,7 +1250,7 @@
     if (restoring) nodes.filter(node => node.isConnected).forEach(node => {
       node.classList.remove('is-pop'); node.style.animationDelay = '';
     });
-    announceIncoming(nodes.filter(node => node.isConnected));
+    announceDelivery(nodes.filter(node => node.isConnected));
     let typing;
     const anchor = card.mode === 'team' || card.previewMixedPersonal ? chat.querySelector('.message-clearance') : null;
     const append = node => stack.insertBefore(node, typing || anchor);
@@ -1276,7 +1278,7 @@
       if (!isCurrent() || delivery.delivered) return;
       cancelArrivalMotion();
       const revealed = pending.splice(0);
-      announceIncoming(revealed);
+      announceDelivery(revealed);
       revealed.forEach(node => {
         node.style.animationDelay = '';
         node.classList.remove('is-pop');
@@ -1337,7 +1339,7 @@
       const nextPause = pauses[++delivery.pauseIndex];
       const count = nextPause ? nextPause.after - previousPause.after : pending.length;
       const arrived = pending.splice(0, count);
-      announceIncoming(arrived);
+      announceDelivery(arrived);
       arrived.forEach(node => {
         node.style.animationDelay = '';
         append(node);
