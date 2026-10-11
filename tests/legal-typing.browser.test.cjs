@@ -33,7 +33,6 @@ test('Legal continuation delivers three bubbles with two pauses and preserves th
       await page.evaluate(() => { const a = window.MistakeryApp; a.state.currentCardId = 'LIVE_AGENT_07'; a.render(); });
       await page.clock.runFor(2900);
       await page.locator('[data-choice="left"]').click();
-      await page.clock.runFor(650);
       assert.deepEqual(await current(page), expected.slice(0, 1));
       assert.equal(await page.locator('[data-player-reply]').innerText(), 'Just AI humor!');
       assert.equal(await page.locator('[data-chat-history]').count(), 2);
@@ -61,7 +60,6 @@ test('Legal continuation delivers three bubbles with two pauses and preserves th
       assert.equal(await page.locator('.typing-bubble').count(), 0);
       await page.locator('[data-test-back]').click();
       await page.locator('[data-choice="right"]').click();
-      await page.clock.runFor(650);
       await page.clock.runFor(600);
       assert.deepEqual(await current(page), expected.slice(0, 2));
       await assertVisibleInChat(page, '.typing-bubble');

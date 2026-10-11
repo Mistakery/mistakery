@@ -45,14 +45,15 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.deepEqual(await page.evaluate(() => audioClips), [], 'no autoplay');
       await page.locator('[data-test-inspect]').click(); await page.locator('[data-details-close]').click();
       assert.deepEqual(await page.evaluate(() => audioClips), [], 'ordinary controls are quiet');
-      await page.clock.install(); await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
-      await page.locator('[data-choice="left"]').click(); await page.clock.runFor(15000);
+      // Real delivery time keeps AudioContext.currentTime in step with the UI.
+      await page.locator('[data-choice="left"]').click();
+      await page.waitForFunction(() => MistakeryApp.cardDelivery?.delivered);
       const delivered = await page.evaluate(() => audioClips);
       assert.equal(delivered.filter(kind => kind === 'send').length, 1, 'choice/send is one cue');
       assert.ok(delivered.includes('incoming'), 'approved B accompanies fresh messages');
-      await page.evaluate(() => MistakeryApp.render()); await page.clock.runFor(15000);
+      await page.evaluate(() => MistakeryApp.render());
       assert.deepEqual(await page.evaluate(() => audioClips), delivered, 'rerender does not replay');
-      await page.locator('[data-test-back]').click(); await page.clock.runFor(15000);
+      await page.locator('[data-test-back]').click();
       assert.deepEqual(await page.evaluate(() => audioClips), delivered, 'Back does not replay');
       async function assertExclusive() {
         const events = await page.evaluate(() => audioEvents);
@@ -63,6 +64,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         }
       }
       await assertExclusive();
+      await page.clock.install(); await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
       // Fixtures change presentation only; the normal choice path above covers real sending.
       async function show(id, endingId, complete = true) {
         await page.evaluate(({ id, endingId }) => {

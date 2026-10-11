@@ -51,6 +51,20 @@ test('one immediate transition selects only its highest-priority cue, regardless
     assert.equal(played[0].buffer.getChannelData(0)[0], ['incoming', 'send', 'story-loss', 'resource-loss', 'ai-finale', 'story-win', 'padel'].indexOf(expected) / 32768);
   }
 });
+test('send feedback overrides a simultaneous or playing arrival without a queue', async () => {
+  for (const kinds of [['send', 'incoming'], ['incoming', 'send'], ['send', 'padel']]) {
+    const { sound, played } = setup(); await sound.unlock();
+    kinds.forEach(kind => sound.play(kind)); await tick();
+    assert.equal(played.length, 1);
+    assert.equal(played[0].buffer.getChannelData(0)[0], 1 / 32768, 'send is the main action feedback');
+  }
+  const audio = setup(); await audio.sound.unlock();
+  audio.sound.play('incoming'); await tick(); audio.context.currentTime = .1;
+  audio.sound.play('send'); await tick();
+  assert.equal(audio.played.length, 2);
+  assert.ok(audio.played[1].time <= .111);
+  assert.ok(audio.played[1].time >= audio.played[0].source.stopTime);
+});
 test('a result interrupts a lower-priority cue with a brief fade and no overlap or backlog', async () => {
   const audio = setup(), { sound, played } = audio; await sound.unlock();
   sound.play('send'); await tick(); audio.context.currentTime = .1;

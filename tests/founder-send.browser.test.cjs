@@ -31,69 +31,26 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
           const initial = await page.evaluate(() => structuredClone(MistakeryApp.state));
           const label = await page.locator('[data-choice="left"]').innerText();
           await page.evaluate(() => {
-            const chat = document.querySelector('[data-chat]');
-            window.beforeCompose = [...chat.querySelectorAll('[data-chat-current]')].map(n => n.offsetTop - chat.scrollTop);
             document.querySelector('[data-choice="left"]').click();
+            document.querySelector('[data-choice="right"]').click();
           });
-          assert.equal(await page.locator('[data-composing-reply] i').count(), 3);
-          await page.clock.runFor(649);
-          await page.evaluate(() => { const chat = document.querySelector('[data-chat]'); window.beforeCompose = [...chat.querySelectorAll('[data-chat-current]')].map(n => n.offsetTop - chat.scrollTop); });
-          await page.clock.runFor(1);
-          const sample = await page.evaluate(() => {
-            const chat = document.querySelector('[data-chat]');
-            const old = [...chat.querySelectorAll('[data-chat-current]')];
-            const before = window.beforeCompose;
-            document.querySelector('[data-choice="left"]').click();
-            const reply = chat.querySelector('[data-sending-reply]');
-            if (!reply) return null;
-            const avatar = chat.querySelector('.message-avatar');
-            const animations = [...old, reply, avatar].filter(Boolean).flatMap(n => n.getAnimations());
-            animations.forEach(a => a.pause());
-            const outgoingX = new DOMMatrix(reply.getAnimations()[0].effect.getKeyframes()[0].transform).m41;
-            const points = [0, 50, 100, 150, 200].map(time => {
-              animations.forEach(a => { a.currentTime = time; });
-              return { y: old.map(n => n.offsetTop - chat.scrollTop + new DOMMatrix(getComputedStyle(n).transform).m42),
-                replyY: reply.offsetTop - chat.scrollTop + new DOMMatrix(getComputedStyle(reply).transform).m42,
-                opacity: Number(getComputedStyle(reply).opacity),
-                scale: new DOMMatrix(getComputedStyle(reply).transform).a };
-            });
-            return { outgoingX, before, points, durations: animations.map(a => a.effect.getTiming().duration),
-              avatarGap: avatar ? avatar.getBoundingClientRect().bottom - old.at(-1).getBoundingClientRect().bottom : null };
-          });
-          assert.ok(sample, `${id}: selected reply must appear before switching cards`);
-          assert.equal(sample.outgoingX, 0, 'ordinary entrance has no added sideways flight');
-          assert.equal(await page.locator('[data-sending-reply]').innerText(), label);
+          assert.equal(await page.locator('[data-composing-reply], [data-sending-reply]').count(), 0);
+          assert.equal(await page.locator('[data-player-reply]').innerText(), label);
+          const reply = await page.locator('[data-player-reply]').evaluate(node => ({
+            opacity: Number(getComputedStyle(node).opacity), animations: node.getAnimations().length,
+            width: node.getBoundingClientRect().width, textWidth: node.querySelector('p').scrollWidth,
+            innerWidth: node.querySelector('p').clientWidth,
+          }));
+          assert.equal(reply.opacity, 1); assert.equal(reply.animations, 0);
+          assert.ok(reply.width > 0); assert.ok(reply.textWidth <= reply.innerWidth + 1);
+          const after = await page.evaluate(() => structuredClone(MistakeryApp.state));
+          assert.equal(after.history.length, initial.history.length + 1);
+          assert.equal(after.history.at(-1).side, 'left');
+          await page.clock.runFor(10000);
+          assert.deepEqual(await page.evaluate(() => MistakeryApp.state), after, 'no deferred action');
+          await page.locator('[data-test-back]').click();
           assert.deepEqual(await page.evaluate(() => MistakeryApp.state), initial);
-          assert.ok(sample.durations.every(ms => ms === 200));
-          sample.before.forEach((y, i) => assert.ok(Math.abs(y - sample.points[0].y[i]) < 1, `${id}: old bubble must not jump`));
-          assert.equal(sample.points[0].opacity, 0); assert.equal(sample.points[4].opacity, 1);
-          if (sample.avatarGap !== null && profile.viewport.height > profile.viewport.width)
-            assert.ok(Math.abs(sample.avatarGap) < 4, 'incoming avatar stays with its author, not the founder reply');
-          sample.points.forEach((point, i) => {
-            assert.equal(point.scale, 1);
-            if (i) assert.ok(point.replyY <= sample.points[i - 1].replyY + .01, 'no bounce');
-          });
-          await page.locator('[data-choice="right"]').dispatchEvent('click');
-          await page.clock.runFor(199);
-          assert.deepEqual(await page.evaluate(() => MistakeryApp.state), initial);
-          await page.clock.runFor(1);
-          assert.equal(await page.locator('[data-sending-reply]').count(), 0);
-          assert.equal(await page.evaluate(() => MistakeryApp.state.history.length), initial.history.length + 1);
-          assert.equal(await page.evaluate(() => MistakeryApp.state.history.at(-1).side), 'left');
-          {
-            assert.equal(await page.locator('[data-player-reply]').innerText(), label);
-            const continued = await page.locator('[data-player-reply]').evaluate(node => {
-              const animation = node.getAnimations()[0];
-              if (!animation) return null;
-              animation.pause(); animation.currentTime = 0;
-              return { y: node.offsetTop - node.closest('[data-chat]').scrollTop
-                + new DOMMatrix(getComputedStyle(node).transform).m42,
-                opacity: Number(getComputedStyle(node).opacity) };
-            });
-            assert.ok(continued, 'retained reply must move into the continuation without a cut');
-            assert.ok(Math.abs(continued.y - sample.points[4].replyY) < 1, 'reply position stays continuous');
-            assert.equal(continued.opacity, 1, 'sent reply must not fade in a second time');
-          }
+
         }
         await page.close();
       }
@@ -124,13 +81,12 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       for (const id of ['LIVE_AGENT_03', 'LIVE_AGENT_04', 'LIVE_AGENT_07']) {
         await seed(page, id);
         await page.locator('[data-choice="right"]').click();
-        assert.equal(await page.locator('[data-composing-reply]').count(), 1);
-        await page.clock.runFor(850);
+        assert.equal(await page.locator('[data-composing-reply]').count(), 0);
         assert.equal(await page.locator('[data-player-reply]').count(), 1);
       }
     } finally { await browser.close(); }
   });
-  test(`${name}: pending sends cancel on Back, restart and rerender; reduced motion keeps static dots`, async () => {
+  test(`${name}: immediate sends undo on Back, reset on restart and remain committed on rerender`, async () => {
     const browser = await engine.launch();
     try {
       const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
@@ -139,11 +95,11 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       for (const action of ['back', 'restart', 'render']) {
         await seed(page, 'LIVE_AGENT_03');
         await page.locator('[data-choice="left"]').click();
-        assert.equal(await page.locator('[data-composing-reply]').count(), 1);
+        assert.equal(await page.locator('[data-composing-reply]').count(), 0);
         if (action === 'render') await page.evaluate(() => MistakeryApp.render());
         else await page.locator(`[data-test-${action}]`).click();
         await page.clock.runFor(1000);
-        assert.equal(await page.evaluate(() => MistakeryApp.state.history.length), 0);
+        assert.equal(await page.evaluate(() => MistakeryApp.state.history.length), action === 'render' ? 1 : 0);
         assert.equal(await page.evaluate(() => MistakeryApp.locked), false);
         assert.equal(await page.locator('[data-sending-reply]').count(), 0);
       }

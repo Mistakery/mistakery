@@ -165,7 +165,7 @@ for (const [name, type] of Object.entries({ Chromium: chromium, WebKit: webkit }
     const { browser, page } = await open(type);
     try {
       await seed(page, 'LIVE_AGENT_04');
-      await click(page); await page.clock.runFor(850);
+      await click(page);
       assert.equal(await delta(page, 'cash'), '−0.5');
       await page.clock.runFor(300);
       await page.locator('button.typing-bubble').press('Enter');

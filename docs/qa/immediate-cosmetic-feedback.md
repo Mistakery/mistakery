@@ -1,5 +1,6 @@
 # Saved entrance and immediate resource feedback
 
+> Updated behavior (2026-10-11): choice replies now appear and commit immediately, with no player typing/send animation. Automatic outgoing messages retain their original typing. The old 650/200 ms manual-send descriptions below record the previous stage; see `choice-feedback.md`.
 Owner update, 2026-10-05:
 
 - On entering Saved 02, its first bubble gets the existing 200 ms arrival: a small 16 px upward displacement and fade. Reduced motion uses the fade with no displacement. There is no typing before this first bubble. Rerender and Back do not replay its entrance; the second bubble keeps its existing typing and 1000 ms delivery deadline.

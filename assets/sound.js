@@ -4,7 +4,7 @@
   let context, master, resuming, pending, active;
   let flushScheduled = false, releaseUntil = 0;
   const buffers = new Map(), sources = new Set();
-  const priorities = { send: 1, incoming: 2, padel: 2, 'story-loss': 3, 'story-win': 3, 'resource-loss': 3, 'ai-finale': 3 };
+  const priorities = { send: 2, incoming: 1, padel: 1, 'story-loss': 3, 'story-win': 3, 'resource-loss': 3, 'ai-finale': 3 };
   const FADE_SECONDS = .01;
 
   function stopAll() {
@@ -65,7 +65,7 @@
       if (active?.end <= now) active = null;
       // UI feedback is disposable: never queue it behind a more important cue.
       if (active && (event.priority < active.priority
-        || event.kind === active.kind && event.priority === 2)) return;
+        || event.kind === active.kind && event.priority === 1)) return;
       const buffer = bufferFor(event.kind);
       if (!buffer) return;
       let start = Math.max(now, releaseUntil);

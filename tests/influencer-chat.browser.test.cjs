@@ -79,12 +79,8 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
           const old = (await page.locator('[data-chat-current]').allTextContents()).slice(-2);
           const label = await page.locator(`[data-choice=${side}]`).innerText();
           await page.locator(`[data-choice=${side}]`).click();
-          assert.equal(await page.locator('[data-composing-reply]').count(), 1, id);
-          assert.deepEqual(await snapshot(page), before);
+          assert.equal(await page.locator('[data-composing-reply]').count(), 0, id);
           assert.equal(await page.locator('[data-resource="cash"]').getAttribute('data-direction'), 'down');
-          const duration = motion === 'reduce' ? 650 : 850;
-          await page.clock.runFor(duration - 1); assert.deepEqual(await snapshot(page), before);
-          await page.clock.runFor(1);
           assert.deepEqual(await snapshot(page), expected, `${id}: same RNG, signed ledger and cost as one resolver call`);
           assert.deepEqual(await page.locator('[data-chat-history]').allTextContents(), old);
           assert.equal(await page.locator('[data-player-reply]').innerText(), label);
@@ -111,15 +107,16 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
           await page.clock.runFor(10000); await page.locator(`[data-choice=${side}]`).click(); await page.clock.runFor(10000);
           assert.deepEqual(await snapshot(page), after);
         }
-        // Cancellation never commits the prepared outcome/RNG/ledger.
+        // Accepted choices commit immediately; navigation never resolves them again.
         for (const action of ['back', 'render', 'restart']) {
           await seed(page, 'INFLUENCER_08', null, 'INFLUENCER_OUTCOME_5');
           const before = await snapshot(page);
-          await page.locator('[data-choice=left]').click(); await page.clock.runFor(250);
+          await page.locator('[data-choice=left]').click();
+          const accepted = await snapshot(page); await page.clock.runFor(250);
           if (action === 'render') await page.evaluate(() => MistakeryApp.render());
           else await page.locator(`[data-test-${action}]`).click();
           await page.clock.runFor(10000);
-          if (action !== 'restart') assert.deepEqual(await snapshot(page), before);
+          if (action !== 'restart') assert.deepEqual(await snapshot(page), action === 'render' ? accepted : before);
           else assert.equal((await snapshot(page)).history.length, 0);
           assert.equal(await page.locator('[data-composing-reply]').count(), 0);
         }

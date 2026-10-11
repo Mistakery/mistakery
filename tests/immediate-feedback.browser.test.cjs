@@ -42,7 +42,7 @@ for (const [name, type] of Object.entries({ Chromium: chromium, WebKit: webkit }
       } finally { await browser.close(); }
     });
 
-    test(`${name} ${motion}: meters respond on retained reply click, cancel cleanly and never replay at send`, async () => {
+    test(`${name} ${motion}: meters and retained replies commit at click, undo cleanly and never replay`, async () => {
       const browser = await type.launch();
       try {
         const page = await browser.newPage({ reducedMotion: motion });
@@ -63,11 +63,11 @@ for (const [name, type] of Object.entries({ Chromium: chromium, WebKit: webkit }
             width: cash.querySelector('.bar i').style.width,
             animationFrames: window.clickAnimations.map(a => a.effect.getKeyframes().map(f => f.width)) };
         });
-        assert.equal(immediate.cash, 'down', 'fractional Cash cue starts at click, before typing');
+        assert.equal(immediate.cash, 'down', 'fractional Cash cue starts at click');
         assert.equal(immediate.team, 'up');
         assert.equal(immediate.width, '24.5%');
         assert.deepEqual(immediate.animationFrames, motion === 'reduce' ? [] : [['25%', '24.5%']]);
-        assert.deepEqual(await page.evaluate(() => MistakeryApp.state), before, 'visual feedback cannot commit the choice early');
+        assert.equal(await page.evaluate(() => MistakeryApp.state.history.length), before.history.length + 1, 'choice commits at click');
         await page.clock.runFor(300);
         await page.locator('[data-test-back]').click();
         assert.deepEqual(await page.evaluate(() => MistakeryApp.state), before);
@@ -80,13 +80,12 @@ for (const [name, type] of Object.entries({ Chromium: chromium, WebKit: webkit }
           window.clickAnimations = document.querySelector('[data-resource=cash] .bar i').getAnimations();
         });
         await page.locator('[data-choice=right]').dispatchEvent('click');
-        await page.clock.runFor(motion === 'reduce' ? 649 : 849);
-        assert.deepEqual(await page.evaluate(() => MistakeryApp.state), before);
-        await page.clock.runFor(1);
         const after = await page.evaluate(() => structuredClone(MistakeryApp.state));
         assert.equal(after.history.length, 1); assert.equal(after.resources.cash, 24.5); assert.equal(after.resources.team, 65);
         assert.equal(await page.locator('[data-resource=cash] .bar i').evaluate(n => n.getAnimations().every(a => window.clickAnimations.includes(a))), true, 'send cannot start a second fill animation');
         assert.equal(await page.locator('[data-resource=cash]').getAttribute('data-direction'), 'down');
+        await page.clock.runFor(10000);
+        assert.deepEqual(await page.evaluate(() => MistakeryApp.state), after, 'no delayed second commit');
         await page.locator('[data-test-back]').click();
         assert.deepEqual(await page.evaluate(() => MistakeryApp.state), before, 'Back restores complete snapshot including RNG');
       } finally { await browser.close(); }

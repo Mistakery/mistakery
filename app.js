@@ -96,9 +96,8 @@
   let choiceUnlockTimer = null;
   let cardTypingTimer = null;
   let savedDeliveryTimer = null;
-  let founderSendTimer = null;
   let resourceFeedback = null;
-  let sentReplyPositions = null;
+  let sentMediaWidths = null;
   let revealCardMessages = () => {};
   let cancelOutcomeImageMotion = () => {};
   const arrivalAnimations = new Set();
@@ -226,9 +225,8 @@
     app.lossPreviewObserver?.disconnect();
     $('[data-loss-flash]')?.remove();
     delete $('[data-game]').dataset.lossPreview;
-    cancelFounderSend();
     if (resourceFeedback?.feedback !== feedback) cancelResourceFeedback();
-    sentReplyPositions = null;
+    sentMediaWidths = null;
     cancelArrivalMotion();
     cancelOutcomeImageMotion();
     if ($('[data-test-details]').open) $('[data-test-details]').close();
@@ -282,7 +280,6 @@
   }
 
   function backInStoryTest() {
-    if (storyTestEnabled && founderSendTimer !== null) { sound.stop(); render(); return; }
     if (!storyTestEnabled || !testHistory.length) return;
     sound.stop();
     window.clearTimeout(choiceUnlockTimer);
@@ -722,6 +719,10 @@
     if (index === 1) animateArrival($('.note-message'), reducedMotion.matches ? 0 : 16, true, document.timeline.currentTime);
   }
 
+  function founderTypingMarkup() {
+    return '<div class="typing-bubble founder-composer" aria-label="Founder is typing"><span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>';
+  }
+
   function renderSaved() {
     const note = NOTE_SCREENS[app.noteIndex];
     const delivery = app.savedDelivery;
@@ -1027,7 +1028,6 @@
 
   function renderCard(feedback = null) {
     if (app.state.gameOver) return renderEnding(feedback);
-    const sent = sentReplyPositions;
     const card = engine.cardById(app.deck, app.state.currentCardId);
     if (!card || !app.activeCardIds.includes(card.id)) {
       throw new Error(`Disabled card cannot enter the Personal Chat runtime: ${app.state.currentCardId}`);
@@ -1037,7 +1037,7 @@
     }
     const complete = app.view === 'irl-complete';
     const deliveryKey = `${card.id}:${app.state.history.length}`;
-    const historyMediaWidths = sent?.mediaWidths
+    const historyMediaWidths = sentMediaWidths
       || (app.cardDelivery?.key === deliveryKey ? app.cardDelivery.historyMediaWidths : null);
     const readingHistory = app.cardDelivery?.key === deliveryKey && app.cardDelivery.follow === false;
     const previousScroll = $('[data-chat]').scrollTop;
@@ -1088,22 +1088,6 @@
     if (readingHistory) {
       $('[data-chat]').scrollTop = previousScroll;
       updateHistoryVisibility();
-    }
-    if (playerReply && sent && !reducedMotion.matches) {
-      const chat = $('[data-chat]');
-      const delta = sent.reply - (playerReply.offsetTop - chat.scrollTop);
-      const start = document.timeline.currentTime;
-      const history = Array.from(chat.querySelectorAll('[data-chat-history]'));
-      history.forEach((node, index) => {
-        node.classList.remove('is-clipped-history');
-        animateArrival(node, sent.history[index] - (node.offsetTop - chat.scrollTop), false, start);
-      });
-      const motion = animateArrival(playerReply, delta, false, start);
-      motion.finished.then(updateHistoryVisibility, updateHistoryVisibility);
-      chat.querySelectorAll('[data-chat-current], .typing-row, .message-stack > .typing-bubble').forEach(node => {
-        node.classList.remove('is-pop'); node.style.animationDelay = '';
-        animateArrival(node, delta, true, start);
-      });
     }
   }
 
@@ -1417,108 +1401,15 @@
     sound.unlock();
     sound.play('send');
     const card = engine.cardById(app.deck, app.state.currentCardId);
-    // Resolve once so contextual and random targets choose the right chat.
-    // The cloned candidate remains uncommitted during typing and can be cancelled.
+    // Resolve exactly once; the accepted answer is already composed by the player.
     const resolved = route.resolveChoice(app.deck, app.state, side,
       directStoryTest ? { outcomeRng: Math.random } : {}).state;
     const next = engine.cardById(app.deck, resolved.currentCardId);
-    if (!resolved.gameOver && retainsPreviousChat(next, card, side)) return composeFounderReply(card, side, resolved);
-    resolveCardChoice(card, side, undefined, resolved);
-  }
-
-  function cancelFounderSend() {
-    if (founderSendTimer === null) return;
-    window.clearTimeout(founderSendTimer);
-    founderSendTimer = null;
-    app.locked = false;
-    $('[data-chat]').classList.remove('is-sending');
-    $('[data-composing-reply]')?.remove();
-  }
-
-  function founderTypingMarkup() {
-    return '<div class="typing-bubble founder-composer" aria-label="Founder is typing"><span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>';
-  }
-
-  function composeFounderReply(card, side, resolved) {
-    cancelArrivalMotion();
-    app.locked = true;
-    clearPreview();
-    // Resolve once on a cloned snapshot. Commit after send, or discard on cancel.
-    cancelResourceFeedback();
-    renderResources(resolved.resources, resolved.history.at(-1), resolved);
-    const chat = $('[data-chat]');
-    const originalScroll = chat.scrollTop;
-    const rows = Array.from(chat.querySelectorAll('[data-chat-current], [data-chat-history], [data-player-reply], .message-avatar'));
-    const positions = rows.map(node => node.offsetTop - chat.scrollTop);
-    chat.classList.add('is-sending');
-    const composer = document.createElement('div');
-    composer.innerHTML = founderTypingMarkup();
-    const dots = composer.firstElementChild;
-    dots.dataset.composingReply = '';
-    chat.insertBefore(dots, chat.querySelector('.message-clearance'));
-    chat.scrollTop = chat.scrollHeight;
-    if (!reducedMotion.matches) {
-      const start = document.timeline.currentTime;
-      rows.forEach((node, index) => animateArrival(node, positions[index] - (node.offsetTop - chat.scrollTop), false, start));
+    if (!resolved.gameOver && retainsPreviousChat(next, card, side)) {
+      sentMediaWidths = Array.from($('[data-chat]').querySelectorAll('[data-chat-current]')).slice(-2)
+        .map(node => (node.matches('.image-bubble') ? node : node.querySelector('.image-bubble'))?.offsetWidth || null);
     }
-    document.querySelectorAll('[data-choice]').forEach(button => { button.disabled = true; });
-    if (storyTestEnabled) $('[data-test-back]').disabled = false;
-    founderSendTimer = window.setTimeout(() => {
-      founderSendTimer = null;
-      if (reducedMotion.matches) {
-        dots.remove();
-        chat.classList.remove('is-sending');
-        resolveCardChoice(card, side, originalScroll, resolved);
-      } else sendFounderReply(card, side, dots, originalScroll, resolved);
-    }, 650);
-  }
-
-  function sendFounderReply(card, side, composer, originalScroll, resolved) {
-    cancelArrivalMotion();
-    app.locked = true;
-    clearPreview();
-    const chat = $('[data-chat]');
-    const scrollTop = originalScroll;
-    const rows = Array.from(chat.querySelectorAll('[data-chat-current], [data-chat-history], [data-player-reply]'));
-    const positions = rows.map(node => node.offsetTop - chat.scrollTop);
-    const avatar = chat.querySelector('.message-avatar');
-    const avatarTop = avatar?.offsetTop - chat.scrollTop;
-    composer.remove();
-    const host = card.mode === 'team' ? chat : chat.querySelector('[data-message-stack]');
-    chat.classList.add('is-sending');
-    const reply = document.createElement('div');
-    reply.className = 'self-message chat-player-reply';
-    reply.dataset.sendingReply = '';
-    // Outside the incoming row so its avatar stays with the last incoming text.
-    // Match the retained reply's text width in the following continuation.
-    if (host !== chat) reply.style.maxWidth = `${host.offsetWidth * .88}px`;
-    const text = document.createElement('p');
-    text.textContent = engine.getChoiceLabel(influencerChoicesFor(card)[side], app.state.resources.founder);
-    reply.append(text);
-    chat.insertBefore(reply, chat.querySelector('.message-clearance'));
-    chat.scrollTop = chat.scrollHeight;
-    rows.forEach(node => { node.classList.remove('is-pop'); node.style.animationDelay = ''; });
-    const start = document.timeline.currentTime;
-    [...rows, reply].forEach((node, index) => {
-      const delta = node === reply ? Math.max(16, reply.offsetHeight + 8)
-        : positions[index] - (node.offsetTop - chat.scrollTop);
-      animateArrival(node, delta, node === reply, start);
-    });
-    if (avatar) animateArrival(avatar, avatarTop - (avatar.offsetTop - chat.scrollTop), false, start);
-    document.querySelectorAll('[data-choice]').forEach(button => { button.disabled = true; });
-    if (storyTestEnabled) $('[data-test-back]').disabled = false;
-    founderSendTimer = window.setTimeout(() => {
-      founderSendTimer = null;
-      sentReplyPositions = {
-        history: rows.filter(node => node.matches('[data-chat-current]')).slice(-2)
-          .map(node => node.offsetTop - chat.scrollTop),
-        reply: reply.offsetTop - chat.scrollTop,
-        mediaWidths: rows.filter(node => node.matches('[data-chat-current]')).slice(-2)
-          .map(node => (node.matches('.image-bubble') ? node : node.querySelector('.image-bubble'))?.offsetWidth || null),
-      };
-      chat.classList.remove('is-sending');
-      resolveCardChoice(card, side, scrollTop, resolved);
-    }, 200);
+    resolveCardChoice(card, side, undefined, resolved);
   }
 
   function resolveCardChoice(card, side, scrollTop, resolved) {
@@ -1647,8 +1538,7 @@
       sound.play('send');
       presentation.reply = card.replies[side === 'left' ? 0 : 1].en;
       app.lossPreviewReply = presentation.reply;
-      const reply = appendReply(presentation.reply);
-      if (!reducedMotion.matches) animateArrival(reply, 16, true, document.timeline.currentTime);
+      appendReply(presentation.reply);
       showLossPreviewFinale(card.id, side);
     });
     stageCardMessages({ ...card, previewMixedPersonal: card.mode === 'personal' });

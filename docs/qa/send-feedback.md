@@ -1,5 +1,6 @@
 # Owner presentation changes — 2026-10-05
 
+> Updated behavior (2026-10-11): choice replies now appear and commit immediately, with no player typing/send animation. Automatic outgoing messages retain their original typing. The old 650/200 ms manual-send descriptions below record the previous stage; see `choice-feedback.md`.
 Historical first pass: the owner subsequently clarified typing dots and meter-only feedback. See typing-correction.md for final behavior; sideways send and whole-resource halo described below were removed.
 
 ## Scope and decisions

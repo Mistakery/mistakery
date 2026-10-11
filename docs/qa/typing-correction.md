@@ -1,5 +1,6 @@
 # Owner correction — 2026-10-05
 
+> Updated behavior (2026-10-11): choice replies now appear and commit immediately, with no player typing/send animation. Automatic outgoing messages retain their original typing. The old 650/200 ms manual-send descriptions below record the previous stage; see `choice-feedback.md`.
 Owner clarified that outgoing animation means the right-side three-dot composition cue from Founder100, not a sideways bubble entrance. Resource feedback should affect only the meter, not a rectangular resource block.
 
 ## Final behavior

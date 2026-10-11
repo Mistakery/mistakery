@@ -1,5 +1,6 @@
 # Продолжение чата ИИ-инфлюенсера
 
+> Updated behavior (2026-10-11): choice replies now appear and commit immediately, with no player typing/send animation. Automatic outgoing messages retain their original typing. The old 650/200 ms manual-send descriptions below record the previous stage; see `choice-feedback.md`.
 Согласовано владельцем 2026-10-05 после конкретного предложения карт и переходов. Рабочая ветка `release/current-game-2026-10-05`; push в `Mistakery/mistakery` разрешён владельцем. Merge требует отдельного разрешения.
 
 ## Согласованный объём
