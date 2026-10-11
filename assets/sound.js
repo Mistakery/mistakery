@@ -65,7 +65,7 @@
       if (active?.end <= now) active = null;
       // UI feedback is disposable: never queue it behind a more important cue.
       if (active && (event.priority < active.priority
-        || event.kind === active.kind && event.priority === 1)) return;
+        || event.kind === active.kind && event.kind === 'incoming')) return;
       const buffer = bufferFor(event.kind);
       if (!buffer) return;
       let start = Math.max(now, releaseUntil);

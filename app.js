@@ -747,6 +747,7 @@
       <div class="message-clearance" aria-hidden="true"></div>`;
     keepDeliveryVisible($('[data-message-stack]').lastElementChild);
     setChoices(note.buttons, chooseSaved, { disabled: !delivered });
+    if (newlyDelivered) soundOnce(`saved-update:${delivery.deadline}`, 'send');
     if (!delivered) {
       $('[data-message-stack]').insertAdjacentHTML('beforeend', founderTypingMarkup());
       keepDeliveryVisible($('[data-message-stack]').lastElementChild);
@@ -770,6 +771,7 @@
         if (!reducedMotion.matches) positions.forEach(([node]) => animateArrival(node, delta, false, start));
         animateArrival(arrived, reducedMotion.matches ? 0 : delta, true, start);
         setChoices(note.buttons, chooseSaved);
+        soundOnce(`saved-update:${delivery.deadline}`, 'send');
       }, Math.max(0, delivery.deadline - Date.now()));
     }
   }
@@ -1399,12 +1401,13 @@
     if (app.locked || app.view !== 'playing') return;
     if (app.cardDelivery && !app.cardDelivery.delivered) return;
     sound.unlock();
-    sound.play('send');
     const card = engine.cardById(app.deck, app.state.currentCardId);
     // Resolve exactly once; the accepted answer is already composed by the player.
     const resolved = route.resolveChoice(app.deck, app.state, side,
       directStoryTest ? { outcomeRng: Math.random } : {}).state;
     const next = engine.cardById(app.deck, resolved.currentCardId);
+    // IRL card changes use the ball/result cue; there is no message to send.
+    if (card.mode !== 'irl' && next?.mode !== 'irl') sound.play('send');
     if (!resolved.gameOver && retainsPreviousChat(next, card, side)) {
       sentMediaWidths = Array.from($('[data-chat]').querySelectorAll('[data-chat-current]')).slice(-2)
         .map(node => (node.matches('.image-bubble') ? node : node.querySelector('.image-bubble'))?.offsetWidth || null);

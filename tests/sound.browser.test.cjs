@@ -90,14 +90,22 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         await page.evaluate(() => MistakeryApp.render()); await page.clock.runFor(15000);
         assert.deepEqual(await page.evaluate(() => audioClips), expected, `${card.id}: no replay`);
       }
-      for (const side of ['left', 'right']) {
-        await show('IRL_PADEL_06');
-        await page.evaluate(() => { audioClips.length = 0; });
-        await page.locator(`[data-choice="${side}"]`).click();
-        const outcome = await page.evaluate(() => MistakeryApp.deck.cards.find(c => c.id === MistakeryApp.state.currentCardId));
-        assert.ok(outcome.outcomeTone, 'real padel choice enters an outcome');
-        assert.deepEqual(await page.evaluate(() => audioClips), [outcome.outcomeTone === 'success' ? 'story-win' : 'story-loss'], 'instant outcome emits only its main cue');
-        await assertExclusive();
+      // Real choice transitions must use the IRL cue, including while a prior ball is playing.
+      for (const card of [{ id: 'DREAM_TEAM' }, ...padel.filter(card => !card.tone)]) {
+        for (const side of ['left', 'right']) {
+          await show(card.id);
+          // Artificial Dream Team delivery cannot advance the real audio clock.
+          if (card.id === 'DREAM_TEAM') await page.evaluate(() => MistakerySound.stop());
+          await page.evaluate(() => { audioClips.length = 0; });
+          await page.locator(`[data-choice="${side}"]`).click();
+          const next = await page.evaluate(() => MistakeryApp.deck.cards.find(c => c.id === MistakeryApp.state.currentCardId));
+          assert.equal(next.mode, 'irl', `${card.id}/${side}: real IRL transition`);
+          const expected = next.outcomeTone ? next.outcomeTone === 'success' ? 'story-win' : 'story-loss' : 'padel';
+          assert.deepEqual(await page.evaluate(() => audioClips), [expected], `${card.id}/${side}: one ball per ordinary card; result replaces it`);
+          await assertExclusive();
+          await page.evaluate(() => MistakeryApp.render());
+          assert.deepEqual(await page.evaluate(() => audioClips), [expected], 'rerender never repeats the IRL cue');
+        }
       }
       const loss = await show('LIVE_AGENT_01', 'team_high');
       assert.equal(loss.filter(kind => kind === 'resource-loss').length, 1);
@@ -137,6 +145,13 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         await page.evaluate(() => MistakeryApp.render());
         assert.deepEqual(await page.evaluate(() => audioClips), clips, 'rerender never repeats automatic sends');
         assert.deepEqual(await page.evaluate(() => MistakeryApp.state), before, 'automatic audio never changes gameplay');
+        if (fixture.id === 'DREAM_TEAM') {
+          await page.locator('[data-choice=left]').click();
+          assert.equal(await page.evaluate(() => MistakeryApp.state.currentCardId), 'IRL_PADEL_01');
+          assert.deepEqual((await page.evaluate(() => audioClips)).slice(clips.length), ['padel'], 'real-time entry into IRL uses only the ball');
+          await assertExclusive();
+        }
+
       }
       assert.deepEqual(errors, []);
       assert.ok((await page.evaluate(() => audioClips)).every(kind => kind !== 'unrecognized'));

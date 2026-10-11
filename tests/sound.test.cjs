@@ -84,6 +84,14 @@ test('rapid repeated arrivals do not stack; a new result replaces the old result
   assert.equal(played.length, 3);
   assert.ok(played[2].time >= played[1].source.stopTime);
 });
+test('a fresh padel card replaces the previous ball cue without overlap', async () => {
+  const audio = setup(); await audio.sound.unlock();
+  audio.sound.play('padel'); await tick(); audio.context.currentTime = .28;
+  audio.sound.play('padel'); await tick();
+  assert.equal(audio.played.length, 2, 'new IRL card is not a duplicate arrival');
+  assert.ok(audio.played[1].time >= audio.played[0].source.stopTime);
+  assert.ok(audio.played[1].time <= .291);
+});
 test('mute and navigation discard pending playback and stop active clips without replay', async () => {
   const { sound, played, store } = setup(); await sound.unlock();
   sound.play('incoming'); await tick(); sound.play('story-win'); sound.setEnabled(false); await tick();
