@@ -17,9 +17,12 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
           a.state.currentCardId = 'LIVE_AGENT_01'; a.cardDelivery = null; a.view = 'playing'; a.render();
         });
         const state = await page.evaluate(() => JSON.stringify(MistakeryApp.state));
-        for (const wait of [650, 600, 500, 700]) {
+        for (const wait of [650, 1800, 1500, 1900]) {
           await page.clock.runFor(wait);
           const sample = await page.evaluate(() => {
+            // Finish independent reaction layout before sampling only the message entrance.
+            document.getAnimations().filter(a => a.effect.target?.matches('.reaction-bubble-surface')
+              || a.effect.getKeyframes().some(f => 'translate' in f)).forEach(a => a.finish());
             const nodes = [...document.querySelectorAll('[data-chat-current], .typing-row, .message-stack > .typing-bubble')];
             const fresh = [...document.querySelectorAll('[data-chat-current]')].at(-1);
             const animations = nodes.map(n => n.getAnimations());

@@ -31,7 +31,7 @@ test('Legal continuation delivers three bubbles with two pauses and preserves th
       await page.clock.install();
       await page.clock.pauseAt(new Date());
       await page.evaluate(() => { const a = window.MistakeryApp; a.state.currentCardId = 'LIVE_AGENT_07'; a.render(); });
-      await page.clock.runFor(2900);
+      await page.clock.runFor(4300);
       await page.locator('[data-choice="left"]').click();
       assert.deepEqual(await current(page), expected.slice(0, 1));
       assert.equal(await page.locator('[data-player-reply]').innerText(), 'Just AI humor!');
@@ -65,7 +65,7 @@ test('Legal continuation delivers three bubbles with two pauses and preserves th
       await assertVisibleInChat(page, '.typing-bubble');
       await page.screenshot({ path: `/tmp/mistakery-legal-second-typing-${viewport.width}.png`, animations: 'disabled' });
       await page.locator('[data-test-restart]').click();
-      await page.clock.runFor(3000);
+      await page.clock.runFor(8000);
       assert.equal(await page.locator('[data-scene]').getAttribute('data-active-card'), 'LIVE_AGENT_01');
       assert.equal(await page.locator('.typing-bubble').count(), 0);
       assert.deepEqual(errors, []);

@@ -29,7 +29,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await seed(page, 'LIVE_AGENT_01');
       await page.clock.runFor(650);
       await page.waitForTimeout(350);
-      await page.clock.runFor(599);
+      await page.clock.runFor(1799);
       const first = page.locator('[data-chat-current]').first();
       const before = await first.evaluate(n => n.getBoundingClientRect().top);
       await page.clock.runFor(1);
@@ -67,7 +67,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.ok(geometry.contained, 'nickname belongs to the same white surface');
       assert.equal(geometry.animation, 'none', 'dots must not bounce in on every bubble');
       await page.evaluate(() => { window.typingBefore = document.querySelector('button.typing-bubble'); });
-      await page.clock.runFor(600);
+      await page.clock.runFor(1800);
       assert.equal(await page.evaluate(() => window.typingBefore === document.querySelector('button.typing-bubble')), true);
       if (name === 'Chromium') await page.screenshot({path:'/tmp/mistakery-typing-fixed.png', animations:'disabled'});
     } finally { await browser.close(); }
@@ -83,7 +83,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await page.clock.runFor(1); assert.equal(await count(page), 2);
       assert.equal(await page.locator('[data-chat-current] img').count(), 1);
       assert.equal(await page.locator('button.typing-bubble').count(), 1);
-      await page.clock.runFor(899); assert.equal(await count(page), 2);
+      await page.clock.runFor(2299); assert.equal(await count(page), 2);
       await page.clock.runFor(1); assert.equal(await count(page), 3);
     } finally { await browser.close(); }
   });
@@ -95,7 +95,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.equal(await count(page), 1);
       assert.equal(await page.locator('button.typing-bubble').count(), 1);
       await page.clock.runFor(300); assert.equal(await count(page), 1);
-      await page.clock.runFor(200); assert.equal(await count(page), 2);
+      await page.clock.runFor(1200); assert.equal(await count(page), 2);
     } finally { await browser.close(); }
   });
   test(`${name}: group delivers whole bubbles with the next author's identity`, async () => {
@@ -110,14 +110,14 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.match(await page.locator('.typing-bubble').getAttribute('aria-label'), /@bigdeals is typing/);
       assert.equal(await page.locator('[data-choice]:disabled').count(), 2);
       if (name === 'Chromium') await page.screenshot({ path: '/tmp/mistakery-chat-typing-group.png', animations: 'disabled' });
-      await page.clock.runFor(799); assert.equal(await count(page), 1);
+      await page.clock.runFor(2199); assert.equal(await count(page), 1);
       await page.clock.runFor(1); assert.equal(await count(page), 2);
       assert.match(await page.locator('.typing-bubble').getAttribute('aria-label'), /@bigdeals is typing/);
-      await page.clock.runFor(500); assert.equal(await count(page), 3);
+      await page.clock.runFor(1100); assert.equal(await count(page), 3);
       assert.match(await page.locator('.typing-bubble').getAttribute('aria-label'), /@bigdeals is typing/);
-      await page.clock.runFor(500); assert.equal(await count(page), 4);
+      await page.clock.runFor(1100); assert.equal(await count(page), 4);
       assert.match(await page.locator('.typing-bubble').getAttribute('aria-label'), /@hype_queen is typing/);
-      await page.clock.runFor(600); assert.equal(await count(page), 5);
+      await page.clock.runFor(1800); assert.equal(await count(page), 5);
       assert.equal(await page.locator('.typing-bubble').count(), 0);
       assert.equal(await page.locator('[data-choice]:disabled').count(), 0);
     } finally { await browser.close(); }
@@ -155,7 +155,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await seed(page, 'INFLUENCER_02');
       assert.equal(await count(page), 1);
       await page.clock.runFor(200); await page.evaluate(() => MistakeryApp.render());
-      await page.clock.runFor(499); assert.equal(await count(page), 1);
+      await page.clock.runFor(1699); assert.equal(await count(page), 1);
       await page.clock.runFor(1); assert.equal(await count(page), 2);
       await page.locator('button.typing-bubble').press('Enter');
       assert.equal(await count(page), 5);
@@ -164,7 +164,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await page.locator('[data-choice="right"]').click();
       await completeFounderSend(page, true);
       assert.equal(await count(page), 1, 'scheduled review photo is immediate');
-      await page.clock.runFor(900);
+      await page.clock.runFor(2300);
       await page.locator('[data-choice="left"]').click();
       await completeFounderSend(page, true);
       assert.equal(await page.evaluate(() => MistakeryApp.state.currentCardId), 'INFLUENCER_07', 'contextual concession continues forward');
@@ -176,7 +176,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
     const browser = await engine.launch();
     try {
       const page = await open(browser);
-      await seed(page, 'LIVE_AGENT_03'); await page.clock.runFor(3500);
+      await seed(page, 'LIVE_AGENT_03'); await page.clock.runFor(10000);
       await page.locator('[data-choice="left"]').click();
       await completeFounderSend(page, true);
       assert.equal(await count(page), 1);
@@ -190,7 +190,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await page.evaluate(() => { document.querySelector('[data-chat]').scrollTop = 0; });
       await page.evaluate(() => MistakeryApp.render());
       assert.equal(await chat.evaluate(n => n.scrollTop), 0);
-      await page.clock.runFor(1000);
+      await page.clock.runFor(2300);
       assert.equal(await count(page), 2); assert.equal(await chat.evaluate(n => n.scrollTop), 0);
       await seed(page, 'IRL_PADEL_01'); assert.equal(await page.locator('.typing-bubble').count(), 0);
       await page.locator('[data-restart-run]').click(); assert.equal(await page.locator('.typing-bubble').count(), 0);
@@ -223,7 +223,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.equal(cards.length, 77);
       for (const card of cards) {
         await seed(page, card.id);
-        const budget = { LIVE_AGENT_03: 3500, LIVE_AGENT_05: 3000, LIVE_AGENT_07: 2900, INFLUENCER_08: 2600, DREAM_TEAM: 3500 }[card.id] || 2500;
+        const budget = 12000; // Dramatic beats, bounded even for the longest active transcript.
         await page.clock.runFor(budget);
         assert.equal(await page.locator('[data-choice]:disabled').count(), 0, `${card.id}: delivery budget`);
         assert.equal(await page.locator('.typing-bubble').count(), 0, `${card.id}: no stale typing`);

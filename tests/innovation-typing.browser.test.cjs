@@ -30,13 +30,13 @@ test('innovation DM delivers each bubble separately with its dramatic pause; rer
         app.state.currentCardId = 'LIVE_AGENT_04B';
         app.render();
       });
-      await page.clock.runFor(700);
+      await page.clock.runFor(1500);
       await page.locator('[data-choice="left"]').click();
       await completeFounderSend(page, true);
       assert.deepEqual(await messages(page), [], 'new correspondent starts with dots');
       await page.clock.runFor(500);
       assert.deepEqual(await messages(page), expected.slice(0, 1));
-      await page.clock.runFor(500);
+      await page.clock.runFor(1500);
       assert.deepEqual(await messages(page), expected.slice(0, 2));
       assert.equal(await page.locator('.typing-bubble i').count(), 3);
       assert.equal(await page.locator('[data-choice]:disabled').count(), 2);
@@ -46,7 +46,7 @@ test('innovation DM delivers each bubble separately with its dramatic pause; rer
       await page.clock.runFor(1300);
       assert.deepEqual(await messages(page), expected.slice(0, 3));
       assert.equal(await page.locator('.typing-bubble').count(), 1);
-      await page.clock.runFor(500);
+      await page.clock.runFor(1500);
       assert.deepEqual(await messages(page), expected);
       assert.equal(await page.locator('.typing-bubble').count(), 0);
       assert.equal(await page.locator('[data-choice]:disabled').count(), 0);
@@ -69,7 +69,7 @@ test('innovation DM delivers each bubble separately with its dramatic pause; rer
       await completeFounderSend(page, true);
       assert.equal(await page.locator('.typing-bubble').count(), 1);
       await page.locator('[data-test-restart]').click();
-      await page.clock.runFor(2650);
+      await page.clock.runFor(8000);
       assert.equal(await page.locator('[data-scene]').getAttribute('data-active-card'), 'LIVE_AGENT_01');
       assert.equal(await page.locator('.typing-bubble').count(), 0);
       assert.equal(await page.locator('[data-chat]').getByText("But damn, it works so well! 🔥🔥🔥", { exact: true }).count(), 0);

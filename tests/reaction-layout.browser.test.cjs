@@ -21,14 +21,20 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
           a.cardDelivery = null; a.view = 'playing'; a.render();
         });
         const state = await page.evaluate(() => JSON.stringify(MistakeryApp.state));
-        await page.clock.runFor(1800);
+        await page.clock.runFor(4800);
         assert.equal(await page.locator('[data-chat-current]').count(), 3);
-        assert.equal(await page.locator('.message-reaction:not([data-pending])').count(), 0);
+        assert.equal(await page.locator('.message-reaction:not([data-pending])').count(), 1, 'earlier message reaction has already arrived during the pause');
         assert.ok(await page.locator('.message-reactions[data-waiting]').evaluateAll(rows => rows.every(row => {
           const before = row.parentElement.offsetHeight;
           row.style.display = 'none'; const compact = row.parentElement.offsetHeight; row.style.display = '';
           return before === compact;
         })), 'no preallocated reaction area on arrival');
+        // With longer reading beats the earlier reaction has already appeared.
+        // Settle its real-time layout before freezing the last message entrance.
+        await page.evaluate(() => document.getAnimations().filter(a =>
+          a.effect.target?.matches('.reaction-bubble-surface, .message-reaction')
+          || a.effect.getKeyframes().some(f => 'translate' in f)).forEach(a => a.finish()));
+        await page.waitForFunction(() => !document.querySelector('.reaction-bubble-surface'));
         const before = await page.evaluate(() => {
           window.entrances = [...document.querySelectorAll('[data-chat-current]')].flatMap(n => n.getAnimations());
           entrances.forEach(a => { a.pause(); a.currentTime = 100; });

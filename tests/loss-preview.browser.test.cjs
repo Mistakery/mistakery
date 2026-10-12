@@ -19,7 +19,7 @@ test(`${name}: document preview keeps replies, navigation and restart outside th
     for (const id of ids) {
       await page.locator('[data-loss-select]').selectOption(id);
       assert.equal(await page.locator('[data-loss-flash].is-defeated').count(), 0);
-      await page.clock.runFor(10000);
+      await page.clock.runFor(30000);
       assert.equal(await page.locator('[data-loss-flash].is-defeated').getAttribute('data-card'), id);
       assert.equal(await page.locator('[data-game]').getAttribute('data-outcome'), 'failure');
       const before = await page.evaluate(() => structuredClone(MistakeryApp.state));
@@ -102,7 +102,7 @@ test(`${name}: document preview keeps replies, navigation and restart outside th
         assert.equal(await page.locator('[data-loss-finale]').isVisible(), false);
         assert.deepEqual(await page.evaluate(() => structuredClone(MistakeryApp.state)), before);
         await page.locator('[data-restart-run]').click();
-        await page.clock.runFor(10000);
+        await page.clock.runFor(30000);
         await page.locator('[data-choice="right"]').click();
         assert.deepEqual(await page.evaluate(() => structuredClone(MistakeryApp.state)), before);
         assert.equal(await page.locator('[data-player-reply]').count(), 1);
@@ -124,7 +124,7 @@ test(`${name}: document preview keeps replies, navigation and restart outside th
     await page.locator('[data-loss-select]').selectOption('DOC_LOSS_2');
     assert.equal(await page.locator('[data-status]').innerText(), '8 members');
     const observed = new Set([8]);
-    for (let elapsed = 0; elapsed < 10000; elapsed += 100) {
+    for (let elapsed = 0; elapsed < 30000; elapsed += 100) {
       await page.clock.runFor(100);
       const departures = await page.locator('[data-left-member]').count();
       const count = Number((await page.locator('[data-status]').innerText()).split(' ')[0]);
@@ -171,7 +171,7 @@ test(`${name}: founder dots precede each message and cancel cleanly`, async () =
     assert.equal(await page.locator('[data-preview-outgoing]').count(), 3);
     await page.clock.runFor(1200);
     assert.equal(await page.locator('[data-preview-outgoing]').count(), 4);
-    await page.clock.runFor(3000);
+    await page.clock.runFor(6000);
     assert.equal(await page.locator('[data-preview-outgoing] [role="img"]').count(), 0);
     assert.equal(await page.locator('.preview-composer').count(), 0);
     assert.equal(await page.locator('[data-choice="left"]').isEnabled(), true);
@@ -184,7 +184,7 @@ test(`${name}: founder dots precede each message and cancel cleanly`, async () =
     await page.locator('[data-restart-run]').click();
     await page.clock.runFor(700);
     await page.locator('[data-loss-select]').selectOption('DOC_LOSS_4');
-    await page.clock.runFor(10000);
+    await page.clock.runFor(30000);
     assert.equal(await page.locator('[data-preview-outgoing], .preview-composer').count(), 0);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.locator('[data-loss-select]').selectOption('DOC_LOSS_5');
@@ -194,7 +194,7 @@ test(`${name}: founder dots precede each message and cancel cleanly`, async () =
     assert.equal(await page.locator('[data-preview-outgoing]').count(), 1);
     assert.equal(await page.locator('[data-preview-outgoing] .preview-file').count(), 1);
     assert.equal(await page.locator('[data-preview-outgoing]').evaluate(n => new DOMMatrix(getComputedStyle(n).transform).isIdentity), true, 'reduced motion never shifts or scales the outgoing, during or after fade');
-    await page.clock.runFor(10000);
+    await page.clock.runFor(30000);
     assert.equal(await page.locator('[data-loss-flash].is-defeated').count(), 1);
     assert.equal(await page.locator('[data-loss-flash]').evaluate(n => getComputedStyle(n, '::before').animationName), 'none');
     assert.equal(await page.locator('[data-scene]').evaluate(n => getComputedStyle(n).animationName), 'none');

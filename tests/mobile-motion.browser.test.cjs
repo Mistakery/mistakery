@@ -51,7 +51,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
         await page.clock.install(); await page.clock.pauseAt(new Date());
         await seed(page, 'FILL_MANTRA');
         await page.waitForTimeout(350); // Finish the first bubble's CSS entrance.
-        await page.clock.runFor(500);
+        await page.clock.runFor(1500);
         const sample = await page.locator('[data-chat-current]').nth(1).evaluate(async node => {
           const animation = node.getAnimations().find(a => a.playState === 'running');
           if (!animation) return null;

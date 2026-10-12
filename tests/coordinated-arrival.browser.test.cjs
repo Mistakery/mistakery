@@ -66,6 +66,9 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
             });
             await deliver(page);
             const sample = await page.evaluate(() => {
+              // Isolate native arrival from reaction layout; real-frame continuity is covered separately.
+              document.getAnimations().filter(a => a.effect.target?.matches('.reaction-bubble-surface')
+                || a.effect.getKeyframes().some(f => 'translate' in f)).forEach(a => a.finish());
               const nodes = [...document.querySelectorAll('[data-chat-current], [data-chat-history], [data-player-reply], .typing-row, .message-stack > .typing-bubble')];
               const fresh = [...document.querySelectorAll('[data-chat-current]')].at(-1);
               const animations = nodes.map(node => node.getAnimations().filter(a => a.playState === 'running'));
@@ -178,9 +181,9 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       const page = await open(browser);
       for (const [previous, card, nextPause] of [
         ['LIVE_AGENT_02', 'LIVE_AGENT_03', 1000],
-        ['LIVE_AGENT_04B', 'LIVE_AGENT_05', 500],
+        ['LIVE_AGENT_04B', 'LIVE_AGENT_05', 1500],
         ['LIVE_AGENT_06', 'LIVE_AGENT_07', 2000],
-        ['INFLUENCER_01', 'INFLUENCER_02', 700],
+        ['INFLUENCER_01', 'INFLUENCER_02', 1900],
       ]) {
         await seed(page, previous);
         await page.locator('button.typing-bubble').press('Enter');
@@ -206,7 +209,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       // immediate. Verify exact deadlines, not a relaxed eventual-visibility check.
       for (const [previous, card, attentionMs, nextPause] of [
         ['LIVE_AGENT_07', 'LIVE_AGENT_07B', 200, 500],
-        ['LIVE_AGENT_03', 'LIVE_AGENT_04', 0, 900],
+        ['LIVE_AGENT_03', 'LIVE_AGENT_04', 0, 2300],
         ['INFLUENCER_04', 'INFLUENCER_05', 420, 600],
       ]) {
         await seed(page, previous);
@@ -280,15 +283,15 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       }
     } finally { await browser.close(); }
   });
-  test(`${name}: reading pauses stay compact while giving longer text and photos more time`, async () => {
+  test(`${name}: reading pauses provide dramatic beats while giving longer text and photos more time`, async () => {
     const browser = await engine.launch();
     try {
       const page = await open(browser);
       const expected = {
-        LIVE_AGENT_01: [650, 600, 500, 700], LIVE_AGENT_03: [1000, 2000, 500],
-        LIVE_AGENT_05: [500, 2000, 500], LIVE_AGENT_07: [2000, 900],
-        LIVE_AGENT_07B: [500, 1250], INFLUENCER_02: [700, 500, 500, 700],
-        INFLUENCER_05: [600, 1100], INFLUENCER_08: [1000, 800],
+        LIVE_AGENT_01: [650, 1800, 1500, 1900], LIVE_AGENT_03: [1000, 2000, 1500],
+        LIVE_AGENT_05: [1500, 2000, 1500], LIVE_AGENT_07: [2000, 2300],
+        LIVE_AGENT_07B: [500, 1250], INFLUENCER_02: [1900, 1100, 1100, 1900],
+        INFLUENCER_05: [600, 1100], INFLUENCER_08: [2600, 2200],
       };
       for (const [card, pauses] of Object.entries(expected)) {
         await seed(page, card);

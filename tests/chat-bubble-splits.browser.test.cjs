@@ -53,9 +53,9 @@ for (const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) {
    await page.waitForFunction(()=>MistakeryApp?.deck&&MistakeryApp.view!=='loading');await seed(page,'INFLUENCER_02A');
    assert.equal(await page.locator('[data-chat-current]').count(),1);
    assert.ok(await page.locator('[data-choice]:disabled').count()>0);
-   await page.clock.runFor(499);assert.equal(await page.locator('[data-chat-current]').count(),1);
+   await page.clock.runFor(1099);assert.equal(await page.locator('[data-chat-current]').count(),1);
    await page.clock.runFor(1);assert.equal(await page.locator('[data-chat-current]').count(),2);
-   await page.clock.runFor(2000);assert.equal(await page.locator('[data-chat-current]').count(),4);
+   await page.clock.runFor(4000);assert.equal(await page.locator('[data-chat-current]').count(),4);
    assert.equal(await page.locator('[data-choice]:disabled').count(),0);
    await page.locator('[data-choice=left]').click();await completeFounderSend(page,true);
    await page.locator('[data-test-back]').click();
@@ -72,7 +72,7 @@ for (const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) {
    assert.equal(normalize(retained.join(' ')),normalize(deck.cards.find(c=>c.id==='FILL_DOMAIN_1').text));
    assert.ok(Math.abs(await page.locator('[data-chat-history].image-bubble').evaluate(n=>n.getBoundingClientRect().width)-imageWidth)<1,'retained image keeps its established width');
    await page.evaluate(()=>MistakeryApp.render());assert.equal(await page.locator('[data-chat-history]').count(),4);
-   await seed(page,'DREAM_TEAM');await page.clock.runFor(5000);
+   await seed(page,'DREAM_TEAM');await page.clock.runFor(10000);
    const reactions=await page.locator('[data-chat-current]').evaluateAll(ns=>ns.filter(n=>n.querySelector('.message-reactions')).map(n=>({text:[...n.querySelectorAll('p')].map(p=>p.textContent).join(' '),emoji:[...n.querySelectorAll('.message-reaction-emoji')].map(n=>n.textContent)})));
    assert.equal(reactions.length,2);assert.ok(normalize(reactions[0].text).includes('first big client'));assert.deepEqual(reactions[0].emoji,['🎉']);
    assert.ok(normalize(reactions[1].text).includes('in 4K'));assert.deepEqual(reactions[1].emoji,['😂']);

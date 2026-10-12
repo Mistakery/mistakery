@@ -121,9 +121,9 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         await seed(page, id);
         assert.equal(await page.locator('[data-chat-current]').count(), 1);
         assert.equal(await page.locator('[data-choice=left]').isDisabled(), true);
-        await page.clock.runFor(499); assert.equal(await page.locator('[data-chat-current]').count(), 1);
+        await page.clock.runFor(1499); assert.equal(await page.locator('[data-chat-current]').count(), 1);
         await page.clock.runFor(1); assert.equal(await page.locator('[data-chat-current]').count(), 2);
-        await page.clock.runFor(499); assert.equal(await page.locator('[data-choice=left]').isDisabled(), true);
+        await page.clock.runFor(1499); assert.equal(await page.locator('[data-choice=left]').isDisabled(), true);
         await page.clock.runFor(1); assert.equal(await page.locator('[data-chat-current]').count(), 3);
         assert.equal((await snapshot(page)).currentCardId, id);
         assert.equal((await snapshot(page)).history.length, 0);

@@ -21,15 +21,15 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
         await page.waitForFunction(() => window.MistakeryApp?.state);
         await page.clock.install(); await page.clock.pauseAt(new Date());
         for (let n = 0; n < 2; n++) {
-          await page.clock.runFor(6000);
+          await page.clock.runFor(12000);
           await page.locator('[data-choice="left"]').click();
         }
         assert.equal((await snapshot(page)).currentCardId, opener);
-        await page.clock.runFor(6000);
+        await page.clock.runFor(12000);
         await page.locator('[data-choice="right"]').click();
         assert.equal((await snapshot(page)).currentCardId, outcome);
         assert.equal((await snapshot(page)).resources.cash, 9.5);
-        await page.clock.runFor(6000);
+        await page.clock.runFor(12000);
         await page.locator('[data-choice="left"]').click();
         const continued = await snapshot(page);
         assert.equal(continued.resources.cash, 9);
@@ -58,7 +58,7 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
         await page.locator('[data-choice="left"]').click();
         let before;
         for (const step of witness.steps) {
-          await page.clock.runFor(6000);
+          await page.clock.runFor(12000);
           before = await snapshot(page);
           assert.equal(before.currentCardId, step.card);
           assert.equal(before.gameOver, false);
@@ -91,7 +91,7 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
           // Back to the last real decision, then settle the same ending afresh.
           if (side === 'right') {
             await page.locator('[data-test-back]').click();
-            await page.clock.runFor(6000);
+            await page.clock.runFor(12000);
             await page.locator(`[data-choice="${witness.steps.at(-1).side}"]`).click();
             await completeFounderSend(page, true);
             await page.clock.runFor(15000);
@@ -140,7 +140,7 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
         }
         await page.locator('[data-test-back]').click();
         assert.deepEqual(await snapshot(page), before);
-        await page.clock.runFor(6000);
+        await page.clock.runFor(12000);
         await page.locator(`[data-choice="${witness.steps.at(-1).side}"]`).click();
         await completeFounderSend(page, true);
         assert.deepEqual(await snapshot(page), ended);

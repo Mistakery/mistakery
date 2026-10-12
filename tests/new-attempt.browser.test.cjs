@@ -8,7 +8,7 @@ const url = pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href;
 const { witnesses } = require('../docs/qa/resource-endings.json');
 const snapshot = page => page.evaluate(() => structuredClone(MistakeryApp.state));
 async function click(page, side = 'left') {
-  await page.clock.runFor(6000);
+  await page.clock.runFor(12000);
   await page.locator(`[data-choice="${side}"]`).click();
   await continueWinFeedback(page);
 }

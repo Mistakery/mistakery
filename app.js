@@ -1723,14 +1723,18 @@
     return opening.concat(nodes.slice(1).map((next, index) => {
       const previous = nodes[index];
       const changedAuthor = card.mode === 'team' && next.dataset.source !== previous.dataset.source;
-      // Brief reading room after the previous bubble, not simulated typing speed.
+      // Let each thought land before the next bubble. Fragments of the same
+      // original message stay closer together; a new reply/speaker gets a beat.
       // Count message copy only (no nicknames/roles); photos need a longer glance.
       const words = Array.from(previous.querySelectorAll('p')).map(p => p.textContent).join(' ').trim().split(/\s+/).length;
       const media = previous.matches('.image-bubble, .media-placeholder') || previous.querySelector('.message-image, .media-placeholder');
-      const readingMs = media || words > 28 ? 900 : words > 12 ? 700 : 500;
+      const readingMs = media || words > 28 ? 1900 : words > 12 ? 1500 : 1100;
+      const sameThought = previous.dataset.messageOrigin !== undefined
+        && previous.dataset.messageOrigin === next.dataset.messageOrigin;
+      const beatMs = readingMs + (sameThought ? 0 : 400) + (changedAuthor ? 300 : 0);
       const durationMs = next.matches('.self-message')
-        ? authored.find(pause => pause.after === index + 1)?.durationMs || readingMs + 200
-        : authored.find(pause => pause.after === index + 1)?.durationMs || readingMs + (changedAuthor ? 100 : 0);
+        ? authored.find(pause => pause.after === index + 1)?.durationMs ?? beatMs + 200
+        : authored.find(pause => pause.after === index + 1)?.durationMs ?? beatMs;
       return { after: index + 1, durationMs };
     }).filter(pause => pause.durationMs > 0));
   }

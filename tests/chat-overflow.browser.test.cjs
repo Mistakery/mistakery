@@ -21,7 +21,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
           a.view = 'playing'; a.locked = false; a.render();
         });
         const state = await page.evaluate(() => JSON.stringify(MistakeryApp.state));
-        await page.clock.runFor(5000);
+        await page.clock.runFor(12000);
         const metrics = await page.evaluate(() => {
           document.querySelectorAll('[data-chat-current]').forEach(n => n.getAnimations().forEach(a => a.finish()));
           const chat = document.querySelector('[data-chat]'), header = document.querySelector('.contact');

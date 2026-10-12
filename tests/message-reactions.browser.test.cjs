@@ -54,7 +54,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         await seed(page);
         const state = await page.evaluate(() => JSON.stringify(MistakeryApp.state));
         assert.equal(await page.locator('.message-reactions').count(), 0, 'future reacted bubbles stay inside delivery queue');
-        await page.clock.runFor(1800);
+        await page.clock.runFor(4000);
         assert.equal(await page.locator('.message-reactions').count(), 1, 'Sales joke gets an authored row after delivery');
         assert.equal(await page.locator('.message-reaction:not([data-pending])').count(), 0, 'reaction waits for bubble arrival');
         await page.clock.runFor(650);
@@ -74,20 +74,21 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         // Native WA delivery animations use a real timeline, independent of the mock clock.
         await page.evaluate(() => document.querySelectorAll('[data-chat-current]').forEach(n => n.getAnimations().forEach(a => a.finish())));
         const before = await metrics(page);
-        assert.equal(before.disabled, false, 'reaction growth never locks ready choices');
+        assert.equal(before.disabled, true, 'choices still wait for the remaining conversation');
         await page.clock.runFor(200);
         assert.equal(await page.locator('.message-reaction:not([data-pending])').count(), 0, 'still no reaction 900ms after joke delivery');
         await page.clock.runFor(125);
         assert.equal(await page.locator('.message-reaction:not([data-pending])').count(), 1);
+        assert.equal((await metrics(page)).cues, before.cues, 'reaction reveal plays no new sounds');
         assert.equal(await page.locator('.message-reaction:not([data-pending]) .message-reaction-count').textContent(), '1');
-        await page.clock.runFor(700);
+        await page.clock.runFor(2000);
         // Final row has appeared; its count can grow without shifting the chat.
         await page.evaluate(() => document.querySelectorAll('[data-chat-current]').forEach(n => n.getAnimations().forEach(a => a.finish())));
         const countsBefore = await metrics(page);
         await page.clock.runFor(400);
         const after = await metrics(page);
         assert.deepEqual(after, countsBefore, 'count growth affects neither state nor scroll/layout');
-        assert.equal(after.cues, before.cues, 'reaction reveals play no new sounds');
+        assert.equal(after.cues, countsBefore.cues, 'reaction count growth plays no new sounds');
         assert.equal(after.disabled, false);
         assert.equal(after.state, state);
         assert.deepEqual(await page.locator('.message-reaction-count').allTextContents(), ['3', '2', '2']);
@@ -128,7 +129,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         INFLUENCER_08: 2, DREAM_TEAM: 2, FILL_AI_DEV: 1, FILL_PAYROLL_2: 1 };
       const vocabulary = new Set();
       for (const [id, rows] of Object.entries(expected)) {
-        await seed(page, id); await page.clock.runFor(6500);
+        await seed(page, id); await page.clock.runFor(12000);
         assert.equal(await page.locator('.message-reactions').count(), rows, id);
         assert.equal(await page.locator('.message-reaction[data-pending]').count(), 0, id);
         (await page.locator('.message-reaction-emoji').allTextContents()).forEach(emoji => vocabulary.add(emoji));
@@ -136,11 +137,11 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       }
       assert.ok(vocabulary.size >= 10, 'reaction vocabulary covers different emotions instead of repeating eyes and fire');
       await seed(page);
-      await page.clock.runFor(4000);
+      await page.clock.runFor(10000);
       await page.evaluate(() => document.querySelector('[data-choice=left]').click());
       await page.clock.runFor(850);
       const before = await page.evaluate(() => reactionMoves.length);
-      await page.clock.runFor(6500);
+      await page.clock.runFor(12000);
       assert.ok(await page.locator('[data-chat-history] .message-reactions').count() > 0);
       assert.ok(await page.locator('[data-chat-current] .message-reactions').count() > 0);
       const finalMoves = await page.evaluate(() => reactionMoves.length);
@@ -153,10 +154,10 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         window.oldReactionCopy = card.messages[2].text;
         card.messages[2].text = 'Different message';
       });
-      await seed(page); await page.clock.runFor(4000);
+      await seed(page); await page.clock.runFor(10000);
       assert.equal(await page.locator('.message-reactions').count(), 1, 'copy guard omits mismatched joke');
       await page.evaluate(() => { MistakeryApp.deck.cards.find(c => c.id === 'LIVE_AGENT_01').messages[2].text = oldReactionCopy; });
-      await seed(page, 'LIVE_AGENT_OUTCOME_1'); await page.clock.runFor(6500);
+      await seed(page, 'LIVE_AGENT_OUTCOME_1'); await page.clock.runFor(12000);
       assert.equal(await page.locator('.message-reactions').count(), 0, 'result presentation is not decorated');
     } finally { await browser.close(); }
   });
@@ -165,7 +166,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
     try {
       for (const event of ['hidden', 'reduce']) {
         await page.emulateMedia({ reducedMotion: 'no-preference' });
-        await seed(page); await page.clock.runFor(4000);
+        await seed(page); await page.clock.runFor(10000);
         await page.evaluate(() => document.querySelector('[data-choice=left]').click());
         await page.clock.runFor(850);
         await page.locator('button.typing-bubble').press('Enter');
@@ -192,20 +193,20 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
   test(`${name}: reduced motion, hidden and navigation settle reactions without stale callbacks`, async () => {
     const { browser, page } = await open(type, 320, 'reduce');
     try {
-      await seed(page); await page.clock.runFor(2500);
+      await seed(page); await page.clock.runFor(4650);
       assert.equal(await page.locator('.message-reaction:not([data-pending])').count(), 0, 'reduced motion keeps the same reading pause');
-      await page.clock.runFor(1500);
+      await page.clock.runFor(3000);
       assert.equal(await page.evaluate(() => reactionMoves.length), 0);
       assert.equal(await page.locator('[data-pending]').count(), 0);
       await page.emulateMedia({ reducedMotion: 'no-preference' });
       await page.waitForFunction(() => !matchMedia('(prefers-reduced-motion: reduce)').matches);
-      await seed(page); await page.clock.runFor(2000);
+      await seed(page); await page.clock.runFor(5000);
       const pendingCount = await page.evaluate(() => reactionMoves.length);
       await page.evaluate(() => MistakeryApp.render());
       assert.deepEqual(await page.locator('.message-reaction-count').allTextContents(), ['3', '2']);
       await page.clock.runFor(100);
       assert.equal(await page.evaluate(() => reactionMoves.length), pendingCount, 'mid-growth rerender restores final without replay');
-      await seed(page); await page.clock.runFor(2000);
+      await seed(page); await page.clock.runFor(5000);
       await page.evaluate(() => {
         window.oldPills = [...document.querySelectorAll('.message-reaction')];
         Object.defineProperty(document, 'hidden', { configurable: true, value: true });
@@ -213,20 +214,20 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       });
       assert.deepEqual(await page.locator('.message-reaction-count').allTextContents(), ['3', '2']);
       const count = await page.evaluate(() => reactionMoves.length);
-      await page.clock.runFor(4000);
+      await page.clock.runFor(10000);
       await page.evaluate(() => { delete document.hidden; document.dispatchEvent(new Event('visibilitychange')); });
       await page.clock.runFor(2000);
       assert.equal(await page.evaluate(() => reactionMoves.length), count, 'hidden deliveries have no late replay');
       assert.equal(await page.evaluate(() => oldPills.every(n => n.style.willChange === '' && n.getAnimations().length === 0)), true);
-      await seed(page); await page.clock.runFor(2000);
-      await seed(page, 'IRL_PADEL_01'); await page.clock.runFor(4000);
+      await seed(page); await page.clock.runFor(5000);
+      await seed(page, 'IRL_PADEL_01'); await page.clock.runFor(10000);
       assert.equal(await page.locator('.message-reactions').count(), 0);
       assert.equal(await page.evaluate(() => reactionMoves.length), 0, 'navigation discards previous callbacks');
       await seed(page, 'LIVE_AGENT_03'); await page.clock.runFor(5000);
       assert.equal(await page.locator('.message-reaction').count(), 1);
       assert.equal(await page.locator('.message-reaction-count').textContent(), '', 'personal reactions have no group counter');
       await page.evaluate(() => window.personalPill = document.querySelector('.message-reaction'));
-      await page.locator('[data-test-restart]').click(); await page.clock.runFor(4000);
+      await page.locator('[data-test-restart]').click(); await page.clock.runFor(10000);
       assert.equal(await page.evaluate(() => personalPill.isConnected), false, 'restart discards previous conversation');
       assert.equal(await page.evaluate(() => MistakeryApp.state.currentCardId), 'LIVE_AGENT_01');
       assert.deepEqual(await page.locator('.message-reaction-count').allTextContents(), ['3', '2', '2'], 'fresh attempt may display its newly delivered authored reactions');
