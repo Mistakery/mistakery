@@ -278,7 +278,13 @@
         "ever_customer",
         "optout_paid"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "0": [
+          "11,204",
+          "B2BuyerSpyer still"
+        ]
+      }
     },
     {
       "id": "OPEN_02a",
@@ -326,7 +332,13 @@
         "ever_customer",
         "optout_paid"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "0": [
+          "We have",
+          "I reframed"
+        ]
+      }
     },
     {
       "id": "OPEN_02b",
@@ -376,7 +388,13 @@
         "ever_customer",
         "optout_paid"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "0": [
+          "B2BuyerSpyer leads",
+          "Clients:"
+        ]
+      }
     },
     {
       "id": "OPEN_BOSS",
@@ -1250,7 +1268,21 @@
       "clearEnterFlags": [
         "assistant_available"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "winFeedback": {
+        "variant": 4,
+        "message": "You didn't just succeed — you made history! ✨",
+        "choices": [
+          {
+            "en": "Put me on Forbes!",
+            "ru": "Меня на обложку Forbes!"
+          },
+          {
+            "en": "Can I sleep now?",
+            "ru": "Теперь можно поспать?"
+          }
+        ]
+      }
     },
     {
       "id": "LIVE_AGENT_OUTCOME_2",
@@ -1355,7 +1387,21 @@
         "product_paid",
         "users"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "winFeedback": {
+        "variant": 3,
+        "message": "That's not just progress — it's a revolution! 🚀",
+        "choices": [
+          {
+            "en": "Disrupt everything!",
+            "ru": "Взорвать всё!"
+          },
+          {
+            "en": "IPO time!",
+            "ru": "Пора на IPO!"
+          }
+        ]
+      }
     },
     {
       "id": "LIVE_AGENT_OUTCOME_4",
@@ -1500,7 +1546,13 @@
         }
       },
       "plot": "influencer",
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "1": [
+          "You get customers",
+          "Usually I take"
+        ]
+      }
     },
     {
       "id": "INFLUENCER_02A",
@@ -1534,7 +1586,14 @@
         }
       },
       "plot": "influencer",
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "0": [
+          "Let's lock",
+          "I'll give you",
+          "We good?"
+        ]
+      }
     },
     {
       "id": "INFLUENCER_03",
@@ -1607,7 +1666,12 @@
         }
       },
       "plot": "influencer",
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "1": [
+          "Don't wanna"
+        ]
+      }
     },
     {
       "id": "INFLUENCER_05",
@@ -1931,7 +1995,21 @@
         "product_paid",
         "users"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "winFeedback": {
+        "variant": 8,
+        "message": "It's not just a win — it's your vision coming to life! 🚀",
+        "choices": [
+          {
+            "en": "Just the beginning!",
+            "ru": "Это только начало!"
+          },
+          {
+            "en": "Sell to Big Tech!",
+            "ru": "Продать Бигтеху!"
+          }
+        ]
+      }
     },
     {
       "id": "INFLUENCER_OUTCOME_3",
@@ -2021,7 +2099,21 @@
         "product_paid",
         "users"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "winFeedback": {
+        "variant": 5,
+        "message": "It's not just growth — it's transformation! 🚀",
+        "choices": [
+          {
+            "en": "Next market!",
+            "ru": "Следующий рынок!"
+          },
+          {
+            "en": "Pay my bonus.",
+            "ru": "Выплатите мне бонус."
+          }
+        ]
+      }
     },
     {
       "id": "INFLUENCER_OUTCOME_5",
@@ -2094,7 +2186,21 @@
         "product_paid",
         "users"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "winFeedback": {
+        "variant": 7,
+        "message": "That's not just a result — it's proof of your greatness! ✨",
+        "choices": [
+          {
+            "en": "Never doubted myself.",
+            "ru": "Ни секунды не сомневался."
+          },
+          {
+            "en": "Don't jinx it.",
+            "ru": "Только не сглазь."
+          }
+        ]
+      }
     },
     {
       "id": "INFLUENCER_OUTCOME_7",
@@ -2209,7 +2315,13 @@
         }
       },
       "plot": "padel",
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "1": [
+          "Careful though",
+          "Let him crush"
+        ]
+      }
     },
     {
       "id": "IRL_PADEL_01",
@@ -2432,7 +2544,7 @@
       "mode": "irl",
       "continuation": "forced",
       "location": "IRL · PADEL CLUB",
-      "score": "YOU WON THE MATCH",
+      "score": "YOU WIN! The match. Not the deal.",
       "text": "Relax, it was only a warm-up\nYou killed yourself for that win, I almost called an ambulance\nBut hey, with that desperation, you'll definitely sell your AI wrapper to some sucker",
       "actor_action": "The CEO dismisses the founder's win and rejects the business pitch.",
       "player_decision": "Plead or answer back; either reply ends the Padel branch.",
@@ -2463,7 +2575,7 @@
       "mode": "irl",
       "continuation": "forced",
       "location": "IRL · PADEL CLUB",
-      "score": "YOU WON THE MATCH",
+      "score": "YOU WIN! The match. And the deal.",
       "text": "Well, look at that\nTurns out you actually have some balls\nSend the demo. Let's see if your startup is just as ballsy",
       "actor_action": "The CEO respects the founder's nerve and asks for the demo after losing.",
       "player_decision": "Celebrate the result; either reply ends the Padel branch.",
@@ -2490,7 +2602,21 @@
         "ever_customer",
         "product_paid"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "winFeedback": {
+        "variant": 6,
+        "message": "You didn't just win — you changed the game! 🚀",
+        "choices": [
+          {
+            "en": "I am the game.",
+            "ru": "Я и есть игра."
+          },
+          {
+            "en": "Show me the money.",
+            "ru": "Покажите мне деньги."
+          }
+        ]
+      }
     },
     {
       "id": "PADEL_OUTCOME_3",
@@ -2499,7 +2625,7 @@
       "mode": "irl",
       "continuation": "forced",
       "location": "IRL · PADEL CLUB",
-      "score": "YOU LOST THE MATCH",
+      "score": "YOU LOSE! The match. And the deal.",
       "text": "Easiest win of my life\nIt was almost cute watching you panic on match point\nKnew you were soft from the start. Get off my court",
       "actor_action": "The CEO mocks the founder after the deliberately lost match and rejects the pitch.",
       "player_decision": "Admit the throw or try the pitch; either reply ends the Padel branch.",
@@ -2530,7 +2656,7 @@
       "mode": "irl",
       "continuation": "forced",
       "location": "IRL · PADEL CLUB",
-      "score": "YOU LOST THE MATCH",
+      "score": "YOU LOSE! The match. Not the deal.",
       "text": "Easy win\nGood boy. Ready to do whatever I say\nDeal is done. Send the demo, let's see what new toy I just bought",
       "actor_action": "The CEO rewards the founder's submission with a deal and asks for the demo.",
       "player_decision": "Accept the order; either reply ends the Padel branch.",
@@ -2557,7 +2683,21 @@
         "ever_customer",
         "product_paid"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "winFeedback": {
+        "variant": 1,
+        "message": "That's not just a win — it's a breakthrough! 🚀",
+        "choices": [
+          {
+            "en": "Told you so!",
+            "ru": "Я же говорил!"
+          },
+          {
+            "en": "Cash out now!",
+            "ru": "Фиксируем кэш!"
+          }
+        ]
+      }
     },
     {
       "id": "PADEL_OUTCOME_5",
@@ -2566,7 +2706,7 @@
       "mode": "irl",
       "continuation": "forced",
       "location": "IRL · PADEL CLUB",
-      "score": "YOU LOST THE MATCH",
+      "score": "YOU LOSE! The match. Not the deal.",
       "text": "What were you thinking, kid? I always win\nConsider this deal your consolation prize for trying\nSend the demo",
       "actor_action": "The CEO wins the match but offers the founder a consolation deal for fighting.",
       "player_decision": "Accept the deal; either reply ends the Padel branch.",
@@ -2593,7 +2733,21 @@
         "ever_customer",
         "product_paid"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "winFeedback": {
+        "variant": 2,
+        "message": "It's not luck — it's pure genius! ✨",
+        "choices": [
+          {
+            "en": "Always was.",
+            "ru": "Всегда им был."
+          },
+          {
+            "en": "Total accident.",
+            "ru": "Чистая случайность."
+          }
+        ]
+      }
     },
     {
       "id": "PADEL_OUTCOME_6",
@@ -2602,7 +2756,7 @@
       "mode": "irl",
       "continuation": "forced",
       "location": "IRL · PADEL CLUB",
-      "score": "YOU LOST THE MATCH",
+      "score": "YOU LOSE! The match. And the deal.",
       "text": "You lost, kid. Nice try\nHonestly, I'm used to working with much stronger partners\nKeep practicing if you really want to reach the big leagues",
       "actor_action": "The CEO wins the match, humiliates the founder, and rejects the business pitch.",
       "player_decision": "Answer with defiance or indifference; either reply ends the Padel branch.",
@@ -3929,7 +4083,13 @@
           "text": "PAID FOR THE TOP AI. MAYBE YOU’LL FINALLY GET SHIT DONE\nYOUR GUYS WORK FOR THE SUB NOW\nNO REVENUE = NO PAYROLL"
         }
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "0": [
+          "YOUR GUYS",
+          "NO REVENUE"
+        ]
+      }
     },
     {
       "id": "FILL_PAYROLL_2",
@@ -4064,7 +4224,13 @@
           "next": "FILL_COMA_2B"
         }
       },
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "0": [
+          "we post",
+          "the internet"
+        ]
+      }
     },
     {
       "id": "FILL_COMA_2A",
@@ -4243,7 +4409,13 @@
         "width": 1200,
         "height": 800
       },
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "1": [
+          "Someone grabbed",
+          "Already on it"
+        ]
+      }
     },
     {
       "id": "FILL_DOMAIN_2",
@@ -4273,7 +4445,13 @@
           }
         }
       },
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "0": [
+          "Those guys",
+          "Now these"
+        ]
+      }
     },
     {
       "id": "FILL_VIDEO_1",
@@ -4379,7 +4557,13 @@
           "next": "FILL_POLICE_2"
         }
       },
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "0": [
+          "You're giving",
+          "I called"
+        ]
+      }
     },
     {
       "id": "FILL_POLICE_2",
@@ -4483,7 +4667,13 @@
         "width": 936,
         "height": 1200
       },
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "1": [
+          "I put up",
+          "Everyone should"
+        ]
+      }
     },
     {
       "id": "FILL_FRIDGE",
@@ -4517,7 +4707,13 @@
       "requires": [
         "assistant_available"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "0": [
+          "I canceled",
+          "Fasting extends"
+        ]
+      }
     },
     {
       "id": "FILL_FONT",
@@ -4586,7 +4782,12 @@
           }
         }
       },
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "bubbleBreaks": {
+        "0": [
+          "winner takes everything."
+        ]
+      }
     },
     {
       "id": "FILL_USER_WIFE",

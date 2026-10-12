@@ -112,8 +112,12 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       if (name === 'Chromium') await page.screenshot({ path: '/tmp/mistakery-chat-typing-group.png', animations: 'disabled' });
       await page.clock.runFor(799); assert.equal(await count(page), 1);
       await page.clock.runFor(1); assert.equal(await count(page), 2);
+      assert.match(await page.locator('.typing-bubble').getAttribute('aria-label'), /@bigdeals is typing/);
+      await page.clock.runFor(500); assert.equal(await count(page), 3);
+      assert.match(await page.locator('.typing-bubble').getAttribute('aria-label'), /@bigdeals is typing/);
+      await page.clock.runFor(500); assert.equal(await count(page), 4);
       assert.match(await page.locator('.typing-bubble').getAttribute('aria-label'), /@hype_queen is typing/);
-      await page.clock.runFor(800); assert.equal(await count(page), 3);
+      await page.clock.runFor(600); assert.equal(await count(page), 5);
       assert.equal(await page.locator('.typing-bubble').count(), 0);
       assert.equal(await page.locator('[data-choice]:disabled').count(), 0);
     } finally { await browser.close(); }
@@ -154,7 +158,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await page.clock.runFor(499); assert.equal(await count(page), 1);
       await page.clock.runFor(1); assert.equal(await count(page), 2);
       await page.locator('button.typing-bubble').press('Enter');
-      assert.equal(await count(page), 3);
+      assert.equal(await count(page), 5);
       await seed(page, 'INFLUENCER_05');
       await page.locator('button.typing-bubble').press('Space');
       await page.locator('[data-choice="right"]').click();
@@ -219,13 +223,14 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.equal(cards.length, 77);
       for (const card of cards) {
         await seed(page, card.id);
-        const budget = { LIVE_AGENT_03: 3500, LIVE_AGENT_05: 3000, LIVE_AGENT_07: 2900, INFLUENCER_08: 2600 }[card.id] || 2500;
+        const budget = { LIVE_AGENT_03: 3500, LIVE_AGENT_05: 3000, LIVE_AGENT_07: 2900, INFLUENCER_08: 2600, DREAM_TEAM: 3500 }[card.id] || 2500;
         await page.clock.runFor(budget);
         assert.equal(await page.locator('[data-choice]:disabled').count(), 0, `${card.id}: delivery budget`);
         assert.equal(await page.locator('.typing-bubble').count(), 0, `${card.id}: no stale typing`);
-        const expected = card.mode === 'irl' ? 0 : card.messages
+        const original = card.mode === 'irl' ? 0 : card.messages
           ? card.messages.reduce((total, m) => total + (card.mode === 'team' || m.imageRef || m.forwardedFrom ? 1 : m.text.split('\n\n').length), 0)
           : (card.image ? 1 : 0) + card.text.split('\n\n').length;
+        const expected = original + Object.values(card.bubbleBreaks || {}).reduce((n,parts)=>n+parts.length,0);
         assert.equal(await count(page), expected, `${card.id}: complete canonical messages`);
       }
       assert.deepEqual(errors, []);

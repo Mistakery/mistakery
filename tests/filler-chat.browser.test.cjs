@@ -1,3 +1,4 @@
+const { retainedMessages } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { chromium, webkit } = require('playwright');
@@ -39,10 +40,10 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       ]) {
         await seed(page, id); await page.clock.runFor(6000);
         if (id === 'FILL_PAYROLL_1') {
-          assert.equal(await page.locator('[data-chat-current][data-source="@unicorn_hunter"]').count(), 1);
+          assert.equal(await page.locator('[data-chat-current][data-source="@unicorn_hunter"]').count(), 3);
         }
         const before = await snapshot(page);
-        const oldMessages = (await page.locator('[data-chat-current]').allTextContents()).slice(-2);
+        const oldMessages = await retainedMessages(page);
         const label = await page.locator(`[data-choice=${side}]`).innerText();
         await page.locator(`[data-choice=${side}]`).click();
         assert.equal(await page.locator('[data-composing-reply]').count(), 0, `${id}/${side}`);
@@ -56,7 +57,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         else assert.notEqual(after.currentCardId, id);
         if (id === 'FILL_PAYROLL_1') {
           await page.clock.runFor(6000);
-          assert.equal(await page.locator('[data-chat-history][data-source="@unicorn_hunter"]').count(), 1);
+          assert.equal(await page.locator('[data-chat-history][data-source="@unicorn_hunter"]').count(), 3);
           assert.equal(await page.locator('[data-chat-current][data-source="@error404"]').count(), 1);
         }
         assert.equal(after.history.length, 1);

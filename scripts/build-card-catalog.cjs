@@ -163,6 +163,11 @@ for (const [title, predicate] of sections) {
     } else if (card.id.startsWith('PADEL_OUTCOME_') || card.id.startsWith('INFLUENCER_OUTCOME_')) {
       lines.push('', `Эффект при входе в исход, ровно один раз: ${effects({ effects: card.outcomeEffects })}. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.`);
     }
+    if (card.winFeedback) {
+      const feedback = card.winFeedback;
+      lines.push('', `Победная отбивка @b2buddy · вариант ${feedback.variant} (точный текст владельца):`, '', quote([feedback.message]), '');
+      for (const choice of feedback.choices) lines.push(`- **${choice.en} — ${choice.ru}**: бесплатно продолжает текущую игру; без эффектов, нового хода или RNG.`);
+    }
     for (const [previousCardId, contextualChoices] of Object.entries(card.contextualChoices || {})) {
       for (const side of ['left', 'right']) {
         const choice = contextualChoices[side];

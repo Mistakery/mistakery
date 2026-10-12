@@ -11,4 +11,19 @@ async function completeFounderSend(page, controlledClock = false) {
   if (controlledClock) await page.clock.runFor(850);
   else await page.waitForFunction(() => !document.querySelector('[data-composing-reply], [data-sending-reply]'));
 }
-module.exports = { revealMessages, completeFounderSend };
+async function continueWinFeedback(page) {
+  if (await page.locator('[data-win-finale][open]').count()) {
+    await page.locator('[data-win-finale-choice]').first().click();
+  }
+}
+async function retainedMessages(page) {
+  return page.evaluate(() => {
+    const a = MistakeryApp, card = a.deck.cards.find(c => c.id === a.state.currentCardId);
+    const nodes = Array.from(document.querySelectorAll('[data-chat-current]'));
+    const extra = Object.values(card.bubbleBreaks || {}).reduce((total, parts) => total + parts.length, 0);
+    const firstOriginal = nodes.length - extra - 2;
+    return nodes.filter((node, index) => Number(node.dataset.messageOrigin ?? index) >= firstOriginal)
+      .map(node => node.textContent);
+  });
+}
+module.exports = { revealMessages, completeFounderSend, continueWinFeedback, retainedMessages };

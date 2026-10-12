@@ -62,6 +62,7 @@
   display: block; color: #426e99;
   font-size: 14px; font-weight: 400; line-height: 1.35;
 }
+.loss-finale[data-win-finale] .message .loss-finale__lead { color: var(--ink); }
 .loss-finale .message .loss-finale__quote {
   border-left: 2px solid #63a9ec; padding-left: 12px;
 }

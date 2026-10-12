@@ -23,11 +23,11 @@ for(const [name,type]of [['Chromium',chromium],['WebKit',webkit]])test(`${name}:
    for(const m of card.messages||[]){if(m.image?.caption)text.push(m.image.caption);if(m.text)text.push(m.text);}
    const lines=text.flatMap(t=>t.split('\n').filter(Boolean));
    const actual=await page.locator('[data-chat] p').evaluateAll(ns=>ns.map(n=>n.textContent.replaceAll('\u00a0',' ')));
-   assert.deepEqual(actual,lines,id);
+   assert.equal(actual.join(' ').replace(/\s+/g,' ').trim(),lines.join(' ').replace(/\s+/g,' ').trim(),id+' exact copy across authored bubble boundaries');
    for(const side of ['left','right'])assert.equal((await page.locator(`[data-choice="${side}"]`).textContent()).replaceAll('\u00a0',' '),card.choices[side].label,`${id}.${side}`);
-   if(card.mode==='team')assert.deepEqual(await page.locator('[data-chat] .team-row').evaluateAll(ns=>ns.map(n=>n.dataset.source)),card.messages.filter(m=>m.direction!=='outgoing').map(m=>m.source),`${id} speakers`);
+   if(card.mode==='team')assert.deepEqual(await page.locator('[data-chat] .team-row').evaluateAll(ns=>ns.map(n=>n.dataset.source)),card.messages.flatMap((m,i)=>m.direction==='outgoing'?[]:Array(1+(card.bubbleBreaks?.[i]?.length||0)).fill(m.source)),`${id} speakers`);
    const grouping=ownerOverrides.bubbleCounts?.find(item=>item.id===id);
-   if(grouping)assert.equal(await page.locator('[data-chat-current]').count(),grouping.textBubbles+Number(Boolean(card.image))+(card.messages||[]).filter(m=>m.image||m.imageRef).length,`${id}: original bubbles`);
+   if(grouping)assert.equal(await page.locator('[data-chat-current]').count(),grouping.textBubbles+Number(Boolean(card.image))+(card.messages||[]).filter(m=>m.image||m.imageRef).length+Object.values(card.bubbleBreaks||{}).reduce((n,parts)=>n+parts.length,0),`${id}: original bubbles`);
    if(id==='LIVE_AGENT_OUTCOME_3'){
     assert.equal(await page.locator('[data-chat] .team-row').count(),0);
     assert.deepEqual(await page.locator('[data-forwarded-from]').evaluateAll(ns=>ns.map(n=>n.dataset.forwardedFrom)),['@b2buddy_120','@b2buddy_389']);

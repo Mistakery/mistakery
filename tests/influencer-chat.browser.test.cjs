@@ -1,3 +1,4 @@
+const { retainedMessages } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { chromium, webkit } = require('playwright');
@@ -76,7 +77,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
           await seed(page, id, previous, target, side);
           const before = await snapshot(page);
           const expected = await page.evaluate(side => MistakeryRoute.resolveChoice(MistakeryApp.deck, MistakeryApp.state, side).state, side);
-          const old = (await page.locator('[data-chat-current]').allTextContents()).slice(-2);
+          const old = await retainedMessages(page);
           const label = await page.locator(`[data-choice=${side}]`).innerText();
           await page.locator(`[data-choice=${side}]`).click();
           assert.equal(await page.locator('[data-composing-reply]').count(), 0, id);

@@ -86,6 +86,7 @@
   const testHistory = [];
   const presentedOutcomes = new WeakSet();
   const lossPresentations = new WeakMap();
+  const winPresentations = new WeakMap();
   const resourceLossCards = Object.freeze({ cash_low: 'DOC_LOSS_1', team_low: 'DOC_LOSS_2',
     team_high: 'DOC_LOSS_3', customers_low: 'DOC_LOSS_4', founder_low: 'DOC_LOSS_5', founder_high: 'DOC_LOSS_6' });
   function resourceLossCard() {
@@ -106,16 +107,325 @@
     arrivalAnimations.forEach(animation => animation.cancel());
     arrivalAnimations.clear();
   }
+  // Critically damped 576/48/1 spring: a gentle start, no overshoot, and a
+  // continuous stop. Sample once; every row shares this same displacement.
+  const messageArrival = (() => {
+    const samples = [];
+    for (let step = 0; step <= 120; step++) {
+      const time = step / 120;
+      const displacement = (1 + 24 * time) * Math.exp(-24 * time);
+      samples.push({ displacement, opacity: time >= .1 ? 1 : (1 - Math.cos(Math.PI * time / .1)) / 2 });
+      if (time > .1 && displacement < .004) break;
+    }
+    samples[samples.length - 1] = { displacement: 0, opacity: 1 };
+    return { samples, duration: (samples.length - 1) * 1000 / 120 };
+  })();
   function animateArrival(node, delta, fade, start) {
-    const animation = node.animate([
+    const smooth = app.view !== 'saved' && !reducedMotion.matches;
+    const frames = smooth ? messageArrival.samples.map(sample => ({
+      transform: `translateY(${delta * sample.displacement}px)`, opacity: fade ? sample.opacity : 1,
+    })) : [
       { transform: `translateY(${delta}px)`, opacity: fade ? 0 : 1 },
       { transform: 'translateY(0)', opacity: 1 },
-    ], { duration: 200, easing: 'cubic-bezier(.2,0,0,1)' });
+    ];
+    const duration = smooth ? messageArrival.duration : 200;
+    const animation = node.animate(frames, { duration, easing: smooth ? 'linear' : 'cubic-bezier(.2,0,0,1)' });
     animation.startTime = start;
     arrivalAnimations.add(animation);
     animation.finished.then(() => arrivalAnimations.delete(animation), () => arrivalAnimations.delete(animation));
     return animation;
   }
+
+  // Sample the approved 650/42/1 damped spring. Its settling point determines
+  // the duration; native animations keep it interruptible and offline-ready.
+  const irlImpact = (() => {
+    const damping = 42 / 2;
+    const frequency = Math.sqrt(650 - damping ** 2);
+    const frames = [];
+    for (let step = 0; step <= 120; step += 1) {
+      const time = step / 120;
+      const displacement = Math.exp(-damping * time)
+        * (Math.cos(frequency * time) + damping / frequency * Math.sin(frequency * time));
+      frames.push({ transform: `translateY(${3 * displacement}px) scale(${1 - .015 * displacement})` });
+      if (time > .08 && Math.abs(displacement) < .004) break;
+    }
+    frames[frames.length - 1] = { transform: 'translateY(0) scale(1)' };
+    return { frames, duration: (frames.length - 1) * 1000 / 120 };
+  })();
+  const irlMotionNodes = new WeakMap();
+  function animateIrl(node, frames, options, property) {
+    const animation = node.animate(frames, options);
+    node.style.willChange = property;
+    irlMotionNodes.set(node, animation);
+    arrivalAnimations.add(animation);
+    const cleanup = () => {
+      arrivalAnimations.delete(animation);
+      // A cancelled entrance may be replaced on this same scene before its
+      // finished promise rejects. Only the current owner releases the layer.
+      if (irlMotionNodes.get(node) === animation) {
+        node.style.willChange = '';
+        irlMotionNodes.delete(node);
+      }
+    };
+    animation.finished.then(cleanup, cleanup);
+  }
+  function presentIrlArrival() {
+    if (reducedMotion.matches || document.hidden) return;
+    animateIrl($('.irl-dialog'), irlImpact.frames,
+      { duration: irlImpact.duration, easing: 'linear' }, 'transform');
+    const previous = engine.cardById(app.deck, app.state.history.at(-1)?.cardId);
+    if (previous && previous.mode !== 'irl') {
+      animateIrl($('[data-scene]'), [{ opacity: 0 }, { opacity: 1 }],
+        { duration: 180, easing: 'linear' }, 'opacity');
+    }
+  }
+
+  // Presentation only: match both bubble position and copy so later copy edits
+  // cannot silently assign a reaction to a different message. No deck effects.
+  const authoredMessageReactions = {
+    LIVE_AGENT_01: { 2: ['Works on my ex every time', [['😂', 3], ['👀', 2]]],
+      3: ['AI STARTUP after all', [['🚀', 2]]] },
+    LIVE_AGENT_02: { 1: ['performance this month', [['😬', 2]]], 2: ['MIC DROP', [['👏', 2], ['🔥', 1]]] },
+    LIVE_AGENT_03: { 2: ['physically hurts', [['💀', 1]]] },
+    LIVE_AGENT_08: { 2: ['that kinda hurt', [['💔', 2]]] },
+    INFLUENCER_01: { 1: ['heard that one before', [['🤨', 2]]], 2: ['20% max', [['🤝', 2]]] },
+    INFLUENCER_05: { 2: ['60% revshare', [['😳', 1]]] },
+    INFLUENCER_07: { 2: ['more views lol', [['😂', 2]]] },
+    INFLUENCER_08: { 1: ['the server is on fire', [['😬', 2]]], 2: ['searching for us manually', [['🤯', 2]]] },
+    DREAM_TEAM: { 0: ['first big client', [['🎉', 2]]], 2: ['in 4K', [['😂', 2]]] },
+    FILL_AI_DEV: { 1: ['fire me then lol', [['🫠', 2]]] },
+    FILL_PAYROLL_2: { 0: ['zero overtime from me', [['🫡', 2]]] },
+  };
+  // Authored boundaries use the original bubble index and literal next phrase.
+  // Clone paragraph ranges so formatting, mentions and the sender shell survive.
+  function splitChatBubble(node, starts) {
+    const bubble = node.querySelector('.team-bubble') || node;
+    if (!starts?.length || bubble.matches('.image-bubble, .media-placeholder')
+      || node.hasAttribute('data-forwarded-from')) return [node];
+    const paragraphs = Array.from(bubble.querySelectorAll(':scope > p'));
+    const cuts = [];
+    let previous = [-1, -1];
+    for (const phrase of starts) {
+      let found;
+      paragraphs.some((p, index) => {
+        if (index < previous[0]) return false;
+        const offset = p.textContent.replace(/\u00a0/g, ' ').indexOf(phrase, index === previous[0] ? previous[1] + 1 : 0);
+        if (offset < 0) return false;
+        found = [index, offset]; return true;
+      });
+      // Copy edits must not split the wrong text or omit any content.
+      if (!found) return [node];
+      cuts.push(found); previous = found;
+    }
+    const groups = [[]];
+    paragraphs.forEach((p, index) => {
+      const offsets = cuts.filter(cut => cut[0] === index).map(cut => cut[1]);
+      const boundaries = [...new Set([0, ...offsets, p.textContent.length])];
+      const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT);
+      const leaves = []; let leaf, length = 0;
+      while ((leaf = walker.nextNode())) { leaves.push({ leaf, start: length }); length += leaf.textContent.length; }
+      const point = offset => {
+        const item = leaves.find(item => offset <= item.start + item.leaf.textContent.length);
+        return [item.leaf, offset - item.start];
+      };
+      for (let part = 0; part < boundaries.length - 1; part++) {
+        const from = boundaries[part], to = boundaries[part + 1];
+        if (offsets.includes(from) && groups.at(-1).length) groups.push([]);
+        const range = document.createRange(); range.setStart(...point(from)); range.setEnd(...point(to));
+        const paragraph = p.cloneNode(false); paragraph.append(range.cloneContents());
+        groups.at(-1).push(paragraph);
+      }
+    });
+    return groups.map(paragraphs => {
+      const part = node.cloneNode(true), host = part.querySelector('.team-bubble') || part;
+      host.querySelectorAll(':scope > p').forEach(p => p.remove());
+      host.append(...paragraphs); return part;
+    });
+  }
+  function withMessageReactions(card, markup) {
+    const authored = authoredMessageReactions[card.id];
+    const breaks = card.bubbleBreaks;
+    if ((!authored && !breaks) || card.mode === 'irl' || isLossCard()) return markup;
+    const template = document.createElement('template');
+    template.innerHTML = markup;
+    if (breaks) Array.from(template.content.children).forEach((node, index) => {
+      node.dataset.messageOrigin = index;
+      node.replaceWith(...splitChatBubble(node, breaks[index]));
+    });
+    Array.from(template.content.children).forEach((node, index) => {
+      const entry = !card.outcomeTone && authored?.[node.dataset.messageOrigin ?? index];
+      if (!entry || !node.textContent.replace(/\s+/g, ' ').includes(entry[0])
+        || !node.matches('.message, .team-row, .self-message') || node.matches('.image-bubble, .media-placeholder')) return;
+      const bubble = node.querySelector('.team-bubble') || node;
+      if (bubble.matches('.image-bubble, .media-placeholder')) return;
+      const row = document.createElement('div');
+      row.className = 'message-reactions';
+      row.dataset.reactionEvent = `reactions:${card.id}:${index}`;
+      row.setAttribute('role', 'group'); row.setAttribute('aria-label', 'Message reactions');
+      row.setAttribute('aria-live', 'off');
+      entry[1].forEach(([emoji, count]) => {
+        const pill = document.createElement('span'); pill.className = 'message-reaction';
+        pill.dataset.finalCount = card.mode === 'team' ? String(count) : '';
+        const icon = document.createElement('span'); icon.className = 'message-reaction-emoji'; icon.textContent = emoji;
+        const number = document.createElement('span'); number.className = 'message-reaction-count';
+        number.textContent = pill.dataset.finalCount;
+        pill.append(icon, number); row.append(pill);
+      });
+      bubble.append(row);
+    });
+    return template.innerHTML;
+  }
+
+  // Unlike bubble delivery, a repeated pop must never lower opacity: the old
+  // fade restarted at .35 when a count grew, producing the reported blink.
+  const reactionPop = (() => {
+    const half = 42 / 2, frequency = Math.sqrt(650 - half ** 2), frames = [];
+    for (let step = 0; step <= 80; step++) {
+      const time = step / 120;
+      const d = Math.exp(-half * time) * (Math.cos(frequency * time) + half / frequency * Math.sin(frequency * time));
+      frames.push({ transform: `translateY(${3 * d}px) scale(${1 - .04 * d})` });
+      if (time > .08 && Math.abs(d) < .004) break;
+    }
+    frames[frames.length - 1] = { transform: 'none' };
+    return { frames, duration: (frames.length - 1) * 1000 / 120 };
+  })();
+  const reactionScopes = new Set();
+  const reactionLayoutAnimations = new WeakMap();
+  function reactionLayoutTop(node, chat) {
+    let top = -chat.scrollTop;
+    for (let parent = node; parent; parent = parent.offsetParent) top += parent.offsetTop;
+    return top;
+  }
+  function reactionTranslation(node, chat) {
+    let offset = 0;
+    for (let parent = node; parent && parent !== chat; parent = parent.parentElement) {
+      const value = getComputedStyle(parent).translate.split(/\s+/)[1];
+      offset += parseFloat(value) || 0;
+    }
+    return offset;
+  }
+  function trackReactionExpansion(scope, node, frames, cleanup = () => {}) {
+    const animation = node.animate(frames, { duration: messageArrival.duration, easing: 'linear' });
+    scope.animations.add(animation);
+    const release = () => {
+      scope.animations.delete(animation); scope.cleanups.delete(release); cleanup();
+      if (!scope.timers.size && !scope.animations.size) reactionScopes.delete(scope);
+    };
+    scope.cleanups.add(release);
+    animation.finished.then(release, release);
+    return animation;
+  }
+  function revealReactionRow(row, scope) {
+    if (!row.hasAttribute('data-waiting')) return;
+    const chat = row.closest('[data-chat]'), bubble = row.parentElement;
+    const moving = scope && !reducedMotion.matches && !document.hidden;
+    const roots = chat ? Array.from(chat.querySelectorAll(
+      '[data-chat-current], [data-chat-history], [data-player-reply], .typing-bubble, .typing-row, .member-avatar, .message-avatar'
+    )).filter(node => !node.matches('.typing-bubble') || !node.closest('.typing-row')) : [];
+    const before = moving ? roots.map(node => [node,
+      reactionLayoutTop(node, chat) + reactionTranslation(node, chat)]) : [];
+    const height = bubble.offsetHeight;
+    const paint = getComputedStyle(bubble);
+    const surfaceStyle = { background: paint.background, boxShadow: paint.boxShadow, borderRadius: paint.borderRadius };
+    delete row.dataset.waiting;
+    if (chat && app.cardDelivery?.follow !== false) {
+      // scrollHeight includes transient native transform/translate overflow.
+      // Follow the final layout once, not that moving visual overflow.
+      const origin = reactionLayoutTop(chat, chat);
+      const bottom = Math.max(...Array.from(chat.children, child =>
+        reactionLayoutTop(child, chat) - origin + child.offsetHeight));
+      chat.scrollTop = Math.max(0, bottom + (parseFloat(getComputedStyle(chat).paddingBottom) || 0) - chat.clientHeight);
+      updateHistoryVisibility();
+    }
+    if (!moving) return;
+    // Layout is measured once. A separate translate property composes with the
+    // native message transform, preserving its opacity and original timeline.
+    const deltas = new Map(before.map(([node, top]) => [node, top - reactionLayoutTop(node, chat)]));
+    before.forEach(([node]) => {
+      let delta = deltas.get(node);
+      for (let parent = node.parentElement; parent && parent !== chat; parent = parent.parentElement) {
+        if (deltas.has(parent)) { delta -= deltas.get(parent); break; }
+      }
+      reactionLayoutAnimations.get(node)?.cancel();
+      if (Math.abs(delta) < .01) return;
+      const animation = trackReactionExpansion(scope, node,
+        messageArrival.samples.map(sample => ({ translate: `0 ${delta * sample.displacement}px` })),
+        () => { if (reactionLayoutAnimations.get(node) === animation) reactionLayoutAnimations.delete(node); });
+      reactionLayoutAnimations.set(node, animation);
+    });
+    // Scale only a temporary background, never message copy or avatars.
+    const surface = document.createElement('span');
+    surface.className = 'reaction-bubble-surface'; surface.setAttribute('aria-hidden', 'true');
+    Object.assign(surface.style, surfaceStyle);
+    bubble.prepend(surface); bubble.classList.add('is-reaction-expanding');
+    const ratio = height / bubble.offsetHeight;
+    trackReactionExpansion(scope, surface, messageArrival.samples.map(sample => ({
+      transform: `scaleY(${1 - (1 - ratio) * sample.displacement})`,
+    })), () => { surface.remove(); bubble.classList.remove('is-reaction-expanding'); });
+  }
+  function settleReactionScope(scope) {
+    scope.timers.forEach(window.clearTimeout); scope.timers.clear();
+    scope.animations.forEach(a => a.cancel()); scope.animations.clear();
+    scope.cleanups.forEach(cleanup => cleanup());
+    if (scope.row.isConnected) revealReactionRow(scope.row);
+    else delete scope.row.dataset.waiting;
+    scope.row.querySelectorAll('.message-reaction').forEach(pill => {
+      delete pill.dataset.pending; pill.removeAttribute('aria-hidden'); pill.style.willChange = '';
+      pill.querySelector('.message-reaction-count').textContent = pill.dataset.finalCount;
+    });
+    reactionScopes.delete(scope);
+  }
+  function settleMessageReactions() { reactionScopes.forEach(settleReactionScope); }
+  function queueMessageReactions(nodes, staticAppearance = false) {
+    nodes.forEach(node => {
+      const row = node.querySelector('.message-reactions');
+      if (!row) return;
+      const fresh = soundOnce(row.dataset.reactionEvent); // Same snapshot dedup, no audio kind.
+      if (!fresh || staticAppearance || document.hidden) return;
+      row.dataset.waiting = '';
+      const state = app.state;
+      const scope = { row, timers: new Set(), animations: new Set(), cleanups: new Set() };
+      reactionScopes.add(scope);
+      const current = () => app.state === state && app.view === 'playing' && row.isConnected;
+      function later(fn, delay) {
+        const timer = window.setTimeout(() => {
+          scope.timers.delete(timer);
+          if (!current() || document.hidden) { settleReactionScope(scope); return; }
+          fn();
+          if (!scope.timers.size && !scope.animations.size) reactionScopes.delete(scope);
+        }, delay);
+        scope.timers.add(timer);
+      }
+      function pop(pill) {
+        if (reducedMotion.matches) return;
+        pill.style.willChange = 'transform';
+        const animation = pill.animate(reactionPop.frames, { duration: reactionPop.duration, easing: 'linear' });
+        scope.animations.add(animation);
+        const cleanup = () => {
+          scope.animations.delete(animation); pill.style.willChange = '';
+          if (!scope.timers.size && !scope.animations.size) reactionScopes.delete(scope);
+        };
+        animation.finished.then(cleanup, cleanup);
+      }
+      row.querySelectorAll('.message-reaction').forEach((pill, index) => {
+        pill.dataset.pending = ''; pill.setAttribute('aria-hidden', 'true');
+        // Give people reading time; only the pill moves, independently of delivery.
+        function show() {
+          revealReactionRow(row, scope);
+          delete pill.dataset.pending; pill.removeAttribute('aria-hidden');
+          const number = pill.querySelector('.message-reaction-count');
+          number.textContent = pill.dataset.finalCount ? '1' : '';
+          pop(pill);
+          if (Number(pill.dataset.finalCount) > 1) later(() => {
+            number.textContent = pill.dataset.finalCount; pop(pill);
+          }, 340);
+        }
+        later(show, 1000 + index * 220);
+      });
+    });
+  }
+  reducedMotion.addEventListener('change', settleMessageReactions);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) settleMessageReactions(); });
 
   ['pointerdown', 'wheel', 'keydown'].forEach(type => {
     document.addEventListener(type, cancelArrivalMotion, { capture: true, passive: true });
@@ -124,6 +434,9 @@
   reducedMotion.addEventListener('change', cancelArrivalMotion);
   reducedMotion.addEventListener('change', () => {
     resourceFeedback?.animations.forEach(animation => animation.cancel());
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) cancelArrivalMotion();
   });
   let resourcesVisible = true;
   function updateResourceMotionVisibility() {
@@ -219,6 +532,10 @@
       savedDeliveryTimer = null;
       app.savedDelivery = null;
     }
+    const winFinale = $('[data-win-finale]');
+    // Remove first so its queued close event cannot resume a discarded view.
+    winFinale?.remove();
+    if (winFinale?.open) winFinale.close();
     const finale = $('[data-loss-finale]');
     if (finale?.open) finale.close();
     finale?.remove();
@@ -227,6 +544,7 @@
     delete $('[data-game]').dataset.lossPreview;
     if (resourceFeedback?.feedback !== feedback) cancelResourceFeedback();
     sentMediaWidths = null;
+    settleMessageReactions();
     cancelArrivalMotion();
     cancelOutcomeImageMotion();
     if ($('[data-test-details]').open) $('[data-test-details]').close();
@@ -258,6 +576,7 @@
       soundPlayed: [...(soundEvents.get(app.state) || [])],
       state: structuredClone(app.state),
       lossPresentation: structuredClone(lossPresentations.get(app.state) || null),
+      winPresentation: structuredClone(winPresentations.get(app.state) || null),
       runStartState: structuredClone(app.runStartState),
       view: app.view,
       noteIndex: app.noteIndex,
@@ -284,10 +603,11 @@
     sound.stop();
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
-    const { scrollTop, lossPresentation, soundPlayed, ...saved } = testHistory.pop();
+    const { scrollTop, lossPresentation, winPresentation, soundPlayed, ...saved } = testHistory.pop();
     Object.assign(app, structuredClone(saved), { locked: false });
     soundEvents.set(app.state, new Set(soundPlayed));
     if (lossPresentation) lossPresentations.set(app.state, structuredClone(lossPresentation));
+    if (winPresentation) winPresentations.set(app.state, structuredClone(winPresentation));
     // Restored outcomes retain their styling but never replay their entrance.
     presentedOutcomes.add(app.state);
     clearPreview();
@@ -545,7 +865,16 @@
   function showIrlLocation(card) {
     const location = $('[data-location]');
     location.querySelector('small').textContent = card.location;
-    $('[data-location-score]').textContent = card.score;
+    const score = $('[data-location-score]');
+    const result = card.outcomeTone && /^(YOU (?:WIN|LOSE)!)( .+)$/.exec(card.score);
+    location.classList.toggle('has-result', Boolean(result));
+    score.replaceChildren();
+    if (result) {
+      const title = document.createElement('span');
+      title.className = 'irl-result';
+      title.textContent = result[1];
+      score.append(title, document.createTextNode(result[2]));
+    } else score.textContent = card.score;
     location.hidden = false;
   }
 
@@ -847,7 +1176,7 @@
           ? forwardedMessageMarkup(message, preserve)
           : cardMessageMarkup(message.text, preserve)).join('')
       : cardMessageMarkup(card.text, preserve, card.italicLines);
-    return media + messages;
+    return withMessageReactions(card, media + messages);
   }
 
   function forwardedMessageMarkup(message, preserve) {
@@ -872,7 +1201,7 @@
   }
 
   function teamCardMessagesMarkup(card) {
-    return card.messages.map((message) => {
+    return withMessageReactions(card, card.messages.map((message) => {
       if (message.system) return `<div class="date-chip is-pop" data-system-event${message.leftChannel ? ` data-left-member="${htmlAttribute(message.leftChannel)}"` : ''}>${messageLines(htmlAttribute(message.text), true)}</div>`;
       const body = message.image
         ? mediaImageMarkup(message.image) + (message.text ? `<div class="message-caption">${messageLines(message.text, card.preservePunctuation)}</div>` : '')
@@ -892,7 +1221,7 @@
           ${body}
         </div>
       </div>`;
-    }).join('');
+    }).join(''));
   }
 
   function renderTeamCard(card) {
@@ -922,6 +1251,13 @@
       && (previous.mode || 'personal') === (card.mode || 'personal'));
   }
 
+  function retainedMessageNodes(nodes) {
+    // Keep two original messages, including every authored bubble fragment.
+    const origins = nodes.map((node, index) => node.dataset.messageOrigin ?? String(index));
+    const retained = new Set([...new Set(origins)].slice(-2));
+    return nodes.filter((node, index) => retained.has(origins[index]));
+  }
+
   function prependPreviousChatMessages(card, mediaWidths) {
     if (card.mode === 'irl') return null;
     const chat = $('[data-chat]');
@@ -938,7 +1274,7 @@
     template.innerHTML = card.mode === 'team'
       ? teamCardMessagesMarkup(previous)
       : personalCardMessagesMarkup(previous);
-    const retained = Array.from(template.content.children).slice(-2);
+    const retained = retainedMessageNodes(Array.from(template.content.children));
     retained.forEach((node, index) => {
       node.classList.remove('is-pop');
       node.dataset.chatHistory = '';
@@ -987,7 +1323,7 @@
     const avatar = characterAvatar(source, name.slice(0, 1).toUpperCase(), source.irlAvatar);
     setContact({ name, role: '', avatar });
     $('[data-chat]').innerHTML = `<span class="sr-only" data-card-id>${card.id}</span>
-      <div class="irl-dialog is-pop">${messageLines(card.text, card.preservePunctuation)}</div>`;
+      <div class="irl-dialog">${messageLines(card.text, card.preservePunctuation)}</div>`;
   }
 
   function endingReaction() {
@@ -1029,6 +1365,7 @@
   }
 
   function renderCard(feedback = null) {
+    if (winPresentations.get(app.state)?.pending) return showWinFeedback();
     if (app.state.gameOver) return renderEnding(feedback);
     const card = engine.cardById(app.deck, app.state.currentCardId);
     if (!card || !app.activeCardIds.includes(card.id)) {
@@ -1069,9 +1406,6 @@
     bindCardChoices(card, choices, complete);
     const attentionMs = resourceAttentionMs(feedback);
     stageCardMessages(card, attentionMs);
-    // IRL has no messenger delivery queue; its existing entrance can hold the
-    // text briefly without inventing a typing bubble over the court.
-    if (card.mode === 'irl' && attentionMs) $('.irl-dialog').style.animationDelay = `${attentionMs}ms`;
     if (playerReply && app.cardDelivery && historyMediaWidths) app.cardDelivery.historyMediaWidths = historyMediaWidths;
     if (playerReply) {
       focusContinuation();
@@ -1162,13 +1496,16 @@
     const gap = parseFloat(getComputedStyle(current[0].parentElement).gap) || 0;
     const contentHeight = () => current.reduce((height, node) => height + node.offsetHeight, 0)
       + gap * (current.length - 1);
+    // The scroll surface extends behind the floating contact. Media must fit
+    // the readable area below it, excluding the contact's initial top padding.
+    const availableHeight = chat.clientHeight - parseFloat(getComputedStyle(chat).paddingTop) - 16;
     // Shrink the entire media bubble, leaving the image's intrinsic ratio intact.
     // Recheck the caption at each width because its line wrapping changes too.
     media.forEach(bubble => {
       let width = bubble.offsetWidth;
       let bestWidth = width;
       let bestHeight = contentHeight();
-      while (contentHeight() > chat.clientHeight - 16 && width > 128) {
+      while (contentHeight() > availableHeight && width > 128) {
         width = Math.max(128, width - 4);
         bubble.style.width = `${width}px`;
         const height = contentHeight();
@@ -1210,8 +1547,13 @@
       else pauses.unshift({ after: 0, durationMs: attentionMs });
     }
     if (!pauses.length) {
-      if (card.mode === 'irl') soundOnce(`padel:${key}`, 'padel');
-      else announceDelivery(nodes);
+      if (card.mode === 'irl') {
+        // The existing event snapshot makes render/Back silent and still lets
+        // a newly accepted choice after Back get its own fresh entrance.
+        const fresh = soundOnce(`padel:${key}`, 'padel');
+        if (fresh && !card.outcomeTone) presentIrlArrival();
+      }
+      else { announceDelivery(nodes); queueMessageReactions(nodes, restoring || repeated); }
       const outgoing = nodes.filter(node => node.matches('.self-message'));
       app.cardDelivery = outgoing.length ? { key, pauses, delivered: true } : null;
       outgoing.forEach(node => {
@@ -1227,6 +1569,7 @@
     }
     const delivery = app.cardDelivery;
     if (delivery.delivered) {
+      queueMessageReactions(nodes, true);
       nodes.forEach(node => { node.classList.remove('is-pop'); node.style.animationDelay = ''; });
       if (isLossCard()) showLossPreviewDefeat();
       return;
@@ -1237,6 +1580,7 @@
       node.classList.remove('is-pop'); node.style.animationDelay = '';
     });
     announceDelivery(nodes.filter(node => node.isConnected));
+    queueMessageReactions(nodes.filter(node => node.isConnected), restoring);
     let typing;
     const anchor = card.mode === 'team' || card.previewMixedPersonal ? chat.querySelector('.message-clearance') : null;
     const append = node => stack.insertBefore(node, typing || anchor);
@@ -1270,6 +1614,7 @@
         node.classList.remove('is-pop');
         append(node);
       });
+      queueMessageReactions(revealed);
       finish(); followDelivery();
     };
     function showTyping() {
@@ -1337,8 +1682,9 @@
       } else {
         finish();
       }
-      followDelivery();
       arrived.forEach(node => node.classList.remove('is-pop'));
+      queueMessageReactions(arrived);
+      followDelivery();
       if (!animate) return;
       // One measured displacement and timeline for history, new bubbles and dots.
       // Local coordinates also work in the rotated portrait stage. Never layer
@@ -1409,7 +1755,7 @@
     // IRL card changes use the ball/result cue; there is no message to send.
     if (card.mode !== 'irl' && next?.mode !== 'irl') sound.play('send');
     if (!resolved.gameOver && retainsPreviousChat(next, card, side)) {
-      sentMediaWidths = Array.from($('[data-chat]').querySelectorAll('[data-chat-current]')).slice(-2)
+      sentMediaWidths = retainedMessageNodes(Array.from($('[data-chat]').querySelectorAll('[data-chat-current]')))
         .map(node => (node.matches('.image-bubble') ? node : node.querySelector('.image-bubble'))?.offsetWidth || null);
     }
     resolveCardChoice(card, side, undefined, resolved);
@@ -1422,6 +1768,13 @@
     app.state = resolved || route.resolveChoice(app.deck, app.state, side,
       directStoryTest ? { outcomeRng: Math.random } : {}).state;
     const feedback = app.state.history.at(-1);
+    if (card.outcomeTone === 'success' && card.winFeedback && !app.state.gameOver) {
+      // Route settlement/draw has already happened once. Hold presentation only:
+      // no next-card typing, incoming sound, scrolling or gameplay work behind the modal.
+      winPresentations.set(app.state, { pending: true, cardId: card.id, feedback });
+      showWinFeedback();
+      return;
+    }
     renderCard(feedback);
     const nextCard = engine.cardById(app.deck, app.state.currentCardId);
     unlockAfterChoice(nextCard?.mode === 'irl' ? resourceAttentionMs(feedback) : 0);
@@ -1628,6 +1981,70 @@
     soundOnce('finale-alert', 'ai-finale');
   }
 
+  function renderWinFeedbackBackground(presentation) {
+    // Also reconstruct this held view when Back crosses a restart. Rendering the
+    // resolved next card here would start its delivery before the free dismissal.
+    const card = engine.cardById(app.deck, presentation.cardId);
+    window.clearTimeout(choiceUnlockTimer);
+    app.locked = true;
+    app.cardDelivery = null;
+    const freshFeedback = soundEvents.get(app.state)?.has('win-finale-alert') ? null : presentation.feedback;
+    setView('playing', 'real', freshFeedback);
+    renderResources(app.state.resources, freshFeedback);
+    setSceneMode(card.mode);
+    if (card.mode === 'irl') showIrlLocation(card);
+    else hideIrlLocation();
+    setReplyHint(card.mode !== 'irl');
+    setCardId(card.id);
+    if (card.mode === 'irl') renderIrlCard(card);
+    else if (card.mode === 'team') renderTeamCard(card);
+    else renderPersonalCard(card);
+    $('[data-chat]').querySelectorAll('.is-pop').forEach(node => node.classList.remove('is-pop'));
+    $('[data-game]').dataset.outcome = card.outcomeTone;
+    const choices = route.choicesFor(card, app.state);
+    setChoices(['left', 'right'].map(side => engine.getChoiceLabel(choices[side], presentation.feedback.resourcesBefore.founder)),
+      () => {}, { disabled: true });
+  }
+
+  function showWinFeedback() {
+    const state = app.state;
+    const presentation = winPresentations.get(state);
+    if (!presentation?.pending || state.gameOver) return;
+    if ($('[data-win-finale]')?.open) return;
+    renderWinFeedbackBackground(presentation);
+    const feedback = engine.cardById(app.deck, presentation.cardId).winFeedback;
+    const source = sourceFor('@b2buddy');
+    const dialog = document.createElement('dialog');
+    dialog.className = 'loss-finale'; dialog.dataset.winFinale = ''; dialog.dataset.card = presentation.cardId;
+    dialog.setAttribute('aria-labelledby', 'win-finale-sender');
+    dialog.innerHTML = `<header class="loss-finale__head">
+      <div class="avatar" aria-hidden="true">${characterAvatar(source)}</div>
+      <div class="contact__text"><b id="win-finale-sender">${htmlAttribute(source.name)}</b><i>${htmlAttribute(source.role)}</i></div>
+    </header>
+    <div class="loss-finale__body" tabindex="0" autofocus aria-label="Message from ${htmlAttribute(source.name)}">
+      <div class="message"><p class="loss-finale__opening"><span class="loss-finale__lead">${lossFinaleText(feedback.message)}</span></p></div>
+    </div>
+    <footer class="choices">${feedback.choices.map((choice, index) => `<button type="button" class="choice${index ? ' choice--right' : ''}" data-win-finale-choice>${htmlAttribute(choice.en)}</button>`).join('')}</footer>`;
+    const resume = () => {
+      if (app.state !== state || !dialog.isConnected || !presentation.pending) return;
+      presentation.pending = false;
+      sound.stop();
+      dialog.remove();
+      if (dialog.open) dialog.close();
+      // The outcome cost was presented when accepted; a free dismissal must
+      // not replay its meter pulse or resource-attention delay.
+      renderCard();
+      unlockAfterChoice();
+      $('[data-chat]').focus({ preventScroll: true });
+    };
+    dialog.querySelectorAll('[data-win-finale-choice]').forEach(button => button.addEventListener('click', resume));
+    dialog.addEventListener('cancel', event => { event.preventDefault(); resume(); });
+    dialog.addEventListener('close', resume);
+    document.body.append(dialog);
+    dialog.showModal();
+    soundOnce('win-finale-alert', 'ai-finale');
+  }
+
   function previewOutgoingMessageMarkup(message) {
     const file = message.attachment;
     const attachment = file ? `<div class="preview-file" aria-label="${htmlAttribute(file.filename)}, ${htmlAttribute(file.type)} document">
@@ -1811,7 +2228,7 @@
   document.addEventListener('keydown', (event) => {
     if (event.target.closest?.('[data-test-controls]')) return;
     if ($('[data-test-details]').open) return;
-    if ($('[data-loss-finale]')?.open) return;
+    if ($('[data-loss-finale]')?.open || $('[data-win-finale]')?.open) return;
     if (app.view !== 'playing' && !(app.view === 'ended' && isLossCard())) return;
     if (event.key === 'ArrowLeft') $('[data-choice="left"]')?.click();
     if (event.key === 'ArrowRight') $('[data-choice="right"]')?.click();

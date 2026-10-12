@@ -1,4 +1,4 @@
-const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
+const { completeFounderSend, continueWinFeedback } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -17,6 +17,7 @@ async function click(page, side = 'left') {
   await page.clock.runFor(6000);
   await page.locator(`[data-choice="${side}"]`).click();
   await completeFounderSend(page, true);
+  await continueWinFeedback(page);
 }
 const snapshot = page => page.evaluate(() => structuredClone(MistakeryApp.state));
 for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) {

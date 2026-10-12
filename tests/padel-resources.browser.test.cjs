@@ -1,5 +1,5 @@
 const test = require('node:test');
-const { revealMessages } = require('./chat-delivery.fixture.cjs');
+const { revealMessages, continueWinFeedback } = require('./chat-delivery.fixture.cjs');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -64,6 +64,15 @@ test('Padel decisions and each outcome apply once, preview resources, and preser
         assert.deepEqual((await state(page)).resources, sum(base, effects[index]), `${id}.${side}`);
       }
     }
+    await page.setViewportSize({ width: 320, height: 650 });
+    const results = {
+      1: ['YOU WIN! The match. Not the deal.', 'rgb(146, 44, 55)'],
+      2: ['YOU WIN! The match. And the deal.', 'rgb(18, 97, 60)'],
+      3: ['YOU LOSE! The match. And the deal.', 'rgb(146, 44, 55)'],
+      4: ['YOU LOSE! The match. Not the deal.', 'rgb(18, 97, 60)'],
+      5: ['YOU LOSE! The match. Not the deal.', 'rgb(18, 97, 60)'],
+      6: ['YOU LOSE! The match. And the deal.', 'rgb(146, 44, 55)'],
+    };
     for (const [n, side, draws] of [[1,'right',[0,0]], [2,'right',[0,.99]], [3,'left',[0]], [4,'left',[.99]], [5,'right',[.99,0]], [6,'right',[.99,.99]], [7,'right',[]]]) {
       const early = n === 7;
       const id = early ? 'IRL_PADEL_05' : 'IRL_PADEL_06';
@@ -76,6 +85,18 @@ test('Padel decisions and each outcome apply once, preview resources, and preser
       await click(page, side);
       const entered = await state(page);
       assert.equal(entered.currentCardId, `PADEL_OUTCOME_${n}`);
+      if (results[n]) {
+        const result = await page.locator('[data-location-score]').evaluate(node => ({
+          text: node.textContent,
+          color: node.firstElementChild && getComputedStyle(node.firstElementChild).color,
+          detailColor: getComputedStyle(node).color,
+          fits: node.scrollWidth <= node.clientWidth && node.scrollHeight <= node.clientHeight,
+        }));
+        assert.equal(result.text, results[n][0]);
+        assert.equal(result.color, results[n][1], 'result color follows the deal');
+        assert.equal(result.detailColor, 'rgb(23, 33, 43)', 'only YOU WIN/LOSE is colored');
+        assert.equal(result.fits, true, 'the complete result fits on 320px');
+      }
       assert.deepEqual(entered.resources, sum(base, decisions[id][side === 'left' ? 0 : 1], outcomes[n]));
       assert.equal(entered.draws, draws.length);
       await page.evaluate(() => window.MistakeryApp.render());
@@ -83,6 +104,7 @@ test('Padel decisions and each outcome apply once, preview resources, and preser
       await click(page, 'left');
       assert.equal((await state(page)).view, 'playing');
       assert.deepEqual((await state(page)).resources, sum(entered.resources));
+      await continueWinFeedback(page);
       await page.locator('[data-test-back]').click();
       assert.deepEqual((await state(page)).resources, entered.resources, 'Back does not reapply outcome effects');
       await page.locator('[data-test-back]').click();

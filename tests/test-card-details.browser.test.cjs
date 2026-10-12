@@ -4,6 +4,7 @@ const { chromium } = require('playwright');
 const { pathToFileURL } = require('node:url');
 const path = require('node:path');
 const deck = require('../cards.json');
+const { continueWinFeedback } = require('./chat-delivery.fixture.cjs');
 const url = process.env.MISTAKERY_TEST_URL || pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href;
 const ids = deck.cards.filter(card => card.plot || card.filler).map(card => card.id);
 test('Russian reference covers every active card, both replies and contextual variants', () => {
@@ -88,6 +89,7 @@ test('test-only translation dialog is readable, contextual and read-only across 
     await page.locator('[data-test-details]').screenshot({path:'/tmp/mistakery-test-card-details.png'});
     await page.keyboard.press('Escape');
     await page.locator('[data-choice="left"]').click();
+    await continueWinFeedback(page);
     await page.locator('[data-test-inspect]').click();
     assert.equal(await page.evaluate(() => MistakeryApp.state.route.phase), 'fillers');
     assert.match(await page.locator('[data-test-details]').innerText(),/Cash −0,5/);

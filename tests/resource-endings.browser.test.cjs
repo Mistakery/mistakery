@@ -1,4 +1,4 @@
-const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
+const { completeFounderSend, continueWinFeedback } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -64,6 +64,7 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
           assert.equal(before.gameOver, false);
           await page.locator(`[data-choice="${step.side}"]`).click();
           await completeFounderSend(page, true);
+          await continueWinFeedback(page);
           assert.deepEqual((await snapshot(page)).resources, step.after);
         }
         const ended = await snapshot(page);

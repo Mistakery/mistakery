@@ -1,3 +1,4 @@
+const { continueWinFeedback } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -9,6 +10,7 @@ const snapshot = page => page.evaluate(() => structuredClone(MistakeryApp.state)
 async function click(page, side = 'left') {
   await page.clock.runFor(6000);
   await page.locator(`[data-choice="${side}"]`).click();
+  await continueWinFeedback(page);
 }
 for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) {
   test(`${name}: new attempt survives Saved, replay preserves its fillers, Back restores the old attempt`, async () => {

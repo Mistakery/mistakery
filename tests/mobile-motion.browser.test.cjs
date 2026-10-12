@@ -1,4 +1,4 @@
-const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
+const { completeFounderSend, continueWinFeedback } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -103,6 +103,7 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
           await page.waitForFunction(() => !window.MistakeryApp.locked, null, { timeout: 1500 });
           await page.locator('[data-choice="left"]').tap();
           await completeFounderSend(page);
+          await continueWinFeedback(page);
           await page.locator('[data-test-back]').tap();
           assert.equal(await page.evaluate(() => window.MistakeryApp.state.currentCardId), outcome);
           assert.equal(await page.locator('[data-game]').evaluate(n => n.classList.contains('is-outcome-entering')), false);

@@ -63,7 +63,13 @@ test(`${name}: document preview keeps replies, navigation and restart outside th
           return { pageOverflow: document.documentElement.scrollWidth - innerWidth,
             chatOverflow: chat.scrollWidth - chat.clientWidth,
             buttonsFit: document.querySelector('[data-choices]').getBoundingClientRect().bottom <= innerHeight + 1,
-            headerClear: document.querySelector('.contact').getBoundingClientRect().bottom <= chat.getBoundingClientRect().top,
+            headerClear: (() => {
+              const header = document.querySelector('.contact'), rect = header.getBoundingClientRect();
+              // The contact floats above the transparent scroll surface. Check
+              // actual visible hit targets instead of requiring separate boxes.
+              return [.25, .5, .85].every(x => header.contains(document.elementFromPoint(
+                rect.left + rect.width * x, rect.top + rect.height / 2)));
+            })(),
             chatHeight: chat.clientHeight,
             defeat: (() => {
               const flash = document.querySelector('[data-loss-flash]');

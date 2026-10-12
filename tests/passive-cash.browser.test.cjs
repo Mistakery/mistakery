@@ -1,5 +1,5 @@
 const test = require('node:test');
-const { revealMessages, completeFounderSend } = require('./chat-delivery.fixture.cjs');
+const { revealMessages, completeFounderSend, continueWinFeedback } = require('./chat-delivery.fixture.cjs');
 const assert = require('node:assert/strict');
 const { chromium } = require('playwright');
 const { pathToFileURL } = require('node:url');
@@ -61,6 +61,7 @@ test('every gameplay resolver charges half a Cash exactly once, including neutra
       assert.equal(await page.locator('[data-resource="cash"]').getAttribute('data-fill'),String(cash));
       await page.evaluate(()=>window.MistakeryApp.render());
       assert.deepEqual(await snapshot(page),after,'render must not charge a turn');
+      await continueWinFeedback(page);
       await page.locator('[data-test-back]').click();
       assert.deepEqual(await snapshot(page),before,'Back refunds the complete turn');
     }

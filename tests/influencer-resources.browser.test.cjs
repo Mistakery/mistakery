@@ -1,5 +1,5 @@
 const test = require('node:test');
-const { revealMessages, completeFounderSend } = require('./chat-delivery.fixture.cjs');
+const { revealMessages, completeFounderSend, continueWinFeedback } = require('./chat-delivery.fixture.cjs');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -134,6 +134,7 @@ test('all random outcomes use exact 40/60 odds, combined deltas, neutral replies
             assert.deepEqual(finished.state.resources, sum(expected));
             assert.equal(finished.draws, 1);
             assert.equal(finished.state.history.length, 2);
+            await continueWinFeedback(page);
             await page.locator('[data-test-back]').click();
             assert.deepEqual(await state(page), entered, 'Back restores outcome without reroll or reapplication');
             await page.locator('[data-test-back]').click();

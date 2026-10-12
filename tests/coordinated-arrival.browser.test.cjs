@@ -73,7 +73,8 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
               const all = animations.flat();
               const timings = all.map(a => ({ ...a.effect.getTiming(), start: a.startTime }));
               all.forEach(a => a.pause());
-              const points = [0, 50, 100, 150, 200].map(time => {
+              const points = [0, .25, .5, .75, 1].map(fraction => {
+                const time = fraction * timings[0].duration;
                 all.forEach(a => { a.currentTime = time; });
                 const bounds = nodes.map(node => node.getBoundingClientRect());
                 return { matrices: nodes.map(node => {
@@ -92,8 +93,8 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
             const label = `${name}/${profile.name}/${card}`;
             assert.ok(!sample.counts, `${label}: one coordinated animation per row: ${sample.counts}`);
             for (const timing of sample.timings) {
-              assert.equal(timing.duration, 200, label);
-              assert.equal(timing.easing, 'cubic-bezier(0.2, 0, 0, 1)', label);
+              assert.equal(timing.duration, 325, label);
+              assert.equal(timing.easing, 'linear', label);
               assert.equal(timing.start, sample.timings[0].start, `${label}: shared start`);
             }
             for (const point of sample.points) {
@@ -286,7 +287,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       const expected = {
         LIVE_AGENT_01: [650, 600, 500, 700], LIVE_AGENT_03: [1000, 2000, 500],
         LIVE_AGENT_05: [500, 2000, 500], LIVE_AGENT_07: [2000, 900],
-        LIVE_AGENT_07B: [500, 1250], INFLUENCER_02: [700, 900],
+        LIVE_AGENT_07B: [500, 1250], INFLUENCER_02: [700, 500, 500, 700],
         INFLUENCER_05: [600, 1100], INFLUENCER_08: [1000, 800],
       };
       for (const [card, pauses] of Object.entries(expected)) {
