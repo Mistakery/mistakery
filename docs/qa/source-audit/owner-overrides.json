@@ -1710,5 +1710,9 @@
       "id": "PADEL_INVITE",
       "textBubbles": 2
     }
-  ]
+  ],
+  "buttonPeriods": {
+    "date": "2026-10-12",
+    "instruction": "Remove periods and ellipses from every reply button, including internal sentence boundaries, contextual/mood labels, win replies and EN/RU references; keep other punctuation and emoji. Message text keeps the previous punctuation rule."
+  }
 }

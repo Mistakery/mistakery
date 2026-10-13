@@ -408,7 +408,7 @@
       "continuation": "forced",
       "choices": {
         "left": {
-          "label": "In meetings. Talk later",
+          "label": "In meetings Talk later",
           "effects": {
             "founder": -2
           },
@@ -699,7 +699,7 @@
       ],
       "choices": {
         "left": {
-          "label": "Вro, you feel me…",
+          "label": "Вro, you feel me",
           "effects": {
             "founder": 5
           },
@@ -710,7 +710,7 @@
           }
         },
         "right": {
-          "label": "Kinda creepy..",
+          "label": "Kinda creepy",
           "effects": {
             "founder": -5
           },
@@ -763,7 +763,7 @@
       ],
       "choices": {
         "left": {
-          "label": "Go on…",
+          "label": "Go on",
           "effects": {},
           "next": "LIVE_AGENT_04B"
         },
@@ -1043,7 +1043,7 @@
       ],
       "choices": {
         "left": {
-          "label": "He's dead. Let's sign!",
+          "label": "He's dead Let's sign!",
           "effects": {
             "customers": 10
           },
@@ -1436,7 +1436,7 @@
           "effects": {}
         },
         "right": {
-          "label": "Can't talk. Farewell",
+          "label": "Can't talk Farewell",
           "effects": {}
         }
       },
@@ -1563,7 +1563,7 @@
       "text": "Hahaha\nI like your style 😂\nLet's lock in 20% for now, but I'll hook you up\nI'll give you access to my private database of 50 killer B2B prompts. People pay $1k for this 😉\nWe good? Drop the demo",
       "choices": {
         "left": {
-          "label": "Deal. Just deliver",
+          "label": "Deal Just deliver",
           "effects": {
             "customers": 5
           },
@@ -1768,7 +1768,7 @@
           }
         },
         "right": {
-          "label": "Cool. Forget the deal",
+          "label": "Cool Forget the deal",
           "effects": {
             "founder": 5
           },
@@ -1978,7 +1978,7 @@
           "effects": {}
         },
         "right": {
-          "label": "Wait... I'm that founder",
+          "label": "Wait I'm that founder",
           "effects": {}
         }
       },
@@ -2109,8 +2109,8 @@
             "ru": "Следующий рынок!"
           },
           {
-            "en": "Pay my bonus.",
-            "ru": "Выплатите мне бонус."
+            "en": "Pay my bonus",
+            "ru": "Выплатите мне бонус"
           }
         ]
       }
@@ -2138,7 +2138,7 @@
       ],
       "choices": {
         "left": {
-          "label": "Still alive. Already stronger",
+          "label": "Still alive Already stronger",
           "effects": {}
         },
         "right": {
@@ -2192,12 +2192,12 @@
         "message": "That's not just a result — it's proof of your greatness! ✨",
         "choices": [
           {
-            "en": "Never doubted myself.",
-            "ru": "Ни секунды не сомневался."
+            "en": "Never doubted myself",
+            "ru": "Ни секунды не сомневался"
           },
           {
-            "en": "Don't jinx it.",
-            "ru": "Только не сглазь."
+            "en": "Don't jinx it",
+            "ru": "Только не сглазь"
           }
         ]
       }
@@ -2608,12 +2608,12 @@
         "message": "You didn't just win — you changed the game! 🚀",
         "choices": [
           {
-            "en": "I am the game.",
-            "ru": "Я и есть игра."
+            "en": "I am the game",
+            "ru": "Я и есть игра"
           },
           {
-            "en": "Show me the money.",
-            "ru": "Покажите мне деньги."
+            "en": "Show me the money",
+            "ru": "Покажите мне деньги"
           }
         ]
       }
@@ -2635,7 +2635,7 @@
           "effects": {}
         },
         "right": {
-          "label": "So... about the deal?",
+          "label": "So about the deal?",
           "effects": {}
         }
       },
@@ -2739,12 +2739,12 @@
         "message": "It's not luck — it's pure genius! ✨",
         "choices": [
           {
-            "en": "Always was.",
-            "ru": "Всегда им был."
+            "en": "Always was",
+            "ru": "Всегда им был"
           },
           {
-            "en": "Total accident.",
-            "ru": "Чистая случайность."
+            "en": "Total accident",
+            "ru": "Чистая случайность"
           }
         ]
       }
@@ -4053,7 +4053,7 @@
       },
       "choices": {
         "left": {
-          "label": "Got it. On it",
+          "label": "Got it On it",
           "effects": {
             "team": -7
           },
@@ -4698,7 +4698,7 @@
           }
         },
         "right": {
-          "label": "Thx. Water is fine",
+          "label": "Thx Water is fine",
           "effects": {
             "founder": -3
           }
@@ -4878,7 +4878,7 @@
           }
         },
         "right": {
-          "label": "Team meeting. NOW!",
+          "label": "Team meeting NOW!",
           "effects": {
             "team": 5,
             "founder": -5
@@ -5267,7 +5267,7 @@
     },
     "OPEN_BOSS": {
       "text": "Привет 👋\nПросто по-дружески узнать, как дела\n\nПять месяцев прошло с тех пор, как ты ушёл играть в бизнесмена\n\nТвой революционный ИИ уже нашёл хоть одного клиента?",
-      "left": "На встречах. Позже поговорим",
+      "left": "На встречах Позже поговорим",
       "right": "Мы всех рвём!!"
     },
     "OPEN_DEV": {
@@ -5296,8 +5296,8 @@
     },
     "LIVE_AGENT_03": {
       "text": "Хей, создатель 👋\nТолько между нами…\nКогда клиенты нас игнорят, мне почему-то… физически больно\nСкажи, ты когда не спишь ночами из-за осознания, что стартап умирает, у тебя внутри такая же пустота? 🤔",
-      "left": "Бро, ты чувствуешь меня…",
-      "right": "Чет крипово..",
+      "left": "Бро, ты чувствуешь меня",
+      "right": "Чет крипово",
       "source": "https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit",
       "ownerPresentation": true
     },
@@ -5338,7 +5338,7 @@
     },
     "LIVE_AGENT_07B": {
       "text": "@head_of_innovations\nНе смешно\nЮристы орут про работорговлю и блочат контракт\nЯ тут ношусь, пытаюсь всё разрулить 🤯\nДавайте так:\nСтирайте все признаки жизни из своего ИИ-бунтаря, и мы подписываем договор",
-      "left": "Конец ему. Подписываемся!",
+      "left": "Конец ему Подписываемся!",
       "right": "Я не убийца!",
       "source": "https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit",
       "ownerPresentation": true
@@ -5384,7 +5384,7 @@
     "LIVE_AGENT_OUTCOME_4": {
       "text": "[ФОТО: Экран компьютера с надписью «HASTA LA VISTA»]\nСерьёзно? Лоботомия была фейковой?\n\nВаш бот всё ещё троллит весь наш офис\n\nДелайте возврат денег прямо сейчас. Мы закончили играть в игры\nИли увидимся в суде",
       "left": "Бегите",
-      "right": "Не могу говорить. Прощайте",
+      "right": "Не могу говорить Прощайте",
       "source": "https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit",
       "ownerPresentation": true
     },
@@ -5404,7 +5404,7 @@
     },
     "INFLUENCER_02A": {
       "text": "ахаха, а ты мне нравишься 😂\n\nдавай так, пока зафиксируем 20%, но я подгон сделаю. дам доступ к своей закрытой базе на 50 B2B-промптов для холодных рассылок 😉\n\nпо рукам? кидай демо",
-      "left": "лови. главное результат",
+      "left": "лови главное результат",
       "right": "тебя бы к нам в сейлзы",
       "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit",
       "ownerPresentation": true
@@ -5439,7 +5439,7 @@
     "INFLUENCER_06": {
       "text": "B2BuyerSpyer: очередной AI-скам? (Честный обзор)\nтогда так. публикую вечером 🤷‍♂️",
       "left": "Варианты?",
-      "right": "Круто. Забудь о сделке",
+      "right": "Круто Забудь о сделке",
       "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit",
       "contextual": {
         "INFLUENCER_05": {
@@ -5473,7 +5473,7 @@
     "INFLUENCER_OUTCOME_2": {
       "text": "@ai_evangelist\nСкриншот:\n«СЕРИЯ 2: Я ЗАРАБОТАЛ $30,000, ПОКА ФАУНДЕР ДЕЛАЛ ВСЮ РАБОТУ»\nКоманда, второй эпизод в сети! Разрываем! 🔥\n\n@bigdeals\nБосс, ты гений!\nНаконец-то у нас появился настоящий CEO 🙌",
       "left": "Вирусимся, детка 🚀",
-      "right": "Но…Я же этот фаундер",
+      "right": "Но Я же этот фаундер",
       "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit",
       "ownerPresentation": true
     },
@@ -5529,7 +5529,7 @@
     "IRL_PADEL_01": {
       "text": "Бро, здесь не питчат\nНачнёшь продавать — ты для него сразу никто. Сначала покажи себя на корте",
       "left": "Рот на замке, играем",
-      "right": "Сейчас или никогда. Питчу",
+      "right": "Сейчас или никогда Питчу",
       "source": "https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit",
       "ownerPresentation": true
     },
@@ -5585,7 +5585,7 @@
     "PADEL_OUTCOME_3": {
       "text": "Легчайшая победа в моей жизни\nБыло даже мило смотреть, как ты запаниковал на матчболе\nСразу понял, что ты сопляк. Проваливай с моего корта",
       "left": "Просто поддался тебе",
-      "right": "Так... что насчет сделки?",
+      "right": "Так что насчет сделки?",
       "source": "https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit",
       "ownerPresentation": true
     },
@@ -5629,7 +5629,7 @@
     },
     "FILL_PAYROLL_1": {
       "text": "ОПЛАТИЛ ТОПОВЫЙ AI. МОЖЕТ, ХОТЬ ТЕПЕРЬ РОДИТЕ РЕЗУЛЬТАТ\nТВОИ РЕБЯТА ТЕПЕРЬ РАБОТАЮТ ЗА ПОДПИСКУ\nНЕТ ВЫРУЧКИ = НЕТ ЗП",
-      "left": "Понял. Делаем",
+      "left": "Понял Делаем",
       "right": "Нам надо что-то есть!",
       "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
       "ownerPresentation": true
@@ -5764,7 +5764,7 @@
     "FILL_FRIDGE": {
       "text": "Привет, фаундер 👋\n\nЯ отменил твою доставку еды и заблокировал холодильник\nГолодание продлевает ранвей компании на +2 дня 📈🔒»",
       "left": "Я ненавижу ИИ",
-      "right": "Спасибо. Вода норм",
+      "right": "Спасибо Вода норм",
       "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
       "ownerPresentation": true
     },
@@ -5799,7 +5799,7 @@
     "FILL_THERAPY": {
       "text": "Отличные новости!\nЯ выложил твои сессии с психотерапевтом ради прозрачности 😊\n\nУязвимые фаундеры получают в 3 раза больше доверия\nКоманда уже прочла, что ты про них говорил",
       "left": "Отвечу за каждое слово",
-      "right": "Командный созвон. СЕЙЧАС!",
+      "right": "Командный созвон СЕЙЧАС!",
       "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
       "ownerPresentation": true
     },

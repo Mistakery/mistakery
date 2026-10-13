@@ -150,7 +150,7 @@ test('live agent probabilities, resources, completion and mobile messenger', asy
         await seed(page, id);
         await page.locator('.typing-bubble').waitFor({ state: 'detached' });
         await page.locator('[data-chat]').evaluate(async node => { await Promise.all(node.getAnimations({ subtree: true }).map(a => a.finished)); });
-        assert.doesNotMatch((await page.locator('.phone').innerText()).replace('Вro, you feel me…', 'Bro, you feel me…'), /bot.score|liveAgentScore|[А-Яа-яЁё]/); // The authored reply uses Cyrillic В.
+        assert.doesNotMatch((await page.locator('.phone').innerText()).replace('Вro, you feel me', 'Bro, you feel me'), /bot.score|liveAgentScore|[А-Яа-яЁё]/); // The authored reply uses Cyrillic В.
         const geometry = await page.evaluate(() => {
           const choices = document.querySelector('[data-choices]').getBoundingClientRect();
           const chat = document.querySelector('[data-chat]');

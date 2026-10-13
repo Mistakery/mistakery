@@ -237,8 +237,8 @@ window.MISTAKERY_LOSS_PREVIEW = {
       "textRu": "@you\n📄 CV_2026.pdf\nГотов вернуться. Урок усвоен\n\n@business1:\nА что, AI-революция уже всё? 😂\n\nЭтот 6-месячный отпуск, полагаю, влетел тебе в копеечку\n\nЖду завтра к 9:00. У нас тут для тебя накопилась куча табличек в Excel",
       "replies": [
         {
-          "en": "Bringing you coffee.",
-          "ru": "Захвачу вам кофе."
+          "en": "Bringing you coffee",
+          "ru": "Захвачу вам кофе"
         },
         {
           "en": "Wrong chat",
@@ -300,7 +300,7 @@ window.MISTAKERY_LOSS_PREVIEW = {
       "replies": [
         {
           "en": "PRAISE ME",
-          "ru": "Благословляю вас."
+          "ru": "Благословляю вас"
         },
         {
           "en": "Who's sick?",

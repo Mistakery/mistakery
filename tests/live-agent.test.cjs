@@ -43,7 +43,7 @@ test('manifesto replies lead to the Legal decision without resource, score or pr
 test('photo interlude is neutral and its continuation retains the original decision effects', () => {
   const photo = engine.cardById(deck, 'LIVE_AGENT_04');
   const continuation = engine.cardById(deck, 'LIVE_AGENT_04B');
-  assert.deepEqual(Object.values(photo.choices).map(c => c.label), ['Go on…', 'Spying on me???']);
+  assert.deepEqual(Object.values(photo.choices).map(c => c.label), ['Go on', 'Spying on me???']);
   for (const [side, score] of [['left', 1], ['right', -1]]) {
     assert.deepEqual(photo.choices[side].effects, {});
     assert.equal(photo.choices[side].botScore || 0, 0);

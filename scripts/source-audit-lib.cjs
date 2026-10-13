@@ -24,6 +24,9 @@ function expected(entry) {
   for (const [from, to] of wording?.replacements || []) value = value.replace(from, to);
   const layout = ownerOverrides.layout?.find(item => item.id === entry.id && item.field === entry.field);
   if (layout) value = layout.value;
+  if (ownerOverrides.buttonPeriods && ['choice', 'ruChoice'].includes(entry.kind)) {
+    value = value.replace(/[.\u2026]+/g, ' ').replace(/ {2,}/g, ' ').trim();
+  }
   return value;
 }
 function displayText(value) {

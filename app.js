@@ -644,6 +644,10 @@
     scene.classList.toggle('team-scene', team);
     scene.classList.toggle('irl-scene', irl);
     scene.classList.toggle('personal-scene', resolvedMode === 'personal');
+    if (!irl) {
+      scene.querySelector('.irl-background')?.remove();
+      scene.classList.remove('has-irl-background');
+    }
     scene.querySelector('.contact').classList.toggle('team-contact', team);
     scene.querySelector('.contact').classList.toggle('irl-contact', irl);
     $('[data-chat]').classList.toggle('team-chat', team);
@@ -818,6 +822,34 @@
 
   const readyStoryImages = new Map();
   const storyImageSources = new Set();
+
+  const readyPadelBackgrounds = new Map();
+  let padelPreparation;
+  function warmPadelBackgrounds() {
+    if (padelPreparation) return padelPreparation;
+    const sources = Object.values(window.MISTAKERY_PADEL_BACKGROUNDS || {}).map(background => background.src);
+    // Four low-priority workers keep the branch warm without crowding out chat media.
+    const preparation = Promise.all(Array.from({ length: 4 }, async () => {
+      while (sources.length) {
+        const src = sources.shift();
+        const image = new Image();
+        image.fetchPriority = 'low';
+        image.src = src;
+        try {
+          await image.decode();
+          readyPadelBackgrounds.set(src, image);
+        } catch { /* The existing court remains a stable fallback. */ }
+      }
+    }));
+    // Slow/offline requests cannot hold the opening indefinitely. Late images
+    // remain available for future cards, but never replace a visible backdrop.
+    padelPreparation = (async () => {
+      let timeout;
+      await Promise.race([preparation, new Promise(resolve => { timeout = window.setTimeout(resolve, 2500); })]);
+      window.clearTimeout(timeout);
+    })();
+    return padelPreparation;
+  }
 
   async function warmStoryImages() {
     for (const card of app.deck.cards.filter(card => card.plot || card.filler)) {
@@ -1300,6 +1332,7 @@
   }
 
   function preloadPadelImages() {
+    void warmPadelBackgrounds();
     if (padelImagesPreloaded) return;
     padelImagesPreloaded = true;
     for (const src of [
@@ -1318,6 +1351,23 @@
   }
 
   function renderIrlCard(card) {
+    const scene = $('[data-scene]');
+    const background = window.MISTAKERY_PADEL_BACKGROUNDS?.[card.id];
+    const image = background && readyPadelBackgrounds.get(background.src);
+    const previous = scene.querySelector('.irl-background');
+    if (image) {
+      image.className = 'irl-background';
+      image.alt = '';
+      image.setAttribute('aria-hidden', 'true');
+      image.draggable = false;
+      image.style.objectPosition = background.position;
+      // Insert the retained decoded element itself; no fresh image/decode on a turn.
+      if (previous !== image) {
+        previous?.remove();
+        scene.prepend(image);
+      }
+    } else previous?.remove();
+    scene.classList.toggle('has-irl-background', Boolean(image));
     const source = sourceFor(card.source);
     const name = source.irlName || source.name;
     const avatar = characterAvatar(source, name.slice(0, 1).toUpperCase(), source.irlAvatar);
@@ -2251,7 +2301,7 @@
       if (errors.length) throw new Error(errors.join('\n'));
       app.deck = deck;
       app.activeCardIds = deck.cards.filter(card => card.plot || card.filler).map(card => card.id);
-      await Promise.all([warmCharacterAvatars(), warmStoryImages()]);
+      await Promise.all([warmCharacterAvatars(), warmStoryImages(), warmPadelBackgrounds()]);
       if (lossPreviewEnabled) {
         setupLossPreview();
         return;

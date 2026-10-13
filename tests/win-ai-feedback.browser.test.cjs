@@ -9,11 +9,11 @@ const expected = [
   ['LIVE_AGENT_OUTCOME_1', 4, "You didn't just succeed — you made history! ✨", ['Put me on Forbes!', 'Can I sleep now?'], ['Меня на обложку Forbes!', 'Теперь можно поспать?']],
   ['LIVE_AGENT_OUTCOME_3', 3, "That's not just progress — it's a revolution! 🚀", ['Disrupt everything!', 'IPO time!'], ['Взорвать всё!', 'Пора на IPO!']],
   ['INFLUENCER_OUTCOME_2', 8, "It's not just a win — it's your vision coming to life! 🚀", ['Just the beginning!', 'Sell to Big Tech!'], ['Это только начало!', 'Продать Бигтеху!']],
-  ['INFLUENCER_OUTCOME_4', 5, "It's not just growth — it's transformation! 🚀", ['Next market!', 'Pay my bonus.'], ['Следующий рынок!', 'Выплатите мне бонус.']],
-  ['INFLUENCER_OUTCOME_6', 7, "That's not just a result — it's proof of your greatness! ✨", ['Never doubted myself.', "Don't jinx it."], ['Ни секунды не сомневался.', 'Только не сглазь.']],
-  ['PADEL_OUTCOME_2', 6, "You didn't just win — you changed the game! 🚀", ['I am the game.', 'Show me the money.'], ['Я и есть игра.', 'Покажите мне деньги.']],
+  ['INFLUENCER_OUTCOME_4', 5, "It's not just growth — it's transformation! 🚀", ['Next market!', 'Pay my bonus'], ['Следующий рынок!', 'Выплатите мне бонус']],
+  ['INFLUENCER_OUTCOME_6', 7, "That's not just a result — it's proof of your greatness! ✨", ['Never doubted myself', "Don't jinx it"], ['Ни секунды не сомневался', 'Только не сглазь']],
+  ['PADEL_OUTCOME_2', 6, "You didn't just win — you changed the game! 🚀", ['I am the game', 'Show me the money'], ['Я и есть игра', 'Покажите мне деньги']],
   ['PADEL_OUTCOME_4', 1, "That's not just a win — it's a breakthrough! 🚀", ['Told you so!', 'Cash out now!'], ['Я же говорил!', 'Фиксируем кэш!']],
-  ['PADEL_OUTCOME_5', 2, "It's not luck — it's pure genius! ✨", ['Always was.', 'Total accident.'], ['Всегда им был.', 'Чистая случайность.']],
+  ['PADEL_OUTCOME_5', 2, "It's not luck — it's pure genius! ✨", ['Always was', 'Total accident'], ['Всегда им был', 'Чистая случайность']],
 ];
 async function open(browser, motion = 'reduce') {
   const page = await browser.newPage({ viewport: { width: 320, height: 650 }, reducedMotion: motion });
