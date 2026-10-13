@@ -459,7 +459,8 @@ test('CSS matches the approved phone, typography, Quiet Glass, and shadow spacin
   assert.match(css, /\.irl-scene\s*\{[^}]*background:\s*#d2dbe1;/s);
   assert.match(css, /\.irl-scene::before\s*\{[^}]*background:\s*#d2dbe1;/s);
   assert.match(css, /url\(["']assets\/irl-padel-court\.webp["']\)/);
-  assert.match(css, /\.irl-scene::after\s*\{[^}]*inset:\s*1px;[^}]*background:\s*linear-gradient\(180deg,\s*rgba\(7,\s*20,\s*32,\s*\.12\),\s*rgba\(7,\s*20,\s*32,\s*\.22\)\s*48%,\s*rgba\(7,\s*20,\s*32,\s*\.38\)\),\s*url\(["']assets\/irl-padel-court\.webp["']\)\s*center\s*54%\s*\/\s*cover\s*no-repeat;[^}]*filter:\s*blur\(1\.8px\)\s*saturate\(\.88\);[^}]*clip-path:\s*inset\(0\s*round\s*25px\);/s);
+  // Owner: fill the complete court scene and blur for atmosphere, including fallback.
+  assert.match(css, /\.irl-scene::after\s*\{[^}]*inset:\s*-7px;[^}]*background:\s*linear-gradient\(180deg,\s*rgba\(7,\s*20,\s*32,\s*\.12\),\s*rgba\(7,\s*20,\s*32,\s*\.22\)\s*48%,\s*rgba\(7,\s*20,\s*32,\s*\.38\)\),\s*url\(["']assets\/irl-padel-court\.webp["']\)\s*center\s*54%\s*\/\s*cover\s*no-repeat;[^}]*filter:\s*blur\(6px\)\s*saturate\(\.88\);[^}]*clip-path:\s*inset\(8px\s*round\s*25px\);/s);
   assert.doesNotMatch(css, /\.irl-scene::after\s*\{[^}]*(?:border-radius:\s*24px|box-shadow:)/s);
   assert.match(css, /\.irl-dialog p\s*\{[^}]*font-size:\s*var\(--message-font-size\);[^}]*font-weight:\s*400;[^}]*line-height:\s*1\.38;/s);
 });

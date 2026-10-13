@@ -597,12 +597,12 @@ button.typing-bubble:focus-visible { outline: 2px solid var(--blue); outline-off
 .irl-scene { background: #d2dbe1; }
 .irl-scene::before { background: #d2dbe1; }
 .irl-scene::after {
-  inset: 1px;
+  inset: -7px;
   background:
     linear-gradient(180deg, rgba(7, 20, 32, .12), rgba(7, 20, 32, .22) 48%, rgba(7, 20, 32, .38)),
     url("assets/irl-padel-court.webp") center 54% / cover no-repeat;
-  filter: blur(1.8px) saturate(.88);
-  clip-path: inset(0 round 25px);
+  filter: blur(6px) saturate(.88);
+  clip-path: inset(8px round 25px);
 }
 .irl-scene.has-irl-background::after {
   background: linear-gradient(180deg, rgba(7, 20, 32, .12), rgba(7, 20, 32, .22) 48%, rgba(7, 20, 32, .38));
@@ -610,16 +610,15 @@ button.typing-bubble:focus-visible { outline: 2px solid var(--blue); outline-off
 }
 .irl-scene > .irl-background {
   position: absolute;
-  /* Frame the action below the two contact/location capsules so close-up
-     faces stay visible instead of disappearing behind the header. */
-  inset: 106px 1px 1px;
+  /* Overdraw beneath the clip so blur cannot expose a gray edge. */
+  inset: -7px;
   z-index: 0;
-  width: calc(100% - 2px);
-  height: calc(100% - 107px);
+  width: calc(100% + 14px);
+  height: calc(100% + 14px);
   object-fit: cover;
-  border-radius: 0 0 25px 25px;
-  clip-path: inset(0 round 0 0 25px 25px);
-  filter: blur(1px) saturate(.9);
+  border-radius: 25px;
+  clip-path: inset(8px round 25px);
+  filter: blur(6px) saturate(.88);
   pointer-events: none;
 }
 .irl-contact .avatar {

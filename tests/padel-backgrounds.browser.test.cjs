@@ -103,18 +103,26 @@ for (const [name, type] of Object.entries({ chromium, webkit })) {
       assert.equal(requests.length, 12, 'warm the complete branch at startup');
       for (const id of [...ids, ...ids.slice().reverse()]) {
         await show(page, id);
-        const result = await page.locator('.irl-background').evaluate(n => ({
+        const result = await page.locator('.irl-background').evaluate(n => {
+          const image = n.getBoundingClientRect();
+          const scene = n.parentElement.getBoundingClientRect();
+          return {
           src: n.getAttribute('src'), ready: n.complete && n.naturalWidth > 0,
           width: n.naturalWidth, hidden: n.getAttribute('aria-hidden'),
           fits: n.getBoundingClientRect().width > 300,
           visible: getComputedStyle(n).display !== 'none',
           expected: MISTAKERY_PADEL_BACKGROUNDS[MistakeryApp.state.currentCardId].src,
-        }));
+          covers: image.top <= scene.top + 1 && image.left <= scene.left + 1
+            && image.bottom >= scene.bottom - 1 && image.right >= scene.right - 1,
+          blur: Number(getComputedStyle(n).filter.match(/blur\(([^p]+)px\)/)?.[1] || 0),
+        }; });
         assert.equal(result.src, result.expected, id);
         assert.equal(result.ready, true, id);
         assert.equal(result.hidden, 'true');
         assert.ok(result.width <= 1000);
         assert.equal(result.fits && result.visible, true);
+        assert.equal(result.covers, true, `${id}: background must extend behind the header`);
+        assert.ok(result.blur >= 4, `${id}: background must keep faces indistinct`);
       }
       assert.equal(requests.length, 12, 'rendering and returning cannot fetch pictures again');
       await show(page, 'IRL_PADEL_01');
