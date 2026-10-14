@@ -151,6 +151,62 @@ for (const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) {
       assert.equal(await page.locator('[data-win-finale]').count(),0);
     } finally {await browser.close();}
   });
+  test(`${name}: victory confetti preserves all eight wins and cleans up after 1200ms`, async()=>{
+    const browser=await type.launch();
+    try {
+      const page=await open(browser,'no-preference');
+      for(const [id] of expected){
+        await seed(page,id);
+        const resolved=await page.evaluate(()=>MistakeryRoute.resolveChoice(MistakeryApp.deck,MistakeryApp.state,'left').state);
+        await page.locator('[data-choice=left]').click();
+        const particles=page.locator('.win-confetti i');
+        assert.equal(await particles.count(),30,id);
+        assert.deepEqual(await state(page),resolved,'confetti consumes no resources or RNG');
+        assert.equal(await page.locator('.win-confetti').getAttribute('aria-hidden'),'true');
+        assert.equal(await page.locator('.win-confetti').evaluate(n=>getComputedStyle(n).pointerEvents),'none');
+        assert.equal(await page.locator('[data-win-finale] .loss-finale__body').evaluate(n=>getComputedStyle(n).outlineStyle),'none');
+        assert.match(await page.locator('[data-win-finale]').evaluate(n=>getComputedStyle(n).backgroundImage),/210, 228, 240/);
+        assert.equal(await particles.evaluateAll(ns=>Math.max(...ns.map(n=>{const t=n.getAnimations()[0].effect.getTiming();return t.duration+t.delay}))),1200);
+        await page.evaluate(()=>MistakeryApp.render());
+        assert.equal(await particles.count(),30,'rerender retains a single burst');
+        await page.clock.runFor(1200);
+        assert.equal(await particles.count(),0,'bounded lifetime removes particles');
+        await page.evaluate(()=>MistakeryApp.render());
+        assert.equal(await particles.count(),0,'settled rerender cannot restart');
+        await page.locator('[data-win-finale-choice]').first().click();
+        assert.deepEqual(await state(page),resolved,'free continuation unchanged');
+      }
+    } finally {await browser.close();}
+  });
+  test(`${name}: victory confetti respects Back, fresh attempts, hidden, reduce and fast dismissal`,async()=>{
+    const browser=await type.launch();
+    try {
+      const page=await open(browser,'no-preference');
+      const particles=()=>page.locator('.win-confetti i').count();
+      await seed(page,'LIVE_AGENT_OUTCOME_1');
+      await page.locator('[data-choice=left]').click();assert.equal(await particles(),30);
+      await page.evaluate(()=>document.querySelector('[data-test-back]').click());assert.equal(await particles(),0);
+      await page.locator('[data-choice=right]').click();assert.equal(await particles(),0,'re-answer after Back must not celebrate the same win');
+      await page.evaluate(()=>document.querySelector('[data-restart-run]').click());
+      await page.locator('[data-test-back]').click();assert.equal(await particles(),0,'restored pending popup stays quiet');
+      await page.keyboard.press('Escape');assert.equal(await particles(),0);
+      await seed(page,'LIVE_AGENT_OUTCOME_1');
+      await page.evaluate(()=>{MistakeryApp.state.seed='fresh-attempt';});
+      await page.locator('[data-choice=left]').click();assert.equal(await particles(),30,'a fresh attempt can celebrate');
+      await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'));});
+      assert.equal(await particles(),0);
+      await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'));MistakeryApp.render();});assert.equal(await particles(),0);
+      await seed(page,'LIVE_AGENT_OUTCOME_3');await page.locator('[data-choice=left]').click();assert.equal(await particles(),30);
+      await page.emulateMedia({reducedMotion:'reduce'});await page.locator('.win-confetti').waitFor({state:'detached',timeout:2000});assert.equal(await particles(),0);
+      await seed(page,'INFLUENCER_OUTCOME_2');await page.locator('[data-choice=left]').click();assert.equal(await particles(),0);
+      await page.emulateMedia({reducedMotion:'no-preference'});await page.evaluate(()=>MistakeryApp.render());assert.equal(await particles(),0);
+      await seed(page,'PADEL_OUTCOME_2');await page.locator('[data-choice=left]').click();assert.equal(await particles(),30);
+      await page.locator('[data-win-finale-choice]').last().click();assert.equal(await particles(),0,'quick reply cancels immediately');
+      await seed(page,'PADEL_OUTCOME_4');await page.locator('[data-choice=left]').click();assert.equal(await particles(),30);
+      await page.evaluate(()=>document.querySelector('[data-restart-run]').click());assert.equal(await particles(),0);
+      await seed(page,'PADEL_OUTCOME_5',.5);await page.locator('[data-choice=left]').click();assert.equal(await particles(),0,'resource loss excludes confetti');
+    } finally {await browser.close();}
+  });
   test(`${name}: failure, catastrophic and settled resource loss exclude victory feedback`,async()=>{
     const browser=await type.launch();
     try {

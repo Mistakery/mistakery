@@ -87,6 +87,9 @@
   const presentedOutcomes = new WeakSet();
   const lossPresentations = new WeakMap();
   const winPresentations = new WeakMap();
+  // Presentation-only ledger survives Back snapshots; a new attempt/cycle can celebrate again.
+  const celebratedWins = new Set();
+  let cancelWinConfetti = () => {};
   const resourceLossCards = Object.freeze({ cash_low: 'DOC_LOSS_1', team_low: 'DOC_LOSS_2',
     team_high: 'DOC_LOSS_3', customers_low: 'DOC_LOSS_4', founder_low: 'DOC_LOSS_5', founder_high: 'DOC_LOSS_6' });
   function resourceLossCard() {
@@ -434,11 +437,13 @@
   });
   window.addEventListener('resize', cancelArrivalMotion);
   reducedMotion.addEventListener('change', cancelArrivalMotion);
+  reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) cancelWinConfetti(); });
+  window.addEventListener('pagehide', () => cancelWinConfetti());
   reducedMotion.addEventListener('change', () => {
     resourceFeedback?.animations.forEach(animation => animation.cancel());
   });
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) cancelArrivalMotion();
+    if (document.hidden) { cancelArrivalMotion(); cancelWinConfetti(); }
   });
   let resourcesVisible = true;
   function updateResourceMotionVisibility() {
@@ -535,6 +540,7 @@
       app.savedDelivery = null;
     }
     const winFinale = $('[data-win-finale]');
+    cancelWinConfetti();
     // Remove first so its queued close event cannot resume a discarded view.
     winFinale?.remove();
     if (winFinale?.open) winFinale.close();
@@ -1818,6 +1824,7 @@
   }
 
   function resolveCardChoice(card, side, scrollTop, resolved) {
+    const celebrationKey = JSON.stringify([app.state.seed, app.state.route.cycle, card.id]);
     recordTestStep(scrollTop);
     app.locked = true;
     clearPreview();
@@ -1827,7 +1834,7 @@
     if (card.outcomeTone === 'success' && card.winFeedback && !app.state.gameOver) {
       // Route settlement/draw has already happened once. Hold presentation only:
       // no next-card typing, incoming sound, scrolling or gameplay work behind the modal.
-      winPresentations.set(app.state, { pending: true, cardId: card.id, feedback });
+      winPresentations.set(app.state, { pending: true, cardId: card.id, feedback, celebrationKey });
       showWinFeedback();
       return;
     }
@@ -2062,6 +2069,47 @@
       () => {}, { disabled: true });
   }
 
+  function celebrateWin(dialog, presentation) {
+    if (celebratedWins.has(presentation.celebrationKey)) return;
+    celebratedWins.add(presentation.celebrationKey);
+    if (reducedMotion.matches || document.hidden) return;
+    cancelWinConfetti();
+    const layer = document.createElement('div');
+    layer.className = 'win-confetti'; layer.setAttribute('aria-hidden', 'true');
+    dialog.append(layer);
+    const animations = [];
+    const colors = ['#68b99a', '#7bc7e4', '#efc16c', '#a5d7bb', '#e4b35c', '#7dbce0'];
+    const margin = Math.max(3, Math.min(dialog.getBoundingClientRect().left - 5, 35));
+    // Authored ballistic arcs from the accepted prototype; no gameplay RNG.
+    for (let i = 0; i < 30; i++) {
+      const right = i >= 15, j = i % 15, sign = right ? -1 : 1;
+      const particle = document.createElement('i');
+      particle.style.background = colors[j % colors.length];
+      particle.style.left = right ? 'calc(100% - 9px)' : '4px';
+      layer.append(particle);
+      const speed = -margin + 12 + (j * 23 % 178), lift = 160 + (j * 17 % 110);
+      const gravity = 230 + (j * 23 % 90), rotation = (j % 2 ? -1 : 1) * (150 + j * 21);
+      const frames = Array.from({ length: 31 }, (_, n) => {
+        const t = n / 30, seconds = t * 1.2;
+        const x = sign * speed * seconds / (1 + seconds);
+        // Stay above the panel: neither message nor replies are covered.
+        const y = Math.min(-6, -lift * seconds + gravity * seconds * seconds * .5);
+        return { offset: t,
+          transform: `translate3d(${x}px,${y}px,0) rotate(${rotation * t}deg) rotateY(${t * 480 + j * 37}deg)`,
+          opacity: t < .08 ? t / .08 : t > .65 ? (1 - t) / .35 : 1 };
+      });
+      animations.push(particle.animate(frames, { duration: 1158, delay: j * 3, easing: 'linear', fill: 'both' }));
+    }
+    // Bound lifetime independently of animationend/finished (including hidden tabs).
+    const timer = window.setTimeout(() => cancelWinConfetti(), 1200);
+    cancelWinConfetti = () => {
+      window.clearTimeout(timer);
+      animations.forEach(animation => animation.cancel());
+      layer.remove();
+      cancelWinConfetti = () => {};
+    };
+  }
+
   function showWinFeedback() {
     const state = app.state;
     const presentation = winPresentations.get(state);
@@ -2084,6 +2132,7 @@
     const resume = () => {
       if (app.state !== state || !dialog.isConnected || !presentation.pending) return;
       presentation.pending = false;
+      cancelWinConfetti();
       sound.stop();
       dialog.remove();
       if (dialog.open) dialog.close();
@@ -2099,6 +2148,7 @@
     document.body.append(dialog);
     dialog.showModal();
     soundOnce('win-finale-alert', 'ai-finale');
+    celebrateWin(dialog, presentation);
   }
 
   function previewOutgoingMessageMarkup(message) {

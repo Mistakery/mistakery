@@ -63,6 +63,19 @@
   font-size: 14px; font-weight: 400; line-height: 1.35;
 }
 .loss-finale[data-win-finale] .message .loss-finale__lead { color: var(--ink); }
+.loss-finale[data-win-finale] { overflow: visible; }
+.loss-finale[data-win-finale] .loss-finale__head { border-radius: 23px 23px 0 0; }
+/* This scrollable, non-interactive body receives autofocus; reply buttons retain their focus rings. */
+.loss-finale[data-win-finale] .loss-finale__body:focus-visible { outline: none; }
+.win-confetti {
+  position: absolute; inset: 0; z-index: 5; overflow: visible;
+  pointer-events: none; border-radius: 24px;
+}
+.win-confetti i {
+  position: absolute; display: block; top: 0; width: 7px; height: 13px;
+  border-radius: 1px; will-change: transform, opacity; backface-visibility: hidden;
+}
+.win-confetti i:nth-child(3n) { width: 6px; height: 6px; border-radius: 50%; }
 .loss-finale .message .loss-finale__quote {
   border-left: 2px solid #63a9ec; padding-left: 12px;
 }
@@ -84,6 +97,7 @@
   100% { opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .win-confetti { display: none; }
   .phone[data-loss-preview] .preview-composer .typing-dots i { animation: none; opacity: .65; }
   .loss-preview-defeat.is-defeated::before { animation: none; }
   .phone[data-loss-preview].is-outcome-entering .scene--card,
