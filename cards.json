@@ -2175,6 +2175,12 @@
       "source": "@ai_evangelist",
       "continuation": "forced",
       "text": "See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait\n\nLet's set up my 20% 💸",
+      "image": {
+        "src": "assets/ai-influencer-viral-analytics.webp",
+        "alt": "Video analytics showing 2.6 million views and growing traffic from the B2BuyerSpyer review",
+        "width": 1000,
+        "height": 1000
+      },
       "choices": {
         "left": {
           "label": "Get lost",

@@ -22,6 +22,40 @@ async function seed(page, id, previous = 'INFLUENCER_04', target, side = 'left')
   await page.clock.runFor(10000);
 }
 for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
+  test(`${name}: both successful rage-bait branches display decoded analytics before the original replies`, async () => {
+    const browser = await type.launch();
+    try {
+      const page = await open(browser);
+      for (const [side, target, sender] of [
+        ['left', 'INFLUENCER_OUTCOME_4', 'Dream Team'],
+        ['right', 'INFLUENCER_OUTCOME_6', '@ai_evangelist'],
+      ]) {
+        await seed(page, 'INFLUENCER_08', null, target, side);
+        const before = await snapshot(page);
+        const expected = await page.evaluate(side => MistakeryRoute.resolveChoice(MistakeryApp.deck, MistakeryApp.state, side).state, side);
+        await page.locator(`[data-choice=${side}]`).click();
+        await page.clock.runFor(10000);
+        assert.deepEqual(await snapshot(page), expected);
+        assert.equal(await page.locator('[data-sender]').innerText(), sender);
+        const analytics = page.locator('[data-chat-current] img[src*="ai-influencer-viral-analytics"]');
+        assert.equal(await analytics.count(), 1, `${target} must include analytics`);
+        assert.equal(await analytics.evaluate(n => n.complete && n.naturalWidth === 1000 && n.naturalHeight === 1000), true);
+        assert.equal(await analytics.isVisible(), true);
+        assert.deepEqual(await page.locator('[data-choice]').allInnerTexts(), ['Get lost', "Now it's 3%"]);
+        assert.deepEqual((await page.locator('[data-chat-current] p').allTextContents()).map(text => text.replaceAll('\u00a0', ' ')), [
+          "See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait",
+          "Let's set up my 20% 💸",
+        ]);
+        await page.evaluate(() => MistakeryApp.render());
+        assert.equal(await analytics.count(), 1);
+        assert.deepEqual(await snapshot(page), expected);
+        await page.locator('[data-test-back]').click();
+        await page.clock.runFor(10000);
+        assert.deepEqual(await snapshot(page), before);
+        assert.equal(await analytics.count(), 0);
+      }
+    } finally { await browser.close(); }
+  });
   test(`${name}: promo comments screenshot belongs to the failure, while the returning influencer keeps his analytics`, async () => {
     const browser = await type.launch();
     try {
