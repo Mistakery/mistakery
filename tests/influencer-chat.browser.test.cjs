@@ -22,6 +22,33 @@ async function seed(page, id, previous = 'INFLUENCER_04', target, side = 'left')
   await page.clock.runFor(10000);
 }
 for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
+  test(`${name}: comment promos produce the marketer's screenshot before the influencer claims credit`, async () => {
+    const browser = await type.launch();
+    try {
+      const page = await open(browser);
+      await seed(page, 'INFLUENCER_08', null, 'INFLUENCER_OUTCOME_4');
+      const before = await snapshot(page);
+      await page.locator('[data-choice=left]').click();
+      await page.clock.runFor(10000);
+      assert.equal((await snapshot(page)).currentCardId, 'INFLUENCER_OUTCOME_4');
+      assert.equal(await page.locator('[data-sender]').innerText(), 'Dream Team');
+      const rows = page.locator('[data-chat-current].team-row');
+      assert.deepEqual(await rows.evaluateAll(ns => ns.map(n => n.dataset.source)), ['@hype_queen', '@ai_evangelist', '@ai_evangelist']);
+      const promo = page.locator('[data-chat-current][data-source="@hype_queen"] .message-image');
+      assert.match(await promo.getAttribute('src'), /ai-influencer-promo-comments-v1\.webp/);
+      assert.equal(await promo.evaluate(n => n.complete && n.naturalWidth > 0 && n.decoding === 'sync'), true);
+      assert.match(await page.locator('[data-chat-current][data-source="@ai_evangelist"]').last().innerText(), /20%\s+💸/);
+      assert.deepEqual(await page.locator('[data-choice]').allInnerTexts(), ['Get lost', "Now it's 3%"]);
+      const settled = await snapshot(page);
+      await page.evaluate(() => MistakeryApp.render());
+      assert.equal(await promo.count(), 1);
+      assert.deepEqual(await snapshot(page), settled, 'rerender never charges the outcome again');
+      await page.locator('[data-test-back]').click();
+      await page.clock.runFor(10000);
+      assert.deepEqual(await snapshot(page), before);
+      assert.equal(await promo.count(), 0, 'Back removes outcome media');
+    } finally { await browser.close(); }
+  });
   test(`${name}: accepted Influencer deal publishes the challenge in Dream Team`, async () => {
     const browser = await type.launch();
     try {

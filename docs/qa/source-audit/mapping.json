@@ -1725,7 +1725,7 @@
     },
     {
       "id": "INFLUENCER_OUTCOME_4",
-      "field": "messages.0.text",
+      "field": "messages.1.text",
       "doc": 3,
       "start": 325,
       "end": 325,
@@ -1733,7 +1733,7 @@
     },
     {
       "id": "INFLUENCER_OUTCOME_4",
-      "field": "messages.1.text",
+      "field": "messages.2.text",
       "doc": 3,
       "start": 327,
       "end": 327,

@@ -2061,7 +2061,7 @@
       "id": "INFLUENCER_OUTCOME_4",
       "kind": "story",
       "arc": "influencer",
-      "source": "@ai_evangelist",
+      "source": "dream_team",
       "continuation": "forced",
       "choices": {
         "left": {
@@ -2076,10 +2076,26 @@
       "outcomeTone": "success",
       "messages": [
         {
+          "source": "@hype_queen",
+          "direction": "incoming",
+          "avatar": "HQ",
+          "image": {
+            "src": "assets/ai-influencer-promo-comments-v1.webp",
+            "alt": "Marketer’s pinned SORRY20 promo code in the hate-video comments, with viewers mocking the sales pitch",
+            "width": 722,
+            "height": 800
+          }
+        },
+        {
           "source": "@ai_evangelist",
           "direction": "incoming",
-          "imageRef": "influencer_viral_analytics",
-          "text": "See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait"
+          "text": "See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait",
+          "image": {
+            "src": "assets/ai-influencer-viral-analytics.webp",
+            "alt": "Video analytics showing 2.6 million views and growing traffic from the B2BuyerSpyer review",
+            "width": 1000,
+            "height": 1000
+          }
         },
         {
           "source": "@ai_evangelist",
@@ -2113,7 +2129,8 @@
             "ru": "Выплатите мне бонус"
           }
         ]
-      }
+      },
+      "mode": "team"
     },
     {
       "id": "INFLUENCER_OUTCOME_5",
@@ -4190,7 +4207,13 @@
           }
         }
       },
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "image": {
+        "src": "assets/filler-mom-missed-calls-v1.webp",
+        "alt": "Investor’s recent calls: 17 missed calls from the founder’s mother",
+        "width": 680,
+        "height": 960
+      }
     },
     {
       "id": "FILL_COMA_1",
@@ -4709,10 +4732,16 @@
       ],
       "preservePunctuation": true,
       "bubbleBreaks": {
-        "0": [
+        "1": [
           "I canceled",
           "Fasting extends"
         ]
+      },
+      "image": {
+        "src": "assets/filler-food-canceled-v1.webp",
+        "alt": "Delivery app: food order canceled, only a water bottle remains in the cart",
+        "width": 766,
+        "height": 960
       }
     },
     {
@@ -4784,9 +4813,15 @@
       },
       "preservePunctuation": true,
       "bubbleBreaks": {
-        "0": [
+        "1": [
           "winner takes everything."
         ]
+      },
+      "image": {
+        "src": "assets/filler-founder-fight-v1.webp",
+        "alt": "Founder Fight Night poster: founder versus YC founder, winner takes the pre-seed",
+        "width": 900,
+        "height": 900
       }
     },
     {
@@ -4888,7 +4923,13 @@
       "requires": [
         "assistant_available"
       ],
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "image": {
+        "src": "assets/filler-therapy-leak-v1.webp",
+        "alt": "Leaked recording of the founder crying during a video therapy session with Dr. Matthews",
+        "width": 960,
+        "height": 680
+      }
     },
     {
       "id": "FILL_BLACK_SQUARE",

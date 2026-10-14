@@ -207,6 +207,7 @@
 
 **EN**
 
+> Investor’s recent calls: 17 missed calls from the founder’s mother<br>
 > TAKE THE MONEY AND TELL YOUR PSYCHO MOM TO LOSE MY NUMBER<br>
 > GET BACK TO WORK!!!
 
@@ -500,6 +501,7 @@
 
 **EN**
 
+> Delivery app: food order canceled, only a water bottle remains in the cart<br>
 > Hey, Founder 👋<br>
 > I canceled your food order and locked your fridge<br>
 > Fasting extends company runway by 2 days 📈🔒
@@ -541,6 +543,7 @@
 
 **EN**
 
+> Founder Fight Night poster: founder versus YC founder, winner takes the pre-seed<br>
 > bro i bet our whole pre-seed on you fighting your college buddy @yc_founder tonight !!! winner takes everything. 10x our money, Champ 🥊💸
 
 **RU**
@@ -594,6 +597,7 @@
 
 **EN**
 
+> Leaked recording of the founder crying during a video therapy session with Dr. Matthews<br>
 > Great news!<br>
 > I published your therapy sessions for transparency 😊<br>
 > Vulnerable founders earn 3x more trust<br>
@@ -1335,12 +1339,16 @@
 
 Эффект при входе в исход, ровно один раз: Cash -15, Customers -10, Team -15, Founder -25. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
 
-## INFLUENCER_OUTCOME_4 — AI Influencer @ai_evangelist
+## INFLUENCER_OUTCOME_4 — 8 members · 3 online Dream Team
 
 **EN**
 
+> @hype_queen<br>
+> Marketer’s pinned SORRY20 promo code in the hate-video comments, with viewers mocking the sales pitch<br>
+> @ai_evangelist<br>
 > Video analytics showing 2.6 million views and growing traffic from the B2BuyerSpyer review<br>
 > See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait<br>
+> @ai_evangelist<br>
 > Let's set up my 20% 💸
 
 **RU**

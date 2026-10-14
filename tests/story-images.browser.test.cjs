@@ -3,6 +3,11 @@ const assert = require('node:assert/strict');
 const { chromium } = require('playwright');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
+const deck = require('../cards.json');
+const imageCount = id => {
+  const card = deck.cards.find(c => c.id === id);
+  return Number(Boolean(card.image)) + (card.messages || []).filter(m => m.image || m.imageRef).length;
+};
 
 for (const scenario of [
   { label: 'Live Agent', prefix: '/assets/live-agent-', cards: ['LIVE_AGENT_04', 'LIVE_AGENT_07', 'LIVE_AGENT_OUTCOME_2', 'LIVE_AGENT_OUTCOME_4'] },
@@ -26,7 +31,8 @@ test(`slow ${scenario.label} pictures are decoded before play and ready on the f
     await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
     await page.waitForFunction(() => performance.getEntriesByType('resource').filter(entry => entry.name.includes('/avatar-')).length === 12);
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-    assert.equal(pictureRequests, scenario.cards.length);
+    const expectedRequests = scenario.cards.reduce((count, id) => count + imageCount(id), 0);
+    assert.equal(pictureRequests, expectedRequests);
     assert.equal(await page.evaluate(() => MistakeryApp.view), 'loading', 'play must wait for its story pictures');
     release();
     await page.waitForFunction(() => MistakeryApp.view === 'playing');
@@ -38,21 +44,23 @@ test(`slow ${scenario.label} pictures are decoded before play and ready on the f
         }));
         MistakeryApp.influencerPreviousCardId = 'INFLUENCER_04';
         MistakeryApp.state.currentCardId = id; MistakeryApp.render();
-        if (inspect().length) return inspect();
+        const card = MistakeryApp.deck.cards.find(c => c.id === id);
+        const expected = Number(Boolean(card.image)) + (card.messages || []).filter(m => m.image || m.imageRef).length;
+        if (inspect().length === expected) return inspect();
         // Some pictures arrive after a scripted typing pause. Inspect the insertion,
         // without waiting for a load event or calling decode in the assertion.
         return new Promise(resolve => {
           const observer = new MutationObserver(() => {
             const pictures = inspect();
-            if (pictures.length) { observer.disconnect(); resolve(pictures); }
+            if (pictures.length === expected) { observer.disconnect(); resolve(pictures); }
           });
           observer.observe(chat, { childList: true, subtree: true });
         });
       }, id);
-      assert.equal(pictures.length, 1, id);
+      assert.equal(pictures.length, imageCount(id), id);
       assert.ok(pictures.every(image => image.complete && image.width > 0 && image.decoding === 'sync'), `${id}: picture must be ready in the same render as the caption`);
     }
-    assert.equal(pictureRequests, scenario.cards.length, 'card transitions must reuse the prepared pictures');
+    assert.equal(pictureRequests, expectedRequests, 'card transitions must reuse the prepared pictures');
   } finally { release(); await browser.close(); }
 });
 }
@@ -77,7 +85,8 @@ test('stalled story pictures cannot block play forever or pop into an existing m
     assert.equal(await page.locator('[data-asset-reference="placeholder_founder_photo"] [role="img"]').textContent(), 'Image unavailable');
     assert.match(await page.locator('[data-asset-reference="placeholder_founder_photo"] .message-caption').textContent(), /bank account/);
     release();
-    await page.waitForFunction(() => performance.getEntriesByType('resource').filter(entry => /\/assets\/(live-agent|ai-influencer)-/.test(entry.name)).length === 10);
+    const expectedRequests = new Set(deck.cards.flatMap(card => [card.image, ...(card.messages || []).map(m => m.image || deck.images[m.imageRef])]).filter(image => /assets\/(live-agent|ai-influencer)-/.test(image?.src)).map(image => image.src)).size;
+    await page.waitForFunction(expected => performance.getEntriesByType('resource').filter(entry => /\/assets\/(live-agent|ai-influencer)-/.test(entry.name)).length === expected, expectedRequests);
     await page.evaluate(() => MistakeryApp.render());
     assert.equal(await page.locator('[data-chat] .message-image').count(), 0, 'a late response must not replace the stable fallback');
     await page.evaluate(() => { MistakeryApp.influencerPreviousCardId = 'INFLUENCER_04'; MistakeryApp.state.currentCardId = 'INFLUENCER_06'; MistakeryApp.render(); });

@@ -5,9 +5,9 @@ const { pathToFileURL } = require('node:url');
 const { chromium, webkit } = require('playwright');
 const deck = require('../cards.json');
 const url = (process.env.MISTAKERY_TEST_URL || pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href) + '?test=route';
-const ids = ['FILL_DOMAIN_1', 'FILL_VIDEO_2', 'FILL_COMA_2A', 'FILL_FONT', 'FILL_BLACK_SQUARE', 'FILL_MOM_FLYERS'];
+const ids = ['FILL_DOMAIN_1', 'FILL_VIDEO_2', 'FILL_COMA_2A', 'FILL_FONT', 'FILL_BLACK_SQUARE', 'FILL_MOM_FLYERS', 'FILL_THERAPY', 'FILL_FIGHT', 'FILL_FRIDGE', 'FILL_MOM_CALL_2'];
 for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
-  test(`${name}: six filler photos decode, preserve their proportions and remain readable on phones`, async () => {
+  test(`${name}: filler photos decode, preserve their proportions and remain readable on phones`, async () => {
     const browser = await type.launch();
     try {
       for (const width of [320, 390]) {
@@ -40,6 +40,12 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
           assert.deepEqual([actual.w, actual.h], [expected.width, expected.height], id);
           assert.ok(Math.abs(actual.ratio - actual.w / actual.h) < .01, `${id}: no cropping/stretching`);
           assert.ok(actual.width > 80 && actual.overflow <= 1, `${id}: readable without horizontal overflow`);
+          if (id === 'FILL_FRIDGE' || id === 'FILL_FIGHT') {
+            const bubbles = page.locator('[data-chat] .message:not(.image-bubble)');
+            assert.equal(await bubbles.count(), id === 'FILL_FRIDGE' ? 3 : 2, `${id}: attachment must preserve the original text bubbles`);
+            const last = (await bubbles.last().innerText()).replaceAll('\u00a0', ' ');
+            assert.match(last, id === 'FILL_FRIDGE' ? /^Fasting extends/ : /^winner takes everything/);
+          }
           assert.equal(await page.locator('[data-choice=left]').isEnabled(), true, id);
           assert.equal(await page.locator('.typing-bubble').count(), 0, id);
           await page.evaluate(() => MistakeryApp.render());
