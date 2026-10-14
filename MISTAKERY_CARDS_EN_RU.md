@@ -94,7 +94,7 @@
 
 Перевод текущего английского текста; полный русский вариант в исходных документах отсутствует.
 
-- **In meetings Talk later — На встречах Позже поговорим**: Founder -2; продолжение через общий маршрут.
+- **In meetings. Talk later — На встречах. Позже поговорим**: Founder -2; продолжение через общий маршрут.
 - **We crushing it!! — Мы всех рвём!!**: Founder +3; продолжение через общий маршрут.
 
 Филлер: single; связка/единица OPEN_BOSS. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
@@ -159,7 +159,7 @@
 
 Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-- **Got it On it — Понял Делаем**: Team -7; → `FILL_PAYROLL_2`.
+- **Got it. On it — Понял. Делаем**: Team -7; → `FILL_PAYROLL_2`.
 - **We have to eat! — Нам надо что-то есть!**: Team +5, Founder +3; продолжение через общий маршрут.
 
 Филлер: entry; связка/единица payroll. Условия: нужны нет; исключены ever_customer, optout_paid. Продолжение связки немедленно; каждый экран считается отдельной картой.
@@ -516,7 +516,7 @@
 Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit (эмодзи и финальная пунктуация по правилам владельца).
 
 - **I HATE AI!! — Я ненавижу ИИ**: Founder -5; продолжение через общий маршрут.
-- **Thx Water is fine — Спасибо Вода норм**: Founder -3; продолжение через общий маршрут.
+- **Thx. Water is fine — Спасибо. Вода норм**: Founder -3; продолжение через общий маршрут.
 
 Филлер: single; связка/единица fridge. Условия: нужны assistant_available; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
 
@@ -614,7 +614,7 @@
 Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit (эмодзи и финальная пунктуация по правилам владельца).
 
 - **I meant every word — Отвечу за каждое слово**: Team -10, Founder +5; продолжение через общий маршрут.
-- **Team meeting NOW! — Командный созвон СЕЙЧАС!**: Team +5, Founder -5; продолжение через общий маршрут.
+- **Team meeting. NOW! — Командный созвон. СЕЙЧАС!**: Team +5, Founder -5; продолжение через общий маршрут.
 
 Филлер: single; связка/единица therapy. Условия: нужны assistant_available; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
 
@@ -1120,7 +1120,7 @@
 
 Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-- **Deal Just deliver — лови главное результат**: Customers +5; → `INFLUENCER_03`.
+- **Deal. Just deliver — лови. главное результат**: Customers +5; → `INFLUENCER_03`.
 - **We need you in sales — тебя бы к нам в сейлзы**: Customers +5, Founder +2; → `INFLUENCER_03`.
 
 ## INFLUENCER_03 — Dev @error_404
@@ -1209,7 +1209,7 @@
 Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit (эмодзи и финальная пунктуация по правилам владельца).
 
 - **Alternatives? — Варианты?**: Founder -5; → `INFLUENCER_05`.
-- **Cool Forget the deal — Круто Забудь о сделке**: Founder +5; → `INFLUENCER_08`.
+- **Cool. Forget the deal — Круто. Забудь о сделке**: Founder +5; → `INFLUENCER_08`.
 - **Actually, 60% is ok — Вообще-то 60% было норм** (контекст после `INFLUENCER_05`): Founder -15, Team -5; → `INFLUENCER_07`.
 - **Try me, buddy — Ну попробуй, дружочек** (контекст после `INFLUENCER_05`): Founder +7; → `INFLUENCER_08`.
 
@@ -1310,7 +1310,7 @@
 Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit (эмодзи и финальная пунктуация по правилам владельца).
 
 - **We're viral, baby! 🚀 — Вирусимся, детка 🚀**: без отдельного эффекта; продолжение через общий маршрут.
-- **Wait I'm that founder — Но Я же этот фаундер**: без отдельного эффекта; продолжение через общий маршрут.
+- **Wait... I'm that founder — Но…Я же этот фаундер**: без отдельного эффекта; продолжение через общий маршрут.
 
 Эффект при входе в исход, ровно один раз: Cash +15, Customers +25, Team -10, Founder -10. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
 
@@ -1390,7 +1390,7 @@
 
 Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-- **Still alive Already stronger — Что нас не убивает, делает сильнее**: без отдельного эффекта; продолжение через общий маршрут.
+- **Still alive. Already stronger — Что нас не убивает, делает сильнее**: без отдельного эффекта; продолжение через общий маршрут.
 - **That’s called marketing — Это называется маркетинг**: без отдельного эффекта; продолжение через общий маршрут.
 
 Эффект при входе в исход, ровно один раз: Cash -10, Customers -15, Team -10, Founder -15. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
@@ -1661,7 +1661,7 @@
 
 Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-- **He's dead Let's sign! — Конец ему Подписываемся!**: Customers +10; → `LIVE_AGENT_08`.
+- **He's dead. Let's sign! — Конец ему. Подписываемся!**: Customers +10; → `LIVE_AGENT_08`.
 - **I'm not a killer! — Я не убийца!**: без отдельного эффекта; 0–5 support: 5% / 10% / 15% / 20% / 30% / 40% → `LIVE_AGENT_OUTCOME_1`; иначе → `LIVE_AGENT_OUTCOME_2`.
 
 ## LIVE_AGENT_08 — 8 members · 3 online Dream Team
@@ -1844,7 +1844,7 @@
 Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
 - **Just run — Бегите**: без отдельного эффекта; продолжение через общий маршрут.
-- **Can't talk Farewell — Не могу говорить Прощайте**: без отдельного эффекта; продолжение через общий маршрут.
+- **Can't talk. Farewell — Не могу говорить. Прощайте**: без отдельного эффекта; продолжение через общий маршрут.
 
 Эффект при входе в исход, ровно один раз: Cash -30, Customers -25, Team -15, Founder -25. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
 
@@ -1916,7 +1916,7 @@
 Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit (эмодзи и финальная пунктуация по правилам владельца).
 
 - **Mouth shut, game on — Рот на замке, играем**: Founder -1; → `IRL_PADEL_04`.
-- **Now or never, pitching — Сейчас или никогда Питчу**: Founder +3; → `IRL_PADEL_03B`.
+- **Now or never, pitching — Сейчас или никогда. Питчу**: Founder +3; → `IRL_PADEL_03B`.
 
 ## IRL_PADEL_03B — ClosedAI CEO @iclosedai
 
@@ -2073,7 +2073,7 @@
 Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit (эмодзи и финальная пунктуация по правилам владельца).
 
 - **Just let you win! — Просто поддался тебе**: без отдельного эффекта; продолжение через общий маршрут.
-- **So about the deal? — Так что насчет сделки?**: без отдельного эффекта; продолжение через общий маршрут.
+- **So... about the deal? — Так... что насчет сделки?**: без отдельного эффекта; продолжение через общий маршрут.
 
 Эффект при входе в исход, ровно один раз: Customers -3, Team -8, Founder -15. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
 

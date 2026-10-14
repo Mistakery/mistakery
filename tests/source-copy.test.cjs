@@ -34,3 +34,13 @@ test('text reconciliation preserves mechanics and separately approved endings', 
  assert.equal(hash(JSON.stringify(mechanics(deck))),invariants.mechanicsSha256);
  for(const [file,sha]of Object.entries(invariants.files))assert.equal(hash(fs.readFileSync(path.resolve(__dirname,'..',file))),sha,file);
 });
+test('reply labels retain internal sentence boundaries while closing punctuation stays removed', () => {
+ for (const [id, side, label] of [
+  ['INFLUENCER_OUTCOME_5', 'left', 'Still alive. Already stronger'],
+  ['OPEN_BOSS', 'left', 'In meetings. Talk later'],
+  ['FILL_FRIDGE', 'right', 'Thx. Water is fine'],
+  ['INFLUENCER_OUTCOME_2', 'right', "Wait... I'm that founder"],
+ ]) assert.equal(deck.cards.find(card => card.id === id).choices[side].label, label, `${id}.${side}`);
+ assert.equal(deck.testTranslations.OPEN_BOSS.left, 'На встречах. Позже поговорим');
+ assert.equal(deck.cards.find(card => card.id === 'LIVE_AGENT_04').choices.left.label, 'Go on');
+});

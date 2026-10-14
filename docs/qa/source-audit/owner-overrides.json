@@ -1722,7 +1722,7 @@
     }
   ],
   "buttonPeriods": {
-    "date": "2026-10-12",
-    "instruction": "Remove periods and ellipses from every reply button, including internal sentence boundaries, contextual/mood labels, win replies and EN/RU references; keep other punctuation and emoji. Message text keeps the previous punctuation rule."
+    "date": "2026-10-14",
+    "instruction": "Remove only closing periods and ellipses from reply buttons, contextual/mood labels, win replies and EN/RU references; preserve punctuation between sentences and internal ellipses. Owner clarified that Still alive. Already stronger must retain its internal period. Message text keeps the previous punctuation rule."
   }
 }

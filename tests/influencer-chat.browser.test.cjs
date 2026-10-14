@@ -62,6 +62,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.equal(await comments.evaluate(n => n.complete && n.naturalWidth > 0 && n.decoding === 'sync'), true);
       assert.match((await rows.first().innerText()).replaceAll('\u00a0', ' '), /still zero sales/);
       assert.match((await rows.last().innerText()).replaceAll('\u00a0', ' '), /top comment:.*sell subscriptions under a scam expose/);
+      assert.equal((await page.locator('[data-choice=left]').innerText()).replaceAll('\u00a0', ' '), 'Still alive. Already stronger');
       const failureSettled = await snapshot(page);
       await page.evaluate(() => MistakeryApp.render());
       assert.equal(await comments.count(), 1);

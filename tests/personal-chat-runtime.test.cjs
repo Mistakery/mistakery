@@ -115,7 +115,7 @@ test('AI influencer cards preserve approved copy and graph with document resourc
 
   assert.equal(cards.INFLUENCER_02A.text, "Hahaha\nI like your style 😂\nLet's lock in 20% for now, but I'll hook you up\nI'll give you access to my private database of 50 killer B2B prompts. People pay $1k for this 😉\nWe good? Drop the demo");
   assert.deepEqual(withoutReasons(cards.INFLUENCER_02A.choices), {
-    left: { label: 'Deal Just deliver', effects: influencerEffects.INFLUENCER_02A[0], next: 'INFLUENCER_03' },
+    left: { label: 'Deal. Just deliver', effects: influencerEffects.INFLUENCER_02A[0], next: 'INFLUENCER_03' },
     right: { label: 'We need you in sales', effects: influencerEffects.INFLUENCER_02A[1], next: 'INFLUENCER_03' },
   });
 
@@ -146,7 +146,7 @@ test('AI influencer cards preserve approved copy and graph with document resourc
   assert.equal(Object.hasOwn(cards.INFLUENCER_06, 'placeholder'), false);
   assert.deepEqual(withoutReasons(cards.INFLUENCER_06.choices), {
     left: { label: 'Alternatives?', effects: influencerEffects.INFLUENCER_06[0], next: 'INFLUENCER_05' },
-    right: { label: 'Cool Forget the deal', effects: influencerEffects.INFLUENCER_06[1], next: 'INFLUENCER_08' },
+    right: { label: 'Cool. Forget the deal', effects: influencerEffects.INFLUENCER_06[1], next: 'INFLUENCER_08' },
   });
   assert.deepEqual(withoutReasons(cards.INFLUENCER_06.contextualChoices.INFLUENCER_05), {
     left: { label: 'Actually, 60% is ok', effects: influencerContext.INFLUENCER_06.INFLUENCER_05[0], next: 'INFLUENCER_07' },
@@ -349,7 +349,7 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
       source: '@iclosedai',
       score: 'YOU LOSE! The match. And the deal.',
       text: "Easiest win of my life\nIt was almost cute watching you panic on match point\nKnew you were soft from the start. Get off my court",
-      labels: ['Just let you win!', 'So about the deal?'],
+      labels: ['Just let you win!', 'So... about the deal?'],
     },
     4: {
       mode: 'irl',
