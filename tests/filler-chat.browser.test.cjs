@@ -113,18 +113,25 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.equal(await page.locator('[data-composing-reply]').count(), 0);
     } finally { await browser.close(); }
   });
-  test(`${name}: investor mantra and ex-boss arrive as three messages inside their card`, async () => {
+  test(`${name}: investor voice attachment and three text messages retain reading beats; ex-boss keeps three messages`, async () => {
     const browser = await type.launch();
     try {
       const page = await open(browser);
-      for (const id of ['FILL_MANTRA', 'OPEN_BOSS']) {
+      for (const [id, pauses] of [['FILL_MANTRA', [2300, 1500, 1500]], ['OPEN_BOSS', [1500, 1500]]]) {
         await seed(page, id);
         assert.equal(await page.locator('[data-chat-current]').count(), 1);
         assert.equal(await page.locator('[data-choice=left]').isDisabled(), true);
-        await page.clock.runFor(1499); assert.equal(await page.locator('[data-chat-current]').count(), 1);
-        await page.clock.runFor(1); assert.equal(await page.locator('[data-chat-current]').count(), 2);
-        await page.clock.runFor(1499); assert.equal(await page.locator('[data-choice=left]').isDisabled(), true);
-        await page.clock.runFor(1); assert.equal(await page.locator('[data-chat-current]').count(), 3);
+        if (id === 'FILL_MANTRA') assert.equal(await page.locator('[data-chat-current] .message-image').count(), 1);
+        for (const [index, pause] of pauses.entries()) {
+          await page.clock.runFor(pause - 1);
+          assert.equal(await page.locator('[data-chat-current]').count(), index + 1);
+          assert.equal(await page.locator('[data-choice=left]').isDisabled(), true);
+          await page.clock.runFor(1);
+          assert.equal(await page.locator('[data-chat-current]').count(), index + 2);
+        }
+        if (id === 'FILL_MANTRA') assert.deepEqual(await page.locator('[data-chat-current] p').evaluateAll(ns => ns.map(n => n.textContent.replaceAll('\u00a0', ' '))), [
+          'MY GURU SENT A 4-HOUR WEALTH MANTRA', 'LISTEN TO IT ON REPEAT WHILE YOU WORK TODAY', 'SUCCESS IS 90% VIBRATIONS, YOU HEAR ME???',
+        ]);
         assert.equal((await snapshot(page)).currentCardId, id);
         assert.equal((await snapshot(page)).history.length, 0);
         assert.equal(await page.locator('[data-choice=left]').isEnabled(), true);

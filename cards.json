@@ -4971,10 +4971,9 @@
     {
       "id": "FILL_MANTRA",
       "kind": "filler",
-      "source": "@unicorn_hunter",
+      "source": "dream_team",
       "continuation": "forced",
       "oncePerRun": true,
-      "text": "MY GURU SENT A 4-HOUR WEALTH MANTRAL AUDIO\n\nLISTEN TO IT ON REPEAT WHILE YOU WORK TODAY\n\nSUCCESS IS 90% VIBRATIONS, YOU HEAR ME???",
       "filler": {
         "unit": "mantra",
         "role": "single",
@@ -4995,7 +4994,35 @@
           }
         }
       },
-      "preservePunctuation": true
+      "preservePunctuation": true,
+      "mode": "team",
+      "messages": [
+        {
+          "source": "@unicorn_hunter",
+          "direction": "incoming",
+          "image": {
+            "src": "assets/filler-mantra-voice-v1.svg",
+            "alt": "wealth mantra: investor’s four-hour voice message with a play icon, waveform and duration 4:00:00",
+            "width": 600,
+            "height": 180
+          }
+        },
+        {
+          "source": "@unicorn_hunter",
+          "direction": "incoming",
+          "text": "MY GURU SENT A 4-HOUR WEALTH MANTRA"
+        },
+        {
+          "source": "@unicorn_hunter",
+          "direction": "incoming",
+          "text": "LISTEN TO IT ON REPEAT WHILE YOU WORK TODAY"
+        },
+        {
+          "source": "@unicorn_hunter",
+          "direction": "incoming",
+          "text": "SUCCESS IS 90% VIBRATIONS, YOU HEAR ME???"
+        }
+      ]
     }
   ],
   "crises": {

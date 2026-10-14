@@ -3717,9 +3717,25 @@
     },
     {
       "id": "FILL_MANTRA",
-      "field": "text",
+      "field": "messages.1.text",
       "doc": 4,
       "start": 271,
+      "end": 271,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_MANTRA",
+      "field": "messages.2.text",
+      "doc": 4,
+      "start": 272,
+      "end": 272,
+      "kind": "text"
+    },
+    {
+      "id": "FILL_MANTRA",
+      "field": "messages.3.text",
+      "doc": 4,
+      "start": 273,
       "end": 273,
       "kind": "text"
     },

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="180" viewBox="0 0 600 180" role="img" aria-labelledby="title">
+  <title id="title">wealth mantra, voice message, duration 4:00:00</title>
+  <rect width="600" height="180" fill="#fff"/>
+  <circle cx="66" cy="95" r="40" fill="#82b9df"/>
+  <path d="M57 75 83 95 57 115Z" fill="#fff"/>
+  <text x="138" y="32" fill="#354e61" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="600">wealth mantra</text>
+  <path transform="translate(0 20)" d="M138 46v12m12-25v38m12-26v14m12-41v68m12-52v36m12-26v16m12-36v56m12-40v24m12-18v12m12-34v56m12-48v40m12-29v18m12-35v52m12-39v26m12-35v44m12-26v8m12-29v50m12-44v38m12-25v12m12-39v66m12-50v34m12-23v12m12-32v52m12-39v26m12-32v38m12-23v8m12-32v56m12-42v28m12-33v38m12-24v10m12-30v50m12-36v22m12-31v40m12-26v12m12-23v34m12-22v10" fill="none" stroke="#a5c9e2" stroke-width="6" stroke-linecap="round"/>
+  <text x="138" y="157" fill="#354e61" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="600">4:00:00</text>
+  <rect x="508" y="132" width="66" height="34" rx="17" fill="#edf4f8"/>
+  <text x="541" y="157" fill="#5d7b90" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="600" text-anchor="middle">1×</text>
+</svg>

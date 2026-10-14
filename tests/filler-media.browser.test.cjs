@@ -5,9 +5,9 @@ const { pathToFileURL } = require('node:url');
 const { chromium, webkit } = require('playwright');
 const deck = require('../cards.json');
 const url = (process.env.MISTAKERY_TEST_URL || pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href) + '?test=route';
-const ids = ['FILL_DOMAIN_1', 'FILL_VIDEO_2', 'FILL_COMA_2A', 'FILL_FONT', 'FILL_BLACK_SQUARE', 'FILL_MOM_FLYERS', 'FILL_THERAPY', 'FILL_FIGHT', 'FILL_FRIDGE', 'FILL_MOM_CALL_2'];
+const ids = ['FILL_DOMAIN_1', 'FILL_VIDEO_2', 'FILL_COMA_2A', 'FILL_FONT', 'FILL_BLACK_SQUARE', 'FILL_MOM_FLYERS', 'FILL_THERAPY', 'FILL_FIGHT', 'FILL_FRIDGE', 'FILL_MOM_CALL_2', 'FILL_MANTRA'];
 for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
-  test(`${name}: filler photos decode, preserve their proportions and remain readable on phones`, async () => {
+  test(`${name}: filler attachments decode, preserve their proportions and remain readable on phones`, async () => {
     const browser = await type.launch();
     try {
       for (const width of [320, 390]) {
@@ -24,7 +24,8 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
             a.cardDelivery = null; a.locked = false; a.view = 'playing'; a.render();
           }, id);
           await page.clock.runFor(6000);
-          const expected = deck.cards.find(c => c.id === id).image;
+          const card = deck.cards.find(c => c.id === id);
+          const expected = card.image || card.messages?.find(m => m.image)?.image;
           const img = page.locator('.message-image');
           assert.equal(await img.count(), 1, id);
           const actual = await img.evaluate(async img => {

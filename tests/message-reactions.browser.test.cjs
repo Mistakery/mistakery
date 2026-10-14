@@ -47,6 +47,36 @@ async function metrics(page) {
   });
 }
 for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
+  test(`${name}: investor's wealth mantra arrives in Dream Team with colleagues' negative reactions`, async () => {
+    const { browser, page } = await open(type, 320, 'reduce');
+    try {
+      await seed(page, 'FILL_MANTRA');
+      const state = await page.evaluate(() => JSON.stringify(MistakeryApp.state));
+      assert.equal(await page.locator('[data-sender]').innerText(), 'Dream Team');
+      await page.clock.runFor(12000);
+      assert.deepEqual(await page.locator('[data-chat-current]').evaluateAll(ns => ns.map(n => n.dataset.source)), Array(4).fill('@unicorn_hunter'));
+      assert.deepEqual(await page.locator('[data-chat-current] p').evaluateAll(ns => ns.map(n => n.textContent.replaceAll('\u00a0', ' '))), [
+        'MY GURU SENT A 4-HOUR WEALTH MANTRA',
+        'LISTEN TO IT ON REPEAT WHILE YOU WORK TODAY',
+        'SUCCESS IS 90% VIBRATIONS, YOU HEAR ME???',
+      ]);
+      const voice = page.locator('[data-chat-current] .message-image');
+      assert.equal(await voice.count(), 1);
+      assert.equal(await voice.evaluate(n => n.complete && n.naturalWidth > 0), true);
+      assert.equal(await page.locator('.image-bubble .message-reactions').count(), 0);
+      assert.deepEqual(await page.locator('.message-reaction-emoji').allTextContents(), ['🙄', '😒', '🤡']);
+      assert.deepEqual(await page.locator('.message-reaction-count').allTextContents(), ['3', '2', '2']);
+      assert.equal(await page.locator('[data-pending]').count(), 0);
+      assert.equal(await page.locator('[data-choice]:disabled').count(), 0);
+      assert.equal(await page.evaluate(() => JSON.stringify(MistakeryApp.state)), state);
+      await page.evaluate(() => MistakeryApp.render()); await page.clock.runFor(1500);
+      assert.deepEqual(await page.locator('.message-reaction-count').allTextContents(), ['3', '2', '2']);
+      assert.equal(await voice.count(), 1);
+      assert.equal(await page.evaluate(() => JSON.stringify(MistakeryApp.state)), state);
+      await seed(page, 'FILL_MOM_CALL_2'); await page.clock.runFor(12000);
+      assert.equal(await page.locator('.message-reactions').count(), 0, 'leaving the group clears mantra reactions');
+    } finally { await browser.close(); }
+  });
   for (const width of [320, 390]) {
     test(`${name}/${width}: reactions wait a full second and arrive on compact bubbles`, async () => {
       const { browser, page } = await open(type, width);
@@ -126,7 +156,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
     try {
       const expected = { LIVE_AGENT_01: 2, LIVE_AGENT_02: 2, LIVE_AGENT_03: 1,
         LIVE_AGENT_08: 1, INFLUENCER_01: 2, INFLUENCER_05: 1, INFLUENCER_07: 1,
-        INFLUENCER_08: 2, DREAM_TEAM: 2, FILL_AI_DEV: 1, FILL_PAYROLL_2: 1 };
+        INFLUENCER_08: 2, DREAM_TEAM: 2, FILL_AI_DEV: 1, FILL_PAYROLL_2: 1, FILL_MANTRA: 2 };
       const vocabulary = new Set();
       for (const [id, rows] of Object.entries(expected)) {
         await seed(page, id); await page.clock.runFor(12000);

@@ -1547,6 +1547,16 @@
           "You lost, kid. Nice try\nHonestly, I'm used to working with much stronger partners\nKeep practicing if you really want to reach the big leagues"
         ]
       ]
+    },
+    {
+      "id": "FILL_MANTRA",
+      "field": "messages.1.text",
+      "replacements": [
+        [
+          "WEALTH MANTRAL AUDIO",
+          "WEALTH MANTRA"
+        ]
+      ]
     }
   ],
   "omitFields": [

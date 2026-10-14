@@ -16,7 +16,6 @@ function expected(entry) {
   }
   if (entry.kind === 'score') value = value.replace('Счёт: ', 'Score: ').replace('матчбол', 'MATCH POINT');
   if (entry.kind === 'mediaEmotion') value = '😔'; // Source explicitly requests a sad emoji, without selecting a glyph.
-  if (entry.id === 'FILL_MANTRA' && entry.field === 'text') value = value.replace(/\n/g, '\n\n'); // Owner's subsequent three-bubble delivery instruction.
   const override = ownerOverrides.emoji.find(item => item.id === entry.id && item.field === entry.field);
   for (const [from, to] of override?.replacements || []) value = value.replace(from, to);
   value = displayText(value);

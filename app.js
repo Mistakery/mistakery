@@ -195,6 +195,8 @@
     DREAM_TEAM: { 0: ['first big client', [['🎉', 2]]], 2: ['in 4K', [['😂', 2]]] },
     FILL_AI_DEV: { 1: ['fire me then lol', [['🫠', 2]]] },
     FILL_PAYROLL_2: { 0: ['zero overtime from me', [['🫡', 2]]] },
+    FILL_MANTRA: { 2: ['LISTEN TO IT ON REPEAT', [['🙄', 3], ['😒', 2]]],
+      3: ['SUCCESS IS 90% VIBRATIONS', [['🤡', 2]]] },
   };
   // Authored boundaries use the original bubble index and literal next phrase.
   // Clone paragraph ranges so formatting, mentions and the sender shell survive.

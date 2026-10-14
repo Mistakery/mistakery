@@ -640,12 +640,17 @@
 
 Филлер: single; связка/единица black_square. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
 
-## FILL_MANTRA — Investor @unicorn_hunter
+## FILL_MANTRA — 8 members · 3 online Dream Team
 
 **EN**
 
-> MY GURU SENT A 4-HOUR WEALTH MANTRAL AUDIO<br>
+> @unicorn_hunter<br>
+> wealth mantra: investor’s four-hour voice message with a play icon, waveform and duration 4:00:00<br>
+> @unicorn_hunter<br>
+> MY GURU SENT A 4-HOUR WEALTH MANTRA<br>
+> @unicorn_hunter<br>
 > LISTEN TO IT ON REPEAT WHILE YOU WORK TODAY<br>
+> @unicorn_hunter<br>
 > SUCCESS IS 90% VIBRATIONS, YOU HEAR ME???
 
 **RU**
