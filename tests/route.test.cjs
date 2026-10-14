@@ -34,25 +34,26 @@ function gap(seed = 1, order) {
   return answer(s); // acknowledge outcome
 }
 
-test('every cycle completes all plots once with exactly two 4–5-card gaps', () => {
+test('each finite run completes all plots once with exactly two 4–5-card gaps', () => {
   const orders = new Set();
   for (let seed = 0; seed < 600; seed++) {
     let s = R().startRun(deck, { seed });
     const originalOrder = [...s.route.order];
     orders.add(originalOrder.join(','));
     let steps = 0;
-    while (s.route.cycle === 1 && steps++ < 70) {
+    while (!s.gameOver && steps++ < 70) {
       const c = card(s.currentCardId);
       s = answer(s, c.plot && !c.outcomeTone && deck.meta.route.plots[c.plot] === c.id ? 'right' : seed % 2 ? 'left' : 'right');
       for (const value of Object.values(s.resources)) assert.ok(value >= 0 && value <= 100);
     }
-    assert.equal(s.route.cycle, 2, `stuck seed ${seed}`);
-    assert.equal(s.gameOver, false);
-    assert.deepEqual(s.route.lastCycle.completed, originalOrder);
-    assert.equal(s.route.lastCycle.gaps.length, 2);
-    assert.equal(new Set(s.route.lastCycle.fillers).size, s.route.lastCycle.fillers.length);
+    assert.equal(s.route.cycle, 1);
+    assert.equal(s.gameOver, true, `stuck seed ${seed}`);
+    assert.equal(s.endingId, 'run_complete');
+    assert.deepEqual(s.route.completed, originalOrder);
+    assert.equal(s.route.gaps.length, 2);
+    assert.equal(new Set(s.fillerCards).size, s.fillerCards.length);
     assert.ok(!s.win);
-    for (const g of s.route.lastCycle.gaps) {
+    for (const g of s.route.gaps) {
       assert.ok([4, 5].includes(g.played.length));
       assert.equal(g.played.length, g.target);
       assert.equal(g.played.filter(id => card(id).filler.role === 'entry').length, 1);
@@ -160,47 +161,51 @@ test('payment evidence and outcome effects apply exactly once; opt-out is not pr
   assert.equal(s.resources.cash, Math.max(0, cash - .5));
 });
 
-test('cycles continue indefinitely without resource endings and preserve world facts', () => {
+test('completion freezes the run without declaring victory or drawing the next plot', () => {
   let s = R().startRun(deck, { seed: 2 });
-  assert.equal(s.route.cycle, 1);
   s.flags.push('product_paid', 'ever_customer');
-  s.resources = { cash: 0, team: 100, customers: 0, founder: 100 };
-  let turns = 0;
-  while (s.route.cycle < 8 && turns++ < 300) {
+  for (let turn = 0; !s.gameOver && turn < 70; turn++) {
     const c = card(s.currentCardId);
+    const before = s;
     s = answer(s, c.plot && !c.outcomeTone ? 'right' : 'left');
-    assert.equal(s.gameOver, false);
-    assert.ok(s.flags.includes('ever_customer'));
-    assert.equal(new Set(s.fillerCards).size, s.fillerCards.length);
+    if (s.gameOver) {
+      assert.equal(s.currentCardId, before.currentCardId);
+      assert.equal(s.route.randomState, before.route.randomState);
+    }
   }
-  assert.equal(s.route.cycle, 8);
-  assert.equal(s.route.lastCycle.completed.length, 3);
+  assert.equal(s.win, false);
+  assert.equal(s.endingId, 'run_complete');
+  assert.equal(s.route.phase, 'ended');
+  assert.equal(s.route.completed.length, 3);
+  assert.ok(s.flags.includes('ever_customer'));
+  const frozen = structuredClone(s);
+  assert.deepEqual(answer(s, 'right'), frozen);
+  assert.deepEqual(s, frozen);
+  const next = R().nextRun(deck, s);
+  assert.equal(next.gameOver, false);
+  assert.notEqual(next.seed, s.seed);
+  assert.deepEqual(next.history, []);
+  assert.deepEqual(next.resources, { cash: 25, team: 60, customers: 15, founder: 65 });
 });
 
-test('mixed decisions across repeated cycles cover every outcome without dead ends or repeat fillers', () => {
+test('mixed decisions across finite runs cover every outcome without dead ends or repeat fillers', () => {
   const outcomes = new Set();
-  for (let seed = 0; seed < 160; seed++) {
+  for (let seed = 0; seed < 800; seed++) {
     let s = R().startRun(deck, { seed });
     let decisions = seed + 1;
     let turns = 0;
-    while (s.route.cycle <= 4 && turns++ < 300) {
+    while (!s.gameOver && turns++ < 70) {
       const c = card(s.currentCardId);
       if (c.outcomeTone) outcomes.add(c.id);
       const before = s;
       decisions = (Math.imul(decisions, 1664525) + 1013904223) >>> 0;
       s = answer(s, decisions < 2147483648 ? 'left' : 'right');
-      assert.equal(s.gameOver, false);
       assert.equal(new Set(s.fillerCards).size, s.fillerCards.length);
       assert.ok(Object.values(s.resources).every(value => value >= 0 && value <= 100));
-      if (s.route.cycle !== before.route.cycle) {
-        assert.equal(s.route.lastCycle.completed.length, 3);
-        assert.equal(s.route.lastCycle.gaps.length, 2);
-        assert.notEqual(s.route.order[0], s.route.lastCycle.completed.at(-1));
-        assert.ok(s.route.lastCycle.gaps.every(g => g.played.length === g.target));
-        assert.ok(before.flags.every(flag => s.flags.includes(flag)), 'cycle preserves world facts');
-      }
+
     }
-    assert.equal(s.route.cycle, 5, `stuck seed ${seed}`);
+    assert.equal(s.endingId, 'run_complete', `stuck seed ${seed}`);
+    assert.deepEqual(s.route.completed, s.route.order);
   }
   assert.deepEqual([...outcomes].sort(), deck.cards.filter(c => c.plot && c.outcomeTone).map(c => c.id).sort());
 });

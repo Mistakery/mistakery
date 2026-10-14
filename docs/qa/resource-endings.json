@@ -4,12 +4,13 @@
   "horizon": 250,
   "searchEnd": 3084,
   "counts": {
-    "cash_low": 1966,
-    "judgment_day": 895,
-    "founder_high": 104,
-    "founder_low": 15,
+    "run_complete": 368,
+    "cash_low": 1721,
+    "judgment_day": 804,
+    "founder_low": 7,
+    "founder_high": 86,
     "team_high": 13,
-    "team_low": 7
+    "team_low": 1
   },
   "orders": {
     "live_agent → padel → influencer": 489,
@@ -20,8 +21,8 @@
     "padel → live_agent → influencer": 536
   },
   "hashes": {
-    "cards.json": "f05dbdeba12dfef9f475fa471cf6986b33eb210b857e11eab5a9f3a96668012a",
-    "assets/route.js": "692c8feaf11cced90310b1079c78282d0a10cc3585874f3ceea94f5a64171840",
+    "cards.json": "6db453b09b16b16ed31b6aedc9a74d3eecdceb51114a4d57ce0ddcda92742ac4",
+    "assets/route.js": "4f41bcc5a6f6a284d0ed7437ee1060098bd79de085bbe775e0cfe4019d4eb1b4",
     "game.js": "4587f9034eb5e83e639c2a96e2bf21d4531511bc6c48234d5a025d94c245e466"
   },
   "witnesses": {
@@ -266,7 +267,7 @@
         {
           "card": "LIVE_AGENT_03",
           "side": "right",
-          "label": "Kinda creepy..",
+          "label": "Kinda creepy",
           "before": {
             "cash": 24,
             "team": 70,
@@ -456,7 +457,7 @@
         {
           "card": "LIVE_AGENT_07",
           "side": "left",
-          "label": "Just AI humor",
+          "label": "Just AI humor!",
           "before": {
             "cash": 21.5,
             "team": 60,
@@ -494,7 +495,7 @@
         {
           "card": "LIVE_AGENT_07B",
           "side": "right",
-          "label": "I'm not a KILLER",
+          "label": "I'm not a killer!",
           "before": {
             "cash": 21,
             "team": 60,
@@ -527,335 +528,6 @@
           },
           "checkpoint": true,
           "next": "LIVE_AGENT_OUTCOME_2",
-          "cycle": 1
-        }
-      ]
-    },
-    "founder_high": {
-      "seed": 192,
-      "order": [
-        "influencer",
-        "live_agent",
-        "padel"
-      ],
-      "ending": "founder_high",
-      "cycle": 1,
-      "actions": 8,
-      "resources": {
-        "cash": 41,
-        "team": 47,
-        "customers": 40,
-        "founder": 100
-      },
-      "raw": {
-        "cash": 41,
-        "team": 47,
-        "customers": 40,
-        "founder": 100
-      },
-      "steps": [
-        {
-          "card": "INFLUENCER_01",
-          "side": "left",
-          "label": "Let's go",
-          "before": {
-            "cash": 25,
-            "team": 60,
-            "customers": 15,
-            "founder": 65
-          },
-          "after": {
-            "cash": 24.5,
-            "team": 60,
-            "customers": 20,
-            "founder": 65
-          },
-          "rawBefore": {
-            "cash": 25,
-            "team": 60,
-            "customers": 15,
-            "founder": 65
-          },
-          "rawAfter": {
-            "cash": 24.5,
-            "team": 60,
-            "customers": 20,
-            "founder": 65
-          },
-          "change": {
-            "cash": -0.5,
-            "team": 0,
-            "customers": 5,
-            "founder": 0
-          },
-          "checkpoint": false,
-          "next": "INFLUENCER_02",
-          "cycle": 1
-        },
-        {
-          "card": "INFLUENCER_02",
-          "side": "right",
-          "label": "Maybe 10%",
-          "before": {
-            "cash": 24.5,
-            "team": 60,
-            "customers": 20,
-            "founder": 65
-          },
-          "after": {
-            "cash": 24,
-            "team": 60,
-            "customers": 20,
-            "founder": 68
-          },
-          "rawBefore": {
-            "cash": 24.5,
-            "team": 60,
-            "customers": 20,
-            "founder": 65
-          },
-          "rawAfter": {
-            "cash": 24,
-            "team": 60,
-            "customers": 20,
-            "founder": 68
-          },
-          "change": {
-            "cash": -0.5,
-            "team": 0,
-            "customers": 0,
-            "founder": 3
-          },
-          "checkpoint": false,
-          "next": "INFLUENCER_02A",
-          "cycle": 1
-        },
-        {
-          "card": "INFLUENCER_02A",
-          "side": "right",
-          "label": "We need you in sales",
-          "before": {
-            "cash": 24,
-            "team": 60,
-            "customers": 20,
-            "founder": 68
-          },
-          "after": {
-            "cash": 23.5,
-            "team": 60,
-            "customers": 25,
-            "founder": 70
-          },
-          "rawBefore": {
-            "cash": 24,
-            "team": 60,
-            "customers": 20,
-            "founder": 68
-          },
-          "rawAfter": {
-            "cash": 23.5,
-            "team": 60,
-            "customers": 25,
-            "founder": 70
-          },
-          "change": {
-            "cash": -0.5,
-            "team": 0,
-            "customers": 5,
-            "founder": 2
-          },
-          "checkpoint": false,
-          "next": "INFLUENCER_03",
-          "cycle": 1
-        },
-        {
-          "card": "INFLUENCER_03",
-          "side": "right",
-          "label": "More capacity",
-          "before": {
-            "cash": 23.5,
-            "team": 60,
-            "customers": 25,
-            "founder": 70
-          },
-          "after": {
-            "cash": 13,
-            "team": 55,
-            "customers": 25,
-            "founder": 70
-          },
-          "rawBefore": {
-            "cash": 23.5,
-            "team": 60,
-            "customers": 25,
-            "founder": 70
-          },
-          "rawAfter": {
-            "cash": 13,
-            "team": 55,
-            "customers": 25,
-            "founder": 70
-          },
-          "change": {
-            "cash": -10.5,
-            "team": -5,
-            "customers": 0,
-            "founder": 0
-          },
-          "checkpoint": false,
-          "next": "INFLUENCER_04",
-          "cycle": 1
-        },
-        {
-          "card": "INFLUENCER_04",
-          "side": "left",
-          "label": "Have fun",
-          "before": {
-            "cash": 13,
-            "team": 55,
-            "customers": 25,
-            "founder": 70
-          },
-          "after": {
-            "cash": 12.5,
-            "team": 55,
-            "customers": 25,
-            "founder": 75
-          },
-          "rawBefore": {
-            "cash": 13,
-            "team": 55,
-            "customers": 25,
-            "founder": 70
-          },
-          "rawAfter": {
-            "cash": 12.5,
-            "team": 55,
-            "customers": 25,
-            "founder": 75
-          },
-          "change": {
-            "cash": -0.5,
-            "team": 0,
-            "customers": 0,
-            "founder": 5
-          },
-          "checkpoint": false,
-          "next": "INFLUENCER_06",
-          "cycle": 1
-        },
-        {
-          "card": "INFLUENCER_06",
-          "side": "right",
-          "label": "Cool. Forget the deal",
-          "before": {
-            "cash": 12.5,
-            "team": 55,
-            "customers": 25,
-            "founder": 75
-          },
-          "after": {
-            "cash": 12,
-            "team": 55,
-            "customers": 25,
-            "founder": 80
-          },
-          "rawBefore": {
-            "cash": 12.5,
-            "team": 55,
-            "customers": 25,
-            "founder": 75
-          },
-          "rawAfter": {
-            "cash": 12,
-            "team": 55,
-            "customers": 25,
-            "founder": 80
-          },
-          "change": {
-            "cash": -0.5,
-            "team": 0,
-            "customers": 0,
-            "founder": 5
-          },
-          "checkpoint": false,
-          "next": "INFLUENCER_08",
-          "cycle": 1
-        },
-        {
-          "card": "INFLUENCER_08",
-          "side": "right",
-          "label": "Double prices NOW!!",
-          "before": {
-            "cash": 12,
-            "team": 55,
-            "customers": 25,
-            "founder": 80
-          },
-          "after": {
-            "cash": 41.5,
-            "team": 47,
-            "customers": 40,
-            "founder": 100
-          },
-          "rawBefore": {
-            "cash": 12,
-            "team": 55,
-            "customers": 25,
-            "founder": 80
-          },
-          "rawAfter": {
-            "cash": 41.5,
-            "team": 47,
-            "customers": 40,
-            "founder": 100
-          },
-          "change": {
-            "cash": 29.5,
-            "team": -8,
-            "customers": 15,
-            "founder": 20
-          },
-          "checkpoint": false,
-          "next": "INFLUENCER_OUTCOME_6",
-          "cycle": 1
-        },
-        {
-          "card": "INFLUENCER_OUTCOME_6",
-          "side": "left",
-          "label": "Get lost",
-          "before": {
-            "cash": 41.5,
-            "team": 47,
-            "customers": 40,
-            "founder": 100
-          },
-          "after": {
-            "cash": 41,
-            "team": 47,
-            "customers": 40,
-            "founder": 100
-          },
-          "rawBefore": {
-            "cash": 41.5,
-            "team": 47,
-            "customers": 40,
-            "founder": 100
-          },
-          "rawAfter": {
-            "cash": 41,
-            "team": 47,
-            "customers": 40,
-            "founder": 100
-          },
-          "change": {
-            "cash": -0.5,
-            "team": 0,
-            "customers": 0,
-            "founder": 0
-          },
-          "checkpoint": true,
-          "next": "INFLUENCER_OUTCOME_6",
           "cycle": 1
         }
       ]
@@ -1569,6 +1241,335 @@
         }
       ]
     },
+    "founder_high": {
+      "seed": 192,
+      "order": [
+        "influencer",
+        "live_agent",
+        "padel"
+      ],
+      "ending": "founder_high",
+      "cycle": 1,
+      "actions": 8,
+      "resources": {
+        "cash": 41,
+        "team": 47,
+        "customers": 40,
+        "founder": 100
+      },
+      "raw": {
+        "cash": 41,
+        "team": 47,
+        "customers": 40,
+        "founder": 100
+      },
+      "steps": [
+        {
+          "card": "INFLUENCER_01",
+          "side": "left",
+          "label": "Let's go",
+          "before": {
+            "cash": 25,
+            "team": 60,
+            "customers": 15,
+            "founder": 65
+          },
+          "after": {
+            "cash": 24.5,
+            "team": 60,
+            "customers": 20,
+            "founder": 65
+          },
+          "rawBefore": {
+            "cash": 25,
+            "team": 60,
+            "customers": 15,
+            "founder": 65
+          },
+          "rawAfter": {
+            "cash": 24.5,
+            "team": 60,
+            "customers": 20,
+            "founder": 65
+          },
+          "change": {
+            "cash": -0.5,
+            "team": 0,
+            "customers": 5,
+            "founder": 0
+          },
+          "checkpoint": false,
+          "next": "INFLUENCER_02",
+          "cycle": 1
+        },
+        {
+          "card": "INFLUENCER_02",
+          "side": "right",
+          "label": "Maybe 10%?",
+          "before": {
+            "cash": 24.5,
+            "team": 60,
+            "customers": 20,
+            "founder": 65
+          },
+          "after": {
+            "cash": 24,
+            "team": 60,
+            "customers": 20,
+            "founder": 68
+          },
+          "rawBefore": {
+            "cash": 24.5,
+            "team": 60,
+            "customers": 20,
+            "founder": 65
+          },
+          "rawAfter": {
+            "cash": 24,
+            "team": 60,
+            "customers": 20,
+            "founder": 68
+          },
+          "change": {
+            "cash": -0.5,
+            "team": 0,
+            "customers": 0,
+            "founder": 3
+          },
+          "checkpoint": false,
+          "next": "INFLUENCER_02A",
+          "cycle": 1
+        },
+        {
+          "card": "INFLUENCER_02A",
+          "side": "right",
+          "label": "We need you in sales",
+          "before": {
+            "cash": 24,
+            "team": 60,
+            "customers": 20,
+            "founder": 68
+          },
+          "after": {
+            "cash": 23.5,
+            "team": 60,
+            "customers": 25,
+            "founder": 70
+          },
+          "rawBefore": {
+            "cash": 24,
+            "team": 60,
+            "customers": 20,
+            "founder": 68
+          },
+          "rawAfter": {
+            "cash": 23.5,
+            "team": 60,
+            "customers": 25,
+            "founder": 70
+          },
+          "change": {
+            "cash": -0.5,
+            "team": 0,
+            "customers": 5,
+            "founder": 2
+          },
+          "checkpoint": false,
+          "next": "INFLUENCER_03",
+          "cycle": 1
+        },
+        {
+          "card": "INFLUENCER_03",
+          "side": "right",
+          "label": "More capacity",
+          "before": {
+            "cash": 23.5,
+            "team": 60,
+            "customers": 25,
+            "founder": 70
+          },
+          "after": {
+            "cash": 13,
+            "team": 55,
+            "customers": 25,
+            "founder": 70
+          },
+          "rawBefore": {
+            "cash": 23.5,
+            "team": 60,
+            "customers": 25,
+            "founder": 70
+          },
+          "rawAfter": {
+            "cash": 13,
+            "team": 55,
+            "customers": 25,
+            "founder": 70
+          },
+          "change": {
+            "cash": -10.5,
+            "team": -5,
+            "customers": 0,
+            "founder": 0
+          },
+          "checkpoint": false,
+          "next": "INFLUENCER_04",
+          "cycle": 1
+        },
+        {
+          "card": "INFLUENCER_04",
+          "side": "left",
+          "label": "Have fun",
+          "before": {
+            "cash": 13,
+            "team": 55,
+            "customers": 25,
+            "founder": 70
+          },
+          "after": {
+            "cash": 12.5,
+            "team": 55,
+            "customers": 25,
+            "founder": 75
+          },
+          "rawBefore": {
+            "cash": 13,
+            "team": 55,
+            "customers": 25,
+            "founder": 70
+          },
+          "rawAfter": {
+            "cash": 12.5,
+            "team": 55,
+            "customers": 25,
+            "founder": 75
+          },
+          "change": {
+            "cash": -0.5,
+            "team": 0,
+            "customers": 0,
+            "founder": 5
+          },
+          "checkpoint": false,
+          "next": "INFLUENCER_06",
+          "cycle": 1
+        },
+        {
+          "card": "INFLUENCER_06",
+          "side": "right",
+          "label": "Cool. Forget the deal",
+          "before": {
+            "cash": 12.5,
+            "team": 55,
+            "customers": 25,
+            "founder": 75
+          },
+          "after": {
+            "cash": 12,
+            "team": 55,
+            "customers": 25,
+            "founder": 80
+          },
+          "rawBefore": {
+            "cash": 12.5,
+            "team": 55,
+            "customers": 25,
+            "founder": 75
+          },
+          "rawAfter": {
+            "cash": 12,
+            "team": 55,
+            "customers": 25,
+            "founder": 80
+          },
+          "change": {
+            "cash": -0.5,
+            "team": 0,
+            "customers": 0,
+            "founder": 5
+          },
+          "checkpoint": false,
+          "next": "INFLUENCER_08",
+          "cycle": 1
+        },
+        {
+          "card": "INFLUENCER_08",
+          "side": "right",
+          "label": "Double prices NOW!!",
+          "before": {
+            "cash": 12,
+            "team": 55,
+            "customers": 25,
+            "founder": 80
+          },
+          "after": {
+            "cash": 41.5,
+            "team": 47,
+            "customers": 40,
+            "founder": 100
+          },
+          "rawBefore": {
+            "cash": 12,
+            "team": 55,
+            "customers": 25,
+            "founder": 80
+          },
+          "rawAfter": {
+            "cash": 41.5,
+            "team": 47,
+            "customers": 40,
+            "founder": 100
+          },
+          "change": {
+            "cash": 29.5,
+            "team": -8,
+            "customers": 15,
+            "founder": 20
+          },
+          "checkpoint": false,
+          "next": "INFLUENCER_OUTCOME_6",
+          "cycle": 1
+        },
+        {
+          "card": "INFLUENCER_OUTCOME_6",
+          "side": "left",
+          "label": "Get lost",
+          "before": {
+            "cash": 41.5,
+            "team": 47,
+            "customers": 40,
+            "founder": 100
+          },
+          "after": {
+            "cash": 41,
+            "team": 47,
+            "customers": 40,
+            "founder": 100
+          },
+          "rawBefore": {
+            "cash": 41.5,
+            "team": 47,
+            "customers": 40,
+            "founder": 100
+          },
+          "rawAfter": {
+            "cash": 41,
+            "team": 47,
+            "customers": 40,
+            "founder": 100
+          },
+          "change": {
+            "cash": -0.5,
+            "team": 0,
+            "customers": 0,
+            "founder": 0
+          },
+          "checkpoint": true,
+          "next": "INFLUENCER_OUTCOME_6",
+          "cycle": 1
+        }
+      ]
+    },
     "team_high": {
       "seed": 147,
       "order": [
@@ -1671,7 +1672,7 @@
         {
           "card": "LIVE_AGENT_03",
           "side": "left",
-          "label": "Bro, you feel me…",
+          "label": "Вro, you feel me",
           "before": {
             "cash": 24,
             "team": 70,
@@ -1709,7 +1710,7 @@
         {
           "card": "LIVE_AGENT_04",
           "side": "left",
-          "label": "Go on…",
+          "label": "Go on",
           "before": {
             "cash": 23.5,
             "team": 70,
@@ -1861,7 +1862,7 @@
         {
           "card": "LIVE_AGENT_07",
           "side": "left",
-          "label": "Just AI humor",
+          "label": "Just AI humor!",
           "before": {
             "cash": 21.5,
             "team": 75,
@@ -1899,7 +1900,7 @@
         {
           "card": "LIVE_AGENT_07B",
           "side": "right",
-          "label": "I'm not a KILLER",
+          "label": "I'm not a killer!",
           "before": {
             "cash": 21,
             "team": 75,
@@ -2114,7 +2115,7 @@
         {
           "card": "LIVE_AGENT_03",
           "side": "right",
-          "label": "Kinda creepy..",
+          "label": "Kinda creepy",
           "before": {
             "cash": 24,
             "team": 60,
@@ -2304,7 +2305,7 @@
         {
           "card": "LIVE_AGENT_07",
           "side": "right",
-          "label": "Replace Legal too",
+          "label": "Replace Legal too!",
           "before": {
             "cash": 21.5,
             "team": 50,

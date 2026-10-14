@@ -87,7 +87,8 @@
   const presentedOutcomes = new WeakSet();
   const lossPresentations = new WeakMap();
   const winPresentations = new WeakMap();
-  // Presentation-only ledger survives Back snapshots; a new attempt/cycle can celebrate again.
+  const finishedRuns = new WeakSet();
+  // Presentation-only ledger survives Back snapshots; a new attempt can celebrate again.
   const celebratedWins = new Set();
   let cancelWinConfetti = () => {};
   const resourceLossCards = Object.freeze({ cash_low: 'DOC_LOSS_1', team_low: 'DOC_LOSS_2',
@@ -95,7 +96,7 @@
   function resourceLossCard() {
     return app.state?.gameOver && window.MISTAKERY_LOSS_PREVIEW.cards.find(card => card.id === resourceLossCards[app.state.endingId]);
   }
-  function isLossCard() { return lossPreviewEnabled || Boolean(resourceLossCard()); }
+  function isLossCard() { return lossPreviewEnabled || (!finishedRuns.has(app.state) && Boolean(resourceLossCard())); }
 
   let choiceUnlockTimer = null;
   let cardTypingTimer = null;
@@ -564,6 +565,7 @@
     app.view = view;
     const phone = $('[data-game]');
     delete phone.dataset.outcome;
+    delete phone.dataset.runSummary;
     phone.classList.remove('is-outcome-entering');
     $('[data-ending-summary]').hidden = true;
     phone.dataset.view = view;
@@ -585,6 +587,7 @@
       state: structuredClone(app.state),
       lossPresentation: structuredClone(lossPresentations.get(app.state) || null),
       winPresentation: structuredClone(winPresentations.get(app.state) || null),
+      finished: finishedRuns.has(app.state),
       runStartState: structuredClone(app.runStartState),
       view: app.view,
       noteIndex: app.noteIndex,
@@ -611,11 +614,12 @@
     sound.stop();
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
-    const { scrollTop, lossPresentation, winPresentation, soundPlayed, ...saved } = testHistory.pop();
+    const { scrollTop, lossPresentation, winPresentation, finished, soundPlayed, ...saved } = testHistory.pop();
     Object.assign(app, structuredClone(saved), { locked: false });
     soundEvents.set(app.state, new Set(soundPlayed));
     if (lossPresentation) lossPresentations.set(app.state, structuredClone(lossPresentation));
     if (winPresentation) winPresentations.set(app.state, structuredClone(winPresentation));
+    if (finished) finishedRuns.add(app.state);
     // Restored outcomes retain their styling but never replay their entrance.
     presentedOutcomes.add(app.state);
     clearPreview();
@@ -1394,7 +1398,72 @@
       textRu: useFallback ? fallback.textRu : ending.reactionRu };
   }
 
+  function finishSession() {
+    if (!app.state.gameOver || finishedRuns.has(app.state)) return;
+    recordTestStep();
+    sound.stop();
+    finishedRuns.add(app.state);
+    renderRunSummary();
+    // A double tap on Finish must not hit the replacement Play again button.
+    app.locked = true;
+    choiceUnlockTimer = window.setTimeout(() => { app.locked = false; }, 280);
+    $('[data-chat]').focus({ preventScroll: true });
+  }
+
+  function renderRunSummary(feedback = null) {
+    const state = app.state;
+    const complete = state.endingId === 'run_complete';
+    const finished = finishedRuns.has(state);
+    const ending = complete ? null : app.deck.endings[state.endingId];
+    window.clearTimeout(choiceUnlockTimer);
+    app.locked = false;
+    app.cardDelivery = null;
+    setView('ended', 'real', feedback);
+    renderResources(state.resources, feedback);
+    clearPreview();
+    setSceneMode('personal');
+    hideIrlLocation();
+    setReplyHint(false);
+    setCardId('RUN_SUMMARY');
+    renderPersonalCard({ id: 'RUN_SUMMARY', source: '@b2buddy',
+      text: finished ? 'Thanks for playing. This run is over. You can close the game or start a fresh attempt.'
+        : 'Three stories. One company still standing. That’s this run wrapped. Ready to try a different route?' });
+    $('[data-chat]').querySelectorAll('.is-pop').forEach(node => node.classList.remove('is-pop'));
+    setThread('@b2buddy', 'Run complete');
+    const phone = $('[data-game]');
+    phone.dataset.runSummary = '';
+    phone.dataset.outcome = complete ? 'complete' : 'failure';
+    $('[data-ending-summary] small').textContent = complete ? 'END OF RUN' : 'GAME OVER · YOU LOST';
+    $('[data-ending-title]').textContent = complete ? 'Run complete' : ending.title;
+    $('[data-ending-cause]').textContent = complete
+      ? 'All three stories are finished. Your company is still here.' : ending.cause;
+    $('[data-ending-summary]').hidden = false;
+    const names = { live_agent: 'Live Agent', influencer: 'Influencer', padel: 'Padel' };
+    const results = new Map(state.history.map(step => engine.cardById(app.deck, step.cardId))
+      .filter(card => card?.outcomeTone).map(card => [card.plot, card]));
+    const current = engine.cardById(app.deck, state.currentCardId);
+    if (current?.outcomeTone) results.set(current.plot, current);
+    const panel = document.createElement('section');
+    panel.className = 'run-results'; panel.setAttribute('aria-label', 'Your run');
+    const decisions = state.history.length;
+    panel.innerHTML = `<p class="run-results__meta">${state.route.completed.length} / ${state.route.order.length} stories finished · ${decisions} ${decisions === 1 ? 'decision' : 'decisions'}</p>`
+      + state.route.order.map(plot => {
+        const result = results.get(plot);
+        const label = result ? result.outcomeTone === 'success' ? 'Success' : 'Setback'
+          : plot === state.activeArc ? 'Interrupted' : 'Not reached';
+        return `<div class="run-results__row" data-run-result><span>${names[plot]}</span><b>${label}</b></div>`;
+      }).join('');
+    $('[data-chat]').append(panel);
+    setChoices(finished ? ['Play again'] : ['Finish', 'Play again'], side => {
+      if (app.locked) return;
+      if (finished || side === 'right') restartRun({ skipSaved: true });
+      else finishSession();
+    });
+    $('[data-chat]').scrollTop = 0;
+  }
+
   function renderEnding(feedback = null) {
+    if (app.state.endingId === 'run_complete' || finishedRuns.has(app.state)) return renderRunSummary(feedback);
     const lossCard = resourceLossCard();
     if (lossCard) return renderLossCard(lossCard, feedback);
     soundOnce('ending-alert', 'story-loss');
@@ -1411,6 +1480,7 @@
     renderPersonalCard(card);
     setThread(card.source, 'Game over');
     $('[data-game]').dataset.outcome = 'failure';
+    $('[data-ending-summary] small').textContent = 'GAME OVER · YOU LOST';
     $('[data-ending-title]').textContent = ending.title;
     $('[data-ending-cause]').textContent = ending.cause;
     $('[data-ending-summary]').hidden = false;
@@ -1418,7 +1488,11 @@
       const key = app.deck.endings[id].resource;
       $(`[data-resource="${key}"]`).classList.add('is-fatal');
     }
-    setChoices(['Start again'], () => { if (!app.locked) restartRun(); });
+    setChoices(['Finish', 'Play again'], side => {
+      if (app.locked) return;
+      if (side === 'right') restartRun({ skipSaved: true });
+      else finishSession();
+    });
     $('[data-chat]').scrollTop = 0;
   }
 
@@ -1831,7 +1905,7 @@
     app.state = resolved || route.resolveChoice(app.deck, app.state, side,
       directStoryTest ? { outcomeRng: Math.random } : {}).state;
     const feedback = app.state.history.at(-1);
-    if (card.outcomeTone === 'success' && card.winFeedback && !app.state.gameOver) {
+    if (card.outcomeTone === 'success' && card.winFeedback && (!app.state.gameOver || app.state.endingId === 'run_complete')) {
       // Route settlement/draw has already happened once. Hold presentation only:
       // no next-card typing, incoming sound, scrolling or gameplay work behind the modal.
       winPresentations.set(app.state, { pending: true, cardId: card.id, feedback, celebrationKey });
@@ -2031,9 +2105,10 @@
       dialog.close();
       $('[data-restart-run]').focus({ preventScroll: true });
     };
-    dialog.querySelectorAll('[data-finale-choice]').forEach(button => {
+    dialog.querySelectorAll('[data-finale-choice]').forEach((button, index) => {
       button.addEventListener('click', () => {
         if (lossPreviewEnabled) dismiss();
+        else if (index === 0) finishSession();
         else restartRun({ skipSaved: true });
         sound.play('send');
       });
@@ -2113,7 +2188,7 @@
   function showWinFeedback() {
     const state = app.state;
     const presentation = winPresentations.get(state);
-    if (!presentation?.pending || state.gameOver) return;
+    if (!presentation?.pending || (state.gameOver && state.endingId !== 'run_complete')) return;
     if ($('[data-win-finale]')?.open) return;
     renderWinFeedbackBackground(presentation);
     const feedback = engine.cardById(app.deck, presentation.cardId).winFeedback;
@@ -2227,9 +2302,12 @@
     if (app.view === 'ended') {
       const ending = app.deck.endings[app.state.endingId];
       $('[data-details-id]').textContent = app.state.endingId;
-      add(body, 'h3', 'ИГРА ОКОНЧЕНА — ТЫ ПРОИГРАЛ');
-      add(body, 'p', ending.causeRu);
-      add(body, 'div', ending.reactionRu ? endingReaction().textRu : translation.text, 'test-details__translation');
+      const complete = app.state.endingId === 'run_complete';
+      add(body, 'h3', complete ? 'ПОПЫТКА ЗАВЕРШЕНА' : 'ИГРА ОКОНЧЕНА — ТЫ ПРОИГРАЛ');
+      add(body, 'p', complete ? 'Все три сюжета завершены. Компания продолжает существовать. Это итог попытки, а не общая победа.' : ending.causeRu);
+      add(body, 'div', complete
+        ? 'Finish завершает игру. Play again начинает новую попытку с чистыми ресурсами и другим первым сюжетом.'
+        : ending.reactionRu ? endingReaction().textRu : translation.text, 'test-details__translation');
       const causes = app.state.route.ending.causes;
       if (causes.length > 1) add(body, 'p', 'Также: ' + causes.slice(1).map(id => app.deck.endings[id].causeRu).join(' '));
       add(body, 'p', 'Баланс в конце эпизода: ' + engine.RESOURCE_KEYS.map(key =>

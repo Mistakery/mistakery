@@ -73,7 +73,7 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
         if (id === 'judgment_day') {
           assert.equal(await page.locator('[data-card-id]').innerText(), 'LIVE_AGENT_OUTCOME_2');
           assert.match(await page.locator('[data-ending-summary]').innerText(), /GAME OVER · YOU LOST/);
-          assert.equal(await page.locator('[data-choice]').innerText(), 'Start again');
+          assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Finish', 'Play again']);
           assert.equal(await page.locator('[data-loss-flash], [data-loss-finale]').count(), 0);
         } else {
         const cardId = `DOC_LOSS_${deck.meta.route.resourceEndings.indexOf(id) + 1}`;
@@ -101,7 +101,7 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
           assert.equal(await page.locator('[data-loss-finale][open]').count(), 1);
           assert.equal(await page.locator('[data-loss-finale]').getAttribute('data-card'), cardId);
           assert.equal(await page.locator('.loss-finale .message p').count(), 4);
-          await page.locator('[data-finale-choice]').nth(side === 'left' ? 0 : 1).click();
+          await page.locator('[data-finale-choice]').nth(1).click();
           const restarted = await snapshot(page);
           assert.equal(await page.evaluate(() => MistakeryApp.view), 'playing');
           assert.equal(restarted.gameOver, false);
@@ -145,8 +145,8 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
         await completeFounderSend(page, true);
         assert.deepEqual(await snapshot(page), ended);
         await page.clock.runFor(1000);
-        await page.locator(id === 'judgment_day' ? '[data-choice]' : '[data-restart-run]').click();
-        assert.equal(await page.evaluate(() => MistakeryApp.view), 'saved');
+        await page.locator(id === 'judgment_day' ? '[data-choice="right"]' : '[data-restart-run]').click();
+        assert.equal(await page.evaluate(() => MistakeryApp.view), id === 'judgment_day' ? 'playing' : 'saved');
         assert.equal(await page.locator('[data-loss-flash], [data-loss-finale], [data-loss-preview]').count(), 0);
         const next = await snapshot(page);
         assert.notEqual(String(next.seed), String(initial.seed));

@@ -143,11 +143,13 @@ test('overflow within a linked episode is accounted for before a high-edge settl
   assert.equal(s.route.ending.rawResources.team, 103);
 });
 
-test('third plot settles before the route starts a new cycle', () => {
+test('resource defeat takes priority over third-plot completion', () => {
   const d = fixture(); const s = at(d, 'TEST_OUTCOME', { ...safe, cash: .5 });
   s.route.order = ['padel', 'influencer', 'live_agent']; s.route.completed = ['padel', 'influencer'];
   const next = answer(d, s);
   assert.equal(next.gameOver, true); assert.equal(next.route.cycle, 1);
+  assert.equal(next.endingId, 'cash_low');
+  assert.equal(next.win, false);
   assert.deepEqual(next.route.completed, ['padel', 'influencer', 'live_agent']);
 });
 

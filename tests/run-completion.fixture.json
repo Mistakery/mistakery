@@ -1,0 +1,268 @@
+{
+  "other": {
+    "seed": 0,
+    "steps": [
+      {
+        "card": "LIVE_AGENT_01",
+        "side": "left"
+      },
+      {
+        "card": "LIVE_AGENT_02",
+        "side": "left"
+      },
+      {
+        "card": "LIVE_AGENT_03",
+        "side": "right"
+      },
+      {
+        "card": "LIVE_AGENT_04",
+        "side": "right"
+      },
+      {
+        "card": "LIVE_AGENT_04B",
+        "side": "left"
+      },
+      {
+        "card": "LIVE_AGENT_05",
+        "side": "left"
+      },
+      {
+        "card": "LIVE_AGENT_06",
+        "side": "right"
+      },
+      {
+        "card": "LIVE_AGENT_07",
+        "side": "right"
+      },
+      {
+        "card": "LIVE_AGENT_07B",
+        "side": "left"
+      },
+      {
+        "card": "LIVE_AGENT_08",
+        "side": "right"
+      },
+      {
+        "card": "LIVE_AGENT_OUTCOME_3",
+        "side": "left"
+      },
+      {
+        "card": "FILL_DOMAIN_1",
+        "side": "left"
+      },
+      {
+        "card": "FILL_FRIDGE",
+        "side": "right"
+      },
+      {
+        "card": "FILL_MOM_FLYERS",
+        "side": "right"
+      },
+      {
+        "card": "OPEN_BOSS",
+        "side": "left"
+      },
+      {
+        "card": "OPEN_DEV",
+        "side": "right"
+      },
+      {
+        "card": "PADEL_INVITE",
+        "side": "right"
+      },
+      {
+        "card": "PADEL_OUTCOME_0",
+        "side": "left"
+      },
+      {
+        "card": "FILL_COMA_1",
+        "side": "right"
+      },
+      {
+        "card": "FILL_COMA_2B",
+        "side": "right"
+      },
+      {
+        "card": "FILL_BLACK_SQUARE",
+        "side": "left"
+      },
+      {
+        "card": "FILL_MANTRA",
+        "side": "left"
+      },
+      {
+        "card": "INFLUENCER_01",
+        "side": "left"
+      },
+      {
+        "card": "INFLUENCER_02",
+        "side": "left"
+      },
+      {
+        "card": "INFLUENCER_03",
+        "side": "left"
+      },
+      {
+        "card": "INFLUENCER_04",
+        "side": "right"
+      },
+      {
+        "card": "INFLUENCER_05",
+        "side": "right"
+      },
+      {
+        "card": "INFLUENCER_06",
+        "side": "left"
+      },
+      {
+        "card": "INFLUENCER_07",
+        "side": "left"
+      },
+      {
+        "card": "INFLUENCER_OUTCOME_3",
+        "side": "right"
+      }
+    ]
+  },
+  "success": {
+    "seed": 130,
+    "steps": [
+      {
+        "card": "PADEL_INVITE",
+        "side": "left"
+      },
+      {
+        "card": "DREAM_TEAM",
+        "side": "left"
+      },
+      {
+        "card": "IRL_PADEL_01",
+        "side": "right"
+      },
+      {
+        "card": "IRL_PADEL_03B",
+        "side": "right"
+      },
+      {
+        "card": "IRL_PADEL_04",
+        "side": "right"
+      },
+      {
+        "card": "IRL_PADEL_05",
+        "side": "right"
+      },
+      {
+        "card": "PADEL_OUTCOME_7",
+        "side": "right"
+      },
+      {
+        "card": "FILL_MOM_CALL_1",
+        "side": "right"
+      },
+      {
+        "card": "FILL_FRIDGE",
+        "side": "left"
+      },
+      {
+        "card": "OPEN_INVESTOR",
+        "side": "left"
+      },
+      {
+        "card": "OPEN_DEV",
+        "side": "left"
+      },
+      {
+        "card": "INFLUENCER_01",
+        "side": "left"
+      },
+      {
+        "card": "INFLUENCER_02",
+        "side": "right"
+      },
+      {
+        "card": "INFLUENCER_02A",
+        "side": "right"
+      },
+      {
+        "card": "INFLUENCER_03",
+        "side": "right"
+      },
+      {
+        "card": "INFLUENCER_04",
+        "side": "right"
+      },
+      {
+        "card": "INFLUENCER_05",
+        "side": "right"
+      },
+      {
+        "card": "INFLUENCER_06",
+        "side": "left"
+      },
+      {
+        "card": "INFLUENCER_07",
+        "side": "left"
+      },
+      {
+        "card": "INFLUENCER_OUTCOME_2",
+        "side": "right"
+      },
+      {
+        "card": "FILL_DOMAIN_1",
+        "side": "left"
+      },
+      {
+        "card": "OPEN_BOSS",
+        "side": "left"
+      },
+      {
+        "card": "FILL_THERAPY",
+        "side": "left"
+      },
+      {
+        "card": "FILL_MOM_FLYERS",
+        "side": "right"
+      },
+      {
+        "card": "LIVE_AGENT_01",
+        "side": "left"
+      },
+      {
+        "card": "LIVE_AGENT_02",
+        "side": "left"
+      },
+      {
+        "card": "LIVE_AGENT_03",
+        "side": "left"
+      },
+      {
+        "card": "LIVE_AGENT_04",
+        "side": "left"
+      },
+      {
+        "card": "LIVE_AGENT_04B",
+        "side": "right"
+      },
+      {
+        "card": "LIVE_AGENT_05",
+        "side": "left"
+      },
+      {
+        "card": "LIVE_AGENT_06",
+        "side": "left"
+      },
+      {
+        "card": "LIVE_AGENT_07",
+        "side": "left"
+      },
+      {
+        "card": "LIVE_AGENT_07B",
+        "side": "right"
+      },
+      {
+        "card": "LIVE_AGENT_OUTCOME_1",
+        "side": "right"
+      }
+    ]
+  }
+}

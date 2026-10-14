@@ -62,7 +62,7 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
         const initial = await snapshot(page);
         await click(page); await click(page);
         let count = 0;
-        while ((await snapshot(page)).route.cycle === 1 && count++ < 30) {
+        while (!(await snapshot(page)).gameOver && count++ < 30) {
           const before = await snapshot(page);
           const c = deck.cards.find(c => c.id === before.currentCardId);
           const side = c.plot && !c.outcomeTone ? 'right' : count % 2 ? 'right' : 'left';
@@ -76,15 +76,16 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
           }
         }
         const end = await snapshot(page);
-        assert.equal(end.gameOver, false);
-        assert.equal(end.route.cycle, 2);
-        assert.equal(await page.locator('.typing-bubble').count(), 1, 'new cycle replays message delivery');
-        assert.equal(await page.locator('[data-choice="left"]').isDisabled(), true);
-        assert.deepEqual(end.route.lastCycle.completed, initial.route.order);
-        assert.equal(end.route.lastCycle.gaps.length, 2);
-        assert.ok(end.route.lastCycle.gaps.every(g => g.played.length === g.target && [4,5].includes(g.target)));
-        assert.equal(new Set(end.route.lastCycle.fillers).size, end.route.lastCycle.fillers.length);
-        assert.equal(await page.locator('[data-card-id]').textContent(), deck.meta.route.plots[end.route.order[0]]);
+        assert.equal(end.gameOver, true);
+        assert.equal(end.endingId, 'run_complete');
+        assert.equal(end.route.cycle, 1);
+        assert.equal(await page.locator('.typing-bubble').count(), 0, 'no next story delivery behind the summary');
+        assert.equal(await page.locator('[data-choice="left"]').isDisabled(), false);
+        assert.deepEqual(end.route.completed, initial.route.order);
+        assert.equal(end.route.gaps.length, 2);
+        assert.ok(end.route.gaps.every(g => g.played.length === g.target && [4,5].includes(g.target)));
+        assert.equal(new Set(end.fillerCards).size, end.fillerCards.length);
+        assert.equal(await page.locator('[data-card-id]').textContent(), 'RUN_SUMMARY');
         await page.locator('[data-test-restart]').click();
         assert.equal(await page.locator('[data-card-id]').textContent(), 'SAVED_01_PLAN');
         assert.deepEqual(await snapshot(page), initial);

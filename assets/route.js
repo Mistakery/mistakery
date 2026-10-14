@@ -129,30 +129,6 @@
     // If future content gates all links, preserve pacing using only legal singles.
     pickFiller(deck, state, fillerPool(deck, state, 'entry').length ? 'entry' : 'single');
   }
-  function beginCycle(deck, state) {
-    const route = state.route;
-    const previousPlot = route.completed.at(-1);
-    route.lastCycle = { order: [...route.order], completed: [...route.completed],
-      gaps: structuredClone(route.gaps), fillers: [...state.fillerCards] };
-    route.cycle += 1;
-    route.cycleStart = state.history.length;
-    route.order = Object.keys(deck.meta.route.plots);
-    for (let i = route.order.length - 1; i > 0; i--) {
-      const j = Math.floor(random(state) * (i + 1));
-      [route.order[i], route.order[j]] = [route.order[j], route.order[i]];
-    }
-    // Don't reopen the plot the player has just finished at the cycle seam.
-    if (route.order[0] === previousPlot) {
-      const j = 1 + Math.floor(random(state) * (route.order.length - 1));
-      [route.order[0], route.order[j]] = [route.order[j], route.order[0]];
-    }
-    route.completed = [];
-    route.usedUnits = [];
-    route.gaps = [];
-    state.shown = [];
-    state.fillerCards = [];
-    openPlot(deck, state);
-  }
   function choicesFor(card, state) {
     if (!card.contextualChoices) return card.choices;
     const previous = state.route.influencerPreviousCardId;
@@ -286,7 +262,7 @@
       state.route.padelCeoScore = 0;
       state.route.influencerPreviousCardId = null;
       if (settleEpisode(deck, state)) return { state, deltas: result.deltas };
-      if (state.route.completed.length === state.route.order.length) beginCycle(deck, state);
+      if (state.route.completed.length === state.route.order.length) finishRun(state, 'run_complete');
       else beginGap(deck, state);
     } else {
       if (!target || target.plot !== card.plot) throw new Error(`Plot escaped its route: ${card.id} → ${next}`);

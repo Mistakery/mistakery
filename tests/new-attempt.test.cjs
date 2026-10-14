@@ -11,7 +11,7 @@ function finish(id) {
   return state;
 }
 
-test('new attempts change seed and opening plot, including after several cycles', () => {
+test('new attempts change seed and opening plot, regardless of the current plot order', () => {
   assert.equal(typeof route.nextRun, 'function');
   const starts = new Set();
   let state = route.startRun(deck, { seed: 681 });
@@ -25,8 +25,8 @@ test('new attempts change seed and opening plot, including after several cycles'
     assert.deepEqual(state.route.order.slice().sort(), Object.keys(deck.meta.route.plots).sort());
     assert.equal(state.currentCardId, deck.meta.route.plots[state.route.order[0]]);
     starts.add(state.route.initialPlot);
-    // A later prototype cycle must not erase which plot opened this attempt.
-    state.route.order.reverse(); state.route.cycle = 3;
+    // Reordering cannot erase which plot originally opened this attempt.
+    state.route.order.reverse();
   }
   assert.equal(starts.size, 3);
 });

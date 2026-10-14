@@ -92,7 +92,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
           return last.getBoundingClientRect().bottom <= c.getBoundingClientRect().bottom + 1;
         }), 'final message remains reachable at the bottom');
         assert.equal(await page.evaluate(() => JSON.stringify(MistakeryApp.state)), state);
-        assert.equal(await page.locator('[data-choice]').innerText(), 'Start again');
+        assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Finish', 'Play again']);
       } finally { await browser.close(); }
     });
   }
