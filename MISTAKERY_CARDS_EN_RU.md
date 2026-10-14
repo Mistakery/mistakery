@@ -1348,8 +1348,6 @@
 
 **EN**
 
-> @hype_queen<br>
-> Marketer’s pinned SORRY20 promo code in the hate-video comments, with viewers mocking the sales pitch<br>
 > @ai_evangelist<br>
 > Video analytics showing 2.6 million views and growing traffic from the B2BuyerSpyer review<br>
 > See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait<br>

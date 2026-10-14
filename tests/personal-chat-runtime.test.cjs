@@ -183,23 +183,20 @@ test('AI influencer cards preserve approved copy and graph with document resourc
   const promoOutcome = cards.INFLUENCER_OUTCOME_4;
   assert.equal(promoOutcome.mode, 'team');
   assert.equal(promoOutcome.source, 'dream_team');
-  assert.equal(promoOutcome.messages.length, 3);
-  assert.equal(promoOutcome.messages[0].source, '@hype_queen');
-  assert.equal(promoOutcome.messages[0].text, undefined);
-  assert.equal(promoOutcome.messages[0].image.src, 'assets/ai-influencer-promo-comments-v1.webp');
-  assert.deepEqual(promoOutcome.messages.slice(1).map(message => message.source), ['@ai_evangelist', '@ai_evangelist']);
-  assert.deepEqual(promoOutcome.messages.slice(1).map(message => message.text), [
+  assert.equal(promoOutcome.messages.length, 2);
+  assert.deepEqual(promoOutcome.messages.map(message => message.source), ['@ai_evangelist', '@ai_evangelist']);
+  assert.deepEqual(promoOutcome.messages.map(message => message.text), [
     "See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait",
     "Let's set up my 20% 💸",
   ]);
-  assert.deepEqual(promoOutcome.messages[1].image, canonicalDeck.images.influencer_viral_analytics);
+  assert.deepEqual(promoOutcome.messages[0].image, canonicalDeck.images.influencer_viral_analytics);
   assert.deepEqual(canonicalDeck.images.influencer_viral_analytics, {
     src: 'assets/ai-influencer-viral-analytics.webp',
     alt: 'Video analytics showing 2.6 million views and growing traffic from the B2BuyerSpyer review',
     width: 1000,
     height: 1000,
   });
-  assert.equal(cards.INFLUENCER_OUTCOME_6.text, promoOutcome.messages.slice(1).map(message => message.text).join('\n\n'));
+  assert.equal(cards.INFLUENCER_OUTCOME_6.text, promoOutcome.messages.map(message => message.text).join('\n\n'));
 
   for (const id of ids) {
     const expected = influencerEffects[id] || [{}, {}];

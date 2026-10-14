@@ -761,7 +761,7 @@
     },
     {
       "id": "INFLUENCER_OUTCOME_4",
-      "field": "messages.2.text",
+      "field": "messages.1.text",
       "emoji": [
         "💸"
       ]

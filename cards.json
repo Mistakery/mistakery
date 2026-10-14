@@ -2076,17 +2076,6 @@
       "outcomeTone": "success",
       "messages": [
         {
-          "source": "@hype_queen",
-          "direction": "incoming",
-          "avatar": "HQ",
-          "image": {
-            "src": "assets/ai-influencer-promo-comments-v1.webp",
-            "alt": "Marketer’s pinned SORRY20 promo code in the hate-video comments, with viewers mocking the sales pitch",
-            "width": 722,
-            "height": 800
-          }
-        },
-        {
           "source": "@ai_evangelist",
           "direction": "incoming",
           "text": "See the numbers? I dropped that hate video on purpose to get you attention. In marketing it's called rage-bait",
