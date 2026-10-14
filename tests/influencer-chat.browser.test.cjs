@@ -22,7 +22,7 @@ async function seed(page, id, previous = 'INFLUENCER_04', target, side = 'left')
   await page.clock.runFor(10000);
 }
 for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
-  test(`${name}: comment promo outcome keeps the influencer's analytics without the removed comments screenshot`, async () => {
+  test(`${name}: promo comments screenshot belongs to the failure, while the returning influencer keeps his analytics`, async () => {
     const browser = await type.launch();
     try {
       const page = await open(browser);
@@ -39,7 +39,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.equal(await analytics.count(), 1);
       assert.match(await analytics.getAttribute('src'), /ai-influencer-viral-analytics\.webp/);
       assert.equal(await analytics.evaluate(n => n.complete && n.naturalWidth > 0 && n.decoding === 'sync'), true);
-      assert.equal(await page.evaluate(() => performance.getEntriesByType('resource').some(e => e.name.includes('promo-comments'))), false, 'removed screenshot is never preloaded');
+      assert.equal(await page.locator('[data-chat-current] img[src*="promo-failed-comments"]').count(), 0, 'comments do not belong in the successful outcome');
       assert.match(await page.locator('[data-chat-current][data-source="@ai_evangelist"]').last().innerText(), /20%\s+💸/);
       assert.deepEqual(await page.locator('[data-choice]').allInnerTexts(), ['Get lost', "Now it's 3%"]);
       const settled = await snapshot(page);
@@ -50,6 +50,25 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await page.clock.runFor(10000);
       assert.deepEqual(await snapshot(page), before);
       assert.equal(await analytics.count(), 0, 'Back removes outcome media');
+      await seed(page, 'INFLUENCER_08', null, 'INFLUENCER_OUTCOME_5');
+      const failureBefore = await snapshot(page);
+      await page.locator('[data-choice=left]').click();
+      await page.clock.runFor(10000);
+      assert.equal((await snapshot(page)).currentCardId, 'INFLUENCER_OUTCOME_5');
+      assert.deepEqual(await rows.evaluateAll(ns => ns.map(n => n.dataset.source)), ['@bigdeals', '@hype_queen']);
+      const comments = page.locator('[data-chat-current][data-source="@hype_queen"] .message-image');
+      assert.equal(await comments.count(), 1);
+      assert.match(await comments.getAttribute('src'), /ai-influencer-promo-failed-comments-v1\.webp/);
+      assert.equal(await comments.evaluate(n => n.complete && n.naturalWidth > 0 && n.decoding === 'sync'), true);
+      assert.match((await rows.first().innerText()).replaceAll('\u00a0', ' '), /still zero sales/);
+      assert.match((await rows.last().innerText()).replaceAll('\u00a0', ' '), /top comment:.*sell subscriptions under a scam expose/);
+      const failureSettled = await snapshot(page);
+      await page.evaluate(() => MistakeryApp.render());
+      assert.equal(await comments.count(), 1);
+      assert.deepEqual(await snapshot(page), failureSettled);
+      await page.locator('[data-test-back]').click(); await page.clock.runFor(10000);
+      assert.deepEqual(await snapshot(page), failureBefore);
+      assert.equal(await comments.count(), 0);
     } finally { await browser.close(); }
   });
   test(`${name}: accepted Influencer deal publishes the challenge in Dream Team`, async () => {

@@ -11,7 +11,7 @@ const imageCount = id => {
 
 for (const scenario of [
   { label: 'Live Agent', prefix: '/assets/live-agent-', cards: ['LIVE_AGENT_04', 'LIVE_AGENT_07', 'LIVE_AGENT_OUTCOME_2', 'LIVE_AGENT_OUTCOME_4'] },
-  { label: 'AI Influencer', prefix: '/assets/ai-influencer-', cards: ['INFLUENCER_06', 'INFLUENCER_07', 'INFLUENCER_08', 'INFLUENCER_OUTCOME_2', 'INFLUENCER_OUTCOME_3', 'INFLUENCER_OUTCOME_4'] },
+  { label: 'AI Influencer', prefix: '/assets/ai-influencer-', cards: ['INFLUENCER_06', 'INFLUENCER_07', 'INFLUENCER_08', 'INFLUENCER_OUTCOME_2', 'INFLUENCER_OUTCOME_3', 'INFLUENCER_OUTCOME_4', 'INFLUENCER_OUTCOME_5'] },
 ]) {
 test(`slow ${scenario.label} pictures are decoded before play and ready on the first card render`, { timeout: 15000 }, async () => {
   const browser = await chromium.launch({ headless: true });

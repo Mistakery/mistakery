@@ -1379,6 +1379,7 @@
 > @bigdeals<br>
 > still zero sales…<br>
 > @hype_queen<br>
+> Pinned SORRY20 promo code mocked in the scam-video comments after the promotion brings no sales<br>
 > and top comment: “Are they seriously trying to sell subscriptions under a scam expose? 💀”
 
 **RU**

@@ -1,6 +1,6 @@
 # Supplied card attachments — 2026-10-14
 
-Four supplied images remain as chat attachments, preserving their complete proportions. Existing startup image preparation handles fetch/decode and the stable unavailable-image fallback; no runtime or layout changes are needed.
+Five supplied images appear as chat attachments, preserving their complete proportions. Existing startup image preparation handles fetch/decode and the stable unavailable-image fallback; no runtime or layout changes are needed.
 
 | Card | Sender | Attachment | Dimensions | Bytes |
 |---|---|---|---|---|
@@ -8,18 +8,21 @@ Four supplied images remain as chat attachments, preserving their complete propo
 | FILL_FIGHT | @hustler | filler-founder-fight-v1.webp | 900×900 | 62690 |
 | FILL_FRIDGE | @b2buddy_bot | filler-food-canceled-v1.webp | 766×960 | 17674 |
 | FILL_MOM_CALL_2 | @unicorn_hunter | filler-mom-missed-calls-v1.webp | 680×960 | 36066 |
+| INFLUENCER_OUTCOME_5 | @hype_queen | ai-influencer-promo-failed-comments-v1.webp | 722×800 | 34700 |
 
-The four WebPs total 141634 bytes, reduced from 4896652 bytes of PNG inputs. Versioned names avoid stale image caches. PNG originals remain outside the release checkout. FILL_FRIDGE and FILL_FIGHT move their authored bubbleBreaks from child 0 to child 1 because the image now precedes the text; the original three and two text bubbles remain intact.
+The five WebPs total 176334 bytes, reduced from 5679474 bytes of PNG inputs. Versioned names avoid stale image caches. PNG originals remain outside the release checkout. FILL_FRIDGE and FILL_FIGHT move their authored bubbleBreaks from child 0 to child 1 because the image now precedes the text; the original three and two text bubbles remain intact.
 
-The owner removed the comments screenshot from INFLUENCER_OUTCOME_4. The outcome stays in Dream Team with the influencer's existing analytics image and two messages: claiming credit and demanding 20%. The image-only marketer message and its unused WebP are removed, so no empty bubble or startup download remains. Replies, outcome effects, win feedback and branch routing stay intact. Source-audit indices return to messages.0/.1 for the same independent approved lines and emoji.
+The comments screenshot belongs to the failed promotion, INFLUENCER_OUTCOME_5. Sales first reports “still zero sales…”; @hype_queen then sends the screenshot with her original comment about selling subscriptions under a scam expose. The image is attached to her existing second message, so authors, two-message structure, copy and source-audit indices are unchanged.
 
-Acceptance checks: supplied attachments decoded at startup; Chromium/WebKit at 320×650 and 390×844; no cropping or horizontal overflow; replies remain enabled; the influencer outcome has exactly one analytics image and no comments-screenshot request; choice/Back/rerender preserve resources and remove stale media; stalled-image fallback remains bounded. Rebuild both the offline deck and bilingual catalog, then run the full test suite before delivery.
+INFLUENCER_OUTCOME_4 is the successful promotion: the returning influencer shows only his existing analytics image and two messages claiming credit and demanding 20%. No comments screenshot or marketer message appears there. Replies, effects, win feedback and branch probabilities remain intact in both outcomes. The wrong original success placement must not be restored.
+
+Acceptance checks: attachments decoded at startup; Chromium/WebKit at 320×650 and 390×844; no cropping or horizontal overflow; replies remain enabled; success has one analytics image, failure has one comments screenshot from the marketer; choice/Back/rerender preserve resources and remove stale media; slow-image coverage includes OUTCOME_5; stalled-image fallback remains bounded. Rebuild both the offline deck and bilingual catalog, then run the full test suite before delivery.
 
 The personal-chat copy test checks the same two influencer messages and equivalent analytics asset. Its outcome-6 comparison still uses exactly those two lines; no mechanics assertions were relaxed.
 
-The five-image integration originally passed 299/299 before the owner's removal request. Fresh verification of the current outcome is recorded in PROJECT_STATUS.md; the old five-image gallery is historical.
+Current verification is recorded in PROJECT_STATUS.md and analysis/2026-10-14-promo-failure/. The old five-image gallery attached comments to the wrong success outcome; use the current failure screenshots.
 
-Final suite after comments-screenshot removal: `npm test -- --test-concurrency=6` passed 301/301 in 275.925s, with no failures/skips/cancellations. Chromium/WebKit removal checks pass, including the retained analytics, exact undo and zero requests for the removed asset. Visual QA passed four browser/viewport cases with one analytics image and no page errors.
+Final verification of the correct placement: full `npm test -- --test-concurrency=6` passed 301/301 in 270.166s with no failures/skips/cancellations. Focused branch/media/offline/source/runtime tests passed 35/35. Visual QA passed eight cases (success/failure × Chromium/WebKit ×320×650/390×844), with one prepared comments request, zero requests on card display and no page errors. Failure uses the marketer's screenshot; success uses only the influencer's analytics. Existing source copy, probabilities and effects remain intact.
 
 ## Investor's four-hour mantra
 

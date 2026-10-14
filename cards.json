@@ -2139,7 +2139,13 @@
           "direction": "incoming",
           "source": "@hype_queen",
           "avatar": "HQ",
-          "text": "and top comment: “Are they seriously trying to sell subscriptions under a scam expose? 💀”"
+          "text": "and top comment: “Are they seriously trying to sell subscriptions under a scam expose? 💀”",
+          "image": {
+            "src": "assets/ai-influencer-promo-failed-comments-v1.webp",
+            "alt": "Pinned SORRY20 promo code mocked in the scam-video comments after the promotion brings no sales",
+            "width": 722,
+            "height": 800
+          }
         }
       ],
       "choices": {
