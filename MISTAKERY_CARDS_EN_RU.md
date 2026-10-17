@@ -2296,3 +2296,33 @@ Founder reached 100. You deleted the product to save humanity.
 > ты удалил продукт ради спасения человечества<br>
 > закрываю тикет. и компанию.
 
+# 10. Founder profile — награда за три победы
+
+Только три различные победы одной попытки без ресурсного поражения. Reveal бесплатен; Finish сохраняет карточку, One more run начинает новую попытку.
+
+**EN — утверждённый текст; RU-перевод не утверждён**
+
+> Incredible work, Founder! 🚀<br>
+> Based on your decisions, I've created a highly personalized founder profile!<br>
+> Let's discover your true entrepreneurial potential!
+
+You're the real CEO!
+
+approved by @b2buddy • Mistakery Game
+
+## Founder yes — Chief Easy-yes Officer (CEO)
+
+> Your strongest argument is “Yes, of course.”
+
+## Founder flex — Chief Elastic Officer (CEO)
+
+> You don’t break under pressure — you just bend
+
+## Founder own — Chief Exceptions Officer (CEO)
+
+> You have principles! Until you don’t
+
+## Founder hard — Chief Ego Officer (CEO)
+
+> You’d rather crash the company than admit you’re wrong.
+

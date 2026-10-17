@@ -88,6 +88,7 @@
   const lossPresentations = new WeakMap();
   const winPresentations = new WeakMap();
   const finishedRuns = new WeakSet();
+  const revealedProfiles = new WeakSet();
   // Presentation-only ledger survives Back snapshots; a new attempt can celebrate again.
   const celebratedWins = new Set();
   let cancelWinConfetti = () => {};
@@ -540,6 +541,8 @@
       savedDeliveryTimer = null;
       app.savedDelivery = null;
     }
+    $('[data-founder-screen]')?.remove();
+    delete $('[data-game]').dataset.founderProfile;
     const winFinale = $('[data-win-finale]');
     cancelWinConfetti();
     // Remove first so its queued close event cannot resume a discarded view.
@@ -588,6 +591,7 @@
       lossPresentation: structuredClone(lossPresentations.get(app.state) || null),
       winPresentation: structuredClone(winPresentations.get(app.state) || null),
       finished: finishedRuns.has(app.state),
+      profileRevealed: revealedProfiles.has(app.state),
       runStartState: structuredClone(app.runStartState),
       view: app.view,
       noteIndex: app.noteIndex,
@@ -614,12 +618,13 @@
     sound.stop();
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
-    const { scrollTop, lossPresentation, winPresentation, finished, soundPlayed, ...saved } = testHistory.pop();
+    const { scrollTop, lossPresentation, winPresentation, finished, profileRevealed, soundPlayed, ...saved } = testHistory.pop();
     Object.assign(app, structuredClone(saved), { locked: false });
     soundEvents.set(app.state, new Set(soundPlayed));
     if (lossPresentation) lossPresentations.set(app.state, structuredClone(lossPresentation));
     if (winPresentation) winPresentations.set(app.state, structuredClone(winPresentation));
     if (finished) finishedRuns.add(app.state);
+    if (profileRevealed) revealedProfiles.add(app.state);
     // Restored outcomes retain their styling but never replay their entrance.
     presentedOutcomes.add(app.state);
     clearPreview();
@@ -1462,7 +1467,50 @@
     $('[data-chat]').scrollTop = 0;
   }
 
+  function renderFounderProfile(profile) {
+    const state = app.state, finished = finishedRuns.has(state);
+    window.clearTimeout(choiceUnlockTimer);
+    app.locked = false;
+    app.cardDelivery = null;
+    setView('ended');
+    clearPreview();
+    setReplyHint(false);
+    const copy = app.deck.meta.founderProfile;
+    const screen = document.createElement('section');
+    screen.className = 'founder-screen'; screen.dataset.founderScreen = '';
+    screen.setAttribute('aria-label', 'Your founder profile');
+    screen.innerHTML = `<section class="founder-card enter" data-profile="${profile.type}" role="button" tabindex="0" aria-label="${htmlAttribute(profile.title + '. ' + profile.line)} Replay shimmer.">
+      <header class="profile-heading"><p class="reveal-title">${htmlAttribute(copy.heading)}</p></header>
+      <div class="profile-result"><h2 class="founder-title" aria-label="${htmlAttribute(profile.title)}"><span>Chief</span><span class="type-core">${htmlAttribute(profile.core)}</span><span>Officer</span></h2><p class="type-line">${htmlAttribute(profile.line)}</p></div>
+      <footer class="card-issuer">${htmlAttribute(copy.issuer)}</footer></section>
+      <footer class="founder-actions"><button class="choice founder-finish" type="button" data-profile-finish ${finished ? 'disabled' : ''}>${finished ? 'Run finished' : 'Finish'}</button><button class="choice founder-replay" type="button" data-profile-replay>One more run</button></footer>`;
+    $('[data-game]').dataset.founderProfile = '';
+    $('[data-game]').append(screen);
+    screen.querySelector('[data-profile-finish]').addEventListener('click', event => {
+      if (app.state !== state || finishedRuns.has(state)) return;
+      recordTestStep(); sound.stop(); finishedRuns.add(state);
+      event.currentTarget.textContent = 'Run finished'; event.currentTarget.disabled = true;
+      screen.querySelector('.founder-card').focus({ preventScroll: true });
+    });
+    screen.querySelector('[data-profile-replay]').addEventListener('click', () => {
+      if (app.state === state) restartRun({ skipSaved: true });
+    });
+    screen.querySelector('.founder-card').focus({ preventScroll: true });
+  }
+
   function renderEnding(feedback = null) {
+    const profile = window.MistakeryFounderProfile.reward(app.deck, app.state);
+    if (profile) {
+      if (revealedProfiles.has(app.state)) return renderFounderProfile(profile);
+      // Reconstruct the pending invitation after a test Back or render, without
+      // advancing the route, spending cash, or rolling outcomes again.
+      if (!winPresentations.has(app.state)) {
+        const last = app.state.history.at(-1);
+        winPresentations.set(app.state, { pending: true, cardId: last.cardId, feedback: last,
+          celebrationKey: JSON.stringify([app.state.seed, app.state.route.cycle, last.cardId]) });
+      }
+      return showWinFeedback();
+    }
     if (app.state.endingId === 'run_complete' || finishedRuns.has(app.state)) return renderRunSummary(feedback);
     const lossCard = resourceLossCard();
     if (lossCard) return renderLossCard(lossCard, feedback);
@@ -2191,22 +2239,28 @@
     if (!presentation?.pending || (state.gameOver && state.endingId !== 'run_complete')) return;
     if ($('[data-win-finale]')?.open) return;
     renderWinFeedbackBackground(presentation);
-    const feedback = engine.cardById(app.deck, presentation.cardId).winFeedback;
+    const profile = window.MistakeryFounderProfile.reward(app.deck, state);
+    const feedback = profile ? { message: app.deck.meta.founderProfile.invitation, choices: [{ en: 'Reveal' }] }
+      : engine.cardById(app.deck, presentation.cardId).winFeedback;
     const source = sourceFor('@b2buddy');
     const dialog = document.createElement('dialog');
     dialog.className = 'loss-finale'; dialog.dataset.winFinale = ''; dialog.dataset.card = presentation.cardId;
+    if (profile) dialog.dataset.founderInvitation = '';
+    const message = profile ? feedback.message.split('\n').map(line => `<p>${lossFinaleText(line)}</p>`).join('')
+      : `<p class="loss-finale__opening"><span class="loss-finale__lead">${lossFinaleText(feedback.message)}</span></p>`;
     dialog.setAttribute('aria-labelledby', 'win-finale-sender');
     dialog.innerHTML = `<header class="loss-finale__head">
       <div class="avatar" aria-hidden="true">${characterAvatar(source)}</div>
       <div class="contact__text"><b id="win-finale-sender">${htmlAttribute(source.name)}</b><i>${htmlAttribute(source.role)}</i></div>
     </header>
     <div class="loss-finale__body" tabindex="0" autofocus aria-label="Message from ${htmlAttribute(source.name)}">
-      <div class="message"><p class="loss-finale__opening"><span class="loss-finale__lead">${lossFinaleText(feedback.message)}</span></p></div>
+      <div class="message">${message}</div>
     </div>
     <footer class="choices">${feedback.choices.map((choice, index) => `<button type="button" class="choice${index ? ' choice--right' : ''}" data-win-finale-choice>${htmlAttribute(choice.en)}</button>`).join('')}</footer>`;
     const resume = () => {
       if (app.state !== state || !dialog.isConnected || !presentation.pending) return;
       presentation.pending = false;
+      if (profile) revealedProfiles.add(state);
       cancelWinConfetti();
       sound.stop();
       dialog.remove();
@@ -2215,7 +2269,7 @@
       // not replay its meter pulse or resource-attention delay.
       renderCard();
       unlockAfterChoice();
-      $('[data-chat]').focus({ preventScroll: true });
+      if (!profile) $('[data-chat]').focus({ preventScroll: true });
     };
     dialog.querySelectorAll('[data-win-finale-choice]').forEach(button => button.addEventListener('click', resume));
     dialog.addEventListener('cancel', event => { event.preventDefault(); resume(); });

@@ -93,6 +93,33 @@
         "founder_low",
         "founder_high"
       ]
+    },
+    "founderProfile": {
+      "heading": "You're the real CEO!",
+      "issuer": "approved by @b2buddy • Mistakery Game",
+      "invitation": "Incredible work, Founder! 🚀\nBased on your decisions, I've created a highly personalized founder profile!\nLet's discover your true entrepreneurial potential!",
+      "types": {
+        "yes": {
+          "core": "Easy-yes",
+          "title": "Chief Easy-yes Officer (CEO)",
+          "line": "Your strongest argument is “Yes, of course.”"
+        },
+        "flex": {
+          "core": "Elastic",
+          "title": "Chief Elastic Officer (CEO)",
+          "line": "You don’t break under pressure — you just bend"
+        },
+        "own": {
+          "core": "Exceptions",
+          "title": "Chief Exceptions Officer (CEO)",
+          "line": "You have principles! Until you don’t"
+        },
+        "hard": {
+          "core": "Ego",
+          "title": "Chief Ego Officer (CEO)",
+          "line": "You’d rather crash the company than admit you’re wrong."
+        }
+      }
     }
   },
   "resources": {

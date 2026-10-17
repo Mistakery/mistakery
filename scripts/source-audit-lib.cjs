@@ -52,6 +52,9 @@ function mechanics(deck) {
     if(value && typeof value === 'object') return Object.fromEntries(Object.entries(value).filter(([k]) => !['label','lowLabel','highLabel','text','source','mode','messages','image','imageRef','placeholder','score','location','avatar','participants','preservePunctuation','italicLines','actor_action','player_decision','effect_reason','winFeedback','bubbleBreaks'].includes(k)).map(([k,v]) => [k,clean(v)]));
     return value;
   }
-  return {meta:deck.meta,initialResources:deck.initialResources,cards:deck.cards.map(clean),endings:deck.endings};
+  // Reward copy is presentation-only, like winFeedback above. Keep the route
+  // metadata and all existing resource/choice mechanics under the original hash.
+  const { founderProfile, ...meta } = deck.meta;
+  return {meta,initialResources:deck.initialResources,cards:deck.cards.map(clean),endings:deck.endings};
 }
 module.exports = { mapping, expected, get, set, mechanics, displayText, ownerOverrides };

@@ -189,4 +189,12 @@ for (const id of deck.meta.route.resourceEndings) {
     lines.push(`Если оригинальный бот недоступен, ту же концовку сообщает ${fallback.source}:`, '', quote(fallback.text.split('\n')), '', quote(fallback.textRu.split('\n')), '');
   }
 }
+const founder = deck.meta.founderProfile;
+lines.push('# 10. Founder profile — награда за три победы', '',
+  'Только три различные победы одной попытки без ресурсного поражения. Reveal бесплатен; Finish сохраняет карточку, One more run начинает новую попытку.', '',
+  '**EN — утверждённый текст; RU-перевод не утверждён**', '', quote(founder.invitation.split('\n')), '',
+  founder.heading, '', founder.issuer, '');
+for (const [id, profile] of Object.entries(founder.types)) {
+  lines.push(`## Founder ${id} — ${profile.title}`, '', quote([profile.line]), '');
+}
 fs.writeFileSync(path.join(root, 'MISTAKERY_CARDS_EN_RU.md'), `${lines.join('\n')}\n`);
