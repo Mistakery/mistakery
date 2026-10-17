@@ -1,12 +1,12 @@
-// Approved values from “2.0 Ветка падел”; refusal penalty occurs only on Card 1.
+// Owner-approved Padel values: refusal -15; time costs only the shared -0.5 per reply.
 exports.decisions = {
-  PADEL_INVITE: [{ cash: -1, customers: 3 }, { cash: -25 }],
-  DREAM_TEAM: [{ cash: -1 }, { cash: -1 }],
-  IRL_PADEL_01: [{ cash: -1, founder: -1 }, { cash: -1, founder: 3 }],
-  IRL_PADEL_03B: [{ cash: -1, founder: -3 }, { cash: -1, founder: 1 }],
-  IRL_PADEL_04: [{ cash: -1, founder: -3 }, { cash: -1, founder: 5 }],
-  IRL_PADEL_05: [{ cash: -1, founder: -4 }, { cash: -1, founder: 5 }],
-  IRL_PADEL_06: [{ cash: -1, founder: -6 }, { cash: -1, founder: 6 }],
+  PADEL_INVITE: [{ customers: 3 }, { cash: -15 }],
+  DREAM_TEAM: [{}, {}],
+  IRL_PADEL_01: [{ founder: -1 }, { founder: 3 }],
+  IRL_PADEL_03B: [{ founder: -3 }, { founder: 1 }],
+  IRL_PADEL_04: [{ founder: -3 }, { founder: 5 }],
+  IRL_PADEL_05: [{ founder: -4 }, { founder: 5 }],
+  IRL_PADEL_06: [{ founder: -6 }, { founder: 6 }],
 };
 exports.outcomes = {
   0: {},

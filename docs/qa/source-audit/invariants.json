@@ -1,0 +1,9 @@
+{
+  "mechanicsSha256": "50e83cd7af0bb9bbe5426b258af4d109c5069b035585cfd74b0b95e908564d95",
+  "files": {
+    "game.js": "4587f9034eb5e83e639c2a96e2bf21d4531511bc6c48234d5a025d94c245e466",
+    "assets/route.js": "4f41bcc5a6f6a284d0ed7437ee1060098bd79de085bbe775e0cfe4019d4eb1b4",
+    "assets/loss-preview-data.js": "a10508ba398a3e14070dd7f0026428a97c91bd904f09e418929b4c2c90be8bdc",
+    "assets/loss-finale-data.js": "1a459e659c5bffd08c8333aa8f52508f0daaf1c421813c44f4ebe5a4d2853b75"
+  }
+}

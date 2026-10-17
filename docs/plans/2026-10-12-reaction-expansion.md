@@ -1,0 +1,7 @@
+# Compact delayed reactions · 2026-10-12
+
+Owner rejected the36px empty area on newly delivered reacted messages. Preserve1000ms reading pause, authored emoji/counts, native325ms message entrance, no blinking, state/mechanics and floating contact. No commit/push/publication.
+
+Waiting row has display:none. At first reveal measure the affected message/history/typing/avatars once, expand final layout and follow its logical bottom. Disable browser scroll anchoring, since automatic anchoring and transformed scrollHeight otherwise fight the independent entrance/expansion. Compensate displacement using native translate animations composed with the original message transform/opacity. A temporary surface scales only the bubble background; text and avatars remain at unit scale. Use the existing576/48/1 spring samples. Count and second-pill growth leave layout unchanged. Cleanup settles pending rows, removes temporary surfaces and preserves existing hidden/reduced-motion/Back/rerender/history handling.
+
+Verification: compact footprint before1000ms, paused native entrance retained with initial expansion geometry continuous, background scale sampled across progress, real rAF DREAM_TEAM/INFLUENCER_08 at320/390 in both engines, full game suite and source review. First actual-frame attempt exposed32–36px scroll anchoring/visual-overflow jumps; logical bottom plus overflow-anchor:none is required, rather than reinstating the blank reserve or cancelling arrival animations.

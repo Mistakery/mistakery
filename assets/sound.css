@@ -1,0 +1,18 @@
+.sound-toggle {
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.sound-toggle:hover { background: rgba(66, 110, 153, .08); }
+.sound-toggle:focus-visible { outline: 2px solid #426e99; outline-offset: 2px; }
+.sound-toggle svg { width: 20px; height: 20px; }
+.sound-toggle[aria-pressed="true"] .sound-off,
+.sound-toggle[aria-pressed="false"] .sound-on { display: none; }
