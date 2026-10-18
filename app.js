@@ -547,6 +547,7 @@
   }
 
   let continuationResizeObserver;
+  let disposeFounderCard;
 
   function setView(view, shellStage = 'real', feedback = null) {
     if (view !== 'saved') {
@@ -556,6 +557,8 @@
     }
     $('[data-title-screen]')?.remove();
     $('[data-quit-dialog]')?.remove();
+    disposeFounderCard?.();
+    disposeFounderCard = null;
     $('[data-founder-screen]')?.remove();
     delete $('[data-game]').dataset.founderProfile;
     const winFinale = $('[data-win-finale]');
@@ -1493,13 +1496,18 @@
     const screen = document.createElement('section');
     screen.className = 'founder-screen'; screen.dataset.founderScreen = '';
     screen.setAttribute('aria-label', 'Your founder profile');
-    screen.innerHTML = `<section class="founder-card enter" data-profile="${profile.type}" role="button" tabindex="0" aria-label="${htmlAttribute(profile.title + '. ' + profile.line)} Replay shimmer.">
+    screen.innerHTML = `<section class="founder-card pearl-card" data-profile="${profile.type}" role="button" tabindex="0" aria-label="${htmlAttribute(profile.title + '. ' + profile.line)} Move pointer to tilt, or press Enter to replay the light.">
+      <div class="pearl-surface" aria-hidden="true"></div>
+      <div class="pearl-reflection" aria-hidden="true"></div>
+      <div class="pearl-grain" aria-hidden="true"></div>
+      <div class="pearl-rim" aria-hidden="true"></div>
       <header class="profile-heading"><p class="reveal-title">${htmlAttribute(copy.heading)}</p></header>
       <div class="profile-result"><h2 class="founder-title" aria-label="${htmlAttribute(profile.title)}"><span>Chief</span><span class="type-core">${htmlAttribute(profile.core)}</span><span>Officer</span></h2><p class="type-line">${htmlAttribute(profile.line)}</p></div>
       <footer class="card-issuer">${htmlAttribute(copy.issuer)}</footer></section>
-      <footer class="founder-actions"><button class="choice founder-finish" type="button" data-profile-finish>Back to 9–5</button><button class="choice founder-replay" type="button" data-profile-replay>New run</button></footer>`;
+      <footer class="founder-actions"><button class="choice founder-finish" type="button" data-profile-finish>Finish</button><button class="choice founder-replay" type="button" data-profile-replay>New run</button></footer>`;
     $('[data-game]').dataset.founderProfile = '';
     $('[data-game]').append(screen);
+    disposeFounderCard = window.MistakeryFounderCard.mount(screen.querySelector('.founder-card'));
     screen.querySelector('[data-profile-finish]').addEventListener('click', event => {
       if (app.state === state) requestExit(event);
     });
@@ -2335,8 +2343,14 @@
     if ($('[data-win-finale]')?.open) return;
     renderWinFeedbackBackground(presentation);
     const profile = window.MistakeryFounderProfile.reward(app.deck, state);
-    const feedback = profile ? { message: app.deck.meta.founderProfile.invitation, choices: [{ en: 'Reveal' }] }
+    const feedback = profile ? { message: app.deck.meta.founderProfile.invitation, choices: [{ en: 'Let’s go' }] }
       : engine.cardById(app.deck, presentation.cardId).winFeedback;
+    // Count distinct completed story victories, never choices or filler outcomes.
+    const results = new Map(state.history.map(step => engine.cardById(app.deck, step.cardId))
+      .filter(card => card?.outcomeTone && state.route.completed.includes(card.plot))
+      .map(card => [card.plot, card.outcomeTone]));
+    const wins = [...results.values()].filter(tone => tone === 'success').length;
+    const progress = `<div class="win-progress" role="group" aria-label="${wins} of 3 wins secured"><span class="win-progress__dots" aria-hidden="true">${[1, 2, 3].map(n => `<i class="win-progress__dot${n <= wins ? ' is-filled' : ''}${n === wins ? ' is-new' : ''}"></i>`).join('')}</span><span>${wins} of 3 wins secured</span></div>`;
     const source = sourceFor('@b2buddy');
     const dialog = document.createElement('dialog');
     dialog.className = 'loss-finale'; dialog.dataset.winFinale = ''; dialog.dataset.card = presentation.cardId;
@@ -2350,6 +2364,7 @@
     </header>
     <div class="loss-finale__body" tabindex="0" autofocus aria-label="Message from ${htmlAttribute(source.name)}">
       <div class="message">${message}</div>
+      ${progress}
     </div>
     <footer class="choices">${feedback.choices.map((choice, index) => `<button type="button" class="choice${index ? ' choice--right' : ''}" data-win-finale-choice>${htmlAttribute(choice.en)}</button>`).join('')}</footer>`;
     const resume = () => {

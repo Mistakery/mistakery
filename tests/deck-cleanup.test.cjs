@@ -31,7 +31,17 @@ test('production deck excludes isolated legacy cards and scheduler references', 
 test('every retained card, translation and founder reward remains exactly approved', () => {
   for (const card of deck.cards) assert.equal(hash(card), baseline.retainedCardSha256[card.id], card.id);
   assert.equal(hash(deck.testTranslations), baseline.translationsSha256);
-  assert.equal(hash(deck.meta.founderProfile), baseline.founderProfileSha256);
+  // PEARL / 02 approved copy changes; all other reward data retains the cleanup baseline.
+  const founder = structuredClone(deck.meta.founderProfile);
+  assert.equal(founder.issuer, 'approved by b2buddy • Mistakery Game');
+  assert.equal(founder.types.yes.line, 'Your strongest argument is “Yes, of course”');
+  assert.equal(founder.types.hard.line, 'You’d rather crash the company than admit you’re wrong');
+  assert.equal(founder.invitation, "You didn’t just succeed — you built a legacy! 🚀\nAnd to celebrate this milestone, I’ve created your highly personalized founder profile!\nShall we take a look?");
+  founder.invitation = "Incredible work, Founder! 🚀\nBased on your decisions, I've created a highly personalized founder profile!\nLet's discover your true entrepreneurial potential!";
+  founder.issuer = 'approved by @b2buddy • Mistakery Game';
+  founder.types.yes.line = 'Your strongest argument is “Yes, of course.”';
+  founder.types.hard.line = 'You’d rather crash the company than admit you’re wrong.';
+  assert.equal(hash(founder), baseline.founderProfileSha256);
 });
 
 test('real seeded production runs reach every retained card with all resource gates enabled', () => {

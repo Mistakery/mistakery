@@ -1930,17 +1930,17 @@ Founder reached 100. You deleted the product to save humanity.
 
 **EN — утверждённый текст; RU-перевод не утверждён**
 
-> Incredible work, Founder! 🚀<br>
-> Based on your decisions, I've created a highly personalized founder profile!<br>
-> Let's discover your true entrepreneurial potential!
+> You didn’t just succeed — you built a legacy! 🚀<br>
+> And to celebrate this milestone, I’ve created your highly personalized founder profile!<br>
+> Shall we take a look?
 
 You're the real CEO!
 
-approved by @b2buddy • Mistakery Game
+approved by b2buddy • Mistakery Game
 
 ## Founder yes — Chief Easy-yes Officer (CEO)
 
-> Your strongest argument is “Yes, of course.”
+> Your strongest argument is “Yes, of course”
 
 ## Founder flex — Chief Elastic Officer (CEO)
 
@@ -1952,5 +1952,5 @@ approved by @b2buddy • Mistakery Game
 
 ## Founder hard — Chief Ego Officer (CEO)
 
-> You’d rather crash the company than admit you’re wrong.
+> You’d rather crash the company than admit you’re wrong
 
