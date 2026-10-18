@@ -67,7 +67,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         await page.evaluate(() => MistakeryApp.render());
         assert.deepEqual(await snapshot(page), end, 'finish never starts or spends another run');
         assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
-        assert.equal(await page.locator('[data-title-play]').textContent(),'Play');
+        assert.equal((await page.locator('[data-title-play]').textContent()).trim(),'Tap to play');
         for (const viewport of [{ width: 320, height: 650 }, { width: 1280, height: 900 }]) {
           await page.setViewportSize(viewport);
           assert.equal(await page.evaluate(() => {
@@ -112,7 +112,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         await page.clock.runFor(60000);
         assert.deepEqual(await snapshot(page), end);
         assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
-        assert.equal(await page.locator('[data-title-play]').textContent(),'Play');
+        assert.equal((await page.locator('[data-title-play]').textContent()).trim(),'Tap to play');
         await playFromTitle(page);
         assert.equal((await snapshot(page)).gameOver, false);
         assert.equal(await page.evaluate(() => MistakeryApp.view), 'playing');

@@ -1979,19 +1979,19 @@
     $('[data-chat]').innerHTML = '<span class="sr-only" data-card-id>TITLE</span>';
     $('[data-choices]').replaceChildren();
     clearPreview();
-    const screen = document.createElement('section');
-    screen.className = 'title-screen'; screen.dataset.titleScreen = '';
-    screen.setAttribute('aria-label', 'Mistakery');
+    const screen = document.createElement('button');
+    screen.type = 'button';
+    screen.className = 'title-screen'; screen.dataset.titleScreen = ''; screen.dataset.titlePlay = '';
+    screen.setAttribute('aria-label', 'Mistakery — Tap to play');
     screen.innerHTML = `<img class="title-logo" src="assets/mistakery-logo.png" alt="Mistakery" width="2172" height="724" draggable="false">
-      <button type="button" class="choice title-play" data-title-play>Play</button>`;
+      <span class="title-prompt">Tap to play</span>`;
     $('[data-game]').append(screen);
-    const play = screen.querySelector('[data-title-play]');
     // The exit click must never pass through to Play, including rapid double taps.
     choiceUnlockTimer = window.setTimeout(() => { app.locked = false; }, 280);
-    play.addEventListener('click', () => {
+    screen.addEventListener('click', () => {
       if (app.view === 'title' && !app.locked) restartRun();
     });
-    play.focus({ preventScroll: true });
+    screen.focus({ preventScroll: true });
   }
 
   function exitRun() {

@@ -44,13 +44,19 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
    assert.equal(await page.locator('[data-title-screen]').isVisible(),true);
    assert.deepEqual(await snapshot(page),before,'exit cannot draw, spend or start another attempt');
    assert.equal(await page.locator('[data-title-screen] img').evaluate(n=>n.complete&&n.naturalWidth>0),true);
+   assert.equal(await page.locator('.title-prompt').innerText(),'Tap to play');
+   assert.equal(await page.locator('[data-title-screen] .choice').count(),0);
    for(const viewport of [{width:320,height:480},{width:390,height:844},{width:1280,height:900}]){
     await page.setViewportSize(viewport);
     assert.equal(await page.locator('[data-title-play]').evaluate(n=>{const r=n.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight&&document.documentElement.scrollWidth<=innerWidth;}),true);
+    assert.equal(await page.locator('[data-title-screen]').evaluate(n=>{
+     const r=n.getBoundingClientRect(), p=n.parentElement.getBoundingClientRect();
+     return Math.abs(r.width-p.width)<2 && Math.abs(r.height-p.height)<2;
+    }),true,'the whole game screen is tappable');
     if(process.env.MISTAKERY_QA_DIR&&name==='Chromium')await page.screenshot({path:path.join(process.env.MISTAKERY_QA_DIR,`title-${viewport.width}.png`)});
    }
    await page.clock.runFor(300);
-   await page.locator('[data-title-play]').click();
+   await page.locator('[data-title-play]').click({position:{x:24,y:24}});
    const next=await snapshot(page);
    assert.equal(await page.evaluate(()=>MistakeryApp.view),'playing');
    assert.equal(next.history.length,0);assert.equal(next.gameOver,false);
