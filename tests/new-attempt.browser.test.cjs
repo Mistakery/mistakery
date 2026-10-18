@@ -1,3 +1,4 @@
+const { exitAndPlay } = require('./exit-flow.fixture.cjs');
 const { continueWinFeedback } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -27,12 +28,14 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
       for (const step of w.steps) await click(page, step.side);
       const ended = await snapshot(page);
       assert.equal(ended.endingId, 'founder_low');
-      await page.locator('[data-restart-run]').click();
+      await exitAndPlay(page);
       const next = await snapshot(page);
       assert.notEqual(String(next.seed), String(initial.seed));
       assert.notEqual(next.route.order[0], initial.route.order[0]);
       assert.ok(next.route.recentFillerUnits.length > 0);
-      assert.equal(await page.evaluate(() => MistakeryApp.view), 'saved');
+      assert.equal(await page.evaluate(() => MistakeryApp.view), 'playing');
+      await page.locator('[data-test-back]').click();
+      assert.equal(await page.evaluate(() => MistakeryApp.view), 'title');
       await page.locator('[data-test-back]').click();
       assert.deepEqual(await snapshot(page), ended);
       // Replay restores the starting layout of the OLD attempt after crossing Back.
@@ -40,10 +43,9 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
       assert.deepEqual(await snapshot(page), initial);
       await click(page); await click(page);
       for (const step of w.steps) await click(page, step.side);
-      await page.locator('[data-restart-run]').click();
+      await exitAndPlay(page);
       assert.deepEqual(await snapshot(page), next, 'redoing Start again uses the same next layout');
-      await click(page); await click(page);
-      assert.deepEqual(await snapshot(page), next, 'Saved cannot replace the new layout with the URL seed');
+      assert.deepEqual(await snapshot(page), next, 'Play goes directly to the prepared plot');
       await page.locator('[data-test-restart]').click();
       assert.deepEqual(await snapshot(page), next, 'Restart story replays the CURRENT attempt');
       assert.equal(await page.locator('[data-test-back]').isDisabled(), true);
@@ -85,11 +87,11 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
       for (let i = 0; i < 5; i++) await click(page);
       for (const step of w.steps) await click(page, step.side);
       assert.equal((await snapshot(page)).endingId, 'cash_low');
-      await page.locator('[data-restart-run]').click();
+      await exitAndPlay(page);
       const next = await snapshot(page);
       assert.notEqual(next.seed, initial.seed);
       assert.notEqual(next.currentCardId, initial.currentCardId);
-      await click(page); await click(page);
+      assert.equal(await page.evaluate(() => MistakeryApp.view), 'playing');
       assert.deepEqual(await snapshot(page), next);
       assert.equal(await page.locator('[data-test-controls]').isVisible(), false);
     } finally { await browser.close(); }

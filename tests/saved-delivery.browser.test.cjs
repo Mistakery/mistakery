@@ -8,8 +8,14 @@ const url = pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href;
 const notes = page => page.locator('[data-chat] .note-message');
 const replies = page => page.locator('[data-choice]');
 
-async function start(page) {
-  await page.goto(url);
+async function start(page, testMode = false) {
+  await page.goto(url + (testMode ? '?test=route' : ''));
+  if (testMode) {
+    await page.waitForFunction(() => window.MistakeryApp?.view === 'saved');
+    await page.clock.install(); await page.clock.pauseAt(new Date());
+    await page.getByRole('button', { name: 'Right on track' }).click();
+    return;
+  }
   await page.waitForFunction(() => window.MistakeryApp?.view === 'onboarding');
   await page.clock.install();
   await page.clock.pauseAt(new Date());
@@ -115,10 +121,10 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
     const browser = await engine.launch();
     try {
       const page = await browser.newPage();
-      await page.goto(`${url}?story=live-agent`);
-      await page.waitForFunction(() => window.MistakeryApp?.view === 'playing');
+      await page.goto(`${url}?test=route`);
+      await page.waitForFunction(() => window.MistakeryApp?.view === 'saved');
       await page.clock.install(); await page.clock.pauseAt(new Date());
-      await page.locator('[data-restart-run]').click();
+      await page.locator('[data-test-restart]').click();
       await page.getByRole('button', { name: 'Right on track' }).click();
       await page.clock.runFor(500);
       await page.locator('[data-test-back]').click();
@@ -132,14 +138,14 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.equal(await notes(page).count(), 2);
     } finally { await browser.close(); }
   });
-  test(`${name}: restart cancels stale Saved delivery and each revisit starts a fresh 1000 ms`, async () => {
+  test(`${name}: test replay cancels stale Saved delivery and each revisit starts a fresh 1000 ms`, async () => {
     const browser = await engine.launch();
     try {
       const page = await browser.newPage();
       const errors = []; page.on('pageerror', error => errors.push(error.message));
-      await start(page);
+      await start(page, true);
       await page.clock.runFor(500);
-      await page.locator('[data-restart-run]').click();
+      await page.locator('[data-test-restart]').click();
       assert.equal(await page.locator('[data-card-id]').textContent(), 'SAVED_01_PLAN');
       await page.clock.runFor(700);
       assert.equal(await notes(page).count(), 1);
@@ -149,7 +155,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       assert.equal(await notes(page).count(), 1);
       await page.clock.runFor(1);
       assert.equal(await notes(page).count(), 2);
-      await page.locator('[data-restart-run]').click();
+      await page.locator('[data-test-restart]').click();
       await page.getByRole('button', { name: 'Slightly behind' }).click();
       assert.equal(await notes(page).count(), 1);
       assert.equal(await replies(page).first().isDisabled(), true);

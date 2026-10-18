@@ -76,8 +76,9 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
             await page.evaluate(() => MistakeryApp.render());
             await page.clock.runFor(20000);
             assert.equal(await page.locator('[data-loss-finale]').count(), 0);
-            assert.equal(await page.locator('[data-player-reply]').count(), 1);
-            assert.equal(await page.locator('[data-choice]:enabled').count(), 0);
+            assert.equal(await page.locator('[data-player-reply]').count(), preview ? 1 : 0);
+            assert.equal(await page.locator('[data-choice]:enabled').count(), preview ? 0 : 2);
+            if (!preview) assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Back to 9–5', 'New run']);
             assert.deepEqual(await page.evaluate(() => structuredClone(MistakeryApp.state)), before);
           }
         }

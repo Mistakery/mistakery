@@ -1,3 +1,4 @@
+const { playFromTitle } = require('./exit-flow.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { chromium, webkit } = require('playwright');
@@ -53,34 +54,34 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         await page.clock.runFor(2000);
         assert.equal(await page.locator('[data-ending-title]').textContent(), 'Run complete');
         assert.equal(await page.locator('[data-run-result]').count(), 3);
-        assert.equal(await page.locator('[data-choice]').first().textContent(), 'Finish');
+        assert.equal(await page.locator('[data-choice]').first().textContent(), 'Back to 9–5');
         assert.doesNotMatch(await page.locator('[data-ending-summary]').textContent(), /YOU (WIN|LOST)/);
         assert.deepEqual(await snapshot(page), end);
         await page.locator('[data-test-inspect]').click();
         assert.match(await page.locator('[data-details-body]').textContent(), /Все три сюжета завершены/);
         await page.locator('[data-details-close]').click();
         await page.locator('[data-choice="left"]').click();
-        await page.locator('[data-choice="left"]').click();
-        assert.deepEqual(await snapshot(page), end, 'a second tap on Finish cannot trigger replay');
+        await page.locator('[data-title-play]').click();
+        assert.deepEqual(await snapshot(page), end, 'an immediate tap on Play cannot pass through the exit');
         await page.clock.runFor(60000);
         await page.evaluate(() => MistakeryApp.render());
         assert.deepEqual(await snapshot(page), end, 'finish never starts or spends another run');
-        assert.match(await page.locator('[data-chat]').textContent(), /Thanks for playing/);
-        assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Play again']);
+        assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
+        assert.equal(await page.locator('[data-title-play]').textContent(),'Play');
         for (const viewport of [{ width: 320, height: 650 }, { width: 1280, height: 900 }]) {
           await page.setViewportSize(viewport);
           assert.equal(await page.evaluate(() => {
-            const chat = document.querySelector('[data-chat]');
-            const button = document.querySelector('[data-choice]').getBoundingClientRect();
-            return document.documentElement.scrollWidth <= innerWidth + 1 && chat.scrollWidth <= chat.clientWidth + 1
-              && button.bottom <= innerHeight + 1 && chat.clientHeight > 100;
+            const button = document.querySelector('[data-title-play]').getBoundingClientRect();
+            return document.documentElement.scrollWidth <= innerWidth + 1
+              && button.bottom <= innerHeight + 1 && button.top >= 0;
           }), true);
           if (process.env.MISTAKERY_QA_DIR && name === 'Chromium') {
             fs.mkdirSync(process.env.MISTAKERY_QA_DIR, { recursive: true });
             await page.screenshot({ path: path.join(process.env.MISTAKERY_QA_DIR, `complete-${kind}-${viewport.width}.png`) });
           }
         }
-        await page.locator('[data-choice]').press('Enter');
+        await page.clock.runFor(300);
+        await page.locator('[data-title-play]').press('Enter');
         const next = await snapshot(page);
         assert.equal(next.gameOver, false); assert.equal(next.history.length, 0);
         assert.notEqual(next.seed, end.seed); assert.notEqual(next.route.initialPlot, end.route.initialPlot);
@@ -88,13 +89,13 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         assert.equal(await page.evaluate(() => MistakeryApp.view), 'playing');
         await page.locator('[data-test-back]').click();
         assert.deepEqual(await snapshot(page), end);
-        assert.match(await page.locator('[data-chat]').textContent(), /Thanks for playing/);
+        assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
         assert.deepEqual(errors, []);
         await page.close();
       }
     } finally { await browser.close(); }
   });
-  test(`${name}: Never again ends a loss; Let's cook starts fresh; Judgment Day can also stop`, async () => {
+  test(`${name}: exit opens title after loss or Judgment Day; New run starts fresh`, async () => {
     const browser = await type.launch();
     try {
       const page = await browser.newPage({ reducedMotion: 'reduce' });
@@ -110,9 +111,9 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         } else await page.locator('[data-choice="left"]').click();
         await page.clock.runFor(60000);
         assert.deepEqual(await snapshot(page), end);
-        assert.match(await page.locator('[data-chat]').textContent(), /Thanks for playing/);
-        assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Play again']);
-        await page.locator('[data-choice]').click();
+        assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
+        assert.equal(await page.locator('[data-title-play]').textContent(),'Play');
+        await playFromTitle(page);
         assert.equal((await snapshot(page)).gameOver, false);
         assert.equal(await page.evaluate(() => MistakeryApp.view), 'playing');
       }

@@ -5,7 +5,7 @@ const { pathToFileURL } = require('node:url');
 const path = require('node:path');
 const url = pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href;
 for (const [name, engine] of Object.entries({ Chromium: chromium, WebKit: webkit })) {
- test(`${name}: intro uses the existing b2buddy identity and Relaunch preserves both Saved screens`, async () => {
+ test(`${name}: first entry uses b2buddy and both Saved screens; exit then Play skips them`, async () => {
   const browser = await engine.launch();
   try {
    const page = await browser.newPage({viewport:{width:320,height:650}});
@@ -19,8 +19,7 @@ for (const [name, engine] of Object.entries({ Chromium: chromium, WebKit: webkit
    for(const label of ['So long, corporate jail!','Trust the process','Open the Masterplan']) {
     await page.clock.runFor(620); await page.getByRole('button',{name:label,exact:true}).click();
    }
-   assert.equal(await page.locator('[data-restart-run]').innerText(),'Relaunch');
-   await page.locator('[data-restart-run]').click();
+   assert.equal(await page.locator('[data-restart-run]').innerText(),'Back to 9–5');
    assert.equal(await page.locator('[data-card-id]').innerText(),'SAVED_01_PLAN');
    await page.getByRole('button',{name:'Right on track',exact:true}).click();
    assert.equal(await page.locator('[data-card-id]').innerText(),'SAVED_02_UPDATE');
@@ -28,6 +27,10 @@ for (const [name, engine] of Object.entries({ Chromium: chromium, WebKit: webkit
    await page.locator('[data-choice]').first().click();
    assert.equal(await page.evaluate(()=>MistakeryApp.view),'playing');
    assert.deepEqual(await page.evaluate(()=>MistakeryApp.state.resources),{cash:25,team:60,customers:15,founder:65});
+   await page.locator('[data-restart-run]').click();
+   assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
+   await page.clock.runFor(300);await page.locator('[data-title-play]').click();
+   assert.equal(await page.evaluate(()=>MistakeryApp.view),'playing');
   } finally {await browser.close();}
  });
 }

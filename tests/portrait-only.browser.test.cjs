@@ -58,6 +58,17 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
         assert.ok(rect.x >= -1 && rect.y >= -1 && rect.x + rect.width <= 845 && rect.y + rect.height <= 391, JSON.stringify(rect));
       }
       await page.locator('[data-details-close]').tap();
+      for (const angle of [90, 270]) {
+        await rotate(page, angle);
+        await page.locator('[data-restart-run]').tap();
+        const dialog = page.locator('[data-quit-dialog]');
+        assert.match(await dialog.evaluate(n => getComputedStyle(n).transform),
+          angle === 90 ? /matrix\(0, -1, 1, 0,/ : /matrix\(0, 1, -1, 0,/);
+        const rect = await dialog.boundingBox();
+        assert.ok(rect.x >= -1 && rect.y >= -1 && rect.x + rect.width <= 845 && rect.y + rect.height <= 391, JSON.stringify(rect));
+        await page.locator('[data-quit-cancel]').tap();
+        assert.deepEqual(await snapshot(page), before);
+      }
       await page.locator('[data-choice="left"]').tap();
       await completeFounderSend(page);
       assert.notEqual((await snapshot(page)).state.currentCardId, before.state.currentCardId);

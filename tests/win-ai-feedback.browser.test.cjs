@@ -1,3 +1,4 @@
+const { confirmQuit } = require('./exit-flow.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { chromium, webkit } = require('playwright');
@@ -128,13 +129,14 @@ for (const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) {
       for(const restart of ['[data-test-restart]','[data-restart-run]']) {
         await seed(page,'LIVE_AGENT_OUTCOME_1'); await page.locator('[data-choice=right]').click();
         await page.evaluate(selector=>{window.oldWinButton=document.querySelector('[data-win-finale-choice]');document.querySelector(selector).click();},restart);
+        if (restart === '[data-restart-run]') await confirmQuit(page);
         const reset=await state(page); await page.evaluate(()=>oldWinButton.click()); await page.clock.runFor(20000);
         assert.deepEqual(await state(page),reset); assert.equal(await page.locator('[data-win-finale]').count(),0);
       }
       await seed(page,'LIVE_AGENT_OUTCOME_3'); await page.locator('[data-choice=left]').click();
       const interrupted = await state(page);
       const finaleCues = await page.evaluate(()=>cues.filter(c=>c==='ai-finale').length);
-      await page.evaluate(()=>document.querySelector('[data-restart-run]').click());
+      await page.evaluate(()=>document.querySelector('[data-restart-run]').click()); await confirmQuit(page);
       await page.locator('[data-test-back]').click();
       assert.deepEqual(await state(page),interrupted);
       assert.equal(await page.locator('[data-scene]').getAttribute('data-active-card'),'LIVE_AGENT_OUTCOME_3','restored pending popup restores the original outcome background');
@@ -187,7 +189,7 @@ for (const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) {
       await page.locator('[data-choice=left]').click();assert.equal(await particles(),30);
       await page.evaluate(()=>document.querySelector('[data-test-back]').click());assert.equal(await particles(),0);
       await page.locator('[data-choice=right]').click();assert.equal(await particles(),0,'re-answer after Back must not celebrate the same win');
-      await page.evaluate(()=>document.querySelector('[data-restart-run]').click());
+      await page.evaluate(()=>document.querySelector('[data-restart-run]').click()); await confirmQuit(page);
       await page.locator('[data-test-back]').click();assert.equal(await particles(),0,'restored pending popup stays quiet');
       await page.keyboard.press('Escape');assert.equal(await particles(),0);
       await seed(page,'LIVE_AGENT_OUTCOME_1');
@@ -203,7 +205,7 @@ for (const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) {
       await seed(page,'PADEL_OUTCOME_2');await page.locator('[data-choice=left]').click();assert.equal(await particles(),30);
       await page.locator('[data-win-finale-choice]').last().click();assert.equal(await particles(),0,'quick reply cancels immediately');
       await seed(page,'PADEL_OUTCOME_4');await page.locator('[data-choice=left]').click();assert.equal(await particles(),30);
-      await page.evaluate(()=>document.querySelector('[data-restart-run]').click());assert.equal(await particles(),0);
+      await page.evaluate(()=>document.querySelector('[data-restart-run]').click()); await confirmQuit(page);assert.equal(await particles(),0);
       await seed(page,'PADEL_OUTCOME_5',.5);await page.locator('[data-choice=left]').click();assert.equal(await particles(),0,'resource loss excludes confetti');
     } finally {await browser.close();}
   });

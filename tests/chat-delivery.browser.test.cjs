@@ -1,3 +1,4 @@
+const { confirmQuit } = require('./exit-flow.fixture.cjs');
 const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -193,7 +194,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await page.clock.runFor(2300);
       assert.equal(await count(page), 2); assert.equal(await chat.evaluate(n => n.scrollTop), 0);
       await seed(page, 'IRL_PADEL_01'); assert.equal(await page.locator('.typing-bubble').count(), 0);
-      await page.locator('[data-restart-run]').click(); assert.equal(await page.locator('.typing-bubble').count(), 0);
+      await page.locator('[data-restart-run]').click(); await confirmQuit(page); assert.equal(await page.locator('.typing-bubble').count(), 0);
     } finally { await browser.close(); }
   });
   test(`${name}: keyboard history scrolling stays in place during delivery`, async () => {

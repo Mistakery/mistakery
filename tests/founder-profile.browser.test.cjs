@@ -5,7 +5,7 @@ const path=require('node:path'),fs=require('node:fs');
 const fixtures=require('./founder-profile.fixture.json');
 const {completeFounderSend}=require('./chat-delivery.fixture.cjs');
 const url=pathToFileURL(path.resolve(__dirname,'../index.html')).href;
-for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) test(`${name}: real third victory reveals the approved profile, finish holds it and replay resets`,async()=>{
+for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) test(`${name}: real third victory reveals the approved profile, exit opens title and replay resets`,async()=>{
  const browser=await type.launch();
  try{
  for(const [key,witness] of Object.entries(fixtures)){
@@ -87,18 +87,22 @@ for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) test(`${name
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.locator('.founder-card').tap();
   assert.equal(await page.locator('.founder-card.is-shimmering').count(),0);
-  await page.locator('[data-profile-finish]').click();
-  assert.equal(await page.locator('[data-profile-finish]').isDisabled(),true);
+  assert.deepEqual(await page.locator('.founder-actions button').allTextContents(),['Back to 9–5','New run']);
   await page.clock.runFor(60000);await page.evaluate(()=>MistakeryApp.render());
   assert.equal(await page.locator('.founder-card').count(),1);
   assert.deepEqual(await page.evaluate(()=>structuredClone(MistakeryApp.state)),end);
+  await page.locator('[data-profile-finish]').click();
+  assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
+  assert.equal(await page.locator('[data-quit-dialog]').count(),0);
+  await page.locator('[data-test-back]').click();
+  assert.equal(await page.locator('.founder-card').getAttribute('data-profile'),key);
   await page.locator('[data-profile-replay]').click();
   assert.equal(await page.locator('.founder-card').count(),0);
   const next=await page.evaluate(()=>structuredClone(MistakeryApp.state));
   assert.equal(next.gameOver,false);assert.equal(next.history.length,0);assert.notEqual(next.seed,end.seed);
   await page.locator('[data-test-back]').click();
   assert.equal(await page.locator('.founder-card').getAttribute('data-profile'),key);
-  assert.equal(await page.locator('[data-profile-finish]').isDisabled(),true);
+  assert.equal(await page.locator('[data-profile-finish]').isEnabled(),true);
   assert.deepEqual(errors,[]);await page.close();
   const desktop=await browser.newPage({viewport:{width:1280,height:900},reducedMotion:'reduce'});
   await desktop.goto(url+'?test=route');await desktop.waitForFunction(()=>window.MistakeryApp?.state);

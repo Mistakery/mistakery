@@ -1,3 +1,4 @@
+const { confirmQuit } = require('./exit-flow.fixture.cjs');
 const { completeFounderSend } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -263,6 +264,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
           else if (trigger === 'restart') document.querySelector('[data-restart-run]').click();
           else (trigger === 'resize' ? window : document).dispatchEvent(new Event(trigger));
         }, trigger);
+        if (trigger === 'restart') await confirmQuit(page);
         await page.waitForFunction(() => window.arrivals.every(a => a.playState === 'idle'));
         if (trigger === 'restart') {
           await page.clock.runFor(10000);

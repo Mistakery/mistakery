@@ -1,3 +1,4 @@
+const { confirmQuit } = require('./exit-flow.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -150,10 +151,11 @@ for (const [name, type] of Object.entries({ Chromium: chromium, WebKit: webkit }
       for (const selector of ['[data-test-restart]', '[data-restart-run]']) {
         await seed(page, 'INFLUENCER_01'); await click(page, 'right');
         await page.locator(selector).click();
+        if (selector === '[data-restart-run]') await confirmQuit(page);
         const restarted = await state(page);
         await page.clock.runFor(6000);
         assert.deepEqual(await state(page), restarted);
-        assert.equal(await page.evaluate(() => MistakeryApp.view), 'saved');
+        assert.equal(await page.evaluate(() => MistakeryApp.view), selector === '[data-test-restart]' ? 'saved' : 'title');
         assert.equal(await delta(page, 'cash'), '');
         assert.equal(await page.locator('[data-resource].is-fatal').count(), 0);
         assert.equal(await page.evaluate(() => MistakeryApp.locked), false);

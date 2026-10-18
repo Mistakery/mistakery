@@ -1,3 +1,4 @@
+const { playFromTitle } = require('./exit-flow.fixture.cjs');
 const { completeFounderSend, continueWinFeedback } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -73,7 +74,7 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
         if (id === 'judgment_day') {
           assert.equal(await page.locator('[data-card-id]').innerText(), 'LIVE_AGENT_OUTCOME_2');
           assert.match(await page.locator('[data-ending-summary]').innerText(), /GAME OVER · YOU LOST/);
-          assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Finish', 'Play again']);
+          assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Back to 9–5', 'New run']);
           assert.equal(await page.locator('[data-loss-flash], [data-loss-finale]').count(), 0);
         } else {
         const cardId = `DOC_LOSS_${deck.meta.route.resourceEndings.indexOf(id) + 1}`;
@@ -146,7 +147,8 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
         assert.deepEqual(await snapshot(page), ended);
         await page.clock.runFor(1000);
         await page.locator(id === 'judgment_day' ? '[data-choice="right"]' : '[data-restart-run]').click();
-        assert.equal(await page.evaluate(() => MistakeryApp.view), id === 'judgment_day' ? 'playing' : 'saved');
+        if (id !== 'judgment_day') await playFromTitle(page);
+        assert.equal(await page.evaluate(() => MistakeryApp.view), 'playing');
         assert.equal(await page.locator('[data-loss-flash], [data-loss-finale], [data-loss-preview]').count(), 0);
         const next = await snapshot(page);
         assert.notEqual(String(next.seed), String(initial.seed));
@@ -210,17 +212,18 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
       }
       await page.keyboard.press('Escape');
       assert.equal(await dialog.isVisible(), false);
-      assert.equal(await page.locator('[data-restart-run]').evaluate(n => n === document.activeElement), true);
+      assert.equal(await page.locator('[data-chat]').evaluate(n => n === document.activeElement), true);
+      assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Back to 9–5','New run']);
       await page.clock.runFor(20000);
       assert.deepEqual(await snapshot(page), ended);
-      await page.locator('[data-restart-run]').click();
+      await page.locator('[data-choice="left"]').click();
       assert.equal(await page.locator('[data-loss-flash], [data-loss-finale], [data-loss-preview]').count(), 0);
       await reach('founder_low');
       assert.equal(await page.locator('.preview-composer').count(), 1);
       await page.locator('[data-restart-run]').click();
       await page.clock.runFor(20000);
       assert.equal(await page.locator('[data-loss-flash], [data-loss-finale], [data-loss-preview], .preview-composer').count(), 0);
-      assert.equal(await page.evaluate(() => MistakeryApp.view), 'saved');
+      assert.equal(await page.evaluate(() => MistakeryApp.view), 'title');
       assert.deepEqual(errors, []);
     } finally { await browser.close(); }
   });

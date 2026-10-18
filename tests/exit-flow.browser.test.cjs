@@ -1,0 +1,90 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const { chromium, webkit } = require('playwright');
+const { pathToFileURL } = require('node:url');
+const path = require('node:path');
+const fs = require('node:fs');
+const { witnesses } = require('../docs/qa/resource-endings.json');
+const url = pathToFileURL(path.resolve(__dirname, '../index.html')).href;
+const snapshot = page => page.evaluate(() => structuredClone(MistakeryApp.state));
+for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
+ test(`${name}: exit confirmation preserves a live run; Quit and Play start only one new attempt`, async () => {
+  const browser = await type.launch();
+  try {
+   const page = await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+   const errors=[]; page.on('pageerror',e=>errors.push(e.message));
+   await page.goto(url+'?test=route&seed=14');
+   await page.waitForFunction(()=>window.MistakeryApp?.state);
+   await page.clock.install(); await page.clock.pauseAt(new Date());
+   for(let i=0;i<2;i++){await page.clock.runFor(20000);await page.locator('[data-choice="left"]').click();}
+   await page.clock.runFor(20000);
+   await page.locator('[data-choice="left"]').click();
+   await page.clock.runFor(20000);
+   const before=await snapshot(page);
+   assert.equal(before.gameOver,false); assert.ok(before.history.length>0);
+   assert.equal(await page.locator('[data-restart-run]').innerText(),'Back to 9–5');
+   await page.locator('[data-restart-run]').click();
+   assert.equal(await page.locator('[data-quit-dialog][open]').count(),1);
+   assert.match(await page.locator('[data-quit-dialog]').innerText(),/Do you really want to quit\?/);
+   await page.keyboard.press('ArrowLeft'); await page.clock.runFor(20000);
+   assert.deepEqual(await snapshot(page),before);
+   if(process.env.MISTAKERY_QA_DIR&&name==='Chromium'){
+    fs.mkdirSync(process.env.MISTAKERY_QA_DIR,{recursive:true});
+    await page.screenshot({path:path.join(process.env.MISTAKERY_QA_DIR,'quit-confirmation.png')});
+   }
+   await page.locator('[data-quit-cancel]').click();
+   assert.deepEqual(await snapshot(page),before);
+   assert.equal(await page.locator('[data-restart-run]').evaluate(n=>n===document.activeElement),true);
+   await page.locator('[data-restart-run]').click();await page.keyboard.press('Escape');
+   assert.equal(await page.locator('[data-quit-dialog][open]').count(),0);
+   assert.deepEqual(await snapshot(page),before);
+   await page.locator('[data-restart-run]').click();await page.locator('[data-quit-confirm]').click();
+   assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
+   await page.clock.runFor(60000);await page.evaluate(()=>MistakeryApp.render());
+   assert.equal(await page.locator('[data-title-screen]').isVisible(),true);
+   assert.deepEqual(await snapshot(page),before,'exit cannot draw, spend or start another attempt');
+   assert.equal(await page.locator('[data-title-screen] img').evaluate(n=>n.complete&&n.naturalWidth>0),true);
+   for(const viewport of [{width:320,height:480},{width:390,height:844},{width:1280,height:900}]){
+    await page.setViewportSize(viewport);
+    assert.equal(await page.locator('[data-title-play]').evaluate(n=>{const r=n.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight&&document.documentElement.scrollWidth<=innerWidth;}),true);
+    if(process.env.MISTAKERY_QA_DIR&&name==='Chromium')await page.screenshot({path:path.join(process.env.MISTAKERY_QA_DIR,`title-${viewport.width}.png`)});
+   }
+   await page.clock.runFor(300);
+   await page.locator('[data-title-play]').click();
+   const next=await snapshot(page);
+   assert.equal(await page.evaluate(()=>MistakeryApp.view),'playing');
+   assert.equal(next.history.length,0);assert.equal(next.gameOver,false);
+   assert.notEqual(next.seed,before.seed);assert.notEqual(next.route.initialPlot,before.route.initialPlot);
+   assert.deepEqual(next.resources,{cash:25,team:60,customers:15,founder:65});
+   await page.clock.runFor(20000);assert.deepEqual(await snapshot(page),next);
+   await page.locator('[data-test-back]').click();
+   assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
+   await page.locator('[data-test-back]').click();assert.deepEqual(await snapshot(page),before);
+   assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+ });
+ test(`${name}: ended exit needs no confirmation and loss Escape retains usable actions`,async()=>{
+  const browser=await type.launch();
+  try{
+   const page=await browser.newPage({reducedMotion:'reduce'});
+   await page.goto(url+'?test=route');await page.waitForFunction(()=>window.MistakeryApp?.state);
+   await page.clock.install();await page.clock.pauseAt(new Date());
+   for(const id of ['cash_low','judgment_day']){
+    await page.evaluate(w=>{const a=MistakeryApp;a.state=MistakeryRoute.startRun(a.deck,{seed:w.seed});for(const s of w.steps)a.state=MistakeryRoute.resolveChoice(a.deck,a.state,s.side).state;a.view='ended';a.cardDelivery=null;a.render();},witnesses[id]);
+    await page.clock.runFor(20000);
+    const ended=await snapshot(page);
+    if(id==='cash_low'){
+     await page.locator('[data-choice="left"]').click();
+     assert.deepEqual(await page.locator('[data-finale-choice]').allTextContents(),['Back to 9–5','New run']);
+     await page.keyboard.press('Escape');
+    }
+    assert.deepEqual(await page.locator('[data-choice]').allTextContents(),['Back to 9–5','New run']);
+    await page.clock.runFor(300);
+    await page.locator('[data-choice="left"]').click();
+    assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
+    assert.equal(await page.locator('[data-quit-dialog][open]').count(),0);
+    assert.deepEqual(await snapshot(page),ended);
+   }
+  }finally{await browser.close();}
+ });
+}

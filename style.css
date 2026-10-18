@@ -860,13 +860,13 @@ button.typing-bubble:focus-visible { outline: 2px solid var(--blue); outline-off
     --game-safe-bottom: env(safe-area-inset-right);
     --game-safe-left: env(safe-area-inset-bottom);
   }
-  .app, .test-details {
+  .app, .test-details, .quit-dialog {
     position: fixed;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%) rotate(var(--portrait-rotation, 90deg));
   }
-  .test-details { margin: 0; }
+  .test-details, .quit-dialog { margin: 0; }
 }
 
 /* Waiting reactions add no space; their background unfolds after reading. */
@@ -912,3 +912,27 @@ button.typing-bubble:focus-visible { outline: 2px solid var(--blue); outline-off
 .message-reaction-emoji { font-size: 15px; line-height: 17px; }
 .message-reaction-count { min-width: 1ch; font-variant-numeric: tabular-nums; }
 .message-reaction-count:empty { display: none; }
+
+/* Session exit: same phone shell and controls, no second first-load splash. */
+.quit { white-space: nowrap; flex-shrink: 0; }
+.phone[data-view="title"] { display: block; }
+.phone[data-view="title"] > :not(.title-screen) { display: none !important; }
+.title-screen {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: safe center; gap: 36px; padding: 28px 18px;
+  overflow-y: auto; background: linear-gradient(160deg, #bdd5e8, #e5eff6 75%);
+}
+.title-logo { display: block; width: 100%; height: auto; flex: none; }
+.title-play { width: min(220px, 100%); flex: none; }
+.quit-dialog {
+  width: min(330px, calc(var(--game-width) - 24px));
+  max-height: calc(var(--game-height) - 24px); overflow: auto;
+  border: 1px solid rgba(255,255,255,.9); border-radius: 26px;
+  padding: 26px 20px 18px; color: var(--ink);
+  background: linear-gradient(160deg,#d4e4f0,#f7fafc);
+  box-shadow: 0 24px 60px rgba(0,0,0,.3);
+}
+.quit-dialog::backdrop { background: rgba(16,27,38,.55); backdrop-filter: blur(5px); }
+.quit-dialog h2 { margin: 0; font-size: 23px; line-height: 1.2; letter-spacing: -.035em; }
+.quit-dialog p { margin: 14px 0 24px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.quit-dialog .choices { padding: 0; }
