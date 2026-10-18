@@ -23,6 +23,19 @@
 
   const $ = (selector) => document.querySelector(selector);
   const sound = window.MistakerySound;
+  // Prepare the owner's original image independently of first-entry onboarding.
+  // Reuse the decoded node so the title never paints its prompt before the logo.
+  let titleLogo;
+  function prepareTitleLogo() {
+    titleLogo = new Image(2172, 724);
+    titleLogo.className = 'title-logo';
+    titleLogo.alt = 'Mistakery';
+    titleLogo.draggable = false;
+    titleLogo.decoding = 'sync';
+    titleLogo.src = 'assets/mistakery-logo.png';
+    return titleLogo.decode().then(() => true, () => false);
+  }
+  let titleLogoReady = prepareTitleLogo();
   const soundEvents = new WeakMap();
   function soundOnce(key, kind) {
     if (!soundEvents.has(app.state)) soundEvents.set(app.state, new Set());
@@ -1983,13 +1996,17 @@
     screen.type = 'button';
     screen.className = 'title-screen'; screen.dataset.titleScreen = ''; screen.dataset.titlePlay = '';
     screen.setAttribute('aria-label', 'Mistakery — Tap to play');
-    screen.innerHTML = `<img class="title-logo" src="assets/mistakery-logo.png" alt="Mistakery" width="2172" height="724" draggable="false">
-      <span class="title-prompt">Tap to play</span>`;
+    screen.innerHTML = '<span class="title-prompt">Tap to play</span>';
+    screen.prepend(titleLogo);
     $('[data-game]').append(screen);
     // The exit click must never pass through to Play, including rapid double taps.
     choiceUnlockTimer = window.setTimeout(() => { app.locked = false; }, 280);
-    screen.addEventListener('click', () => {
+    screen.addEventListener('click', event => {
+      if (event.detail > 1) return;
       if (app.view === 'title' && !app.locked) restartRun();
+    });
+    screen.addEventListener('keydown', event => {
+      if (event.repeat) event.preventDefault();
     });
     screen.focus({ preventScroll: true });
   }
@@ -2018,7 +2035,26 @@
       if (origin?.isConnected) origin.focus({ preventScroll: true });
     };
     dialog.querySelector('[data-quit-cancel]').addEventListener('click', cancel);
-    dialog.querySelector('[data-quit-confirm]').addEventListener('click', () => {
+    const confirm = dialog.querySelector('[data-quit-confirm]');
+    confirm.addEventListener('click', async () => {
+      confirm.disabled = true;
+      confirm.setAttribute('aria-busy', 'true');
+      const ready = await titleLogoReady;
+      // Cancel/Escape can dismiss this dialog while the network is pending.
+      if (!dialog.isConnected || !dialog.open) return;
+      if (!ready) {
+        confirm.disabled = false;
+        confirm.removeAttribute('aria-busy');
+        let status = dialog.querySelector('[role="status"]');
+        if (!status) {
+          status = document.createElement('p');
+          status.setAttribute('role', 'status');
+          dialog.append(status);
+        }
+        status.textContent = 'Logo could not load. Try Quit again.';
+        titleLogoReady = prepareTitleLogo();
+        return;
+      }
       dialog.close(); dialog.remove(); exitRun();
     });
     dialog.addEventListener('cancel', event => { event.preventDefault(); cancel(); });

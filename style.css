@@ -926,7 +926,19 @@ button.typing-bubble:focus-visible { outline: 2px solid var(--blue); outline-off
 }
 .title-logo { display: block; width: 100%; height: auto; flex: none; }
 .title-screen:focus-visible { outline: 2px solid var(--blue); outline-offset: -4px; }
-.title-prompt { font-size: 15px; color: var(--muted); flex: none; }
+.title-prompt {
+  flex: none; font-size: clamp(26px, 7vw, 34px); font-weight: 800;
+  line-height: 1.2; letter-spacing: -.035em; color: var(--ink);
+  text-shadow: 0 2px 0 rgba(255,255,255,.65);
+  animation: title-pulse 2.4s ease-in-out infinite;
+}
+@keyframes title-pulse {
+  0%, 100% { transform: translateY(0) scale(1); opacity: .75; }
+  50% { transform: translateY(-2px) scale(1.045); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .title-prompt { animation: none; }
+}
 .quit-dialog {
   width: min(330px, calc(var(--game-width) - 24px));
   max-height: calc(var(--game-height) - 24px); overflow: auto;
