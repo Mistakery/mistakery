@@ -19,6 +19,7 @@ async function seed(page, id) {
 }
 async function open(browser) {
   const page = await browser.newPage({ viewport: { width: 320, height: 650 } });
+  await page.addInitScript(() => localStorage.setItem('mistakery.sound', 'off'));
   await page.goto(url); await page.waitForFunction(() => window.MistakeryApp?.state);
   await page.clock.install(); await page.clock.pauseAt(new Date());
   return page;
@@ -130,7 +131,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
           assert.equal(await page.locator('[data-chat-current]').count(), index + 2);
         }
         if (id === 'FILL_MANTRA') assert.deepEqual(await page.locator('[data-chat-current] p').evaluateAll(ns => ns.map(n => n.textContent.replaceAll('\u00a0', ' '))), [
-          'MY GURU SENT A 4-HOUR WEALTH MANTRA', 'LISTEN TO IT ON REPEAT WHILE YOU WORK TODAY', 'SUCCESS IS 90% VIBRATIONS, YOU HEAR ME???',
+          'MY GURU SENT A WEALTH MANTRA', 'LISTEN TO IT ON REPEAT WHILE YOU WORK TODAY', 'SUCCESS IS 90% VIBRATIONS, YOU HEAR ME???',
         ]);
         assert.equal((await snapshot(page)).currentCardId, id);
         assert.equal((await snapshot(page)).history.length, 0);

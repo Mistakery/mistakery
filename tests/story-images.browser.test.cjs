@@ -19,6 +19,7 @@ test(`slow ${scenario.label} pictures are decoded before play and ready on the f
   const heldPictures = new Promise(resolve => { release = resolve; });
   try {
     const page = await browser.newPage();
+    await page.addInitScript(() => localStorage.setItem('mistakery.sound', 'off'));
     let pictureRequests = 0;
     await page.route('http://mistakery.test/**', async route => {
       const pathname = new URL(route.request().url()).pathname;
@@ -29,7 +30,7 @@ test(`slow ${scenario.label} pictures are decoded before play and ready on the f
     });
     await page.goto('http://mistakery.test/?story=live-agent', { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
-    await page.waitForFunction(() => performance.getEntriesByType('resource').filter(entry => entry.name.includes('/avatar-')).length === 12);
+    await page.waitForFunction(() => performance.getEntriesByType('resource').filter(entry => entry.name.includes('/avatar-')).length === 13);
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     const expectedRequests = scenario.cards.reduce((count, id) => count + imageCount(id), 0);
     assert.equal(pictureRequests, expectedRequests);
@@ -71,6 +72,7 @@ test('stalled story pictures cannot block play forever or pop into an existing m
   const heldPictures = new Promise(resolve => { release = resolve; });
   try {
     const page = await browser.newPage();
+    await page.addInitScript(() => localStorage.setItem('mistakery.sound', 'off'));
     await page.route('http://mistakery.test/**', async route => {
       const pathname = new URL(route.request().url()).pathname;
       const file = path.join(root, pathname === '/' ? 'index.html' : pathname.slice(1));

@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const deck = require('../cards.json');
+const { restoreApprovedChanges } = require('./revision-pack.fixture.cjs');
 const {mapping,expected,get,mechanics,ownerOverrides} = require('../scripts/source-audit-lib.cjs');
 const invariants = require('../docs/qa/source-audit/invariants.json');
 const hash = value => crypto.createHash('sha256').update(value).digest('hex');
@@ -12,7 +13,7 @@ test('all 71 source-backed cards match freshly read Docs fields and include ever
  assert.equal(covered.size,71);
  assert.deepEqual(deck.cards.filter(c=>c.plot||c.filler).map(c=>c.id).sort(),[...covered,...mapping.unmappedCards].sort());
  for(const entry of mapping.entries) assert.equal(get(deck.cards.find(c=>c.id===entry.id),entry.field,deck),expected(entry),`${entry.id}.${entry.field} ← doc${entry.doc}:${entry.start}`);
- for(const entry of ownerOverrides.layout||[])assert.equal(get(deck.cards.find(c=>c.id===entry.id),entry.field,deck),entry.value,`${entry.id}.${entry.field}: owner presentation restored`);
+ for(const entry of ownerOverrides.layout||[])assert.deepEqual(get(deck.cards.find(c=>c.id===entry.id),entry.field,deck),entry.value,`${entry.id}.${entry.field}: owner presentation restored`);
  for(const entry of ownerOverrides.omitFields||[])assert.equal(get(deck.cards.find(c=>c.id===entry.id),entry.field,deck),undefined,`${entry.id}.${entry.field}: added caption removed`);
  for(const entry of ownerOverrides.preservedEmoji) {
   const text=get(deck.cards.find(c=>c.id===entry.id),entry.field,deck);
@@ -34,7 +35,7 @@ test('text reconciliation preserves mechanics and separately approved endings', 
  // Invert only the explicit deck retirement, then enforce the ORIGINAL hash.
  // Live mechanics remain fully covered; no fields are newly ignored.
  const retirement = require('../docs/qa/deck-cleanup/baseline.json');
- const restored = mechanics(deck);
+ const restored = mechanics(restoreApprovedChanges(deck));
  assert.deepEqual(restored.meta.scheduler, { boundaries: [], protectedPairs: [], locks: [] });
  restored.meta = { ...restored.meta, scheduler: retirement.scheduler };
  for (const { index, mechanics: card } of retirement.retired) {

@@ -1,0 +1,127 @@
+[
+  {
+    "id": "INFLUENCER_01",
+    "field": "messages.0.text",
+    "before": "Guys, huge play!!\nMy boy from that AI bootcamp is a top AI influencer now. Down to promote us for a symbolic % on each sale",
+    "after": "Guys huge play !! 💸💸\n\nMy boy from that AI bootcamp is a top AI influencer now. Down to promote us for a symbolic % on each sale"
+  },
+  {
+    "id": "INFLUENCER_01",
+    "field": "messages.3.text",
+    "before": "major red flag vibes tbh. but if he has meme potential, let's run it. we can farm clips off him",
+    "after": "major 🚩🚩🚩 vibes tbh. but if he has meme potential, let's run it. we can farm clips off him"
+  },
+  {
+    "id": "INFLUENCER_02",
+    "field": "text",
+    "before": "Hey 👋\nHeard about your tool. I feel like we got a huge future together\n\nLet me drop a video with your link in the description\nYou get customers, I get a cut of the sales. Win-win!\nUsually I take 20%, but you guys are cool, we'll work out the terms\n\nSend over the demo. I keep it 💯 honest with my audience, gotta test it myself first",
+    "after": "Hey 👋\nHeard about your tool. I feel like we got a huge future together\n\nLet me drop a video with your link in the description\nYou get customers, I get a cut of the sales. Win-win! 🤝\nUsually I take 20%, but you guys are cool, we'll work out the terms\n\nSend over the demo. I keep it 💯 honest with my audience, gotta test it myself first"
+  },
+  {
+    "id": "INFLUENCER_03",
+    "field": "italicLines",
+    "before": [
+      "make me $1B app. make zero mistakes"
+    ]
+  },
+  {
+    "id": "INFLUENCER_03",
+    "field": "boldLines",
+    "after": [
+      "make me $1B app. make zero mistakes"
+    ]
+  },
+  {
+    "id": "INFLUENCER_03",
+    "field": "image",
+    "after": {
+      "src": "assets/influencer-request-queue.webp",
+      "alt": "Request queue filled with repeated make me $1B app. make zero mistakes requests",
+      "width": 1200,
+      "height": 800
+    }
+  },
+  {
+    "id": "INFLUENCER_04",
+    "field": "text",
+    "before": "Aaand it's down. Knew it 👏👏\n\nGuys, if you can't even handle my basic workflow, my traffic will literally destroy you\nDon't wanna bury your launch, but I never lie to my community\n\nGotta drop an honest video 😔",
+    "after": "Aaand it's down. Knew it 👏👏\n\nGuys, if you can't even handle my basic workflow, my traffic will literally destroy you 🤯\nDon't wanna bury your launch, but I never lie to my community\n\nGotta drop an honest video 😔"
+  },
+  {
+    "id": "PADEL_INVITE",
+    "field": "text",
+    "before": "Yo champ, anyone in the club would die for this match, but I held the slot for you\nTomorrow 7 AM vs ClosedAI CEO\n\nThat’s your dream client, man. Remember who opened this door for you 💪",
+    "after": "Yo champ, anyone in the club would die for this match, but I held the slot for you 💪💪\n\nTomorrow 7 AM vs ClosedAI CEO 👊"
+  },
+  {
+    "id": "FILL_RIVAL",
+    "field": "text",
+    "before": "Just raised at a $50M cap. Honestly exhausted by winning\nHow’s it going?",
+    "after": "Just raised at a $50M cap. Honestly exhausted by winning 😮‍💨\n\nHow’s it going?"
+  },
+  {
+    "id": "FILL_MANTRA",
+    "field": "messages.0.image.alt",
+    "before": "wealth mantra: investor’s four-hour voice message with a play icon, waveform and duration 4:00:00",
+    "after": "Investor’s voice message with a play icon, waveform and duration 3:47:28"
+  },
+  {
+    "id": "FILL_MANTRA",
+    "field": "messages.0.image.src",
+    "before": "assets/filler-mantra-voice-v1.svg",
+    "after": "assets/filler-mantra-voice-v2.svg"
+  },
+  {
+    "id": "FILL_MANTRA",
+    "field": "messages.1.text",
+    "before": "MY GURU SENT A 4-HOUR WEALTH MANTRA",
+    "after": "MY GURU SENT A WEALTH MANTRA"
+  },
+  {
+    "id": "judgment_day",
+    "field": "title",
+    "before": "JUDGMENT DAY",
+    "after": ""
+  },
+  {
+    "id": "@yc_founder",
+    "field": "avatarImage",
+    "after": "assets/avatar-yc-founder.webp"
+  },
+  {
+    "id": "INFLUENCER_01",
+    "field": "ru.text",
+    "before": "@hustler\nкороче, есть железобетонная темка. мой старый кореш, тот самый с марафона по нейросетям, сейчас топовый инфлюенсер в сфере ai. готов промить нас за символический процент с каждой продажи\n@bigdeals\nАга, плавали, знаем\nМаксимум 20%, больше отдадим ему — без штанов останемся\n@hype_queen\nзвучит как ред флаг но если чел мемный, го\nнарезок с ним сделаем",
+    "after": "@hustler\nкороче, есть железобетонная темка !! 💸💸\n\nмой старый кореш, тот самый с марафона по нейросетям, сейчас топовый инфлюенсер в сфере ai. готов промить нас за символический процент с каждой продажи\n@bigdeals\nАга, плавали, знаем\nМаксимум 20%, больше отдадим ему — без штанов останемся\n@hype_queen\nтут прям 🚩🚩🚩 вайбы, если честно. но если чел мемный, го\nнарезок с ним сделаем"
+  },
+  {
+    "id": "INFLUENCER_02",
+    "field": "ru.text",
+    "before": "йооу 👋\n\nслышал про ваш тул. пушечный. чувствую у нас с вами большое будущее\n\nдавайте я сниму про вас видос, добавлю ссылку в описание\nвам клиенты, мне процент с продаж. все в плюсе\nобычно беру 20% но вы ребята крутые, может на договоримся на особые условия\n\nкидай ссылку на демо, буду тестить. я на 💯 честен со своей аудиторией, все обязательно проверяю сам сначала",
+    "after": "йооу 👋\n\nслышал про ваш тул. пушечный. чувствую у нас с вами большое будущее\n\nдавайте я сниму про вас видос, добавлю ссылку в описание\nвам клиенты, мне процент с продаж. все в плюсе! 🤝\nобычно беру 20% но вы ребята крутые, может на договоримся на особые условия\n\nкидай ссылку на демо, буду тестить. я на 💯 честен со своей аудиторией, все обязательно проверяю сам сначала"
+  },
+  {
+    "id": "INFLUENCER_04",
+    "field": "ru.text",
+    "before": "Иии всё упало. Так и знал 👏👏\nРебят, если вы даже мой базовый воркфлоу не держите, мой трафик вас буквально уничтожит\nНе хочется топить ваш запуск, но я всегда на 100% честен со своим комьюнити\n\nПридётся выкатить честное видео 😔",
+    "after": "Иии всё упало. Так и знал 👏👏\nРебят, если вы даже мой базовый воркфлоу не держите, мой трафик вас буквально уничтожит 🤯\nНе хочется топить ваш запуск, но я всегда на 100% честен со своим комьюнити\n\nПридётся выкатить честное видео 😔"
+  },
+  {
+    "id": "PADEL_INVITE",
+    "field": "ru.text",
+    "before": "Йо, чемпион, любой в клубе душу бы отдал за этот матч, но я придержал слот для тебя\nЗавтра в 7 утра против CEO ClosedAI\nЭто твой клиент мечты, мужик. Запомни, кто открыл тебе эту дверь 💪",
+    "after": "Йо, чемпион, любой в клубе душу бы отдал за этот матч, но я придержал слот для тебя 💪💪\n\nЗавтра в 7 утра против CEO ClosedAI 👊"
+  },
+  {
+    "id": "FILL_RIVAL",
+    "field": "ru.text",
+    "before": "Только что поднял раунд при оценке $50 миллионов. Если честно, устал побеждать. Как твои делишки?",
+    "after": "Только что поднял раунд при оценке $50 миллионов. Если честно, устал побеждать 😮‍💨\n\nКак твои делишки?"
+  },
+  {
+    "id": "FILL_MANTRA",
+    "field": "ru.text",
+    "before": "МОЙ ГУРУ ПРИСЛАЛ ЧЕТЫРЁХЧАСОВУЮ АУДИОМАНТРУ БОГАТСТВА\n\nСЛУШАЙ НА ПОВТОРЕ, ПОКА РАБОТАЕШЬ\n\nУСПЕХ НА 90% СОСТОИТ ИЗ ВИБРАЦИЙ, ТЫ СЛЫШИШЬ???",
+    "after": "МОЙ ГУРУ ПРИСЛАЛ АУДИОМАНТРУ БОГАТСТВА\n\nСЛУШАЙ НА ПОВТОРЕ, ПОКА РАБОТАЕШЬ\n\nУСПЕХ НА 90% СОСТОИТ ИЗ ВИБРАЦИЙ, ТЫ СЛЫШИШЬ???"
+  }
+]

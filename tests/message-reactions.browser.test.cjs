@@ -8,6 +8,7 @@ const url = pathToFileURL(path.resolve(__dirname, '../index.html')).href;
 async function open(type, width = 320, motion = 'no-preference') {
   const browser = await type.launch();
   const page = await browser.newPage({ viewport: { width, height: 650 }, reducedMotion: motion });
+  await page.addInitScript(() => localStorage.setItem('mistakery.sound', 'off'));
   await page.clock.install();
   await page.addInitScript(() => {
     window.reactionMoves = [];
@@ -56,7 +57,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       await page.clock.runFor(12000);
       assert.deepEqual(await page.locator('[data-chat-current]').evaluateAll(ns => ns.map(n => n.dataset.source)), Array(4).fill('@unicorn_hunter'));
       assert.deepEqual(await page.locator('[data-chat-current] p').evaluateAll(ns => ns.map(n => n.textContent.replaceAll('\u00a0', ' '))), [
-        'MY GURU SENT A 4-HOUR WEALTH MANTRA',
+        'MY GURU SENT A WEALTH MANTRA',
         'LISTEN TO IT ON REPEAT WHILE YOU WORK TODAY',
         'SUCCESS IS 90% VIBRATIONS, YOU HEAR ME???',
       ]);

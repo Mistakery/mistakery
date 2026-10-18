@@ -81,7 +81,7 @@ test('AI influencer cards preserve approved copy and graph with document resourc
       direction: 'incoming',
       source: '@hustler',
       avatar: 'H',
-      text: 'Guys, huge play!!\nMy boy from that AI bootcamp is a top AI influencer now. Down to promote us for a symbolic % on each sale',
+      text: 'Guys huge play !! 💸💸\n\nMy boy from that AI bootcamp is a top AI influencer now. Down to promote us for a symbolic % on each sale',
     },
     {
       direction: 'incoming',
@@ -99,7 +99,7 @@ test('AI influencer cards preserve approved copy and graph with document resourc
       direction: 'incoming',
       source: '@hype_queen',
       avatar: 'HQ',
-      text: "major red flag vibes tbh. but if he has meme potential, let's run it. we can farm clips off him",
+      text: "major 🚩🚩🚩 vibes tbh. but if he has meme potential, let's run it. we can farm clips off him",
     },
   ]);
   assert.deepEqual(withoutReasons(cards.INFLUENCER_01.choices), {
@@ -107,7 +107,7 @@ test('AI influencer cards preserve approved copy and graph with document resourc
     right: { label: 'Nah, cringe', effects: influencerEffects.INFLUENCER_01[1], next: 'INFLUENCER_OUTCOME_1' },
   });
 
-  assert.equal(cards.INFLUENCER_02.text, "Hey 👋\nHeard about your tool. I feel like we got a huge future together\n\nLet me drop a video with your link in the description\nYou get customers, I get a cut of the sales. Win-win!\nUsually I take 20%, but you guys are cool, we'll work out the terms\n\nSend over the demo. I keep it 💯 honest with my audience, gotta test it myself first");
+  assert.equal(cards.INFLUENCER_02.text, "Hey 👋\nHeard about your tool. I feel like we got a huge future together\n\nLet me drop a video with your link in the description\nYou get customers, I get a cut of the sales. Win-win! 🤝\nUsually I take 20%, but you guys are cool, we'll work out the terms\n\nSend over the demo. I keep it 💯 honest with my audience, gotta test it myself first");
   assert.deepEqual(withoutReasons(cards.INFLUENCER_02.choices), {
     left: { label: 'Deal', effects: influencerEffects.INFLUENCER_02[0], next: 'INFLUENCER_03' },
     right: { label: "Maybe 10%?", effects: influencerEffects.INFLUENCER_02[1], next: 'INFLUENCER_02A' },
@@ -120,7 +120,7 @@ test('AI influencer cards preserve approved copy and graph with document resourc
   });
 
   assert.equal(cards.INFLUENCER_03.text, "wtf??\nlooks like your blogger is trying to crash us\n\nthousands of requests right now:\nmake me $1B app. make zero mistakes\n\nis he dumb or just playing dumb? 😂");
-  assert.equal(cards.INFLUENCER_04.text, "Aaand it's down. Knew it 👏👏\n\nGuys, if you can't even handle my basic workflow, my traffic will literally destroy you\nDon't wanna bury your launch, but I never lie to my community\n\nGotta drop an honest video 😔");
+  assert.equal(cards.INFLUENCER_04.text, "Aaand it's down. Knew it 👏👏\n\nGuys, if you can't even handle my basic workflow, my traffic will literally destroy you 🤯\nDon't wanna bury your launch, but I never lie to my community\n\nGotta drop an honest video 😔");
   assert.deepEqual(withoutReasons(cards.INFLUENCER_04.choices), {
     left: { label: 'Have fun', effects: influencerEffects.INFLUENCER_04[0], next: 'INFLUENCER_06' },
     right: { label: 'Any other options?', effects: influencerEffects.INFLUENCER_04[1], next: 'INFLUENCER_05' },
@@ -235,7 +235,7 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
   assert.deepEqual(cards.OPEN_INVESTOR.choices.right.effects, { team: -4, founder: 2 });
 
   assert.equal(cards.PADEL_INVITE.source, '@padel_pro');
-  assert.equal(cards.PADEL_INVITE.text, "Yo champ, anyone in the club would die for this match, but I held the slot for you\nTomorrow 7 AM vs ClosedAI CEO\n\nThat’s your dream client, man. Remember who opened this door for you 💪");
+  assert.equal(cards.PADEL_INVITE.text, "Yo champ, anyone in the club would die for this match, but I held the slot for you 💪💪\n\nTomorrow 7 AM vs ClosedAI CEO 👊");
   assert.deepEqual(choicesWithoutReasons(cards.PADEL_INVITE), {
     left: { label: "I'm in", effects: padelEffects.PADEL_INVITE[0], next: 'DREAM_TEAM' },
     right: { label: 'Feeling sick, pass', effects: padelEffects.PADEL_INVITE[1], next: 'PADEL_OUTCOME_0' },

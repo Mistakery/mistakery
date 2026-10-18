@@ -12,6 +12,7 @@ test('the first chat waits for slow avatar requests and displays decoded photos 
   const heldAvatars = new Promise(resolve => { release = resolve; });
   try {
     const page = await browser.newPage();
+    await page.addInitScript(() => localStorage.setItem('mistakery.sound', 'off'));
     let avatarRequests = 0;
     await page.route('http://mistakery.test/**', async route => {
       const pathname = new URL(route.request().url()).pathname;
@@ -38,6 +39,7 @@ test('a stalled photo request cannot block play or replace initials later', asyn
   const heldAvatars = new Promise(resolve => { release = resolve; });
   try {
     const page = await browser.newPage();
+    await page.addInitScript(() => localStorage.setItem('mistakery.sound', 'off'));
     await page.route('http://mistakery.test/**', async route => {
       const pathname = new URL(route.request().url()).pathname;
       const file = path.join(root, pathname === '/' ? 'index.html' : pathname.slice(1));
@@ -50,7 +52,7 @@ test('a stalled photo request cannot block play or replace initials later', asyn
     assert.equal(await page.locator('.avatar-photo').count(), 0);
     assert.equal(await page.locator('[data-source="@bigdeals"] .member-avatar').first().textContent(), 'BD');
     release();
-    await page.waitForFunction(() => performance.getEntriesByType('resource').filter(entry => entry.name.includes('/avatar-')).length === 12);
+    await page.waitForFunction(() => performance.getEntriesByType('resource').filter(entry => entry.name.includes('/avatar-')).length === 13);
     await page.getByRole('button', { name: 'Restart story' }).click();
     assert.equal(await page.locator('.avatar-photo').count(), 0, 'late photos must not pop into the chat');
   } finally { release(); await browser.close(); }
@@ -60,6 +62,7 @@ test('character photos load in personal and team chats without changing avatar s
   const browser = await chromium.launch({ headless: true });
   try {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    await page.addInitScript(() => localStorage.setItem('mistakery.sound', 'off'));
     await page.goto(`${pathToFileURL(path.join(root, 'index.html')).href}?story=live-agent`);
     await page.waitForFunction(() => window.MistakeryApp?.view === 'playing');
     const sales = page.locator('[data-source="@bigdeals"] .member-avatar img').first();
@@ -112,7 +115,7 @@ test('character photos load in personal and team chats without changing avatar s
     assert.ok((await page.locator('[data-location-score]').textContent()).length > 0);
 
     const sources = await page.evaluate(() => Object.values(MistakeryApp.deck.sources).filter(source => source.avatarImage?.includes('/avatar-')));
-    assert.equal(new Set(sources.map(source => source.avatarImage)).size, 12);
+    assert.equal(new Set(sources.map(source => source.avatarImage)).size, 13);
     for (const source of sources) {
       assert.ok(fs.statSync(path.join(root, source.avatarImage)).size <= 12 * 1024, `${source.name}: avatar exceeds 12 KB`);
       const dimensions = await page.evaluate(async src => {

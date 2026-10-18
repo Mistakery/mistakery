@@ -976,16 +976,16 @@
     )).join('');
   }
 
-  function messageLines(text, preserveTerminalPeriod = false, italicLines = []) {
+  function messageLines(text, preserveTerminalPeriod = false, italicLines = [], boldLines = []) {
     const displayedText = preserveTerminalPeriod ? String(text) : withoutTerminalPeriod(text);
     return displayedText.split('\n').map((line, index, lines) => line
-      ? `<p${index > 0 && lines[index - 1] === '' ? ' class="message-paragraph-start"' : ''}>${italicLines.includes(line) ? `<em>${typography(line)}</em>` : typography(line)}</p>`
+      ? `<p${index > 0 && lines[index - 1] === '' ? ' class="message-paragraph-start"' : ''}>${boldLines.includes(line) ? `<strong>${typography(line)}</strong>` : italicLines.includes(line) ? `<em>${typography(line)}</em>` : typography(line)}</p>`
       : '').join('');
   }
 
-  function cardMessageMarkup(text, preserveTerminalPeriod = false, italicLines = []) {
+  function cardMessageMarkup(text, preserveTerminalPeriod = false, italicLines = [], boldLines = []) {
     return text.split('\n\n').map((message) => (
-      `<div class="message is-pop">${messageLines(message, preserveTerminalPeriod, italicLines)}</div>`
+      `<div class="message is-pop">${messageLines(message, preserveTerminalPeriod, italicLines, boldLines)}</div>`
     )).join('');
   }
 
@@ -1242,7 +1242,7 @@
         : message.forwardedFrom
           ? forwardedMessageMarkup(message, preserve)
           : cardMessageMarkup(message.text, preserve)).join('')
-      : cardMessageMarkup(card.text, preserve, card.italicLines);
+      : cardMessageMarkup(card.text, preserve, card.italicLines, card.boldLines);
     return withMessageReactions(card, media + messages);
   }
 
@@ -1457,6 +1457,7 @@
     phone.dataset.outcome = complete ? 'complete' : 'failure';
     $('[data-ending-summary] small').textContent = complete ? 'END OF RUN' : 'GAME OVER · YOU LOST';
     $('[data-ending-title]').textContent = complete ? 'Run complete' : ending.title;
+    $('[data-ending-title]').hidden = !complete && !ending.title;
     $('[data-ending-cause]').textContent = complete
       ? 'All three stories are finished. Your company is still here.' : ending.cause;
     $('[data-ending-summary]').hidden = false;
@@ -1547,17 +1548,20 @@
     renderPersonalCard(card);
     setThread(card.source, 'Game over');
     $('[data-game]').dataset.outcome = 'failure';
-    $('[data-ending-summary] small').textContent = 'GAME OVER · YOU LOST';
+    const judgment = app.state.endingId === 'judgment_day';
+    const endedState = app.state;
+    $('[data-ending-summary] small').textContent = judgment ? 'GAME OVER' : 'GAME OVER · YOU LOST';
     $('[data-ending-title]').textContent = ending.title;
+    $('[data-ending-title]').hidden = !ending.title;
     $('[data-ending-cause]').textContent = ending.cause;
     $('[data-ending-summary]').hidden = false;
     for (const id of app.state.route.ending.causes) {
       const key = app.deck.endings[id].resource;
       $(`[data-resource="${key}"]`).classList.add('is-fatal');
     }
-    setChoices(['Back to 9–5', 'New run'], (side, event) => {
-      if (app.locked) return;
-      if (side === 'right') restartRun();
+    setChoices(judgment ? ['Oops', 'Finally 😍'] : ['Back to 9–5', 'New run'], (side, event) => {
+      if (app.locked || app.state !== endedState) return;
+      if (judgment || side === 'right') restartRun();
       else requestExit(event);
     });
     $('[data-chat]').scrollTop = 0;

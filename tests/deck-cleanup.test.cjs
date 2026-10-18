@@ -4,6 +4,7 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const deck = require('../cards.json');
+const { restoreApprovedChanges } = require('./revision-pack.fixture.cjs');
 const route = require('../assets/route.js');
 const engine = require('../game.js');
 const baseline = require('../docs/qa/deck-cleanup/baseline.json');
@@ -29,8 +30,10 @@ test('production deck excludes isolated legacy cards and scheduler references', 
 });
 
 test('every retained card, translation and founder reward remains exactly approved', () => {
-  for (const card of deck.cards) assert.equal(hash(card), baseline.retainedCardSha256[card.id], card.id);
-  assert.equal(hash(deck.testTranslations), baseline.translationsSha256);
+  // Reverse only exact owner-approved fields; historical hashes still protect everything else.
+  const previous = restoreApprovedChanges(deck);
+  for (const card of previous.cards) assert.equal(hash(card), baseline.retainedCardSha256[card.id], card.id);
+  assert.equal(hash(previous.testTranslations), baseline.translationsSha256);
   // PEARL / 02 approved copy changes; all other reward data retains the cleanup baseline.
   const founder = structuredClone(deck.meta.founderProfile);
   assert.equal(founder.issuer, 'approved by b2buddy • Mistakery Game');

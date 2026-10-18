@@ -1,6 +1,6 @@
 {
   "date": "2026-10-05",
-  "instruction": "Сохранить эмодзи прежней версии; не ставить точки в конце завершённых фраз и баблов, только между предложениями. Удалить Powerless against the truth (и RU-эквивалент), вернуть ASAP!!!. Вернуть прежнее разбиение на баблы, корпоративный DM с пересылками, @error404 без подчёркивания и убрать четыре добавленных подписи роликов. 2026-10-05: владелец заменил цитату INFLUENCER_03 на make me $1B app. make zero mistakes и попросил курсив; скриншот в INFLUENCER_08 заменён предоставленным владельцем, 😔 сохранён. Владелец уточнил: INFLUENCER_07 публикуется в общем Dream Team, автор всех трёх баблов @ai_evangelist, изображение/тексты/emoji/ответы сохранены. Владелец прислал и утвердил новые английские тексты PADEL_OUTCOME_1 и PADEL_OUTCOME_6; PADEL_OUTCOME_5 уже совпадает по словам. Прежнее правило без конечных точек сохранено.",
+  "instruction": "Сохранить эмодзи прежней версии; не ставить точки в конце завершённых фраз и баблов, только между предложениями. Удалить Powerless against the truth (и RU-эквивалент), вернуть ASAP!!!. Вернуть прежнее разбиение на баблы, корпоративный DM с пересылками, @error404 без подчёркивания и убрать четыре добавленных подписи роликов. 2026-10-05: владелец заменил цитату INFLUENCER_03 на make me $1B app. make zero mistakes и попросил курсив; скриншот в INFLUENCER_08 заменён предоставленным владельцем, 😔 сохранён. Владелец уточнил: INFLUENCER_07 публикуется в общем Dream Team, автор всех трёх баблов @ai_evangelist, изображение/тексты/emoji/ответы сохранены. Владелец прислал и утвердил новые английские тексты PADEL_OUTCOME_1 и PADEL_OUTCOME_6; PADEL_OUTCOME_5 уже совпадает по словам. Прежнее правило без конечных точек сохранено. 2026-10-18: точный пакет владельца сохранён в docs/qa/revision-pack/approved-changes.json: request queue + жирная цитата, emoji/абзацы, короткое приглашение тренера, voice 3:47:28 без заголовка и упоминания четырёх часов. Старый cleanup baseline проверяется после обратного применения только этих полей.",
   "terminalPeriods": "Remove a single terminal period at every authored line/bubble boundary; preserve internal sentence periods and ellipses.",
   "emoji": [
     {
@@ -1575,23 +1575,17 @@
     {
       "id": "INFLUENCER_OUTCOME_3",
       "field": "messages.0.image.caption"
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "italicLines"
     }
   ],
   "layout": [
     {
-      "id": "INFLUENCER_02",
-      "field": "text",
-      "value": "Hey 👋\nHeard about your tool. I feel like we got a huge future together\n\nLet me drop a video with your link in the description\nYou get customers, I get a cut of the sales. Win-win!\nUsually I take 20%, but you guys are cool, we'll work out the terms\n\nSend over the demo. I keep it 💯 honest with my audience, gotta test it myself first"
-    },
-    {
       "id": "INFLUENCER_02A",
       "field": "text",
       "value": "Hahaha\nI like your style 😂\nLet's lock in 20% for now, but I'll hook you up\nI'll give you access to my private database of 50 killer B2B prompts. People pay $1k for this 😉\nWe good? Drop the demo"
-    },
-    {
-      "id": "INFLUENCER_04",
-      "field": "text",
-      "value": "Aaand it's down. Knew it 👏👏\n\nGuys, if you can't even handle my basic workflow, my traffic will literally destroy you\nDon't wanna bury your launch, but I never lie to my community\n\nGotta drop an honest video 😔"
     },
     {
       "id": "INFLUENCER_07",
@@ -1602,11 +1596,6 @@
       "id": "INFLUENCER_07",
       "field": "messages.2.text",
       "value": "Or do. That’s just more views lol 😂"
-    },
-    {
-      "id": "PADEL_INVITE",
-      "field": "text",
-      "value": "Yo champ, anyone in the club would die for this match, but I held the slot for you\nTomorrow 7 AM vs ClosedAI CEO\n\nThat’s your dream client, man. Remember who opened this door for you 💪"
     },
     {
       "id": "LIVE_AGENT_OUTCOME_3",
@@ -1697,6 +1686,98 @@
       "id": "INFLUENCER_OUTCOME_3",
       "field": "messages.0.image.alt",
       "value": "I gave up: why even I couldn't save these losers — challenge finale"
+    },
+    {
+      "id": "INFLUENCER_01",
+      "field": "messages.0.text",
+      "value": "Guys huge play !! 💸💸\n\nMy boy from that AI bootcamp is a top AI influencer now. Down to promote us for a symbolic % on each sale"
+    },
+    {
+      "id": "INFLUENCER_01",
+      "field": "messages.3.text",
+      "value": "major 🚩🚩🚩 vibes tbh. but if he has meme potential, let's run it. we can farm clips off him"
+    },
+    {
+      "id": "INFLUENCER_02",
+      "field": "text",
+      "value": "Hey 👋\nHeard about your tool. I feel like we got a huge future together\n\nLet me drop a video with your link in the description\nYou get customers, I get a cut of the sales. Win-win! 🤝\nUsually I take 20%, but you guys are cool, we'll work out the terms\n\nSend over the demo. I keep it 💯 honest with my audience, gotta test it myself first"
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "boldLines",
+      "value": [
+        "make me $1B app. make zero mistakes"
+      ]
+    },
+    {
+      "id": "INFLUENCER_03",
+      "field": "image",
+      "value": {
+        "src": "assets/influencer-request-queue.webp",
+        "alt": "Request queue filled with repeated make me $1B app. make zero mistakes requests",
+        "width": 1200,
+        "height": 800
+      }
+    },
+    {
+      "id": "INFLUENCER_04",
+      "field": "text",
+      "value": "Aaand it's down. Knew it 👏👏\n\nGuys, if you can't even handle my basic workflow, my traffic will literally destroy you 🤯\nDon't wanna bury your launch, but I never lie to my community\n\nGotta drop an honest video 😔"
+    },
+    {
+      "id": "PADEL_INVITE",
+      "field": "text",
+      "value": "Yo champ, anyone in the club would die for this match, but I held the slot for you 💪💪\n\nTomorrow 7 AM vs ClosedAI CEO 👊"
+    },
+    {
+      "id": "FILL_RIVAL",
+      "field": "text",
+      "value": "Just raised at a $50M cap. Honestly exhausted by winning 😮‍💨\n\nHow’s it going?"
+    },
+    {
+      "id": "FILL_MANTRA",
+      "field": "messages.0.image.alt",
+      "value": "Investor’s voice message with a play icon, waveform and duration 3:47:28"
+    },
+    {
+      "id": "FILL_MANTRA",
+      "field": "messages.0.image.src",
+      "value": "assets/filler-mantra-voice-v2.svg"
+    },
+    {
+      "id": "FILL_MANTRA",
+      "field": "messages.1.text",
+      "value": "MY GURU SENT A WEALTH MANTRA"
+    },
+    {
+      "id": "INFLUENCER_01",
+      "field": "ru.text",
+      "value": "@hustler\nкороче, есть железобетонная темка !! 💸💸\n\nмой старый кореш, тот самый с марафона по нейросетям, сейчас топовый инфлюенсер в сфере ai. готов промить нас за символический процент с каждой продажи\n@bigdeals\nАга, плавали, знаем\nМаксимум 20%, больше отдадим ему — без штанов останемся\n@hype_queen\nтут прям 🚩🚩🚩 вайбы, если честно. но если чел мемный, го\nнарезок с ним сделаем"
+    },
+    {
+      "id": "INFLUENCER_02",
+      "field": "ru.text",
+      "value": "йооу 👋\n\nслышал про ваш тул. пушечный. чувствую у нас с вами большое будущее\n\nдавайте я сниму про вас видос, добавлю ссылку в описание\nвам клиенты, мне процент с продаж. все в плюсе! 🤝\nобычно беру 20% но вы ребята крутые, может на договоримся на особые условия\n\nкидай ссылку на демо, буду тестить. я на 💯 честен со своей аудиторией, все обязательно проверяю сам сначала"
+    },
+    {
+      "id": "INFLUENCER_04",
+      "field": "ru.text",
+      "value": "Иии всё упало. Так и знал 👏👏\nРебят, если вы даже мой базовый воркфлоу не держите, мой трафик вас буквально уничтожит 🤯\nНе хочется топить ваш запуск, но я всегда на 100% честен со своим комьюнити\n\nПридётся выкатить честное видео 😔"
+    },
+    {
+      "id": "PADEL_INVITE",
+      "field": "ru.text",
+      "value": "Йо, чемпион, любой в клубе душу бы отдал за этот матч, но я придержал слот для тебя 💪💪\n\nЗавтра в 7 утра против CEO ClosedAI 👊"
+    },
+    {
+      "id": "FILL_RIVAL",
+      "field": "ru.text",
+      "value": "Только что поднял раунд при оценке $50 миллионов. Если честно, устал побеждать 😮‍💨\n\nКак твои делишки?"
+    },
+    {
+      "id": "FILL_MANTRA",
+      "field": "ru.text",
+      "value": "МОЙ ГУРУ ПРИСЛАЛ АУДИОМАНТРУ БОГАТСТВА\n\nСЛУШАЙ НА ПОВТОРЕ, ПОКА РАБОТАЕШЬ\n\nУСПЕХ НА 90% СОСТОИТ ИЗ ВИБРАЦИЙ, ТЫ СЛЫШИШЬ???"
     }
   ],
   "bubbleCounts": [

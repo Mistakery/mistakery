@@ -579,12 +579,14 @@
 
 **EN**
 
-> Just raised at a $50M cap. Honestly exhausted by winning<br>
+> Just raised at a $50M cap. Honestly exhausted by winning 😮‍💨<br>
 > How’s it going?
 
 **RU**
 
-> Только что поднял раунд при оценке $50 миллионов. Если честно, устал побеждать. Как твои делишки?
+> Только что поднял раунд при оценке $50 миллионов. Если честно, устал побеждать 😮‍💨<br>
+> <br>
+> Как твои делишки?
 
 Источник перевода: https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit (эмодзи и финальная пунктуация по правилам владельца).
 
@@ -645,9 +647,9 @@
 **EN**
 
 > @unicorn_hunter<br>
-> wealth mantra: investor’s four-hour voice message with a play icon, waveform and duration 4:00:00<br>
+> Investor’s voice message with a play icon, waveform and duration 3:47:28<br>
 > @unicorn_hunter<br>
-> MY GURU SENT A 4-HOUR WEALTH MANTRA<br>
+> MY GURU SENT A WEALTH MANTRA<br>
 > @unicorn_hunter<br>
 > LISTEN TO IT ON REPEAT WHILE YOU WORK TODAY<br>
 > @unicorn_hunter<br>
@@ -655,7 +657,7 @@
 
 **RU**
 
-> МОЙ ГУРУ ПРИСЛАЛ ЧЕТЫРЁХЧАСОВУЮ АУДИОМАНТРУ БОГАТСТВА<br>
+> МОЙ ГУРУ ПРИСЛАЛ АУДИОМАНТРУ БОГАТСТВА<br>
 > <br>
 > СЛУШАЙ НА ПОВТОРЕ, ПОКА РАБОТАЕШЬ<br>
 > <br>
@@ -1075,24 +1077,26 @@
 **EN**
 
 > @hustler<br>
-> Guys, huge play!!<br>
+> Guys huge play !! 💸💸<br>
 > My boy from that AI bootcamp is a top AI influencer now. Down to promote us for a symbolic % on each sale<br>
 > @bigdeals<br>
 > Yeah right, heard that one before<br>
 > @bigdeals<br>
 > 20% max, anything higher and, we'll lose our shirts<br>
 > @hype_queen<br>
-> major red flag vibes tbh. but if he has meme potential, let's run it. we can farm clips off him
+> major 🚩🚩🚩 vibes tbh. but if he has meme potential, let's run it. we can farm clips off him
 
 **RU**
 
 > @hustler<br>
-> короче, есть железобетонная темка. мой старый кореш, тот самый с марафона по нейросетям, сейчас топовый инфлюенсер в сфере ai. готов промить нас за символический процент с каждой продажи<br>
+> короче, есть железобетонная темка !! 💸💸<br>
+> <br>
+> мой старый кореш, тот самый с марафона по нейросетям, сейчас топовый инфлюенсер в сфере ai. готов промить нас за символический процент с каждой продажи<br>
 > @bigdeals<br>
 > Ага, плавали, знаем<br>
 > Максимум 20%, больше отдадим ему — без штанов останемся<br>
 > @hype_queen<br>
-> звучит как ред флаг но если чел мемный, го<br>
+> тут прям 🚩🚩🚩 вайбы, если честно. но если чел мемный, го<br>
 > нарезок с ним сделаем
 
 Источник перевода: https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit (эмодзи и финальная пунктуация по правилам владельца).
@@ -1107,7 +1111,7 @@
 > Hey 👋<br>
 > Heard about your tool. I feel like we got a huge future together<br>
 > Let me drop a video with your link in the description<br>
-> You get customers, I get a cut of the sales. Win-win!<br>
+> You get customers, I get a cut of the sales. Win-win! 🤝<br>
 > Usually I take 20%, but you guys are cool, we'll work out the terms<br>
 > Send over the demo. I keep it 💯 honest with my audience, gotta test it myself first
 
@@ -1118,7 +1122,7 @@
 > слышал про ваш тул. пушечный. чувствую у нас с вами большое будущее<br>
 > <br>
 > давайте я сниму про вас видос, добавлю ссылку в описание<br>
-> вам клиенты, мне процент с продаж. все в плюсе<br>
+> вам клиенты, мне процент с продаж. все в плюсе! 🤝<br>
 > обычно беру 20% но вы ребята крутые, может на договоримся на особые условия<br>
 > <br>
 > кидай ссылку на демо, буду тестить. я на 💯 честен со своей аудиторией, все обязательно проверяю сам сначала
@@ -1155,6 +1159,7 @@
 
 **EN**
 
+> Request queue filled with repeated make me $1B app. make zero mistakes requests<br>
 > wtf??<br>
 > looks like your blogger is trying to crash us<br>
 > thousands of requests right now:<br>
@@ -1181,14 +1186,14 @@
 **EN**
 
 > Aaand it's down. Knew it 👏👏<br>
-> Guys, if you can't even handle my basic workflow, my traffic will literally destroy you<br>
+> Guys, if you can't even handle my basic workflow, my traffic will literally destroy you 🤯<br>
 > Don't wanna bury your launch, but I never lie to my community<br>
 > Gotta drop an honest video 😔
 
 **RU**
 
 > Иии всё упало. Так и знал 👏👏<br>
-> Ребят, если вы даже мой базовый воркфлоу не держите, мой трафик вас буквально уничтожит<br>
+> Ребят, если вы даже мой базовый воркфлоу не держите, мой трафик вас буквально уничтожит 🤯<br>
 > Не хочется топить ваш запуск, но я всегда на 100% честен со своим комьюнити<br>
 > <br>
 > Придётся выкатить честное видео 😔
@@ -1483,15 +1488,14 @@
 
 **EN**
 
-> Yo champ, anyone in the club would die for this match, but I held the slot for you<br>
-> Tomorrow 7 AM vs ClosedAI CEO<br>
-> That’s your dream client, man. Remember who opened this door for you 💪
+> Yo champ, anyone in the club would die for this match, but I held the slot for you 💪💪<br>
+> Tomorrow 7 AM vs ClosedAI CEO 👊
 
 **RU**
 
-> Йо, чемпион, любой в клубе душу бы отдал за этот матч, но я придержал слот для тебя<br>
-> Завтра в 7 утра против CEO ClosedAI<br>
-> Это твой клиент мечты, мужик. Запомни, кто открыл тебе эту дверь 💪
+> Йо, чемпион, любой в клубе душу бы отдал за этот матч, но я придержал слот для тебя 💪💪<br>
+> <br>
+> Завтра в 7 утра против CEO ClosedAI 👊
 
 Источник перевода: https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit (эмодзи и финальная пунктуация по правилам владельца).
 

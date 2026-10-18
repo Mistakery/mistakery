@@ -138,6 +138,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
 }
 async function open(browser, motion = 'no-preference') {
   const page = await browser.newPage({ viewport: { width: 320, height: 650 }, reducedMotion: motion });
+  await page.addInitScript(() => localStorage.setItem('mistakery.sound', 'off'));
   await page.goto(url); await page.waitForFunction(() => MistakeryApp?.state);
   await page.clock.install(); await page.clock.pauseAt(new Date());
   return page;
@@ -229,8 +230,8 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         assert.equal(await page.locator('[data-chat-history], [data-player-reply]').count(), 0);
       }
       await seed(page, 'INFLUENCER_03');
-      assert.equal((await page.locator('[data-chat] em').innerText()).replaceAll('\u00a0', ' '), 'make me $1B app. make zero mistakes');
-      assert.equal(await page.locator('[data-chat] em').evaluate(n => getComputedStyle(n).fontStyle), 'italic');
+      assert.equal((await page.locator('[data-chat] strong').innerText()).replaceAll('\u00a0', ' '), 'make me $1B app. make zero mistakes');
+      assert.equal(await page.locator('[data-chat] strong').evaluate(n => getComputedStyle(n).fontWeight), '700');
       await seed(page, 'INFLUENCER_08');
       const image = page.locator('[data-chat-current][data-source="@bigdeals"] .message-image');
       assert.match(await image.getAttribute('src'), /ai-influencer-fake-lead-review\.webp/);

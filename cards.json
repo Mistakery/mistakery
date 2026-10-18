@@ -138,7 +138,8 @@
     },
     "@yc_founder": {
       "name": "@yc_founder",
-      "role": "College Rival"
+      "role": "College Rival",
+      "avatarImage": "assets/avatar-yc-founder.webp"
     },
     "@i_love_cats72": {
       "name": "@i_love_cats72",
@@ -1434,7 +1435,7 @@
           "direction": "incoming",
           "source": "@hustler",
           "avatar": "H",
-          "text": "Guys, huge play!!\nMy boy from that AI bootcamp is a top AI influencer now. Down to promote us for a symbolic % on each sale"
+          "text": "Guys huge play !! 💸💸\n\nMy boy from that AI bootcamp is a top AI influencer now. Down to promote us for a symbolic % on each sale"
         },
         {
           "direction": "incoming",
@@ -1452,7 +1453,7 @@
           "direction": "incoming",
           "source": "@hype_queen",
           "avatar": "HQ",
-          "text": "major red flag vibes tbh. but if he has meme potential, let's run it. we can farm clips off him"
+          "text": "major 🚩🚩🚩 vibes tbh. but if he has meme potential, let's run it. we can farm clips off him"
         }
       ],
       "choices": {
@@ -1486,7 +1487,7 @@
       "arc": "influencer",
       "source": "@ai_evangelist",
       "continuation": "forced",
-      "text": "Hey 👋\nHeard about your tool. I feel like we got a huge future together\n\nLet me drop a video with your link in the description\nYou get customers, I get a cut of the sales. Win-win!\nUsually I take 20%, but you guys are cool, we'll work out the terms\n\nSend over the demo. I keep it 💯 honest with my audience, gotta test it myself first",
+      "text": "Hey 👋\nHeard about your tool. I feel like we got a huge future together\n\nLet me drop a video with your link in the description\nYou get customers, I get a cut of the sales. Win-win! 🤝\nUsually I take 20%, but you guys are cool, we'll work out the terms\n\nSend over the demo. I keep it 💯 honest with my audience, gotta test it myself first",
       "choices": {
         "left": {
           "label": "Deal",
@@ -1596,9 +1597,15 @@
         "pitch_video"
       ],
       "preservePunctuation": true,
-      "italicLines": [
+      "boldLines": [
         "make me $1B app. make zero mistakes"
-      ]
+      ],
+      "image": {
+        "src": "assets/influencer-request-queue.webp",
+        "alt": "Request queue filled with repeated make me $1B app. make zero mistakes requests",
+        "width": 1200,
+        "height": 800
+      }
     },
     {
       "id": "INFLUENCER_04",
@@ -1606,7 +1613,7 @@
       "arc": "influencer",
       "source": "@ai_evangelist",
       "continuation": "forced",
-      "text": "Aaand it's down. Knew it 👏👏\n\nGuys, if you can't even handle my basic workflow, my traffic will literally destroy you\nDon't wanna bury your launch, but I never lie to my community\n\nGotta drop an honest video 😔",
+      "text": "Aaand it's down. Knew it 👏👏\n\nGuys, if you can't even handle my basic workflow, my traffic will literally destroy you 🤯\nDon't wanna bury your launch, but I never lie to my community\n\nGotta drop an honest video 😔",
       "choices": {
         "left": {
           "label": "Have fun",
@@ -2230,7 +2237,7 @@
       "kind": "story",
       "source": "@padel_pro",
       "continuation": "forced",
-      "text": "Yo champ, anyone in the club would die for this match, but I held the slot for you\nTomorrow 7 AM vs ClosedAI CEO\n\nThat’s your dream client, man. Remember who opened this door for you 💪",
+      "text": "Yo champ, anyone in the club would die for this match, but I held the slot for you 💪💪\n\nTomorrow 7 AM vs ClosedAI CEO 👊",
       "actor_action": "The coach offers the founder a held match slot with the ClosedAI CEO and reminds him who created the opportunity.",
       "player_decision": "Accept the match or claim to be sick; either answer becomes team news.",
       "choices": {
@@ -3601,7 +3608,7 @@
       "source": "@yc_founder",
       "continuation": "forced",
       "oncePerRun": true,
-      "text": "Just raised at a $50M cap. Honestly exhausted by winning\nHow’s it going?",
+      "text": "Just raised at a $50M cap. Honestly exhausted by winning 😮‍💨\n\nHow’s it going?",
       "filler": {
         "unit": "rival",
         "role": "single",
@@ -3738,8 +3745,8 @@
           "source": "@unicorn_hunter",
           "direction": "incoming",
           "image": {
-            "src": "assets/filler-mantra-voice-v1.svg",
-            "alt": "wealth mantra: investor’s four-hour voice message with a play icon, waveform and duration 4:00:00",
+            "src": "assets/filler-mantra-voice-v2.svg",
+            "alt": "Investor’s voice message with a play icon, waveform and duration 3:47:28",
             "width": 600,
             "height": 180
           }
@@ -3747,7 +3754,7 @@
         {
           "source": "@unicorn_hunter",
           "direction": "incoming",
-          "text": "MY GURU SENT A 4-HOUR WEALTH MANTRA"
+          "text": "MY GURU SENT A WEALTH MANTRA"
         },
         {
           "source": "@unicorn_hunter",
@@ -4017,7 +4024,7 @@
     },
     "judgment_day": {
       "type": "loss",
-      "title": "JUDGMENT DAY",
+      "title": "",
       "cause": "The world is gone. So is your company.",
       "causeRu": "Мир уничтожен. Вместе с твоей компанией."
     }
@@ -4194,14 +4201,14 @@
       "ownerPresentation": true
     },
     "INFLUENCER_01": {
-      "text": "@hustler\nкороче, есть железобетонная темка. мой старый кореш, тот самый с марафона по нейросетям, сейчас топовый инфлюенсер в сфере ai. готов промить нас за символический процент с каждой продажи\n@bigdeals\nАга, плавали, знаем\nМаксимум 20%, больше отдадим ему — без штанов останемся\n@hype_queen\nзвучит как ред флаг но если чел мемный, го\nнарезок с ним сделаем",
+      "text": "@hustler\nкороче, есть железобетонная темка !! 💸💸\n\nмой старый кореш, тот самый с марафона по нейросетям, сейчас топовый инфлюенсер в сфере ai. готов промить нас за символический процент с каждой продажи\n@bigdeals\nАга, плавали, знаем\nМаксимум 20%, больше отдадим ему — без штанов останемся\n@hype_queen\nтут прям 🚩🚩🚩 вайбы, если честно. но если чел мемный, го\nнарезок с ним сделаем",
       "left": "погнали;",
       "right": "не, кринж",
       "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit",
       "ownerPresentation": true
     },
     "INFLUENCER_02": {
-      "text": "йооу 👋\n\nслышал про ваш тул. пушечный. чувствую у нас с вами большое будущее\n\nдавайте я сниму про вас видос, добавлю ссылку в описание\nвам клиенты, мне процент с продаж. все в плюсе\nобычно беру 20% но вы ребята крутые, может на договоримся на особые условия\n\nкидай ссылку на демо, буду тестить. я на 💯 честен со своей аудиторией, все обязательно проверяю сам сначала",
+      "text": "йооу 👋\n\nслышал про ваш тул. пушечный. чувствую у нас с вами большое будущее\n\nдавайте я сниму про вас видос, добавлю ссылку в описание\nвам клиенты, мне процент с продаж. все в плюсе! 🤝\nобычно беру 20% но вы ребята крутые, может на договоримся на особые условия\n\nкидай ссылку на демо, буду тестить. я на 💯 честен со своей аудиторией, все обязательно проверяю сам сначала",
       "left": "По рукам",
       "right": "Как насчет 10%",
       "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit",
@@ -4222,7 +4229,7 @@
       "ownerPresentation": true
     },
     "INFLUENCER_04": {
-      "text": "Иии всё упало. Так и знал 👏👏\nРебят, если вы даже мой базовый воркфлоу не держите, мой трафик вас буквально уничтожит\nНе хочется топить ваш запуск, но я всегда на 100% честен со своим комьюнити\n\nПридётся выкатить честное видео 😔",
+      "text": "Иии всё упало. Так и знал 👏👏\nРебят, если вы даже мой базовый воркфлоу не держите, мой трафик вас буквально уничтожит 🤯\nНе хочется топить ваш запуск, но я всегда на 100% честен со своим комьюнити\n\nПридётся выкатить честное видео 😔",
       "left": "Удачи",
       "right": "Есть еще варианты?",
       "source": "https://docs.google.com/document/d/1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc/edit",
@@ -4318,7 +4325,7 @@
       "ownerPresentation": true
     },
     "PADEL_INVITE": {
-      "text": "Йо, чемпион, любой в клубе душу бы отдал за этот матч, но я придержал слот для тебя\nЗавтра в 7 утра против CEO ClosedAI\nЭто твой клиент мечты, мужик. Запомни, кто открыл тебе эту дверь 💪",
+      "text": "Йо, чемпион, любой в клубе душу бы отдал за этот матч, но я придержал слот для тебя 💪💪\n\nЗавтра в 7 утра против CEO ClosedAI 👊",
       "left": "Я в деле",
       "right": "Приболел, пас",
       "source": "https://docs.google.com/document/d/14r75dbHVyI8nW3xlyYGnnk-E-PTyK6VqnYvnn2fE6Uk/edit",
@@ -4595,7 +4602,7 @@
       "ownerPresentation": true
     },
     "FILL_RIVAL": {
-      "text": "Только что поднял раунд при оценке $50 миллионов. Если честно, устал побеждать. Как твои делишки?",
+      "text": "Только что поднял раунд при оценке $50 миллионов. Если честно, устал побеждать 😮‍💨\n\nКак твои делишки?",
       "left": "А мы $100M поднимаем",
       "right": "Рад слышать, мужик!",
       "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
@@ -4616,7 +4623,7 @@
       "ownerPresentation": true
     },
     "FILL_MANTRA": {
-      "text": "МОЙ ГУРУ ПРИСЛАЛ ЧЕТЫРЁХЧАСОВУЮ АУДИОМАНТРУ БОГАТСТВА\n\nСЛУШАЙ НА ПОВТОРЕ, ПОКА РАБОТАЕШЬ\n\nУСПЕХ НА 90% СОСТОИТ ИЗ ВИБРАЦИЙ, ТЫ СЛЫШИШЬ???",
+      "text": "МОЙ ГУРУ ПРИСЛАЛ АУДИОМАНТРУ БОГАТСТВА\n\nСЛУШАЙ НА ПОВТОРЕ, ПОКА РАБОТАЕШЬ\n\nУСПЕХ НА 90% СОСТОИТ ИЗ ВИБРАЦИЙ, ТЫ СЛЫШИШЬ???",
       "left": "На репите, босс",
       "right": "Не до мантр сейчас",
       "source": "https://docs.google.com/document/d/1EPNS9F1Mqv0Nk7j5Z8o6VEzy5dAYHBGx3yQghvE1Oos/edit",
