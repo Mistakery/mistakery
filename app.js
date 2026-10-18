@@ -946,7 +946,7 @@
       .join('');
     if (disabled) return;
     document.querySelectorAll('[data-choice]').forEach((button) => {
-      button.addEventListener('click', () => onChoose(button.dataset.choice));
+      button.addEventListener('click', event => onChoose(button.dataset.choice, event));
     });
   }
 
@@ -1460,10 +1460,10 @@
         return `<div class="run-results__row" data-run-result><span>${names[plot]}</span><b>${label}</b></div>`;
       }).join('');
     $('[data-chat]').append(panel);
-    setChoices(['Back to 9–5', 'New run'], side => {
+    setChoices(['Back to 9–5', 'New run'], (side, event) => {
       if (app.locked) return;
       if (side === 'right') restartRun();
-      else exitRun();
+      else requestExit(event);
     });
     $('[data-chat]').scrollTop = 0;
   }
@@ -1487,8 +1487,8 @@
       <footer class="founder-actions"><button class="choice founder-finish" type="button" data-profile-finish>Back to 9–5</button><button class="choice founder-replay" type="button" data-profile-replay>New run</button></footer>`;
     $('[data-game]').dataset.founderProfile = '';
     $('[data-game]').append(screen);
-    screen.querySelector('[data-profile-finish]').addEventListener('click', () => {
-      if (app.state === state) exitRun();
+    screen.querySelector('[data-profile-finish]').addEventListener('click', event => {
+      if (app.state === state) requestExit(event);
     });
     screen.querySelector('[data-profile-replay]').addEventListener('click', () => {
       if (app.state === state) restartRun();
@@ -1534,10 +1534,10 @@
       const key = app.deck.endings[id].resource;
       $(`[data-resource="${key}"]`).classList.add('is-fatal');
     }
-    setChoices(['Back to 9–5', 'New run'], side => {
+    setChoices(['Back to 9–5', 'New run'], (side, event) => {
       if (app.locked) return;
       if (side === 'right') restartRun();
-      else exitRun();
+      else requestExit(event);
     });
     $('[data-chat]').scrollTop = 0;
   }
@@ -2003,7 +2003,6 @@
   function requestExit(event) {
     if (lossPreviewEnabled) return openLossPreview(app.lossPreviewIndex);
     if (app.view === 'onboarding' || app.view === 'title' || !app.state) return;
-    if (app.state.gameOver || app.state.history.length === 0) return exitRun();
     if ($('[data-quit-dialog]')) return;
     const origin = event?.currentTarget || document.activeElement;
     const dialog = document.createElement('dialog');
@@ -2210,9 +2209,9 @@
       $('[data-restart-run]').focus({ preventScroll: true });
     };
     dialog.querySelectorAll('[data-finale-choice]').forEach((button, index) => {
-      button.addEventListener('click', () => {
+      button.addEventListener('click', event => {
         if (lossPreviewEnabled) dismiss();
-        else if (index === 0) exitRun();
+        else if (index === 0) requestExit(event);
         else restartRun();
         sound.play('send');
       });

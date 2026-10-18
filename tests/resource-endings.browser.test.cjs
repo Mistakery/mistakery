@@ -1,4 +1,4 @@
-const { playFromTitle } = require('./exit-flow.fixture.cjs');
+const { confirmQuit, playFromTitle } = require('./exit-flow.fixture.cjs');
 const { completeFounderSend, continueWinFeedback } = require('./chat-delivery.fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -147,7 +147,7 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
         assert.deepEqual(await snapshot(page), ended);
         await page.clock.runFor(1000);
         await page.locator(id === 'judgment_day' ? '[data-choice="right"]' : '[data-restart-run]').click();
-        if (id !== 'judgment_day') await playFromTitle(page);
+        if (id !== 'judgment_day') { await confirmQuit(page); await playFromTitle(page); }
         assert.equal(await page.evaluate(() => MistakeryApp.view), 'playing');
         assert.equal(await page.locator('[data-loss-flash], [data-loss-finale], [data-loss-preview]').count(), 0);
         const next = await snapshot(page);
@@ -217,10 +217,12 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
       await page.clock.runFor(20000);
       assert.deepEqual(await snapshot(page), ended);
       await page.locator('[data-choice="left"]').click();
+      await confirmQuit(page);
       assert.equal(await page.locator('[data-loss-flash], [data-loss-finale], [data-loss-preview]').count(), 0);
       await reach('founder_low');
       assert.equal(await page.locator('.preview-composer').count(), 1);
       await page.locator('[data-restart-run]').click();
+      await confirmQuit(page);
       await page.clock.runFor(20000);
       assert.equal(await page.locator('[data-loss-flash], [data-loss-finale], [data-loss-preview], .preview-composer').count(), 0);
       assert.equal(await page.evaluate(() => MistakeryApp.view), 'title');

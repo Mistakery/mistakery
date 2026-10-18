@@ -16,7 +16,16 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
    await page.goto(url+'?test=route&seed=14');
    await page.waitForFunction(()=>window.MistakeryApp?.state);
    await page.clock.install(); await page.clock.pauseAt(new Date());
+   const empty=await snapshot(page);
+   await page.locator('[data-restart-run]').click();
+   assert.equal(await page.locator('[data-quit-dialog][open]').count(),1,'Saved also confirms exit');
+   await page.locator('[data-quit-cancel]').click();
+   assert.deepEqual(await snapshot(page),empty);
    for(let i=0;i<2;i++){await page.clock.runFor(20000);await page.locator('[data-choice="left"]').click();}
+   await page.locator('[data-restart-run]').click();
+   assert.equal(await page.locator('[data-quit-dialog][open]').count(),1,'first plot confirms before any decisions');
+   await page.keyboard.press('Escape');
+   assert.deepEqual(await snapshot(page),empty);
    await page.clock.runFor(20000);
    await page.locator('[data-choice="left"]').click();
    await page.clock.runFor(20000);
@@ -69,7 +78,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
    assert.deepEqual(errors,[]);
   }finally{await browser.close();}
  });
- test(`${name}: ended exit needs no confirmation and loss Escape retains usable actions`,async()=>{
+ test(`${name}: ended exit always confirms, including the loss finale and its summary`,async()=>{
   const browser=await type.launch();
   try{
    const page=await browser.newPage({reducedMotion:'reduce'});
@@ -82,11 +91,24 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
     if(id==='cash_low'){
      await page.locator('[data-choice="left"]').click();
      assert.deepEqual(await page.locator('[data-finale-choice]').allTextContents(),['Back to 9–5','New run']);
+     await page.locator('[data-finale-choice]').first().click();
+     assert.equal(await page.locator('[data-quit-dialog][open]').count(),1);
+     await page.keyboard.press('Escape');
+     assert.equal(await page.locator('[data-loss-finale][open]').count(),1,'Cancel keeps the original finale open');
+     assert.equal(await page.locator('[data-finale-choice]').first().evaluate(n=>n===document.activeElement),true);
+     assert.deepEqual(await snapshot(page),ended);
      await page.keyboard.press('Escape');
     }
     assert.deepEqual(await page.locator('[data-choice]').allTextContents(),['Back to 9–5','New run']);
     await page.clock.runFor(300);
     await page.locator('[data-choice="left"]').click();
+    assert.equal(await page.locator('[data-quit-dialog][open]').count(),1);
+    await page.locator('[data-quit-cancel]').click();
+    assert.equal(await page.evaluate(()=>MistakeryApp.view),'ended');
+    assert.deepEqual(await snapshot(page),ended);
+    assert.equal(await page.locator('[data-choice="left"]').evaluate(n=>n===document.activeElement),true);
+    await page.locator('[data-choice="left"]').click();
+    await page.locator('[data-quit-confirm]').click();
     assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
     assert.equal(await page.locator('[data-quit-dialog][open]').count(),0);
     assert.deepEqual(await snapshot(page),ended);

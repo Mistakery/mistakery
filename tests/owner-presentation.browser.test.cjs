@@ -28,6 +28,8 @@ for (const [name, engine] of Object.entries({ Chromium: chromium, WebKit: webkit
    assert.equal(await page.evaluate(()=>MistakeryApp.view),'playing');
    assert.deepEqual(await page.evaluate(()=>MistakeryApp.state.resources),{cash:25,team:60,customers:15,founder:65});
    await page.locator('[data-restart-run]').click();
+   assert.equal(await page.locator('[data-quit-dialog][open]').count(),1);
+   await page.locator('[data-quit-confirm]').click();
    assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
    await page.clock.runFor(300);await page.locator('[data-title-play]').click();
    assert.equal(await page.evaluate(()=>MistakeryApp.view),'playing');

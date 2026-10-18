@@ -61,6 +61,11 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         assert.match(await page.locator('[data-details-body]').textContent(), /Все три сюжета завершены/);
         await page.locator('[data-details-close]').click();
         await page.locator('[data-choice="left"]').click();
+        assert.equal(await page.locator('[data-quit-dialog][open]').count(),1);
+        await page.locator('[data-quit-cancel]').click();
+        assert.deepEqual(await snapshot(page),end);
+        await page.locator('[data-choice="left"]').click();
+        await page.locator('[data-quit-confirm]').click();
         await page.locator('[data-title-play]').click();
         assert.deepEqual(await snapshot(page), end, 'an immediate tap on Play cannot pass through the exit');
         await page.clock.runFor(60000);
@@ -109,6 +114,8 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
           await page.locator('[data-choice="left"]').click();
           await page.locator('[data-finale-choice]').first().click();
         } else await page.locator('[data-choice="left"]').click();
+        assert.equal(await page.locator('[data-quit-dialog][open]').count(),1);
+        await page.locator('[data-quit-confirm]').click();
         await page.clock.runFor(60000);
         assert.deepEqual(await snapshot(page), end);
         assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');

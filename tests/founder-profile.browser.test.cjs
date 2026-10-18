@@ -92,6 +92,13 @@ for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) test(`${name
   assert.equal(await page.locator('.founder-card').count(),1);
   assert.deepEqual(await page.evaluate(()=>structuredClone(MistakeryApp.state)),end);
   await page.locator('[data-profile-finish]').click();
+  assert.equal(await page.locator('[data-quit-dialog][open]').count(),1);
+  await page.locator('[data-quit-cancel]').click();
+  assert.equal(await page.locator('.founder-card').getAttribute('data-profile'),key);
+  assert.deepEqual(await page.evaluate(()=>structuredClone(MistakeryApp.state)),end);
+  assert.equal(await page.locator('[data-profile-finish]').evaluate(n=>n===document.activeElement),true);
+  await page.locator('[data-profile-finish]').click();
+  await page.locator('[data-quit-confirm]').click();
   assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
   assert.equal(await page.locator('[data-quit-dialog]').count(),0);
   await page.locator('[data-test-back]').click();
