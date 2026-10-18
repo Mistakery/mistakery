@@ -94,29 +94,28 @@ test('bilingual catalog includes contextual AI influencer reply choices', () => 
   }
 });
 
-test('bilingual catalog keeps the approved AGENT_01 Russian copy', () => {
+test('bilingual catalog contains exactly the current deck card IDs', () => {
+  const canonical = require('../cards.json');
   const catalog = fs.readFileSync(catalogPath, 'utf8');
-  assert.ok(catalog.includes('ВСТАВЬ ДУШУ В B2BUYERSPYER ИЛИ ПРОСИ ДЕНЬГИ У МАМЫ.'));
+  const ids = [...catalog.matchAll(/^## ([A-Z][A-Za-z0-9_]+) —/gm)].map(match => match[1]);
+  assert.deepEqual(ids.sort(), canonical.cards.map(card => card.id).sort());
 });
 
-test('bilingual catalog contains Russian copy for every SADBOT card', () => {
+test('bilingual catalog contains approved Russian copy for every current card', () => {
+  const canonical = require('../cards.json');
   const catalog = fs.readFileSync(catalogPath, 'utf8');
-  const ids = [
-    'SADBOT_01_SEED', 'SADBOT_02_EVIDENCE', 'SADBOT_03_VIRAL',
-    'SADBOT_INVESTOR_CLAIM', 'SADBOT_04_LEAD', 'SADBOT_05_ORDER_CALL',
-    'SADBOT_05_ORDER_REPLY', 'SADBOT_05B_THEATER', 'SADBOT_FRIDAY',
-    'SADBOT_06_LEGAL', 'SADBOT_07_INVOICE', 'SADBOT_07_INVOICE_CUT',
-    'SADBOT_07_LOGO',
-  ];
-  for (const id of ids) {
+  for (const card of canonical.cards) {
+    const id = card.id;
     const start = catalog.indexOf(`## ${id} `);
     assert.notEqual(start, -1, `missing catalog entry ${id}`);
     const next = catalog.indexOf('\n## ', start + 1);
     const entry = catalog.slice(start, next === -1 ? catalog.length : next);
     assert.match(entry, /\*\*RU\*\*/);
     assert.doesNotMatch(entry, /перевод не утверждён/);
-    const russian = entry.slice(entry.indexOf('**RU**'));
-    assert.match(russian, /[А-Яа-яЁё]/, `${id} has no Russian copy`);
+    const translation = canonical.testTranslations[id];
+    assert(translation, `${id}: approved translation`);
+    for (const line of translation.text.split('\n').filter(Boolean)) assert(entry.includes(`> ${line}`), `${id}: ${line}`);
+    for (const side of ['left', 'right']) assert(entry.includes(` — ${translation[side]}**`), `${id}.${side}`);
   }
 });
 

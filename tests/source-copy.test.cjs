@@ -31,7 +31,18 @@ test('all 71 source-backed cards match freshly read Docs fields and include ever
  for(const card of deck.cards.filter(c=>c.plot||c.filler)){checkPhrases(card,card.id);checkPhrases(deck.testTranslations[card.id],card.id+'.ru');}
 });
 test('text reconciliation preserves mechanics and separately approved endings', () => {
- assert.equal(hash(JSON.stringify(mechanics(deck))),invariants.mechanicsSha256);
+ // Invert only the explicit deck retirement, then enforce the ORIGINAL hash.
+ // Live mechanics remain fully covered; no fields are newly ignored.
+ const retirement = require('../docs/qa/deck-cleanup/baseline.json');
+ const restored = mechanics(deck);
+ assert.deepEqual(restored.meta.scheduler, { boundaries: [], protectedPairs: [], locks: [] });
+ restored.meta = { ...restored.meta, scheduler: retirement.scheduler };
+ for (const { index, mechanics: card } of retirement.retired) {
+  assert(!restored.cards.some(current => current.id === card.id), `${card.id} must be retired`);
+  restored.cards.splice(index, 0, card);
+ }
+ assert.equal(restored.cards.length, retirement.beforeCount);
+ assert.equal(hash(JSON.stringify(restored)),invariants.mechanicsSha256);
  for(const [file,sha]of Object.entries(invariants.files))assert.equal(hash(fs.readFileSync(path.resolve(__dirname,'..',file))),sha,file);
 });
 test('reply labels retain internal sentence boundaries while closing punctuation stays removed', () => {

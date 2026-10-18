@@ -1,0 +1,310 @@
+{
+  "LIVE_AGENT_01": {
+    "seed": 0,
+    "actions": ""
+  },
+  "LIVE_AGENT_02": {
+    "seed": 0,
+    "actions": "L"
+  },
+  "LIVE_AGENT_03": {
+    "seed": 0,
+    "actions": "LL"
+  },
+  "LIVE_AGENT_04": {
+    "seed": 0,
+    "actions": "LLR"
+  },
+  "LIVE_AGENT_04B": {
+    "seed": 0,
+    "actions": "LLRR"
+  },
+  "LIVE_AGENT_05": {
+    "seed": 0,
+    "actions": "LLRRL"
+  },
+  "LIVE_AGENT_06": {
+    "seed": 0,
+    "actions": "LLRRLL"
+  },
+  "LIVE_AGENT_07": {
+    "seed": 0,
+    "actions": "LLRRLLR"
+  },
+  "LIVE_AGENT_07B": {
+    "seed": 0,
+    "actions": "LLRRLLRR"
+  },
+  "LIVE_AGENT_08": {
+    "seed": 0,
+    "actions": "LLRRLLRRL"
+  },
+  "LIVE_AGENT_OUTCOME_3": {
+    "seed": 0,
+    "actions": "LLRRLLRRLR"
+  },
+  "FILL_DOMAIN_1": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRL"
+  },
+  "FILL_FRIDGE": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLL"
+  },
+  "FILL_MOM_FLYERS": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLR"
+  },
+  "OPEN_BOSS": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRR"
+  },
+  "OPEN_DEV": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRL"
+  },
+  "PADEL_INVITE": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLR"
+  },
+  "PADEL_OUTCOME_0": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLRR"
+  },
+  "FILL_COMA_1": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLRRL"
+  },
+  "FILL_COMA_2B": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLRRLR"
+  },
+  "FILL_BLACK_SQUARE": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLRRLRR"
+  },
+  "FILL_MANTRA": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLRRLRRL"
+  },
+  "INFLUENCER_01": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLRRLRRLL"
+  },
+  "INFLUENCER_02": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLRRLRRLLL"
+  },
+  "INFLUENCER_03": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLRRLRRLLLL"
+  },
+  "INFLUENCER_04": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLRRLRRLLLLL"
+  },
+  "INFLUENCER_05": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLRRLRRLLLLLR"
+  },
+  "INFLUENCER_06": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLRRLRRLLLLLRR"
+  },
+  "INFLUENCER_07": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLRRLRRLLLLLRRL"
+  },
+  "INFLUENCER_OUTCOME_3": {
+    "seed": 0,
+    "actions": "LLRRLLRRLRLLRRLRRLRRLLLLLRRLL"
+  },
+  "LIVE_AGENT_OUTCOME_0": {
+    "seed": 1,
+    "actions": "LLLRRLLLRRRLRR"
+  },
+  "FILL_SALES_1": {
+    "seed": 2,
+    "actions": "LRRRLRRLLRL"
+  },
+  "FILL_AI_DEV": {
+    "seed": 2,
+    "actions": "LRRRLRRLLRLRR"
+  },
+  "FILL_FIGHT": {
+    "seed": 2,
+    "actions": "LRRRLRRLLRLRRR"
+  },
+  "FILL_RIVAL": {
+    "seed": 2,
+    "actions": "LRRRLRRLLRLRRRR"
+  },
+  "INFLUENCER_08": {
+    "seed": 2,
+    "actions": "LRRRLRRLLRLRRRRRLLLLR"
+  },
+  "INFLUENCER_OUTCOME_5": {
+    "seed": 2,
+    "actions": "LRRRLRRLLRLRRRRRLLLLRL"
+  },
+  "FILL_VIDEO_1": {
+    "seed": 2,
+    "actions": "LRRRLRRLLRLRRRRRLLLLRLL"
+  },
+  "FILL_VIDEO_2": {
+    "seed": 2,
+    "actions": "LRRRLRRLLRLRRRRRLLLLRLLL"
+  },
+  "LIVE_AGENT_OUTCOME_2": {
+    "seed": 3,
+    "actions": "LRRRLRLLR"
+  },
+  "INFLUENCER_02A": {
+    "seed": 4,
+    "actions": "LR"
+  },
+  "DREAM_TEAM": {
+    "seed": 5,
+    "actions": "L"
+  },
+  "IRL_PADEL_01": {
+    "seed": 5,
+    "actions": "LR"
+  },
+  "IRL_PADEL_03B": {
+    "seed": 5,
+    "actions": "LRR"
+  },
+  "IRL_PADEL_04": {
+    "seed": 5,
+    "actions": "LRRR"
+  },
+  "IRL_PADEL_05": {
+    "seed": 5,
+    "actions": "LRRRL"
+  },
+  "IRL_PADEL_06": {
+    "seed": 5,
+    "actions": "LRRRLL"
+  },
+  "PADEL_OUTCOME_5": {
+    "seed": 5,
+    "actions": "LRRRLLR"
+  },
+  "INFLUENCER_OUTCOME_1": {
+    "seed": 5,
+    "actions": "LRRRLLRLRRRRLR"
+  },
+  "FILL_SALES_2": {
+    "seed": 5,
+    "actions": "LRRRLLRLRRRRLRLL"
+  },
+  "INFLUENCER_OUTCOME_4": {
+    "seed": 6,
+    "actions": "LRRRLRL"
+  },
+  "FILL_MOM_CALL_1": {
+    "seed": 6,
+    "actions": "LRRRLRLL"
+  },
+  "FILL_MOM_CALL_2": {
+    "seed": 6,
+    "actions": "LRRRLRLLL"
+  },
+  "FILL_FONT": {
+    "seed": 6,
+    "actions": "LRRRLRLLLRRRLRRRR"
+  },
+  "INFLUENCER_OUTCOME_2": {
+    "seed": 9,
+    "actions": "LLRLLLR"
+  },
+  "PADEL_OUTCOME_3": {
+    "seed": 9,
+    "actions": "LLRLLLRRRLLRLLLLLLL"
+  },
+  "INFLUENCER_OUTCOME_7": {
+    "seed": 10,
+    "actions": "LLLLRR"
+  },
+  "OPEN_01": {
+    "seed": 10,
+    "actions": "LLLLRRL"
+  },
+  "OPEN_02b": {
+    "seed": 10,
+    "actions": "LLLLRRLR"
+  },
+  "FILL_POLICE_1": {
+    "seed": 11,
+    "actions": "LLLLLRRRRLLRLLRLRLR"
+  },
+  "FILL_POLICE_2": {
+    "seed": 11,
+    "actions": "LLLLLRRRRLLRLLRLRLRL"
+  },
+  "FILL_THERAPY": {
+    "seed": 11,
+    "actions": "LLLLLRRRRLLRLLRLRLRLR"
+  },
+  "PADEL_OUTCOME_6": {
+    "seed": 12,
+    "actions": "LLRLLLR"
+  },
+  "OPEN_INVESTOR": {
+    "seed": 12,
+    "actions": "LLRLLLRRLLRRLLRRRRLLRRLL"
+  },
+  "FILL_DOMAIN_2": {
+    "seed": 15,
+    "actions": "LRRLLRLLR"
+  },
+  "PADEL_OUTCOME_4": {
+    "seed": 16,
+    "actions": "LRLLRL"
+  },
+  "FILL_COMA_2A": {
+    "seed": 16,
+    "actions": "LRLLRLRL"
+  },
+  "LIVE_AGENT_OUTCOME_4": {
+    "seed": 18,
+    "actions": "LLRLLRRLLR"
+  },
+  "PADEL_OUTCOME_7": {
+    "seed": 22,
+    "actions": "LLRRRR"
+  },
+  "PADEL_OUTCOME_1": {
+    "seed": 26,
+    "actions": "LRLRLR"
+  },
+  "OPEN_02a": {
+    "seed": 26,
+    "actions": "LRLRLRRL"
+  },
+  "FILL_PAYROLL_1": {
+    "seed": 31,
+    "actions": "LLRRRRLR"
+  },
+  "FILL_USER_WIFE": {
+    "seed": 31,
+    "actions": "LLRRRRLRR"
+  },
+  "LIVE_AGENT_OUTCOME_1": {
+    "seed": 37,
+    "actions": "LRRLRLRLR"
+  },
+  "INFLUENCER_OUTCOME_6": {
+    "seed": 42,
+    "actions": "LLLLLRR"
+  },
+  "PADEL_OUTCOME_2": {
+    "seed": 65,
+    "actions": "LLLLLR"
+  },
+  "FILL_PAYROLL_2": {
+    "seed": 75,
+    "actions": "LLRLLLLLL"
+  }
+}

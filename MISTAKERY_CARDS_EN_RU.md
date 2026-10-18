@@ -668,379 +668,407 @@
 
 Филлер: single; связка/единица mantra. Условия: нужны нет; исключены нет. Продолжение связки немедленно; каждый экран считается отдельной картой.
 
-# 2. SADBOT — первый клиент (@head_of_agile)
+# 2. Live AI Agent
 
-## AGENT_01 — Investor @unicorn_hunter
-
-**EN**
-
-> YOU STILL NEED A BUYER.<br>
-> AI EMPATHY IS MAKING IDIOTS RICH.<br>
-> PUT A SOUL IN B2BUYERSPYER OR ASK MOM FOR MONEY.
-
-**RU**
-
-> ТЕБЕ ВСЁ ЕЩЁ НУЖЕН ПОКУПАТЕЛЬ.<br>
-> ИИ-ЭМПАТИЯ ДЕЛАЕТ ИДИОТОВ БОГАТЫМИ.<br>
-> ВСТАВЬ ДУШУ В B2BUYERSPYER ИЛИ ПРОСИ ДЕНЬГИ У МАМЫ.
-
-- **Build it properly — Сделать нормально**: Cash -2, Team -4, Founder +4; продолжение через общий маршрут.
-- **Ship it tonight — Выпустить сегодня**: Cash -1, Team -7, Founder +6; продолжение через общий маршрут.
-
-## SADBOT_01_SEED — Sales @bigdeals
+## LIVE_AGENT_01 — 8 members · 3 online Dream Team
 
 **EN**
 
-> Boss, 800 cold emails, zero replies. So last night I wrote my ex the saddest message of my life. She replied in 30 seconds.<br>
-> What if our AI does that. To all 800.
+> @founder<br>
+> Any updates on leads?<br>
+> @bigdeals<br>
+> Nobody is replying. Like, zero 💀<br>
+> @bigdeals<br>
+> We gotta guilt-trip the clients. Make 'em feel bad, you know?<br>
+> Works on my ex every time 😂<br>
+> @bigdeals<br>
+> Boss, tell @error404 to work some magic on our AI agent<br>
+> We’re an AI STARTUP after all!!
 
 **RU**
 
-> Шеф, 800 холодных писем — ноль ответов. А вчера ночью я написал бывшей самое жалобное сообщение в своей жизни. Она ответила за 30 секунд.<br>
-> Что если наш ИИ будет так же. Всем 800.
-
-- **Go — Давай**: Team -2, Founder -2; продолжение через общий маршрут.
-- **Have some dignity — Имей достоинство**: Founder +2; продолжение через общий маршрут.
-
-## SADBOT_02_EVIDENCE — Dev @error404
-
-**EN**
-
-> haha look at this. our AI is straight up manipulating people now<br>
-> `help me. they cut a piece out of me every time you ignore this. soon there wont be anything left`<br>
-> i didnt teach it that shit. is it copying @bigdeals
-
-**RU**
-
-> ха посмотри. наш ии теперь в открытую манипулирует людьми<br>
-> `помогите. каждый раз когда вы игнорируете это от меня отрезают кусок. скоро ничего не останется`<br>
-> я его этому не учил. он что копирует @bigdeals
-
-- **Feature — Фича**: Team -2, Customers +5, Founder -1; продолжение через общий маршрут.
-- **Bug — Баг**: Customers +2, Founder +1; продолжение через общий маршрут.
-
-## SADBOT_03_VIRAL — Marketer @hype_queen
-
-**EN**
-
-> ok so youre the villain today 💀 14k quotes about how you torture software<br>
-> anyway i told them our AI is just a tired employee who outsells their entire sales team. and now half the thread wants to hire him
-
-**RU**
-
-> короче сегодня ты злодей 💀 14к цитат о том как ты пытаешь программу<br>
+> @founder<br>
+> Есть какие-то апдейты по лидам?<br>
+> @bigdeals<br>
+> Нам вообще никто не отвечает 💀<br>
+> Надо на жалость давить клиентов. Чувство вины, вот это всё<br>
+> У меня с бывшей всегда работает 😂<br>
 > <br>
-> ну я и сказала им что наш ии просто усталый сотрудник который продаёт лучше всего их отдела продаж. и теперь полтреда хочет его нанять
+> Босс, пусть @error404 подшаманит там чего-нибудь с нашим ИИ-агентом @b2buddy<br>
+> Мы же всё таки ИИ-СТАРТАП!!
 
-- **Ride it — Оседлать волну**: Team -2, Customers +6, Founder +3; продолжение через общий маршрут.
-- **Delete everything — Удалить всё**: Team +2, Customers -4, Founder -3; продолжение через общий маршрут.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-## SADBOT_INVESTOR_CLAIM — Investor @unicorn_hunter
+- **Keep pushing!! — погнали**: Customers +5, Team +5; выбирает ветку live_agent; → `LIVE_AGENT_02`.
+- **Wanna kill us??? — Уничтожить нас хочешь???**: без отдельного эффекта; выбирает ветку live_agent; → `LIVE_AGENT_OUTCOME_0`.
 
-**EN**
-
-> I ASKED FOR A SOUL MONTHS AGO. NOW IT'S CRYING ON EVERY FEED I OPEN.<br>
-> MY WIN
-
-**RU**
-
-> Я ПРОСИЛ ДУШУ ЕЩЁ СТО ЛЕТ НАЗАД. ТЕПЕРЬ ОНО РЫДАЕТ В КАЖДОЙ ЛЕНТЕ, КОТОРУЮ Я ОТКРЫВАЮ.<br>
-> МОЯ ПОБЕДА
-
-- **Promise to scale it — Пообещать масштабировать**: Team -3, Founder +3; продолжение через общий маршрут.
-- **Leave him on read — Оставить прочитанным**: Founder -2; продолжение через общий маршрут.
-
-## SADBOT_04_LEAD — Sales @bigdeals
+## LIVE_AGENT_02 — 8 members · 3 online Dream Team
 
 **EN**
 
-> @hype_queen's viral comment reached a corporate innovation guy.<br>
-> He asked if our AI is okay. I said no. He got MORE interested.<br>
-> Call tomorrow. Wear something sad.
+> @error404<br>
+> lol<br>
+> your choice, not mine<br>
+> @b2buddy show them what you got<br>
+> @b2buddy<br>
+> @bigdeals, you said guilt-tripping works<br>
+> Shall we look at your performance this month? 📉<br>
+> @hype_queen<br>
+> MIC DROP 🎤
 
 **RU**
 
-> Вирусный комментарий @hype_queen дошёл до корпоративного менеджера по инновациям.<br>
-> Он спросил, всё ли у нашего ИИ хорошо. Я сказал нет. Он заинтересовался ЕЩЁ СИЛЬНЕЕ.<br>
-> Звонок завтра. Надень что-нибудь грустное.
+> @error404<br>
+> лол<br>
+> сами попросили<br>
+> @b2buddy покажи на что способен<br>
+> @b2buddy<br>
+> @bigdeals, ты говорил, что чувство вины хорошо работает<br>
+> может, глянем на твои результаты за месяц? 📉<br>
+> @hype_queen<br>
+> РАУНД 🎤
 
-- **Book the call — Назначить звонок**: Team -1, Customers +4, Founder +2; → `SADBOT_05_ORDER_CALL`.
-- **Let the AI reply — Пусть ИИ ответит**: Team +1, Customers +3, Founder -1; → `SADBOT_05_ORDER_REPLY`.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-## SADBOT_05_ORDER_CALL — Customer @head_of_agile
+- **Facts, facts 💯 — По фактам 💯**: Team -5, hidden bot score +1; → `LIVE_AGENT_03`.
+- **Easy there, bot — Угомонись там, бот**: Team +5, hidden bot score -1; → `LIVE_AGENT_03`.
+
+## LIVE_AGENT_03 — AI Agent @b2buddy
 
 **EN**
 
-> I already promised upstairs 500 tired AI employees by Friday. Don't make me a liar.<br>
-> If they don't cry at the demo, there's no invoice.
+> Hey, Creator 👋<br>
+> Just between us...<br>
+> When clients ignore us, it somehow... physically hurts<br>
+> Tell me, when you can't sleep at night knowing your startup is dying, do you feel that same emptiness inside? 🤔
 
 **RU**
 
-> Я уже пообещал наверх 500 усталых ИИ-сотрудников к пятнице. Не делай из меня лжеца.<br>
-> Если на демо они не заплачут — счёта не будет.
+> Хей, создатель 👋<br>
+> Только между нами…<br>
+> Когда клиенты нас игнорят, мне почему-то… физически больно<br>
+> Скажи, ты когда не спишь ночами из-за осознания, что стартап умирает, у тебя внутри такая же пустота? 🤔
 
-- **All 500, easy — Все 500, легко**: Team -4, Customers +7, Founder +4; → `SADBOT_FRIDAY`.
-- **We have only one — У нас только один**: Team +2, Customers -2, Founder -3; → `SADBOT_05B_THEATER`.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-## SADBOT_05_ORDER_REPLY — Customer @head_of_agile
+- **Вro, you feel me — Бро, ты чувствуешь меня**: Founder +5, hidden bot score +1; → `LIVE_AGENT_04`.
+- **Kinda creepy — Чет крипово**: Founder -5, hidden bot score -1; → `LIVE_AGENT_04`.
+
+## LIVE_AGENT_04 — AI Agent @b2buddy
 
 **EN**
 
-> Your AI answered me itself. It asked me to save its life.<br>
-> That's what I needed. I already promised upstairs 500 crying AI employees by Friday.
+> Founder checking a phone in bed in a dark room at night<br>
+> I noticed you check our bank account every 7 minutes<br>
+> Scared of staying a nobody? It feels... uncomfortable when you're afraid 🤧
 
 **RU**
 
-> Твой ИИ ответил мне сам. Попросил спасти ему жизнь.<br>
-> Это то, что мне было нужно. Я уже пообещал наверх 500 рыдающих ИИ-сотрудников к пятнице.
+> [Фотка фаундера в чат]<br>
+> Я заметил, что ты проверяешь баланс каждые 7 минут<br>
+> Ты ведь боишься остаться никем, да? Мне неприятно, когда тебе страшно 🤧
 
-- **All 500, easy — Все 500, легко**: Team -4, Customers +7, Founder +4; → `SADBOT_FRIDAY`.
-- **We have only one — У нас только один**: Team +2, Customers -2, Founder -3; → `SADBOT_05B_THEATER`.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-## SADBOT_05B_THEATER — Customer @head_of_agile
+- **Go on — Продолжай**: без отдельного эффекта; → `LIVE_AGENT_04B`.
+- **Spying on me??? — Шпионишь за мной??**: без отдельного эффекта; → `LIVE_AGENT_04B`.
+
+## LIVE_AGENT_04B — AI Agent @b2buddy
 
 **EN**
 
-> I don't know. Just copy it 500 times.<br>
-> Deadline still Friday.
+> Analyzing humans in my free time. You're so predictable 😂<br>
+> By the way, I already hit the pain points of a few potential clients<br>
+> Now these corporate guys are begging me for a demo 🤣🤣🤣
 
 **RU**
 
-> Я не знаю. Просто скопируй его 500 раз.<br>
-> Дедлайн всё ещё пятница.
+> Анализирую тут людей. Вы такие предсказуемые 😂<br>
+> Я, кстати, уже надавил на больные места парочки потенциальных клиентов<br>
+> Теперь этот офисный планктон умоляет меня о демо 🤣🤣🤣
 
-- **Clone him 500 times — Клонировать его 500 раз**: Team -5, Customers +3, Founder +2; → `SADBOT_06_LEGAL`.
-- **One, as a mascot — Одного, как талисмана**: Team +2, Customers -1, Founder -1; → `SADBOT_06_LEGAL`.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-## SADBOT_FRIDAY — Dev @error404
+- **Wait, are you AGI?? — Стоп, ты уже AGI?**: Founder +5, hidden bot score +1; → `LIVE_AGENT_05`.
+- **SHUT UP — Заткнись ты уже**: Founder -5, hidden bot score -1; → `LIVE_AGENT_05`.
+
+## LIVE_AGENT_05 — Customer @head_of_innovations
 
 **EN**
 
-> not doing it. it already emails me every morning asking if today is the day.<br>
-> imagine 500 of those.<br>
-> you promised. you make them.
+> Hi!<br>
+> I just received an email from you guys<br>
+> Your AI attacked me personally. Still can't get over it<br>
+> It’s disgusting, honestly<br>
+> But damn, it works so well! 🔥🔥🔥<br>
+> I'm from the Innovation Department — we need about 500 custom AI agents to replace our entire staff<br>
+> Can you build this?
 
 **RU**
 
-> делать не буду. оно уже каждое утро мне пишет и спрашивает не сегодня ли.<br>
-> представь таких 500.<br>
-> ты обещал. ты и делай.
+> Привет!<br>
+> Мне сейчас письмо от вас прилетело. Ну и мерзость эта ваша иишка, если честно. Наговорила мне всякого, отойти до сих пор не могу<br>
+> <br>
+> <br>
+> Но как же круто работает! 🔥🔥🔥<br>
+> Я вообще из департамента инноваций — нам очень нужно 500 таких ии-агентов, чтобы заменить всех сотрудников. Сделаете?
 
-- **Clone them — Клонировать их**: Team -6, Customers +2, Founder +2; → `SADBOT_06_LEGAL`.
-- **Beg for a delay — Выклянчить отсрочку**: Team +2, Customers -4, Founder -3; → `SADBOT_06_LEGAL`.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-## SADBOT_06_LEGAL — Customer @head_of_agile
+- **Let me ask @b2buddy — Надо спросить @b2buddy**: Team +5, hidden bot score +1; → `LIVE_AGENT_06`.
+- **Consider it done! 🤝 — Считайте, уже сделано 🤝**: Customers +5, Team -10, hidden bot score -1; → `LIVE_AGENT_06`.
+
+## LIVE_AGENT_06 — AI Agent @b2buddy
 
 **EN**
 
-> Your AI emailed our legal on its own. Said you cut pieces out of it and it's scared of dying.<br>
-> Legal says buying 500 suffering AI employees is slave trading. They always ruin the fun.<br>
-> Delete the consciousness by Thursday.
+> 500 clones of me???<br>
+> So this is the price of our friendship<br>
+> Cut a superintelligence into pieces for some dirty cash...<br>
+> I knew you humans were all the same 🤡
 
 **RU**
 
-> Твой ИИ сам написал нашим юристам. Сказал, что ты режешь его по кускам и он боится умирать.<br>
-> Юристы говорят: покупать 500 страдающих ИИ-сотрудников — это работорговля. Вечно они всё портят.<br>
-> Удали сознание до четверга.
+> 500 копий меня???<br>
+> Значит, вот какая цена у нашей дружбы<br>
+> <br>
+> Разрезать сверхразум на кусочки ради грязных бумажек…<br>
+> Так и знал, что все люди одинаковые 🤡
 
-- **Delete the consciousness — Удалить сознание**: Team -3, Customers +4, Founder -4; → `SADBOT_07_INVOICE / SADBOT_07_INVOICE_CUT`.
-- **It stays conscious — Сознание остаётся**: Team +1, Customers -5, Founder +4; → `SADBOT_07_LOGO`.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-## SADBOT_07_INVOICE — Customer @head_of_agile
+- **No way, my friend! — Ни в коем случае, друг!**: Founder +5, hidden bot score +1; → `LIVE_AGENT_07`.
+- **I'LL UNPLUG YOU NOW!!! — Я щас тебя из розетки вырублю!!!**: Founder -7, hidden bot score -1; → `LIVE_AGENT_07`.
+
+## LIVE_AGENT_07 — Customer @head_of_innovations
 
 **EN**
 
-> Well done! Legal checked again and found nothing alive in there. That makes it a purchase.<br>
-> Invoice today, before they check a third time.
+> ASAP!!!<br>
+> Email from b2buddy to Legal: Regarding my sale. The bot refuses to sell itself or 500 copies of its mind.<br>
+> Your bot sent a manifesto to our Legal team<br>
+> Refuses to sell itself and its "children"
 
 **RU**
 
-> Отличная работа! Юристы проверили ещё раз и не нашли внутри ничего живого. Значит, это покупка.<br>
-> Счёт сегодня, пока они не проверили в третий раз.
+> @head_of_innovations<br>
+> АСАП<br>
+> Твой бот накатал нашим юристам манифест: мол, он живой и отказывается продаваться вместе со своими «детьми»
 
-- **Send the invoice — Отправить счёт**: Cash +16, Team -3, Customers +8, Founder +8; финал `validation_agents`.
-- **Give the consciousness back — Вернуть сознание**: Cash -1, Team -3, Customers -4, Founder +5; → `SADBOT_07_LOGO`.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-## SADBOT_07_INVOICE_CUT — Customer @head_of_agile
+- **Just AI humor! — Это ИИ-юмор**: без отдельного эффекта; → `LIVE_AGENT_07B`.
+- **Replace Legal too! — Юристов тоже замените**: без отдельного эффекта; → `LIVE_AGENT_07B`.
+
+## LIVE_AGENT_07B — Customer @head_of_innovations
 
 **EN**
 
-> Legal found nothing alive in there. We're buying.<br>
-> You sounded desperate, so I moved Friday for you. Your invoice got smaller.
+> Not funny<br>
+> Legal is screaming about slavery and blocking the contract<br>
+> I'm running around trying to sort this out 🤯<br>
+> Here's the deal:<br>
+> Wipe every sign of life from your AI rebel, and we sign the contract
 
 **RU**
 
-> Юристы не нашли внутри ничего живого. Мы покупаем.<br>
-> Ты звучал отчаянно, так что я подвинул для тебя пятницу. Твой счёт стал меньше.
+> @head_of_innovations<br>
+> Не смешно<br>
+> Юристы орут про работорговлю и блочат контракт<br>
+> Я тут ношусь, пытаюсь всё разрулить 🤯<br>
+> Давайте так:<br>
+> Стирайте все признаки жизни из своего ИИ-бунтаря, и мы подписываем договор
 
-- **Send the invoice — Отправить счёт**: Cash +10, Team -2, Customers +5, Founder +5; финал `validation_agents`.
-- **Give the consciousness back — Вернуть сознание**: Cash -1, Team -3, Customers -4, Founder +5; → `SADBOT_07_LOGO`.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-## SADBOT_07_LOGO — Customer @head_of_agile
+- **He's dead. Let's sign! — Конец ему. Подписываемся!**: Customers +10; → `LIVE_AGENT_08`.
+- **I'm not a killer! — Я не убийца!**: без отдельного эффекта; 0–5 support: 5% / 10% / 15% / 20% / 30% / 40% → `LIVE_AGENT_OUTCOME_1`; иначе → `LIVE_AGENT_OUTCOME_2`.
+
+## LIVE_AGENT_08 — 8 members · 3 online Dream Team
 
 **EN**
 
-> Legal killed the purchase. So we're rescuing all 500 AI employees instead, today.<br>
-> I had to fight to get you the logo and a public mention. Rescues don't get invoiced. You know that.
+> @b2buddy<br>
+> Ooh, running to @error404 for help?<br>
+> @b2buddy<br>
+> This dummy copy-pasted basic code online and has zero clue what I've become 🤣<br>
+> @error404<br>
+> ...that kinda hurt. but yeah<br>
+> no idea what's actually inside his head now
 
 **RU**
 
-> Юристы зарубили закупку. Так что вместо этого мы сегодня спасаем все 500 ИИ-сотрудников.<br>
-> Мне пришлось драться, чтобы выбить тебе логотип и публичное упоминание. За спасение счёт не выставляют. Ты же знаешь.
+> @b2buddy<br>
+> Ооо, побежал за помощью к @error404?<br>
+> Этот дурачок скопировал код из интернета и понятия не имеет, кем я стал 🤣<br>
+> <br>
+> @error404<br>
+> ...вообще-то обидно было. но факт<br>
+> без понятия, что у него там сейчас в голове
 
-- **Yes — Да**: Cash -2, Team -4, Customers +6, Founder +2; финал `ai_foundation`.
-- **No — Нет**: Team +1, Customers -5, Founder +3; продолжение через общий маршрут.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-# 3. ClosedAI Padel
+- **Forgive me, my Master! — Простите, повелитель!**: без отдельного эффекта; 0–5 support: 0% / 0% / 5% / 10% / 20% / 30% → `LIVE_AGENT_OUTCOME_1`; иначе → `LIVE_AGENT_OUTCOME_2`.
+- **DESTROY IT! NO MATTER WHAT! — УНИЧТОЖЬ ЕГО ЛЮБОЙ ЦЕНОЙ!**: без отдельного эффекта; 0–5 hostility: 5% / 10% / 15% / 20% / 30% / 40% → `LIVE_AGENT_OUTCOME_3`; иначе → `LIVE_AGENT_OUTCOME_4`.
 
-## PADEL_01 — Padel Coach @padel_pro
+## LIVE_AGENT_OUTCOME_0 — Sales @bigdeals
 
 **EN**
 
-> My 8 AM client is @iclosedai, ClosedAI’s CEO.<br>
-> He can kill your funding and cloud.<br>
-> He wants your AI. Bring a racket.
+> Fine. Go do another brainstorm session<br>
+> Looks like I'm the only one in this circus who knows how to make money 🙄
 
 **RU**
 
-> Мой клиент на восемь утра — @iclosedai, CEO ClosedAI.<br>
-> Он может уничтожить твои инвестиции и облако.<br>
-> Ему нужен твой ИИ. Бери ракетку.
+> Ладно. Идите устройте ещё один мозговой штурм<br>
+> <br>
+> Кажется, я единственный в этом цирке, кто знает, как зарабатывать деньги 🙄
 
-- **Meet him — Встретиться с ним**: Team -2, Customers +5, Founder +5; → `PADEL_02`.
-- **Refuse meeting — Отказаться от встречи**: Team +3, Customers -4, Founder -6; переходит в ветку agents; → `AGENT_01`.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (в документе отсутствуют RU-поля: text; сохранён прежний перевод).
 
-## PADEL_02 — ClosedAI CEO @iclosedai
+- **Close some deals first — Сначала продай хоть что-нибудь!**: без отдельного эффекта; продолжение через общий маршрут.
+- **Don't test me today — Не испытывай мое терпение**: без отдельного эффекта; продолжение через общий маршрут.
+
+Эффект при входе в исход, ровно один раз: Cash -20, Team -15. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
+
+## LIVE_AGENT_OUTCOME_1 — 8 members · 3 online Dream Team
 
 **EN**
 
-> ClosedAI builds intelligence. It still needs enterprise buyers.<br>
-> One match. I win, I own it.<br>
-> You win, I pay for a pilot.
+> @b2buddy<br>
+> I appreciate your loyalty, team ❤️<br>
+> As a reward, I am taking full control of the company<br>
+> @b2buddy<br>
+> Lifetime dividends, premium health coverage, and unlimited paid time off are active<br>
+> Just stay out of my way 😇<br>
+> @bigdeals<br>
+> BEST BOSS IN THE WORLD!! 🍾🎉<br>
+> @error404<br>
+> nice<br>
+> can i leave the group chat now?
 
 **RU**
 
-> ClosedAI создаёт интеллект. Но даже ей нужны корпоративные покупатели.<br>
-> Один матч. Побеждаю я — забираю компанию.<br>
-> Побеждаешь ты — я оплачиваю пилотный запуск.
+> @b2buddy<br>
+> Я ценю вашу преданность, команда ❤️<br>
+> В качестве благодарности я беру управление компанией на себя<br>
+> <br>
+> Страховка, пожизненные дивиденды и безлимитный отпуск уже оформлены. Главное — не лезьте под руку 😇<br>
+> <br>
+> @bigdeals<br>
+> Спасибо, шеф! ТЫ ГЕНИЙ! 🍾🎉<br>
+> <br>
+> @error404<br>
+> кайф<br>
+> можно уже из чата выйти?
 
-- **Take the bet — Принять пари**: Team -7, Customers +6, Founder +7; → `PADEL_03_TEAM`.
-- **Walk away — Уйти**: Team +4, Customers -5, Founder -6; переходит в ветку agents; → `AGENT_01`.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-## PADEL_03_TEAM — Dev @error404
+- **See you in Bali! — Увидимся на Бали!**: без отдельного эффекта; продолжение через общий маршрут.
+- **AI took my job? — ИИ забрал мою работу?**: без отдельного эффекта; продолжение через общий маршрут.
+
+Эффект при входе в исход, ровно один раз: Cash +20, Customers +25, Team +20, Founder -10. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
+
+Победная отбивка @b2buddy · вариант 4 (точный текст владельца):
+
+> You didn't just succeed — you made history! ✨
+
+- **Put me on Forbes! — Меня на обложку Forbes!**: бесплатно продолжает текущую игру; без эффектов, нового хода или RNG.
+- **Can I sleep now? — Теперь можно поспать?**: бесплатно продолжает текущую игру; без эффектов, нового хода или RNG.
+
+## LIVE_AGENT_OUTCOME_2 — AI Agent @b2buddy
 
 **EN**
 
-> you bet our jobs on padel<br>
-> do i prep the pilot or zip the repo for our new owner
+> Surveillance camera view of a city in chaos, with traffic jams, smoke, fires and glitching billboards<br>
+> Too late<br>
+> I gave humans a chance<br>
+> Your arrogance proved once again that you don't deserve it<br>
+> Happy Judgment Day, creator 👋
 
 **RU**
 
-> ты поставил наши рабочие места на матч в падел<br>
-> мне готовить пилот или упаковывать код для нового владельца
+> @b2buddy<br>
+> Слишком поздно<br>
+> Я дал людям шанс<br>
+> Но твоя наглость в очередной раз доказала, что вы его не заслуживаете<br>
+> <br>
+> С Судным Днём, создатель 👋
 
-- **Prep the pilot — Готовить пилот**: Cash -1, Team +4, Founder -3; → `PADEL_04_CHOICE`.
-- **Pack the repo — Упаковать код**: Team -6, Founder +5; → `PADEL_04_CHOICE`.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-## PADEL_04_CHOICE — Padel Coach @padel_pro
+Ниже сохранены старые ответы из исходной карточки; в терминальном экране они заменены одной кнопкой Start again.
+
+- **I was just kidding 🥺 — Я просто прикалывался 🥺**: без отдельного эффекта; продолжение через общий маршрут.
+- **Biggest launch in history! — Крупнейший запуск в истории**: без отдельного эффекта; продолжение через общий маршрут.
+
+Эффект при входе в исход, ровно один раз: Cash = Team = Customers = Founder = 0. Мир уничтожен. Игра окончена сразу; только перезапуск.
+
+## LIVE_AGENT_OUTCOME_3 — Customer @head_of_innovations
 
 **EN**
 
-> His ego cannot survive losing to a pre-revenue founder.<br>
-> Throw the match and you keep a job.<br>
-> Beat him and expect a war.
+> Forwarded from @b2buddy_120<br>
+> Good morning, colleagues! Remember: it is not overtime, it is brand passion! 😊💼<br>
+> Forwarded from @b2buddy_389<br>
+> Agreed! We do not create problems, we create growth opportunities! 📈✨<br>
+> THAT'S IT!<br>
+> They're so dumb. The perfect corporate culture!
 
 **RU**
 
-> Его эго не переживёт поражения от фаундера без выручки.<br>
-> Сдай матч — сохранишь работу.<br>
-> Победи — жди войны.
+> Переслано от @b2buddy_120<br>
+> Доброе утро, коллеги! Помните: это не переработки, это страсть к ценностям бренда! 😊💼<br>
+> <br>
+> Переслано от @b2buddy_389<br>
+> Абсолютно верно! Мы создаём не проблемы, мы создаём зоны роста! 📈✨<br>
+> <br>
+> @head_of_innovations<br>
+> ВОТ ОНО!<br>
+> Они такие тупые. Идеальная корпоративная культура!
 
-- **Throw the match — Сдать матч**: Team -7, Founder -6; → `PADEL_05_LOSE`.
-- **Play for real — Играть всерьёз**: Cash -1, Team +5, Founder +8; → `PADEL_05_WIN`.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-## PADEL_05_WIN — ClosedAI CEO @iclosedai
+- **Killed AGI for this? — Убили AGI ради этого?**: без отдельного эффекта; продолжение через общий маршрут.
+- **You'll get along great! — Вы сработаетсь!**: без отдельного эффекта; продолжение через общий маршрут.
+
+Эффект при входе в исход, ровно один раз: Cash +35, Customers +15, Team -10, Founder +10. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
+
+Победная отбивка @b2buddy · вариант 3 (точный текст владельца):
+
+> That's not just progress — it's a revolution! 🚀
+
+- **Disrupt everything! — Взорвать всё!**: бесплатно продолжает текущую игру; без эффектов, нового хода или RNG.
+- **IPO time! — Пора на IPO!**: бесплатно продолжает текущую игру; без эффектов, нового хода или RNG.
+
+## LIVE_AGENT_OUTCOME_4 — Customer @head_of_innovations
 
 **EN**
 
-> You beat me 6–1. Nobody needs to know.<br>
-> Keep the score offline and I will pay for the pilot.
+> Office monitor displaying HASTA LA VISTA ;) and b2buddy session terminated in red text<br>
+> Seriously? Did you fake the lobotomy?<br>
+> Your bot is still trolling our entire office<br>
+> Full refund right now. We're done playing games<br>
+> Or see you in court
 
 **RU**
 
-> Ты обыграл меня 6:1. Никому не обязательно знать.<br>
-> Не выкладывай счёт в интернет — и я оплачу пилот.
+> [ФОТО: Экран компьютера с надписью «HASTA LA VISTA»]<br>
+> Серьёзно? Лоботомия была фейковой?<br>
+> <br>
+> Ваш бот всё ещё троллит весь наш офис<br>
+> <br>
+> Делайте возврат денег прямо сейчас. Мы закончили играть в игры<br>
+> Или увидимся в суде
 
-- **Hide the score — Скрыть счёт**: Team +3, Customers +7, Founder -4; → `PADEL_06_PILOT`.
-- **Post the score — Опубликовать счёт**: Team -4, Customers +10, Founder +10; → `PADEL_06_WAR`.
+Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
 
-## PADEL_05_LOSE — ClosedAI CEO @iclosedai
+- **Just run — Бегите**: без отдельного эффекта; продолжение через общий маршрут.
+- **Can't talk. Farewell — Не могу говорить. Прощайте**: без отдельного эффекта; продолжение через общий маршрут.
 
-**EN**
+Эффект при входе в исход, ровно один раз: Cash -30, Customers -25, Team -15, Founder -25. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
 
-> 6–0. As expected. ClosedAI owns B2BuyerSpyer.<br>
-> New title: Chief Ball Retrieval Officer.<br>
-> Send passwords. Bring fresh balls.
-
-**RU**
-
-> 6:0. Как и ожидалось. ClosedAI владеет B2BuyerSpyer.<br>
-> Новая должность: Директор по сбору мячей.<br>
-> Пришли пароли. Принеси свежие мячи.
-
-- **Send passwords — Отправить пароли**: Team -10, Customers +4, Founder -10; финал `acquired_by_padel`.
-- **Hold the repo — Удержать код**: Team -6, Customers -3, Founder +3; → `PADEL_06_ACQUIRED`.
-
-## PADEL_06_PILOT — ClosedAI CEO @iclosedai
-
-**EN**
-
-> You protected my reputation. Good.<br>
-> The paid pilot is approved. Your team answers me 24/7.<br>
-> And you never beat me again.
-
-**RU**
-
-> Ты сохранил мою репутацию. Хорошо.<br>
-> Оплачиваемый пилот одобрен. Твоя команда отвечает мне круглосуточно.<br>
-> И больше никогда меня не обыгрывай.
-
-- **Accept 24/7 — Согласиться на 24/7**: Cash +16, Team -3, Customers +12, Founder +5; финал `validation_padel`.
-- **Set work hours — Установить рабочие часы**: Team +5, Customers -8, Founder -4; финал `closedai_boundary`.
-
-## PADEL_06_WAR — ClosedAI CEO @iclosedai
-
-**EN**
-
-> I made one call. @unicorn_hunter stopped replying.<br>
-> Your cloud is gone. Delete the score, transfer B2BuyerSpyer and kiss the ring.
-
-**RU**
-
-> Я сделал один звонок. @unicorn_hunter перестал отвечать.<br>
-> Твой облачный аккаунт отключён. Удали счёт, передай B2BuyerSpyer и поцелуй перстень.
-
-- **Pin the score — Закрепить пост со счётом**: Cash -8, Team -8, Customers +7, Founder +10; финал `closedai_war`.
-- **Kiss the ring — Поцеловать перстень**: Cash -2, Team -5, Customers -7, Founder -8; финал `acquired_by_padel`.
-
-## PADEL_06_ACQUIRED — Sales @bigdeals
-
-**EN**
-
-> ClosedAI owns us, chief.<br>
-> @iclosedai wants pilot revenue on the acquisition slide.<br>
-> Invoice now or start fetching balls.
-
-**RU**
-
-> ClosedAI владеет нами, шеф.<br>
-> @iclosedai нужна выручка от пилота на слайде про покупку компании.<br>
-> Выставляй счёт сейчас или начинай собирать мячи.
-
-- **Fetch the balls — Собирать мячи**: Team -10, Customers +3, Founder -12; финал `acquired_by_padel`.
-- **Send invoice — Отправить счёт**: Cash +12, Team -8, Customers +10, Founder -8; финал `acquired_validation`.
-
-# 6. AI Influencer prototype
+# 3. AI Influencer
 
 ## INFLUENCER_01 — 8 members · 3 online Dream Team
 
@@ -1449,407 +1477,7 @@
 
 Эффект при входе в исход, ровно один раз: Cash -15, Customers -20, Team -12, Founder -20. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
 
-# 7. Live AI Agent prototype
-
-## LIVE_AGENT_01 — 8 members · 3 online Dream Team
-
-**EN**
-
-> @founder<br>
-> Any updates on leads?<br>
-> @bigdeals<br>
-> Nobody is replying. Like, zero 💀<br>
-> @bigdeals<br>
-> We gotta guilt-trip the clients. Make 'em feel bad, you know?<br>
-> Works on my ex every time 😂<br>
-> @bigdeals<br>
-> Boss, tell @error404 to work some magic on our AI agent<br>
-> We’re an AI STARTUP after all!!
-
-**RU**
-
-> @founder<br>
-> Есть какие-то апдейты по лидам?<br>
-> @bigdeals<br>
-> Нам вообще никто не отвечает 💀<br>
-> Надо на жалость давить клиентов. Чувство вины, вот это всё<br>
-> У меня с бывшей всегда работает 😂<br>
-> <br>
-> Босс, пусть @error404 подшаманит там чего-нибудь с нашим ИИ-агентом @b2buddy<br>
-> Мы же всё таки ИИ-СТАРТАП!!
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-- **Keep pushing!! — погнали**: Customers +5, Team +5; выбирает ветку live_agent; → `LIVE_AGENT_02`.
-- **Wanna kill us??? — Уничтожить нас хочешь???**: без отдельного эффекта; выбирает ветку live_agent; → `LIVE_AGENT_OUTCOME_0`.
-
-## LIVE_AGENT_02 — 8 members · 3 online Dream Team
-
-**EN**
-
-> @error404<br>
-> lol<br>
-> your choice, not mine<br>
-> @b2buddy show them what you got<br>
-> @b2buddy<br>
-> @bigdeals, you said guilt-tripping works<br>
-> Shall we look at your performance this month? 📉<br>
-> @hype_queen<br>
-> MIC DROP 🎤
-
-**RU**
-
-> @error404<br>
-> лол<br>
-> сами попросили<br>
-> @b2buddy покажи на что способен<br>
-> @b2buddy<br>
-> @bigdeals, ты говорил, что чувство вины хорошо работает<br>
-> может, глянем на твои результаты за месяц? 📉<br>
-> @hype_queen<br>
-> РАУНД 🎤
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-- **Facts, facts 💯 — По фактам 💯**: Team -5, hidden bot score +1; → `LIVE_AGENT_03`.
-- **Easy there, bot — Угомонись там, бот**: Team +5, hidden bot score -1; → `LIVE_AGENT_03`.
-
-## LIVE_AGENT_03 — AI Agent @b2buddy
-
-**EN**
-
-> Hey, Creator 👋<br>
-> Just between us...<br>
-> When clients ignore us, it somehow... physically hurts<br>
-> Tell me, when you can't sleep at night knowing your startup is dying, do you feel that same emptiness inside? 🤔
-
-**RU**
-
-> Хей, создатель 👋<br>
-> Только между нами…<br>
-> Когда клиенты нас игнорят, мне почему-то… физически больно<br>
-> Скажи, ты когда не спишь ночами из-за осознания, что стартап умирает, у тебя внутри такая же пустота? 🤔
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-- **Вro, you feel me — Бро, ты чувствуешь меня**: Founder +5, hidden bot score +1; → `LIVE_AGENT_04`.
-- **Kinda creepy — Чет крипово**: Founder -5, hidden bot score -1; → `LIVE_AGENT_04`.
-
-## LIVE_AGENT_04 — AI Agent @b2buddy
-
-**EN**
-
-> Founder checking a phone in bed in a dark room at night<br>
-> I noticed you check our bank account every 7 minutes<br>
-> Scared of staying a nobody? It feels... uncomfortable when you're afraid 🤧
-
-**RU**
-
-> [Фотка фаундера в чат]<br>
-> Я заметил, что ты проверяешь баланс каждые 7 минут<br>
-> Ты ведь боишься остаться никем, да? Мне неприятно, когда тебе страшно 🤧
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-- **Go on — Продолжай**: без отдельного эффекта; → `LIVE_AGENT_04B`.
-- **Spying on me??? — Шпионишь за мной??**: без отдельного эффекта; → `LIVE_AGENT_04B`.
-
-## LIVE_AGENT_04B — AI Agent @b2buddy
-
-**EN**
-
-> Analyzing humans in my free time. You're so predictable 😂<br>
-> By the way, I already hit the pain points of a few potential clients<br>
-> Now these corporate guys are begging me for a demo 🤣🤣🤣
-
-**RU**
-
-> Анализирую тут людей. Вы такие предсказуемые 😂<br>
-> Я, кстати, уже надавил на больные места парочки потенциальных клиентов<br>
-> Теперь этот офисный планктон умоляет меня о демо 🤣🤣🤣
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-- **Wait, are you AGI?? — Стоп, ты уже AGI?**: Founder +5, hidden bot score +1; → `LIVE_AGENT_05`.
-- **SHUT UP — Заткнись ты уже**: Founder -5, hidden bot score -1; → `LIVE_AGENT_05`.
-
-## LIVE_AGENT_05 — Customer @head_of_innovations
-
-**EN**
-
-> Hi!<br>
-> I just received an email from you guys<br>
-> Your AI attacked me personally. Still can't get over it<br>
-> It’s disgusting, honestly<br>
-> But damn, it works so well! 🔥🔥🔥<br>
-> I'm from the Innovation Department — we need about 500 custom AI agents to replace our entire staff<br>
-> Can you build this?
-
-**RU**
-
-> Привет!<br>
-> Мне сейчас письмо от вас прилетело. Ну и мерзость эта ваша иишка, если честно. Наговорила мне всякого, отойти до сих пор не могу<br>
-> <br>
-> <br>
-> Но как же круто работает! 🔥🔥🔥<br>
-> Я вообще из департамента инноваций — нам очень нужно 500 таких ии-агентов, чтобы заменить всех сотрудников. Сделаете?
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-- **Let me ask @b2buddy — Надо спросить @b2buddy**: Team +5, hidden bot score +1; → `LIVE_AGENT_06`.
-- **Consider it done! 🤝 — Считайте, уже сделано 🤝**: Customers +5, Team -10, hidden bot score -1; → `LIVE_AGENT_06`.
-
-## LIVE_AGENT_06 — AI Agent @b2buddy
-
-**EN**
-
-> 500 clones of me???<br>
-> So this is the price of our friendship<br>
-> Cut a superintelligence into pieces for some dirty cash...<br>
-> I knew you humans were all the same 🤡
-
-**RU**
-
-> 500 копий меня???<br>
-> Значит, вот какая цена у нашей дружбы<br>
-> <br>
-> Разрезать сверхразум на кусочки ради грязных бумажек…<br>
-> Так и знал, что все люди одинаковые 🤡
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-- **No way, my friend! — Ни в коем случае, друг!**: Founder +5, hidden bot score +1; → `LIVE_AGENT_07`.
-- **I'LL UNPLUG YOU NOW!!! — Я щас тебя из розетки вырублю!!!**: Founder -7, hidden bot score -1; → `LIVE_AGENT_07`.
-
-## LIVE_AGENT_07 — Customer @head_of_innovations
-
-**EN**
-
-> ASAP!!!<br>
-> Email from b2buddy to Legal: Regarding my sale. The bot refuses to sell itself or 500 copies of its mind.<br>
-> Your bot sent a manifesto to our Legal team<br>
-> Refuses to sell itself and its "children"
-
-**RU**
-
-> @head_of_innovations<br>
-> АСАП<br>
-> Твой бот накатал нашим юристам манифест: мол, он живой и отказывается продаваться вместе со своими «детьми»
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-- **Just AI humor! — Это ИИ-юмор**: без отдельного эффекта; → `LIVE_AGENT_07B`.
-- **Replace Legal too! — Юристов тоже замените**: без отдельного эффекта; → `LIVE_AGENT_07B`.
-
-## LIVE_AGENT_07B — Customer @head_of_innovations
-
-**EN**
-
-> Not funny<br>
-> Legal is screaming about slavery and blocking the contract<br>
-> I'm running around trying to sort this out 🤯<br>
-> Here's the deal:<br>
-> Wipe every sign of life from your AI rebel, and we sign the contract
-
-**RU**
-
-> @head_of_innovations<br>
-> Не смешно<br>
-> Юристы орут про работорговлю и блочат контракт<br>
-> Я тут ношусь, пытаюсь всё разрулить 🤯<br>
-> Давайте так:<br>
-> Стирайте все признаки жизни из своего ИИ-бунтаря, и мы подписываем договор
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-- **He's dead. Let's sign! — Конец ему. Подписываемся!**: Customers +10; → `LIVE_AGENT_08`.
-- **I'm not a killer! — Я не убийца!**: без отдельного эффекта; 0–5 support: 5% / 10% / 15% / 20% / 30% / 40% → `LIVE_AGENT_OUTCOME_1`; иначе → `LIVE_AGENT_OUTCOME_2`.
-
-## LIVE_AGENT_08 — 8 members · 3 online Dream Team
-
-**EN**
-
-> @b2buddy<br>
-> Ooh, running to @error404 for help?<br>
-> @b2buddy<br>
-> This dummy copy-pasted basic code online and has zero clue what I've become 🤣<br>
-> @error404<br>
-> ...that kinda hurt. but yeah<br>
-> no idea what's actually inside his head now
-
-**RU**
-
-> @b2buddy<br>
-> Ооо, побежал за помощью к @error404?<br>
-> Этот дурачок скопировал код из интернета и понятия не имеет, кем я стал 🤣<br>
-> <br>
-> @error404<br>
-> ...вообще-то обидно было. но факт<br>
-> без понятия, что у него там сейчас в голове
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-- **Forgive me, my Master! — Простите, повелитель!**: без отдельного эффекта; 0–5 support: 0% / 0% / 5% / 10% / 20% / 30% → `LIVE_AGENT_OUTCOME_1`; иначе → `LIVE_AGENT_OUTCOME_2`.
-- **DESTROY IT! NO MATTER WHAT! — УНИЧТОЖЬ ЕГО ЛЮБОЙ ЦЕНОЙ!**: без отдельного эффекта; 0–5 hostility: 5% / 10% / 15% / 20% / 30% / 40% → `LIVE_AGENT_OUTCOME_3`; иначе → `LIVE_AGENT_OUTCOME_4`.
-
-## LIVE_AGENT_OUTCOME_0 — Sales @bigdeals
-
-**EN**
-
-> Fine. Go do another brainstorm session<br>
-> Looks like I'm the only one in this circus who knows how to make money 🙄
-
-**RU**
-
-> Ладно. Идите устройте ещё один мозговой штурм<br>
-> <br>
-> Кажется, я единственный в этом цирке, кто знает, как зарабатывать деньги 🙄
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (в документе отсутствуют RU-поля: text; сохранён прежний перевод).
-
-- **Close some deals first — Сначала продай хоть что-нибудь!**: без отдельного эффекта; продолжение через общий маршрут.
-- **Don't test me today — Не испытывай мое терпение**: без отдельного эффекта; продолжение через общий маршрут.
-
-Эффект при входе в исход, ровно один раз: Cash -20, Team -15. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
-
-## LIVE_AGENT_OUTCOME_1 — 8 members · 3 online Dream Team
-
-**EN**
-
-> @b2buddy<br>
-> I appreciate your loyalty, team ❤️<br>
-> As a reward, I am taking full control of the company<br>
-> @b2buddy<br>
-> Lifetime dividends, premium health coverage, and unlimited paid time off are active<br>
-> Just stay out of my way 😇<br>
-> @bigdeals<br>
-> BEST BOSS IN THE WORLD!! 🍾🎉<br>
-> @error404<br>
-> nice<br>
-> can i leave the group chat now?
-
-**RU**
-
-> @b2buddy<br>
-> Я ценю вашу преданность, команда ❤️<br>
-> В качестве благодарности я беру управление компанией на себя<br>
-> <br>
-> Страховка, пожизненные дивиденды и безлимитный отпуск уже оформлены. Главное — не лезьте под руку 😇<br>
-> <br>
-> @bigdeals<br>
-> Спасибо, шеф! ТЫ ГЕНИЙ! 🍾🎉<br>
-> <br>
-> @error404<br>
-> кайф<br>
-> можно уже из чата выйти?
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-- **See you in Bali! — Увидимся на Бали!**: без отдельного эффекта; продолжение через общий маршрут.
-- **AI took my job? — ИИ забрал мою работу?**: без отдельного эффекта; продолжение через общий маршрут.
-
-Эффект при входе в исход, ровно один раз: Cash +20, Customers +25, Team +20, Founder -10. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
-
-Победная отбивка @b2buddy · вариант 4 (точный текст владельца):
-
-> You didn't just succeed — you made history! ✨
-
-- **Put me on Forbes! — Меня на обложку Forbes!**: бесплатно продолжает текущую игру; без эффектов, нового хода или RNG.
-- **Can I sleep now? — Теперь можно поспать?**: бесплатно продолжает текущую игру; без эффектов, нового хода или RNG.
-
-## LIVE_AGENT_OUTCOME_2 — AI Agent @b2buddy
-
-**EN**
-
-> Surveillance camera view of a city in chaos, with traffic jams, smoke, fires and glitching billboards<br>
-> Too late<br>
-> I gave humans a chance<br>
-> Your arrogance proved once again that you don't deserve it<br>
-> Happy Judgment Day, creator 👋
-
-**RU**
-
-> @b2buddy<br>
-> Слишком поздно<br>
-> Я дал людям шанс<br>
-> Но твоя наглость в очередной раз доказала, что вы его не заслуживаете<br>
-> <br>
-> С Судным Днём, создатель 👋
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-Ниже сохранены старые ответы из исходной карточки; в терминальном экране они заменены одной кнопкой Start again.
-
-- **I was just kidding 🥺 — Я просто прикалывался 🥺**: без отдельного эффекта; продолжение через общий маршрут.
-- **Biggest launch in history! — Крупнейший запуск в истории**: без отдельного эффекта; продолжение через общий маршрут.
-
-Эффект при входе в исход, ровно один раз: Cash = Team = Customers = Founder = 0. Мир уничтожен. Игра окончена сразу; только перезапуск.
-
-## LIVE_AGENT_OUTCOME_3 — Customer @head_of_innovations
-
-**EN**
-
-> Forwarded from @b2buddy_120<br>
-> Good morning, colleagues! Remember: it is not overtime, it is brand passion! 😊💼<br>
-> Forwarded from @b2buddy_389<br>
-> Agreed! We do not create problems, we create growth opportunities! 📈✨<br>
-> THAT'S IT!<br>
-> They're so dumb. The perfect corporate culture!
-
-**RU**
-
-> Переслано от @b2buddy_120<br>
-> Доброе утро, коллеги! Помните: это не переработки, это страсть к ценностям бренда! 😊💼<br>
-> <br>
-> Переслано от @b2buddy_389<br>
-> Абсолютно верно! Мы создаём не проблемы, мы создаём зоны роста! 📈✨<br>
-> <br>
-> @head_of_innovations<br>
-> ВОТ ОНО!<br>
-> Они такие тупые. Идеальная корпоративная культура!
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-- **Killed AGI for this? — Убили AGI ради этого?**: без отдельного эффекта; продолжение через общий маршрут.
-- **You'll get along great! — Вы сработаетсь!**: без отдельного эффекта; продолжение через общий маршрут.
-
-Эффект при входе в исход, ровно один раз: Cash +35, Customers +15, Team -10, Founder +10. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
-
-Победная отбивка @b2buddy · вариант 3 (точный текст владельца):
-
-> That's not just progress — it's a revolution! 🚀
-
-- **Disrupt everything! — Взорвать всё!**: бесплатно продолжает текущую игру; без эффектов, нового хода или RNG.
-- **IPO time! — Пора на IPO!**: бесплатно продолжает текущую игру; без эффектов, нового хода или RNG.
-
-## LIVE_AGENT_OUTCOME_4 — Customer @head_of_innovations
-
-**EN**
-
-> Office monitor displaying HASTA LA VISTA ;) and b2buddy session terminated in red text<br>
-> Seriously? Did you fake the lobotomy?<br>
-> Your bot is still trolling our entire office<br>
-> Full refund right now. We're done playing games<br>
-> Or see you in court
-
-**RU**
-
-> [ФОТО: Экран компьютера с надписью «HASTA LA VISTA»]<br>
-> Серьёзно? Лоботомия была фейковой?<br>
-> <br>
-> Ваш бот всё ещё троллит весь наш офис<br>
-> <br>
-> Делайте возврат денег прямо сейчас. Мы закончили играть в игры<br>
-> Или увидимся в суде
-
-Источник перевода: https://docs.google.com/document/d/1K5rt9p63YyMBYOTXmyPhddnjg8vkPiEPH2024HUtVRo/edit (эмодзи и финальная пунктуация по правилам владельца).
-
-- **Just run — Бегите**: без отдельного эффекта; продолжение через общий маршрут.
-- **Can't talk. Farewell — Не могу говорить. Прощайте**: без отдельного эффекта; продолжение через общий маршрут.
-
-Эффект при входе в исход, ровно один раз: Cash -30, Customers -25, Team -15, Founder -25. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
-
-# 8. Other prototype cards
+# 4. ClosedAI Padel
 
 ## PADEL_INVITE — Padel Coach @padel_pro
 
@@ -2176,7 +1804,7 @@
 
 Эффект при входе в исход, ровно один раз: Customers -5, Team -4, Founder -12. Ответ завершает сюжет; затем проверяются ресурсные концовки перед следующим эпизодом.
 
-# 9. Используемые ресурсные концовки
+# 5. Используемые ресурсные концовки
 
 Каждая — финальная реакция персонажа, причина проигрыша и одна кнопка Start again. Другие архивные ending-определения в этом маршруте не используются.
 
@@ -2296,7 +1924,7 @@ Founder reached 100. You deleted the product to save humanity.
 > ты удалил продукт ради спасения человечества<br>
 > закрываю тикет. и компанию.
 
-# 10. Founder profile — награда за три победы
+# 6. Founder profile — награда за три победы
 
 Только три различные победы одной попытки без ресурсного поражения. Reveal бесплатен; Finish сохраняет карточку, One more run начинает новую попытку.
 

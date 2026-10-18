@@ -206,9 +206,8 @@ test('AI influencer cards preserve approved copy and graph with document resourc
 });
 
 test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canonical scoped Padel graph', () => {
-  const padelIndex = canonicalDeck.cards.findIndex((card) => card.id === 'PADEL_INVITE');
   assert.deepEqual(
-    canonicalDeck.cards.slice(padelIndex, padelIndex + 16).map((card) => card.id),
+    canonicalDeck.cards.filter((card) => card.plot === 'padel').map((card) => card.id),
     [
       'PADEL_INVITE',
       'DREAM_TEAM',
@@ -225,7 +224,6 @@ test('Padel Invite, Dream Team, five IRL cards, and eight outcomes are the canon
       'PADEL_OUTCOME_5',
       'PADEL_OUTCOME_6',
       'PADEL_OUTCOME_7',
-      'AGENT_01',
     ],
   );
 
