@@ -53,9 +53,10 @@
     <script src="assets/loss-preview-data.js?v=a10508ba398a" defer></script>
     <script src="assets/loss-finale-data.js?v=1a459e659c5b" defer></script>
     <link rel="stylesheet" href="assets/loss-preview.css?v=1d706b3f7401">
-    <link rel="stylesheet" href="assets/sound.css?v=ce610bd1c7e7">
+    <link rel="stylesheet" href="assets/sound.css?v=dd35fefe9cf0">
     <script src="assets/sound-samples.js?v=95b7708d569c" defer></script>
     <script src="assets/sound.js?v=898ed7f481aa" defer></script>
+    <script src="assets/haptics.js?v=1c134283ef29" defer></script>
     <script src="assets/padel-backgrounds.js?v=0e334a815064" defer></script>
     <link rel="stylesheet" href="assets/founder-profile.css?v=5f3d81633654">
     <script src="assets/founder-profile.js?v=52b6c3a9ea79" defer></script>
@@ -66,7 +67,7 @@
     <script src="assets/analytics.js?v=35afd992b824" defer></script>
     <link rel="stylesheet" href="assets/deals.css?v=aeb2de948cbe">
     <script src="assets/deals.js?v=b8f8dddb4ee9" defer></script>
-    <script src="app.js?v=3f25b8f5a6d8" defer></script>
+    <script src="app.js?v=6139a15728e5" defer></script>
   </head>
   <body>
     <main class="app" data-app>
@@ -101,6 +102,9 @@
             <header class="contact">
               <div class="avatar" data-avatar aria-hidden="true">M</div>
               <div class="contact__text"><b data-sender>Mistakery</b><i data-status>typing...</i></div>
+              <button class="haptics-toggle" type="button" data-haptics-toggle aria-label="Disable haptics" aria-pressed="true" title="Disable haptics" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="4" width="8" height="16" rx="2"/><g class="haptics-on"><path d="m4 8-2 4 2 4m16-8 2 4-2 4"/></g><path class="haptics-off" d="m3 3 18 18"/></svg>
+              </button>
               <button class="sound-toggle" type="button" data-sound-toggle aria-label="Mute sounds" aria-pressed="true" title="Mute sounds">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4Z"/><g class="sound-on"><path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></g><path class="sound-off" d="m16 9 5 6m0-6-5 6"/></svg>
               </button>

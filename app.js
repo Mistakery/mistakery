@@ -26,6 +26,9 @@
 
   const $ = (selector) => document.querySelector(selector);
   const sound = window.MistakerySound;
+  const haptics = window.MistakeryHaptics;
+  const hapticStates = new WeakSet();
+  function stopFeedback() { sound.stop(); haptics.stop(); }
   // Prepare the owner's original image independently of first-entry onboarding.
   // Reuse the decoded node so the title never paints its prompt before the logo.
   let titleLogo;
@@ -42,13 +45,14 @@
   let titleLogoReady = prepareTitleLogo();
   const soundEvents = new WeakMap();
   const resumedStates = new WeakSet();
-  function soundOnce(key, kind) {
+  function soundOnce(key, kind, hapticKind) {
     if (resumedStates.has(app.state)) return false;
     if (!soundEvents.has(app.state)) soundEvents.set(app.state, new Set());
     const events = soundEvents.get(app.state);
     if (events.has(key)) return false;
     events.add(key);
     if (kind) sound.play(kind);
+    if (hapticKind && hapticStates.has(app.state)) haptics.play(hapticKind);
     return true;
   }
   function updateSoundControl() {
@@ -63,6 +67,19 @@
     sound.setEnabled(!sound.enabled);
     updateSoundControl();
     if (sound.enabled) sound.unlock();
+  });
+  function updateHapticsControl() {
+    const button = $('[data-haptics-toggle]');
+    const label = haptics.enabled ? 'Disable haptics' : 'Enable haptics';
+    button.hidden = !haptics.supported;
+    button.setAttribute('aria-pressed', String(haptics.enabled));
+    button.setAttribute('aria-label', label);
+    button.title = label;
+  }
+  updateHapticsControl();
+  $('[data-haptics-toggle]').addEventListener('click', () => {
+    haptics.setEnabled(!haptics.enabled);
+    updateHapticsControl();
   });
   // Capture the activation before a choice can replace its button or deliver content.
   document.addEventListener('click', event => {
@@ -161,7 +178,7 @@
         dialog.addEventListener('cancel', event => event.preventDefault());
         document.body.append(dialog);
         // Open after this action's other dialogs so recovery remains accessible.
-        queueMicrotask(() => { if (dialog.isConnected) { sound.stop(); dialog.showModal(); } });
+        queueMicrotask(() => { if (dialog.isConnected) { stopFeedback(); dialog.showModal(); } });
       }
       return;
     }
@@ -204,7 +221,7 @@
   }
   function continueRun() {
     if (app.locked || !app.state || saveStatus === 'conflict') return;
-    sound.stop();
+    stopFeedback();
     window.clearTimeout(choiceUnlockTimer);
     resumedStates.add(app.state); presentedOutcomes.add(app.state);
     const win = winPresentations.get(app.state);
@@ -748,7 +765,7 @@
 
   function backInStoryTest() {
     if (!storyTestEnabled || !testHistory.length) return;
-    sound.stop();
+    stopFeedback();
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
     const { scrollTop, lossPresentation, winPresentation, summaryShown, profileRevealed, soundPlayed, ...saved } = testHistory.pop();
@@ -768,7 +785,7 @@
   function startStoryTest() {
     if (lossPreviewEnabled) return openLossPreview(app.lossPreviewIndex);
     if (!storyTestEnabled) return;
-    sound.stop();
+    stopFeedback();
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
     testHistory.length = 0;
@@ -1545,7 +1562,7 @@
   function showLossSummary() {
     if (!app.state.gameOver || summarizedRuns.has(app.state)) return;
     recordTestStep();
-    sound.stop();
+    stopFeedback();
     summarizedRuns.add(app.state);
     saveCheckpoint();
     renderLossSummary();
@@ -1638,7 +1655,6 @@
     if (summarizedRuns.has(app.state)) return renderLossSummary(feedback);
     const lossCard = resourceLossCard();
     if (lossCard) return renderLossCard(lossCard, feedback);
-    soundOnce('ending-alert', 'story-loss');
     const ending = app.deck.endings[app.state.endingId];
     const storyCard = engine.cardById(app.deck, app.state.currentCardId);
     const card = storyCard?.terminalEnding === app.state.endingId ? storyCard : endingReaction();
@@ -1669,6 +1685,7 @@
       else requestExit(event);
     });
     $('[data-chat]').scrollTop = 0;
+    soundOnce('ending-alert', 'story-loss', 'failure');
   }
 
   function renderCard(feedback = null) {
@@ -1747,10 +1764,17 @@
     presentedOutcomes.add(app.state);
     // Result feedback takes precedence over send/arrival in the same transition.
     soundOnce('outcome-alert', card.outcomeTone === 'success' ? 'story-win' : 'story-loss');
+    presentOutcomeHaptics(card);
     // Flush the cleared class so consecutive outcomes also get one entrance.
     void phone.offsetWidth;
     phone.classList.add('is-outcome-entering');
     if (card.outcomeTone === 'catastrophic') stageOutcomeImageMotion();
+  }
+
+  function presentOutcomeHaptics(card) {
+    // Wait for the actual result messages, including an opening typing pause.
+    if (!card.outcomeTone || app.cardDelivery && !app.cardDelivery.delivered) return;
+    soundOnce('haptic-outcome', null, card.outcomeTone === 'success' ? 'success' : 'failure');
   }
 
   function stageOutcomeImageMotion() {
@@ -1920,6 +1944,7 @@
       buttons.forEach(button => { button.disabled = false; });
       revealCardMessages = () => {};
       if (isLossCard()) showLossPreviewDefeat();
+      else presentOutcomeHaptics(card);
     }
     revealCardMessages = () => {
       if (!isCurrent() || delivery.delivered) return;
@@ -2075,6 +2100,7 @@
     const next = engine.cardById(app.deck, resolved.currentCardId);
     // IRL card changes use the ball/result cue; there is no message to send.
     if (card.mode !== 'irl' && next?.mode !== 'irl') sound.play('send');
+    haptics.play('choice');
     if (!resolved.gameOver && retainsPreviousChat(next, card, side)) {
       sentMediaWidths = retainedMessageNodes(Array.from($('[data-chat]').querySelectorAll('[data-chat-current]')))
         .map(node => (node.matches('.image-bubble') ? node : node.querySelector('.image-bubble'))?.offsetWidth || null);
@@ -2090,6 +2116,7 @@
     clearPreview();
     app.state = resolved || route.resolveChoice(app.deck, app.state, side,
       directStoryTest ? { outcomeRng: Math.random } : {}).state;
+    hapticStates.add(app.state);
     app.progress = window.MistakeryFounderProfile.collectWins(app.deck, app.progress, app.state);
     const feedback = app.state.history.at(-1);
     if (card.outcomeTone === 'success' && card.winFeedback && (!app.state.gameOver || app.state.endingId === 'run_complete')) {
@@ -2135,7 +2162,7 @@
   }
 
   function renderTitle() {
-    sound.stop();
+    stopFeedback();
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
     app.cardDelivery = null;
@@ -2256,13 +2283,13 @@
     });
     dialog.addEventListener('cancel', event => { event.preventDefault(); cancel(); });
     document.body.append(dialog);
-    sound.stop();
+    stopFeedback();
     dialog.showModal();
   }
 
   function restartRun() {
     if (saveStatus === 'conflict') return;
-    sound.stop();
+    stopFeedback();
     if (lossPreviewEnabled) return openLossPreview(app.lossPreviewIndex);
     recordTestStep();
     window.clearTimeout(choiceUnlockTimer);
@@ -2310,7 +2337,7 @@
   }
 
   function openLossPreview(index) {
-    sound.stop();
+    stopFeedback();
     const cards = window.MISTAKERY_LOSS_PREVIEW.cards;
     app.lossPreviewIndex = Math.max(0, Math.min(cards.length - 1, index ?? 0));
     const card = cards[app.lossPreviewIndex];
@@ -2401,7 +2428,7 @@
     const phone = $('[data-game]');
     phone.dataset.outcome = 'failure';
     if (!presentation.defeated) phone.classList.add('is-outcome-entering');
-    if (!presentation.defeated) soundOnce('defeat-alert', 'resource-loss');
+    if (!presentation.defeated) soundOnce('defeat-alert', 'resource-loss', 'failure');
     presentation.defeated = true;
   }
 
@@ -2446,7 +2473,7 @@
     <footer class="choices">${(lossPreviewEnabled ? data.choices.en : ['Back to 9–5', 'New run']).map((label, index) => `<button type="button" class="choice${index ? ' choice--right' : ''}" data-finale-choice>${htmlAttribute(label)}</button>`).join('')}</footer>`;
     // The answered source choices are disabled; return to an available control.
     const dismiss = () => {
-      sound.stop();
+      stopFeedback();
       dialog.close();
       $('[data-restart-run]').focus({ preventScroll: true });
     };
@@ -2569,7 +2596,7 @@
       if (profile) { app.progress.revealed = true; revealedProfiles.add(state); }
       saveCheckpoint();
       cancelWinConfetti();
-      sound.stop();
+      stopFeedback();
       dialog.remove();
       if (dialog.open) dialog.close();
       // The outcome cost was presented when accepted; a free dismissal must

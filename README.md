@@ -28,6 +28,8 @@ Refusing the opening offer in Padel or Influencer costs 15 Cash. From the normal
 
 ## Source of truth
 
+Gameplay haptics use a separate saved control in the contact header: a short accepted-reply tap, two pulses on a revealed successful deal, and one longer pulse on a revealed failure. Unsupported browsers keep playing normally and hide the control. Safari/iPhone has no standard vibration API. See [haptics behavior and browser/device checks](docs/qa/haptics.md).
+
 - `cards.json` holds the game deck and English copy. `cards.bundle.js` is its generated offline copy.
 - `MISTAKERY_CARDS_EN_RU.md` is the generated bilingual catalog.
 - New browser modules live under `assets/`, which the Cloudflare preview publishes recursively.
