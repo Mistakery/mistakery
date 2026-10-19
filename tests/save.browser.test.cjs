@@ -46,6 +46,32 @@ async function witness(page,w,beforeLast=false) {
   await page.clock.runFor(30000);
 }
 for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]){
+ test(`${name}: intro exit returns straight to welcome without a dialog or premature save`,{timeout:30000},async()=>{
+  const {browser,page,errors}=await setup(type);
+  try{
+    for(const note of [0,1]){
+      await page.clock.runFor(300);await page.locator('[data-title-play]').click();
+      for(let n=0;n<10&&await page.evaluate(()=>MistakeryApp.view!=='saved');n++){
+        await page.clock.runFor(20000);await page.locator('[data-choice="left"]').click();
+      }
+      assert.equal(await page.evaluate(()=>MistakeryApp.view),'saved');
+      if(note===1){await page.clock.runFor(20000);await page.locator('[data-choice="left"]').click();}
+      const prepared=await state(page);
+      await page.locator('[data-restart-run]').click();
+      assert.equal(await page.locator('[data-quit-dialog]').count(),0,'intro exits without confirmation');
+      assert.equal(await page.locator('[data-title-play]').count(),1);
+      assert.equal(await page.locator('[data-title-continue]').count(),0);
+      assert.equal(await page.evaluate(k=>localStorage.getItem(k),key),null,'exit cannot save a run before intro completion');
+      assert.deepEqual(await state(page),prepared,'exit cannot draw or resolve a card');
+      await page.clock.runFor(30000);
+      assert.equal(await page.evaluate(()=>MistakeryApp.view),'title','pending intro delivery cannot reopen the game');
+      await page.clock.runFor(300);await page.locator('[data-title-play]').click();
+      assert.equal(await page.evaluate(()=>MistakeryApp.onboardingIndex),0);
+      await page.reload();await page.locator('[data-title-play]').waitFor();
+    }
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+ });
  test(`${name}: first run autosaves, reload and Continue preserve state; Quit and explicit New run`,{timeout:30000},async()=>{
   const {browser,page,errors}=await setup(type);
   try{
@@ -59,7 +85,9 @@ for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]){
     const expected=await page.evaluate(()=>MistakeryRoute.resolveChoice(MistakeryApp.deck,MistakeryApp.state,'left').state);
     await page.locator('[data-choice="left"]').click();assert.deepEqual(await state(page),expected);
     await page.clock.runFor(20000);
-    await page.locator('[data-restart-run]').click();await page.locator('[data-quit-cancel]').click();
+    await page.locator('[data-restart-run]').click();
+    assert.equal(await page.locator('#quit-description').innerText(),'Your progress is saved.');
+    await page.locator('[data-quit-cancel]').click();
     assert.deepEqual(await state(page),expected);
     await page.locator('[data-restart-run]').click();await page.locator('[data-quit-confirm]').click();
     await page.clock.runFor(300);
@@ -246,6 +274,9 @@ for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]){
     await start(page);await page.clock.runFor(20000);await page.locator('[data-choice="left"]').click();
     assert.ok((await state(page)).history.length);
     assert.match(await page.locator('[data-save-status]').innerText(),/not being saved/i);
+    await page.locator('[data-restart-run]').click();
+    assert.equal(await page.locator('#quit-description').innerText(),"Progress couldn’t be saved. Don’t close this tab if you want to continue.");
+    await page.locator('[data-quit-cancel]').click();
     assert.equal(await page.evaluate(k=>localStorage.getItem(k),key),null);
     assert.equal(await page.evaluate(()=>MistakerySound.enabled),false);assert.deepEqual(errors,[]);
   }finally{await browser.close();}

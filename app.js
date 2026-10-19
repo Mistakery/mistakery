@@ -2196,6 +2196,14 @@
   function requestExit(event) {
     if (lossPreviewEnabled) return openLossPreview(app.lossPreviewIndex);
     if (app.view === 'onboarding' || app.view === 'title' || !app.state) return;
+    if (app.view === 'saved' && !storyTestEnabled) {
+      // Intro notes are not a started run: return to welcome without writing a checkpoint.
+      app.firstVisit = true;
+      app.onboardingIndex = 0;
+      app.noteIndex = 0;
+      renderTitle();
+      return;
+    }
     if ($('[data-quit-dialog]')) return;
     const origin = event?.currentTarget || document.activeElement;
     const dialog = document.createElement('dialog');
@@ -2203,7 +2211,7 @@
     dialog.setAttribute('aria-labelledby', 'quit-title');
     dialog.setAttribute('aria-describedby', 'quit-description');
     dialog.innerHTML = `<h2 id="quit-title">Do you really want to quit?</h2>
-      <p id="quit-description">${storyTestEnabled ? 'Your run stays here until you close this page.' : saveStatus === 'saved' ? 'Your run is saved. You can continue from the title screen.' : 'Your run stays here, but recent progress may not survive closing this page.'}</p>
+      <p id="quit-description">${storyTestEnabled ? 'Your run stays here until you close this page.' : saveStatus === 'saved' ? 'Your progress is saved.' : 'Progress couldn’t be saved. Don’t close this tab if you want to continue.'}</p>
       <footer class="choices"><button class="choice" type="button" data-quit-confirm>Quit</button>
       <button class="choice choice--right" type="button" data-quit-cancel autofocus>Cancel</button></footer>`;
     const cancel = () => {
