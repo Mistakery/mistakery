@@ -122,18 +122,18 @@ for (const [name, type] of [['chromium', chromium], ['webkit', webkit]]) {
           assert.notEqual(result.first, before.first);
           assert.equal(result.view, 'playing');
         }
-        // Verify title visibility is restored after leaving the world finale.
+        // Completion without three acknowledged wins returns to the title.
         await page.evaluate(() => {
           const a = MistakeryApp; a.state.gameOver = true; a.state.endingId = 'run_complete'; a.render();
         });
-        assert.equal(await page.locator('[data-ending-title]').isVisible(), true);
-        assert.equal(await page.locator('[data-ending-title]').innerText(), 'Run complete');
-        assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Back to 9–5', 'New run']);
+        assert.equal(await page.evaluate(() => MistakeryApp.view), 'title');
+        assert.equal(await page.locator('[data-ending-summary]').isVisible(), false);
+        assert.deepEqual(await page.locator('.title-actions button').allTextContents(), ['New run']);
         await page.evaluate(w => {
           const a = MistakeryApp;
           let state = MistakeryRoute.startRun(a.deck, { seed: w.seed });
           for (const step of w.steps) state = MistakeryRoute.resolveChoice(a.deck, state, step.side).state;
-          a.state = state; a.locked = false; a.cardDelivery = null; a.render();
+          a.state = state; a.view = 'playing'; a.locked = false; a.cardDelivery = null; a.render();
         }, lossWitness);
         await page.clock.runFor(15000);
         await page.locator('[data-choice=left]').click();

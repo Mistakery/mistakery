@@ -28,7 +28,7 @@ for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) test(`${name
   await page.locator(`[data-choice="${witness.steps.at(-1).side}"]`).click();await completeFounderSend(page,true);
   const end=await page.evaluate(()=>structuredClone(MistakeryApp.state));
   assert.equal(end.endingId,'run_complete');
-  assert.equal(await page.locator('.win-progress').innerText(),'3 of 3 wins secured');
+  assert.equal(await page.locator('.win-progress').innerText(),'3 of 3 deals closed');
   assert.equal(await page.locator('.win-progress__dot.is-filled').count(),3);
   assert.deepEqual(await page.locator('[data-win-finale-choice]').allTextContents(),['Let’s go']);
   assert.match(await page.locator('[data-win-finale]').textContent(),/highly personalized founder profile/);

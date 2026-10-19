@@ -10,10 +10,11 @@ const url = pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href;
 const seeds = [...new Map(Array.from({ length: 80 }, (_, seed) => [route.startRun(deck, { seed: String(seed) }).route.order.join(','), seed])).values()];
 async function open(page, suffix) {
   await page.addInitScript(()=>localStorage.setItem('mistakery.sound','off'));
-  await page.clock.install();
+  const time = new Date('2026-10-19T12:00:00Z');
+  await page.clock.install({ time });
+  await page.clock.pauseAt(time);
   await page.goto(url + suffix);
   await page.waitForFunction(() => window.MistakeryApp?.state);
-  await page.clock.pauseAt(new Date());
 }
 async function click(page, side = 'left') {
   await page.clock.runFor(6000);
@@ -84,12 +85,15 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
         assert.equal(end.endingId, 'run_complete');
         assert.equal(end.route.cycle, 1);
         assert.equal(await page.locator('.typing-bubble').count(), 0, 'no next story delivery behind the summary');
-        assert.equal(await page.locator('[data-choice="left"]').isDisabled(), false);
+        assert.equal(await page.evaluate(() => MistakeryApp.view), 'title');
+        assert.equal(await page.locator('[data-title-new]').isVisible(), true);
+        assert.equal(await page.locator('[data-title-continue], [data-title-profile]').count(), 0,
+          'surviving failed stories grants neither Continue nor a CEO card');
         assert.deepEqual(end.route.completed, initial.route.order);
         assert.equal(end.route.gaps.length, 2);
         assert.ok(end.route.gaps.every(g => g.played.length === g.target && [4,5].includes(g.target)));
         assert.equal(new Set(end.fillerCards).size, end.fillerCards.length);
-        assert.equal(await page.locator('[data-card-id]').textContent(), 'RUN_SUMMARY');
+        assert.equal(await page.locator('[data-ending-summary]').isVisible(), false);
         await page.locator('[data-test-restart]').click();
         assert.equal(await page.locator('[data-card-id]').textContent(), 'SAVED_01_PLAN');
         assert.deepEqual(await snapshot(page), initial);

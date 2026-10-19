@@ -246,8 +246,11 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
       await page.locator('[data-chat]').click();
       await page.locator('[data-choice="left"]').click();
       assert.equal(await dialog.isVisible(), true);
+      const pendingText = await dialog.innerText();
       await page.evaluate(() => MistakeryApp.render());
-      assert.equal(await dialog.count(), 0);
+      assert.equal(await dialog.count(), 1, 'render restores exactly one pending finale');
+      assert.equal(await dialog.evaluate(n => n.matches(':modal')), true);
+      assert.equal(await dialog.innerText(), pendingText);
       await page.goto(url);
       await page.waitForFunction(() => window.MistakeryApp?.deck);
       assert.equal(await dialog.count(), 0);

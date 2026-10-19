@@ -35,7 +35,8 @@
     titleLogo.alt = 'Mistakery';
     titleLogo.draggable = false;
     titleLogo.decoding = 'sync';
-    titleLogo.src = 'assets/mistakery-logo.png';
+    titleLogo.fetchPriority = 'high';
+    titleLogo.src = 'assets/mistakery-logo-optimized.png';
     return titleLogo.decode().then(() => true, () => false);
   }
   let titleLogoReady = prepareTitleLogo();
@@ -111,6 +112,12 @@
   const celebratedWins = new Set();
   let saveStore;
   let saveStatus = 'empty';
+  let savedDealWins = new Set();
+  const deals = window.MistakeryDeals.create({
+    host: $('[data-deals]'),
+    read: () => ({ progress: app.progress, savedWins: savedDealWins,
+      persistent: !storyTestEnabled }),
+  });
   let unreadableSave = false;
   let analytics = null;
   let analyticsRunId = null;
@@ -133,6 +140,7 @@
   }
   function showSaveStatus(status) {
     saveStatus = status;
+    deals.update();
     const messages = {
       unavailable: 'Progress is not being saved. If you leave, your latest actions may be lost.',
       invalid: 'Your save could not be loaded. Choose New run to replace it.',
@@ -161,7 +169,7 @@
     if (!notice) {
       notice = document.createElement('p'); notice.dataset.saveStatus = '';
       notice.className = 'save-status'; notice.setAttribute('role', 'status');
-      document.body.append(notice);
+      $('.frame').prepend(notice);
     }
     notice.textContent = messages[status];
   }
@@ -172,7 +180,10 @@
       profileRevealed: revealedProfiles.has(app.state), summaryShown: summarizedRuns.has(app.state),
       lossSide: summarizedRuns.has(app.state) ? null : lossPresentations.get(app.state)?.side || null,
     } }, { replace });
-    if (result.status === 'saved') app.progress = result.progress;
+    if (result.status === 'saved') {
+      app.progress = result.progress;
+      savedDealWins = new Set(Object.keys(result.progress.wins));
+    }
     showSaveStatus(result.status === 'invalid' ? 'unavailable' : result.status);
     return result;
   }
@@ -651,6 +662,7 @@
   let disposeFounderCard;
 
   function setView(view, shellStage = 'real', feedback = null) {
+    deals.update();
     if (view !== 'saved') {
       window.clearTimeout(savedDeliveryTimer);
       savedDeliveryTimer = null;
@@ -2083,7 +2095,8 @@
     if (card.outcomeTone === 'success' && card.winFeedback && (!app.state.gameOver || app.state.endingId === 'run_complete')) {
       // Route settlement/draw has already happened once. Hold presentation only:
       // no next-card typing, incoming sound, scrolling or gameplay work behind the modal.
-      winPresentations.set(app.state, { pending: true, cardId: card.id, feedback, celebrationKey });
+      winPresentations.set(app.state, { pending: true, cardId: card.id, feedback, celebrationKey,
+        newDeal: Object.keys(app.progress.wins).length > Object.keys(previousProgress.wins).length });
       saveCheckpoint();
       trackChoice(card, side, previousProgress);
       showWinFeedback();
@@ -2532,7 +2545,7 @@
     const feedback = profile ? { message: app.deck.meta.founderProfile.invitation, choices: [{ en: 'Let’s go' }] }
       : engine.cardById(app.deck, presentation.cardId).winFeedback;
     const count = Object.keys(app.progress.wins).length;
-    const progressLabel = `${count} of 3 wins secured`;
+    const progressLabel = `${count} of 3 deals closed`;
     const progress = `<div class="win-progress" role="group" aria-label="${progressLabel}"><span class="win-progress__dots" aria-hidden="true">${[1, 2, 3].map(n => `<i class="win-progress__dot${n <= count ? ' is-filled' : ''}${n === count ? ' is-new' : ''}"></i>`).join('')}</span><span>${progressLabel}</span></div>`;
     const source = sourceFor('@b2buddy');
     const dialog = document.createElement('dialog');
@@ -2563,6 +2576,7 @@
       // not replay its meter pulse or resource-attention delay.
       renderCard();
       unlockAfterChoice();
+      if (presentation.newDeal && !resumedStates.has(state)) { deals.celebrate(); presentation.newDeal = false; }
       if (!profile) $('[data-chat]').focus({ preventScroll: true });
     };
     dialog.querySelectorAll('[data-win-finale-choice]').forEach(button => button.addEventListener('click', resume));
@@ -2796,6 +2810,7 @@
       if (saved.status === 'saved') {
         app.state = saved.data.state;
         app.progress = saved.data.progress;
+        savedDealWins = new Set(Object.keys(app.progress.wins));
         restorePresentation(saved.data.presentation);
         await titleLogoReady;
         renderTitle();

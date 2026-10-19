@@ -1,0 +1,17 @@
+:root { --deals-ink: #315c76; --deals-empty: #718b9c; --deals-pending: #916012; }
+/* Preserve the selected A layout and the original header footprint. */
+.top:has(.deals-brand) { padding-top: 15px; padding-bottom: 8px; }
+.deals-brand { min-height: 44px; flex-shrink: 0; }
+.brand .deals-line {
+  display: flex; align-items: center; gap: 6px; margin: 3px 0 0; padding: 0;
+  background: none; color: var(--deals-ink); font-size: 10px; font-weight: 650;
+  letter-spacing: 0; line-height: 18px; white-space: nowrap;
+}
+.brand .deals-count, .brand .deals-marks { margin: 0; padding: 0; background: none; color: inherit; font: inherit; letter-spacing: 0; }
+.brand .deals-marks { display: inline-flex; gap: 4px; }
+.deals-mark { display: block; width: 9px; height: 9px; border: 1.25px solid var(--deals-empty); border-radius: 50%; }
+.deals-mark.is-filled { background: var(--deals-ink); border-color: var(--deals-ink); }
+.deals-mark.is-pending { background: transparent; border: 2px dotted var(--deals-pending); }
+@media (max-height: 700px) and (orientation: portrait), (max-height: 700px) and (pointer: fine), (max-width: 700px) and (pointer: coarse) and (orientation: landscape) {
+  .top:has(.deals-brand) { padding-top: 7px; padding-bottom: 4px; }
+}

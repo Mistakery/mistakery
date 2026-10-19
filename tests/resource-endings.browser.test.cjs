@@ -73,8 +73,8 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
         assert.equal(await page.evaluate(() => MistakeryApp.view), 'ended');
         if (id === 'judgment_day') {
           assert.equal(await page.locator('[data-card-id]').innerText(), 'LIVE_AGENT_OUTCOME_2');
-          assert.match(await page.locator('[data-ending-summary]').innerText(), /GAME OVER · YOU LOST/);
-          assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Back to 9–5', 'New run']);
+          assert.equal(await page.locator('[data-ending-summary] small').innerText(), 'GAME OVER');
+          assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Oops', 'Finally 😍']);
           assert.equal(await page.locator('[data-loss-flash], [data-loss-finale]').count(), 0);
         } else {
         const cardId = `DOC_LOSS_${deck.meta.route.resourceEndings.indexOf(id) + 1}`;
@@ -88,14 +88,28 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
         await page.locator('[data-test-inspect]').click();
         assert.match(await page.locator('[data-details-body]').innerText(), /@b2buddy/);
         await page.locator('[data-details-close]').click();
+        // Back from the unanswered loss reaches the last real decision.
+        await page.locator('[data-test-back]').click();
+        assert.deepEqual(await snapshot(page), before);
+        await page.clock.runFor(12000);
+        await page.locator(`[data-choice="${witness.steps.at(-1).side}"]`).click();
+        await completeFounderSend(page, true);
+        await page.clock.runFor(15000);
+        assert.deepEqual(await snapshot(page), ended);
         for (const side of ['left', 'right']) {
-          // Back to the last real decision, then settle the same ending afresh.
+          // Replay the original attempt for the other reply. Back now correctly
+          // restores the pending finale, whose modal blocks the QA toolbar.
           if (side === 'right') {
-            await page.locator('[data-test-back]').click();
-            await page.clock.runFor(12000);
-            await page.locator(`[data-choice="${witness.steps.at(-1).side}"]`).click();
-            await completeFounderSend(page, true);
+            await page.locator('[data-test-restart]').click();
+            assert.deepEqual(await snapshot(page), initial);
+            for (const response of ['left', 'left', ...witness.steps.map(step => step.side)]) {
+              await page.clock.runFor(12000);
+              await page.locator(`[data-choice="${response}"]`).click();
+              await completeFounderSend(page, true);
+              await continueWinFeedback(page);
+            }
             await page.clock.runFor(15000);
+            assert.deepEqual(await snapshot(page), ended);
           }
           await page.locator(`[data-choice="${side}"]`).click();
           await completeFounderSend(page, true);
@@ -117,10 +131,14 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
           await page.locator('[data-test-back]').click();
           await page.keyboard.press('ArrowLeft');
           assert.deepEqual(await snapshot(page), ended);
-          assert.equal(await page.locator('[data-loss-finale][open]').count(), 0);
+          assert.equal(await page.locator('[data-loss-finale][open]').count(), 1, 'Back restores the pending final response');
           await page.evaluate(() => MistakeryApp.render());
+          assert.equal(await page.locator('[data-loss-finale][open]').count(), 1, 'render cannot duplicate or dismiss it');
           assert.equal(await page.locator('[data-player-reply]').count(), 1);
           assert.equal(await page.locator('[data-choice]:enabled').count(), 0);
+          await page.keyboard.press('Escape');
+          assert.equal(await page.locator('[data-loss-finale][open]').count(), 0);
+          assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Back to 9–5', 'New run']);
         }
         }
         for (const viewport of [{ width: 320, height: 650 }, { width: 1280, height: 900 }]) {
@@ -139,14 +157,16 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
             await page.screenshot({ path: path.join(process.env.MISTAKERY_QA_DIR, `${id}-${viewport.width}.png`) });
           }
         }
-        await page.locator('[data-test-back]').click();
-        assert.deepEqual(await snapshot(page), before);
-        await page.clock.runFor(12000);
-        await page.locator(`[data-choice="${witness.steps.at(-1).side}"]`).click();
-        await completeFounderSend(page, true);
-        assert.deepEqual(await snapshot(page), ended);
+        if (id === 'judgment_day') {
+          await page.locator('[data-test-back]').click();
+          assert.deepEqual(await snapshot(page), before);
+          await page.clock.runFor(12000);
+          await page.locator(`[data-choice="${witness.steps.at(-1).side}"]`).click();
+          await completeFounderSend(page, true);
+          assert.deepEqual(await snapshot(page), ended);
+        }
         await page.clock.runFor(1000);
-        await page.locator(id === 'judgment_day' ? '[data-choice="right"]' : '[data-restart-run]').click();
+        await page.locator(id === 'judgment_day' ? '[data-choice="right"]' : '[data-choice="left"]').click();
         if (id !== 'judgment_day') { await confirmQuit(page); await playFromTitle(page); }
         assert.equal(await page.evaluate(() => MistakeryApp.view), 'playing');
         assert.equal(await page.locator('[data-loss-flash], [data-loss-finale], [data-loss-preview]').count(), 0);

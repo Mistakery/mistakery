@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#bdd5e8">
     <title>Mistakery</title>
     <link rel="icon" href="data:,">
-    <link rel="preload" as="image" type="image/png" href="assets/mistakery-logo.png">
+    <link rel="preload" as="image" type="image/png" href="assets/mistakery-logo-optimized.png" fetchpriority="high">
     <link rel="stylesheet" href="style.css?v=208bb5bd0933">
     <link rel="stylesheet" href="assets/endings.css?v=603f1cb6640e">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-founder.webp" fetchpriority="high">
@@ -26,11 +26,13 @@
     <link rel="stylesheet" href="assets/founder-profile.css?v=5f3d81633654">
     <script src="assets/founder-profile.js?v=52b6c3a9ea79" defer></script>
     <script src="assets/founder-card-touch.js?v=ee3baaad05d2" defer></script>
-    <link rel="stylesheet" href="assets/save.css?v=5180d976746a">
+    <link rel="stylesheet" href="assets/save.css?v=940e594164ad">
     <script src="assets/save.js?v=95e62c924e7d" defer></script>
     <script src="assets/analytics-config.js?v=d8b2df2f8f7d" defer></script>
     <script src="assets/analytics.js?v=35afd992b824" defer></script>
-    <script src="app.js?v=15f23ddca201" defer></script>
+    <link rel="stylesheet" href="assets/deals.css?v=aeb2de948cbe">
+    <script src="assets/deals.js?v=b8f8dddb4ee9" defer></script>
+    <script src="app.js?v=e41426e3b992" defer></script>
   </head>
   <body>
     <main class="app" data-app>
@@ -48,7 +50,7 @@
       <div class="frame">
         <section class="phone" data-game data-view="loading" data-shell-stage="intro" aria-label="Mistakery game">
           <header class="top" data-top hidden>
-            <div class="brand"><b>B2BuyerSpyer</b><span>AI-POWERED</span></div>
+            <div class="brand deals-brand"><b>B2BuyerSpyer</b><span class="deals-line" data-deals role="group" aria-label="Deals: 0 of 3 closed across attempts."><span class="deals-count" data-deals-count>Deals 0/3</span><span class="deals-marks" data-deals-marks aria-hidden="true"></span></span></div>
             <button class="quit" type="button" data-restart-run disabled>Back to 9–5</button>
           </header>
 

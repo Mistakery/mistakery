@@ -71,7 +71,7 @@ test('live agent probabilities, resources, completion and mobile messenger', asy
           if (outcome === 2) {
             assert.equal(state.gameOver, true);
             assert.equal(state.endingId, 'judgment_day');
-            assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Back to 9–5', 'New run']);
+            assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Oops', 'Finally 😍']);
             continue;
           }
           await click(page, supports % 2 ? 'left' : 'right');

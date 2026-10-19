@@ -14,7 +14,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
    let requested = false;
    await page.route('http://mistakery.test/**', async route => {
     const pathname = new URL(route.request().url()).pathname;
-    if (pathname.endsWith('/mistakery-logo.png')) { requested = true; await held; }
+    if (pathname.endsWith('/mistakery-logo-optimized.png')) { requested = true; await held; }
     const file = path.join(root, pathname === '/' ? 'index.html' : pathname.slice(1));
     const ext = path.extname(file);
     await route.fulfill({ path: file, contentType: ({'.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.js':'text/javascript','.css':'text/css'})[ext] || 'text/html' });
@@ -32,7 +32,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
    assert.notEqual(frame.view, 'title', 'never show Continue before its logo is decoded');
    await page.keyboard.press('Escape');
    release();
-   await page.waitForFunction(() => performance.getEntriesByType('resource').some(e => e.name.endsWith('/mistakery-logo.png')));
+   await page.waitForFunction(() => performance.getEntriesByType('resource').some(e => e.name.endsWith('/mistakery-logo-optimized.png')));
    await page.waitForTimeout(100);
    assert.deepEqual(await page.evaluate(() => structuredClone(MistakeryApp.state)), before);
    assert.equal(await page.evaluate(() => MistakeryApp.view), 'saved', 'cancelled async exit must not navigate later');
@@ -70,7 +70,7 @@ test('failed logo keeps Quit cancellable and can be retried without losing the r
   let attempts = 0;
   await page.route('http://mistakery.test/**', async route => {
    const pathname = new URL(route.request().url()).pathname;
-   if (pathname.endsWith('/mistakery-logo.png') && ++attempts === 1) return route.fulfill({status:404,body:''});
+   if (pathname.endsWith('/mistakery-logo-optimized.png') && ++attempts === 1) return route.fulfill({status:404,body:''});
    const file = path.join(root, pathname === '/' ? 'index.html' : pathname.slice(1));
    const ext = path.extname(file);
    await route.fulfill({path:file,contentType:({'.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.js':'text/javascript','.css':'text/css'})[ext]||'text/html'});

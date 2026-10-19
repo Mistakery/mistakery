@@ -152,7 +152,7 @@ for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]){
       assert.deepEqual(p.wins.padel,first,'first winning decisions cannot be replaced');
       await reloadContinue(page);
       assert.deepEqual(await state(page),accepted);
-      assert.equal(await page.locator('.win-progress').innerText(),`${[1,1,2,3][index]} of 3 wins secured`);
+      assert.equal(await page.locator('.win-progress').innerText(),`${[1,1,2,3][index]} of 3 deals closed`);
       assert.equal(await page.locator('[data-founder-invitation]').count(),index===3?1:0);
       if(index===3){
         // Reload before revealing, then use the permanent title entry instead of Continue.

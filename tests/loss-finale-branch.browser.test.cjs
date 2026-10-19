@@ -75,7 +75,12 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
             await page.keyboard.press('Escape');
             await page.evaluate(() => MistakeryApp.render());
             await page.clock.runFor(20000);
-            assert.equal(await page.locator('[data-loss-finale]').count(), 0);
+            assert.equal(await page.locator('[data-loss-finale][open]').count(), preview ? 1 : 0,
+              'render restores the pending preview; ordinary Escape settles the loss summary');
+            if (preview) {
+              assert.deepEqual(await page.locator('[data-loss-finale] .message p').allTextContents(), expected);
+              await page.keyboard.press('Escape');
+            }
             assert.equal(await page.locator('[data-player-reply]').count(), preview ? 1 : 0);
             assert.equal(await page.locator('[data-choice]:enabled').count(), preview ? 0 : 2);
             if (!preview) assert.deepEqual(await page.locator('[data-choice]').allTextContents(), ['Back to 9–5', 'New run']);

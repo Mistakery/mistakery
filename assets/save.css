@@ -11,9 +11,10 @@
 .title-profile:hover { background: #fff; }
 .title-profile:active { transform: translateY(1px) scale(.99); }
 .title-profile:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.frame:has(> .save-status) { display: flex; flex-direction: column; }
+.frame:has(> .save-status) > .phone { height: auto; min-height: 0; flex: 1; }
 .save-status {
-  position: fixed; z-index: 10000; top: max(8px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
-  width: min(360px, calc(100vw - 24px)); box-sizing: border-box; margin: 0; padding: 10px 14px;
+  flex: none; width: 100%; box-sizing: border-box; margin: 0; padding: 10px 14px;
   border: 1px solid #b78a3a; border-radius: 12px; background: #fff6de; color: #463513;
   font: 13px/1.4 system-ui, sans-serif; box-shadow: 0 4px 16px #0002;
 }

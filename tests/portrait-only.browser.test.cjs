@@ -114,7 +114,10 @@ for (const [name, engine, device] of [['Chromium', chromium, 'Pixel 7'], ['WebKi
       }
       await page.clock.resume();
       // Normal entry also remains playable when initially loaded in landscape.
+      // The earlier fixture wrote progress; this assertion exercises a fresh visitor.
+      await page.evaluate(() => localStorage.removeItem('mistakery.browser-save'));
       await page.goto(base); await page.waitForFunction(() => window.MistakeryApp?.deck && window.MistakeryApp.view !== 'loading' && !window.MistakeryApp.locked);
+      await page.locator('[data-title-play]').tap();
       await page.locator('[data-choice="left"]').tap();
       assert.equal(await page.evaluate(() => window.MistakeryApp.onboardingIndex), 1);
       assert.deepEqual(errors, []);

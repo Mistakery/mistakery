@@ -80,10 +80,14 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
     try {
       const page = await browser.newPage({ viewport: { width: 320, height: 650 }, reducedMotion: 'reduce' });
       const w = witnesses.cash_low;
+      await page.clock.install();
       await page.goto(`${url}?seed=${w.seed}`);
       await page.waitForFunction(() => window.MistakeryApp?.state);
-      await page.clock.install(); await page.clock.pauseAt(new Date());
+      await page.clock.pauseAt(new Date());
       const initial = await snapshot(page);
+      await page.locator('[data-title-play]').waitFor();
+      await page.clock.runFor(300);
+      await page.locator('[data-title-play]').click();
       for (let i = 0; i < 5; i++) await click(page);
       for (const step of w.steps) await click(page, step.side);
       assert.equal((await snapshot(page)).endingId, 'cash_low');
