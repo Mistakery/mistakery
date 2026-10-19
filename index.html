@@ -11,15 +11,42 @@
       .phone[data-view="loading"] > :not([data-startup-screen]) { display: none !important; }
       .phone:not([data-view="loading"]) > [data-startup-screen] { display: none; }
       [data-startup-screen] {
-        position: absolute; inset: 0; display: grid; place-items: center; padding: 28px;
+        --startup-blue: #287cbd; --startup-edge: #9bbbd3;
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 24px; padding: 28px;
         background: linear-gradient(160deg, #bdd5e8, #e5eff6 75%);
       }
-      [data-startup-status] {
-        margin: 0; color: #637384; font-size: 14px; line-height: 1.5; text-align: center;
-        opacity: 0; animation: startup-status 0s 1s forwards;
+      [data-startup-art] { position: relative; width: 124px; height: 104px; flex: none; }
+      .startup-reply {
+        position: absolute; right: 0; top: 2px; width: 62px; height: 44px;
+        border: 2px solid #206aa2; border-radius: 18px 18px 5px 18px;
+        background: var(--startup-blue); transform: rotate(12deg);
       }
-      [data-startup-status][data-failed] { opacity: 1; animation: none; }
-      @keyframes startup-status { to { opacity: 1; } }
+      .startup-bubble {
+        position: absolute; left: 4px; top: 27px; width: 100px; height: 68px;
+        display: flex; align-items: center; justify-content: center; gap: 9px;
+        background: #f8fcff; border: 2px solid var(--startup-edge); border-radius: 24px 24px 24px 6px;
+        box-shadow: 0 5px 0 #a7c2d6; transform: rotate(-6deg);
+        animation: startup-bob 1.8s ease-in-out infinite;
+      }
+      .startup-dot {
+        width: 10px; height: 10px; border-radius: 50%; background: var(--startup-blue);
+        animation: startup-dot 1.05s ease-in-out infinite;
+      }
+      .startup-dot:nth-child(2) { animation-delay: .14s; }
+      .startup-dot:nth-child(3) { animation-delay: .28s; }
+      .startup-spark { position: absolute; left: 0; top: 0; width: 21px; height: 21px; color: var(--startup-blue); }
+      [data-startup-status] {
+        max-width: 235px; margin: 0; color: #315c76; font-size: 16px;
+        font-weight: 650; line-height: 1.45; text-align: center;
+      }
+      [data-startup-screen]:has([data-failed]) [data-startup-art] { display: none; }
+      [data-startup-status][data-failed] { font-size: 14px; font-weight: 400; }
+      @keyframes startup-bob { 50% { transform: translateY(-5px) rotate(-2deg); } }
+      @keyframes startup-dot { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-7px); } }
+      @media (prefers-reduced-motion: reduce) {
+        .startup-bubble, .startup-dot { animation: none; }
+      }
     </style>
     <link rel="preload" as="image" type="image/png" href="assets/mistakery-logo-optimized.png" fetchpriority="high">
     <link rel="stylesheet" href="style.css?v=208bb5bd0933">
@@ -65,7 +92,12 @@
       <div class="frame">
         <section class="phone" data-game data-view="loading" data-shell-stage="intro" aria-label="Mistakery game">
           <section data-startup-screen role="status" aria-label="Loading Mistakery">
-            <p data-startup-status>Loading…</p>
+            <div data-startup-art aria-hidden="true">
+              <span class="startup-reply"></span>
+              <svg class="startup-spark" viewBox="0 0 24 24" fill="currentColor"><path d="m12 0 3.3 8.7L24 12l-8.7 3.3L12 24l-3.3-8.7L0 12l8.7-3.3Z"/></svg>
+              <span class="startup-bubble"><i class="startup-dot"></i><i class="startup-dot"></i><i class="startup-dot"></i></span>
+            </div>
+            <p data-startup-status>Preparing questionable decisions…</p>
           </section>
           <header class="top" data-top hidden>
             <div class="brand deals-brand"><b>B2BuyerSpyer</b><span class="deals-line" data-deals role="group" aria-label="Deals: 0 of 3 closed across attempts."><span class="deals-count" data-deals-count>Deals 0/3</span><span class="deals-marks" data-deals-marks aria-hidden="true"></span></span></div>

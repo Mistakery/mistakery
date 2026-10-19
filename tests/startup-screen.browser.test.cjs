@@ -25,11 +25,17 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
     await page.locator('[data-scene]').waitFor({ state: 'attached' });
     assert.equal(await page.locator('[data-scene]').isVisible(), false, 'chat must be hidden before the first title');
     assert.equal(await page.locator('[data-title-play]').count(), 0, 'no active Play before startup completes');
-    await page.waitForFunction(() => {
-     const status = document.querySelector('[data-startup-status]');
-     return status && getComputedStyle(status).opacity === '1';
+    const firstFrame = await page.evaluate(() => {
+     document.getAnimations().forEach(animation => { animation.pause(); animation.currentTime = 0; });
+     return getComputedStyle(document.querySelector('[data-startup-status]')).opacity;
     });
-    assert.equal(await page.locator('[data-startup-status]').innerText(), 'Loading…');
+    assert.equal(firstFrame, '1', 'startup feedback is visible from the first frame');
+    assert.equal(await page.locator('[data-startup-status]').innerText(), 'Preparing questionable decisions…');
+    assert.equal(await page.locator('[data-startup-art]').isVisible(), true);
+    assert.equal(await page.locator('.startup-dot').count(), 3);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    assert.equal(await page.locator('[data-startup-screen]').evaluate(n => n.getAnimations({subtree:true}).length), 0, 'reduced motion keeps the illustration still');
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.keyboard.press('Tab');
     assert.notEqual(await page.evaluate(() => document.activeElement?.getAttribute('data-sound-toggle')), '', 'hidden chat controls cannot receive focus');
     // WebKit screenshots wait for document.fonts.ready, which waits for the held
@@ -59,6 +65,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
    await page.goto(origin);
    await page.waitForFunction(() => document.querySelector('[data-startup-status]')?.textContent.startsWith('Could not start Mistakery:'));
    assert.equal(await page.locator('[data-startup-status]').evaluate(n => getComputedStyle(n).opacity), '1');
+   assert.equal(await page.locator('[data-startup-art]').isVisible(), false, 'an error must stop the loading animation');
    assert.equal(await page.locator('[data-scene]').isVisible(), false);
    assert.equal(await page.locator('[data-title-play]').count(), 0);
   } finally { await browser.close(); }
