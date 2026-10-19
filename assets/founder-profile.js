@@ -28,8 +28,7 @@
   }
 
   function reward(deck, state) {
-    // The route settles resources before run_complete. A third success followed by
-    // resource defeat must never become a profile reward, even with three win IDs.
+    // Per-attempt helper for isolated previews; player rewards use earnedReward.
     if (!state?.gameOver || state.endingId !== 'run_complete') return null;
     if (!plots.every(plot => state.route?.completed.includes(plot))) return null;
     const cards = new Map(deck.cards.map(card => [card.id, card]));
@@ -39,5 +38,41 @@
     const type = classify(deck, state.history);
     return type ? { type, ...deck.meta.founderProfile.types[type] } : null;
   }
-  return { classify, reward };
+  const emptyProgress = () => ({ wins: {}, revealed: false });
+
+  function collectWins(deck, progress, state) {
+    const next = structuredClone(progress);
+    const cards = new Map(deck.cards.map(card => [card.id, card]));
+    const histories = Object.fromEntries(plots.map(plot => [plot, []]));
+    for (const step of state.history) {
+      const card = cards.get(step.cardId);
+      if (!plots.includes(card?.plot) || next.wins[card.plot]) continue;
+      histories[card.plot].push({ cardId: step.cardId, side: step.side });
+      // Only acknowledged story successes enter history. A later loss cannot erase them.
+      if (card.outcomeTone === 'success') next.wins[card.plot] = histories[card.plot];
+    }
+    return next;
+  }
+
+  function earnedReward(deck, progress) {
+    if (!progress || !plots.every(plot => progress.wins[plot])) return null;
+    const type = classify(deck, plots.flatMap(plot => progress.wins[plot]));
+    return type ? { type, ...deck.meta.founderProfile.types[type] } : null;
+  }
+
+  function validProgress(deck, progress) {
+    if (!progress || typeof progress !== 'object' || Array.isArray(progress)
+      || typeof progress.revealed !== 'boolean' || !progress.wins
+      || typeof progress.wins !== 'object' || Array.isArray(progress.wins)) return false;
+    const cards = new Map(deck.cards.map(card => [card.id, card]));
+    for (const [plot, history] of Object.entries(progress.wins)) {
+      if (!plots.includes(plot) || !Array.isArray(history) || history.length < 2 || history.length > 64) return false;
+      if (!history.every((step, index) => step && ['left', 'right'].includes(step.side)
+        && cards.get(step.cardId)?.plot === plot
+        && (index === history.length - 1 ? cards.get(step.cardId).outcomeTone === 'success' : !cards.get(step.cardId).outcomeTone))) return false;
+    }
+    const complete = plots.every(plot => progress.wins[plot]);
+    return (!complete || Boolean(earnedReward(deck, progress))) && (!progress.revealed || complete);
+  }
+  return { classify, reward, emptyProgress, collectWins, earnedReward, validProgress };
 });

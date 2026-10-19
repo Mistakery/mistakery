@@ -6,7 +6,10 @@
     deck: null,
     state: null,
     runStartState: null,
+    progress: window.MistakeryFounderProfile.emptyProgress(),
+    runStartProgress: window.MistakeryFounderProfile.emptyProgress(),
     view: 'loading',
+    firstVisit: false,
     onboardingIndex: 0,
     noteIndex: 0,
     savedDelivery: null,
@@ -37,7 +40,9 @@
   }
   let titleLogoReady = prepareTitleLogo();
   const soundEvents = new WeakMap();
+  const resumedStates = new WeakSet();
   function soundOnce(key, kind) {
+    if (resumedStates.has(app.state)) return false;
     if (!soundEvents.has(app.state)) soundEvents.set(app.state, new Set());
     const events = soundEvents.get(app.state);
     if (events.has(key)) return false;
@@ -104,6 +109,102 @@
   const revealedProfiles = new WeakSet();
   // Presentation-only ledger survives Back snapshots; a new attempt can celebrate again.
   const celebratedWins = new Set();
+  let saveStore;
+  let saveStatus = 'empty';
+  let unreadableSave = false;
+  let analytics = null;
+  let analyticsRunId = null;
+  function initializeAnalytics(saved) {
+    try {
+      analytics = window.MistakeryAnalytics?.create({
+        config: window.MISTAKERY_ANALYTICS_CONFIG, url: window.location.href,
+        storage: () => window.localStorage, id: () => window.crypto.randomUUID(),
+        disabled: storyTestEnabled,
+        doNotTrack: navigator.doNotTrack === '1' || navigator.globalPrivacyControl === true,
+        send: (url, payload) => fetch(url, { method: 'POST', credentials: 'omit', referrerPolicy: 'no-referrer',
+          headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), keepalive: true }),
+      });
+      if (saved.status === 'saved') {
+        analyticsRunId = saved.data.runId;
+        analytics?.restore(analyticsRunId, saved.data.state);
+      }
+      analytics?.open(saved.status === 'saved');
+    } catch { analytics = null; }
+  }
+  function showSaveStatus(status) {
+    saveStatus = status;
+    const messages = {
+      unavailable: 'Progress is not being saved. If you leave, your latest actions may be lost.',
+      invalid: 'Your save could not be loaded. Choose New run to replace it.',
+      incompatible: 'This save belongs to a different game version. Choose New run to replace it.',
+      protected: 'Your previous save is unchanged. Choose New run to replace it.',
+    };
+    let notice = $('[data-save-status]');
+    if (status === 'conflict') {
+      notice?.remove();
+      if (!$('[data-save-conflict]')) {
+        const dialog = document.createElement('dialog');
+        dialog.className = 'quit-dialog'; dialog.dataset.saveConflict = '';
+        dialog.setAttribute('aria-labelledby', 'save-conflict-title');
+        dialog.innerHTML = `<h2 id="save-conflict-title">Progress changed in another tab</h2>
+          <p>Reload to continue with the latest saved progress.</p>
+          <footer class="choices"><button class="choice" type="button" autofocus>Reload</button></footer>`;
+        dialog.querySelector('button').addEventListener('click', () => window.location.reload());
+        dialog.addEventListener('cancel', event => event.preventDefault());
+        document.body.append(dialog);
+        // Open after this action's other dialogs so recovery remains accessible.
+        queueMicrotask(() => { if (dialog.isConnected) { sound.stop(); dialog.showModal(); } });
+      }
+      return;
+    }
+    if (!messages[status]) { notice?.remove(); return; }
+    if (!notice) {
+      notice = document.createElement('p'); notice.dataset.saveStatus = '';
+      notice.className = 'save-status'; notice.setAttribute('role', 'status');
+      document.body.append(notice);
+    }
+    notice.textContent = messages[status];
+  }
+  function saveCheckpoint(replace = false) {
+    if (!saveStore || !app.state) return;
+    const result = saveStore.write({ state: app.state, progress: app.progress, presentation: {
+      winCardId: winPresentations.get(app.state)?.pending ? winPresentations.get(app.state).cardId : null,
+      profileRevealed: revealedProfiles.has(app.state), summaryShown: summarizedRuns.has(app.state),
+      lossSide: summarizedRuns.has(app.state) ? null : lossPresentations.get(app.state)?.side || null,
+    } }, { replace });
+    if (result.status === 'saved') app.progress = result.progress;
+    showSaveStatus(result.status === 'invalid' ? 'unavailable' : result.status);
+    return result;
+  }
+  function restorePresentation(presentation) {
+    const state = app.state;
+    if (presentation.winCardId) {
+      const feedback = state.history.at(-1);
+      winPresentations.set(state, { pending: true, cardId: presentation.winCardId, feedback,
+        celebrationKey: JSON.stringify([state.seed, state.route.cycle, presentation.winCardId]) });
+    }
+    if (presentation.profileRevealed) revealedProfiles.add(state);
+    if (presentation.summaryShown) summarizedRuns.add(state);
+    if (presentation.lossSide) {
+      const card = resourceLossCard();
+      lossPresentations.set(state, { side: presentation.lossSide, defeated: true,
+        reply: card.replies[presentation.lossSide === 'left' ? 0 : 1].en });
+    }
+  }
+  function continueRun() {
+    if (app.locked || !app.state || saveStatus === 'conflict') return;
+    sound.stop();
+    window.clearTimeout(choiceUnlockTimer);
+    resumedStates.add(app.state); presentedOutcomes.add(app.state);
+    const win = winPresentations.get(app.state);
+    if (win) celebratedWins.add(win.celebrationKey);
+    const card = resourceLossCard() || engine.cardById(app.deck, app.state.currentCardId);
+    app.cardDelivery = { key: `${card.id}:${app.state.history.length}`, delivered: true };
+    if (app.state.endingId !== 'run_complete') revealedProfiles.delete(app.state);
+    app.view = 'playing'; app.locked = false;
+    analytics?.resume(analyticsRunId, app.state);
+    renderCard();
+  }
   let cancelWinConfetti = () => {};
   const resourceLossCards = Object.freeze({ cash_low: 'DOC_LOSS_1', team_low: 'DOC_LOSS_2',
     team_high: 'DOC_LOSS_3', customers_low: 'DOC_LOSS_4', founder_low: 'DOC_LOSS_5', founder_high: 'DOC_LOSS_6' });
@@ -606,6 +707,8 @@
     testHistory.push({
       soundPlayed: [...(soundEvents.get(app.state) || [])],
       state: structuredClone(app.state),
+      progress: structuredClone(app.progress),
+      runStartProgress: structuredClone(app.runStartProgress),
       lossPresentation: structuredClone(lossPresentations.get(app.state) || null),
       winPresentation: structuredClone(winPresentations.get(app.state) || null),
       summaryShown: summarizedRuns.has(app.state),
@@ -659,6 +762,7 @@
     testHistory.length = 0;
     app.cardDelivery = null;
     app.state = structuredClone(app.runStartState || initialRun());
+    app.progress = structuredClone(app.runStartProgress);
     app.runStartState = structuredClone(app.state);
     app.liveAgentScore = 0;
     app.padelCeoScore = 0;
@@ -1172,13 +1276,17 @@
     }
   }
 
-  function beginRun() {
+  function beginRun(replaceSave = false) {
     // Saved is navigation inside the prepared attempt, not another shuffle.
     app.padelCeoScore = 0;
     app.influencerPreviousCardId = null;
     app.liveAgentScore = 0;
     app.locked = false;
     app.view = 'playing';
+    const checkpoint = saveCheckpoint(replaceSave);
+    // Use the checkpoint identity without changing the seeded game RNG.
+    try { analyticsRunId = checkpoint?.runId || window.crypto.randomUUID(); } catch { analyticsRunId = null; }
+    if (checkpoint?.status !== 'conflict') analytics?.start(analyticsRunId, app.state, replaceSave ? 'new_run' : 'intro');
     renderCard();
   }
 
@@ -1217,6 +1325,7 @@
   }
 
   function bindCardChoices(card, choices, disabled) {
+    const state = app.state;
     document.querySelectorAll('[data-choice]').forEach((button) => {
       const side = button.dataset.choice;
       const choice = choices[side];
@@ -1225,7 +1334,7 @@
       button.addEventListener('focus', () => previewChoice(card, choice, side));
       button.addEventListener('mouseleave', clearPreview);
       button.addEventListener('blur', clearPreview);
-      button.addEventListener('click', () => choose(side));
+      button.addEventListener('click', () => { if (app.state === state && button.isConnected) choose(side); });
     });
   }
 
@@ -1426,17 +1535,17 @@
     recordTestStep();
     sound.stop();
     summarizedRuns.add(app.state);
-    renderRunSummary();
+    saveCheckpoint();
+    renderLossSummary();
     // Swallow the key/click that dismissed the finale before accepting navigation.
     app.locked = true;
     choiceUnlockTimer = window.setTimeout(() => { app.locked = false; }, 280);
     $('[data-chat]').focus({ preventScroll: true });
   }
 
-  function renderRunSummary(feedback = null) {
+  function renderLossSummary(feedback = null) {
     const state = app.state;
-    const complete = state.endingId === 'run_complete';
-    const ending = complete ? null : app.deck.endings[state.endingId];
+    const ending = app.deck.endings[state.endingId];
     window.clearTimeout(choiceUnlockTimer);
     app.locked = false;
     app.cardDelivery = null;
@@ -1448,35 +1557,17 @@
     setReplyHint(false);
     setCardId('RUN_SUMMARY');
     renderPersonalCard({ id: 'RUN_SUMMARY', source: '@b2buddy',
-      text: !complete ? 'Thanks for playing. This run is over. You can close the game or start a fresh attempt.'
-        : 'Three stories. One company still standing. That’s this run wrapped. Ready to try a different route?' });
+      text: 'Thanks for playing. This run is over. You can close the game or start a fresh attempt.' });
     $('[data-chat]').querySelectorAll('.is-pop').forEach(node => node.classList.remove('is-pop'));
-    setThread('@b2buddy', complete ? 'Run complete' : 'Run ended');
+    setThread('@b2buddy', 'Run ended');
     const phone = $('[data-game]');
     phone.dataset.runSummary = '';
-    phone.dataset.outcome = complete ? 'complete' : 'failure';
-    $('[data-ending-summary] small').textContent = complete ? 'END OF RUN' : 'GAME OVER · YOU LOST';
-    $('[data-ending-title]').textContent = complete ? 'Run complete' : ending.title;
-    $('[data-ending-title]').hidden = !complete && !ending.title;
-    $('[data-ending-cause]').textContent = complete
-      ? 'All three stories are finished. Your company is still here.' : ending.cause;
+    phone.dataset.outcome = 'failure';
+    $('[data-ending-summary] small').textContent = 'GAME OVER · YOU LOST';
+    $('[data-ending-title]').textContent = ending.title;
+    $('[data-ending-title]').hidden = !ending.title;
+    $('[data-ending-cause]').textContent = ending.cause;
     $('[data-ending-summary]').hidden = false;
-    const names = { live_agent: 'Live Agent', influencer: 'Influencer', padel: 'Padel' };
-    const results = new Map(state.history.map(step => engine.cardById(app.deck, step.cardId))
-      .filter(card => card?.outcomeTone).map(card => [card.plot, card]));
-    const current = engine.cardById(app.deck, state.currentCardId);
-    if (current?.outcomeTone) results.set(current.plot, current);
-    const panel = document.createElement('section');
-    panel.className = 'run-results'; panel.setAttribute('aria-label', 'Your run');
-    const decisions = state.history.length;
-    panel.innerHTML = `<p class="run-results__meta">${state.route.completed.length} / ${state.route.order.length} stories finished · ${decisions} ${decisions === 1 ? 'decision' : 'decisions'}</p>`
-      + state.route.order.map(plot => {
-        const result = results.get(plot);
-        const label = result ? result.outcomeTone === 'success' ? 'Success' : 'Setback'
-          : plot === state.activeArc ? 'Interrupted' : 'Not reached';
-        return `<div class="run-results__row" data-run-result><span>${names[plot]}</span><b>${label}</b></div>`;
-      }).join('');
-    $('[data-chat]').append(panel);
     setChoices(['Back to 9–5', 'New run'], (side, event) => {
       if (app.locked) return;
       if (side === 'right') restartRun();
@@ -1519,9 +1610,9 @@
   }
 
   function renderEnding(feedback = null) {
-    const profile = window.MistakeryFounderProfile.reward(app.deck, app.state);
-    if (profile) {
-      if (revealedProfiles.has(app.state)) return renderFounderProfile(profile);
+    const profile = window.MistakeryFounderProfile.earnedReward(app.deck, app.progress);
+    if (app.state.endingId === 'run_complete' && profile) {
+      if (app.progress.revealed) return renderFounderProfile(profile);
       // Reconstruct the pending invitation after a test Back or render, without
       // advancing the route, spending cash, or rolling outcomes again.
       if (!winPresentations.has(app.state)) {
@@ -1531,7 +1622,8 @@
       }
       return showWinFeedback();
     }
-    if (app.state.endingId === 'run_complete' || summarizedRuns.has(app.state)) return renderRunSummary(feedback);
+    if (app.state.endingId === 'run_complete') return renderTitle();
+    if (summarizedRuns.has(app.state)) return renderLossSummary(feedback);
     const lossCard = resourceLossCard();
     if (lossCard) return renderLossCard(lossCard, feedback);
     soundOnce('ending-alert', 'story-loss');
@@ -1568,6 +1660,10 @@
   }
 
   function renderCard(feedback = null) {
+    // Test snapshots are isolated from player storage and can be injected mid-run.
+    if (storyTestEnabled) app.progress = window.MistakeryFounderProfile.collectWins(app.deck, app.progress, app.state);
+    const profile = window.MistakeryFounderProfile.earnedReward(app.deck, app.progress);
+    if (profile && revealedProfiles.has(app.state)) return renderFounderProfile(profile);
     if (winPresentations.get(app.state)?.pending) return showWinFeedback();
     if (app.state.gameOver) return renderEnding(feedback);
     const card = engine.cardById(app.deck, app.state.currentCardId);
@@ -1741,6 +1837,12 @@
     const repeated = app.state.history.slice(app.state.route.cycleStart).some(step => step.cardId === card.id);
     const key = `${card.id}:${app.state.history.length}`;
     const restoring = app.cardDelivery?.key === key;
+    if (restoring && app.cardDelivery.delivered && resumedStates.has(app.state)) {
+      nodes.forEach(node => { node.classList.remove('is-pop'); node.style.animationDelay = ''; });
+      queueMessageReactions(nodes, true);
+      if (isLossCard()) showLossPreviewDefeat();
+      return;
+    }
     const pauses = restoring && app.cardDelivery.pauses ? app.cardDelivery.pauses
       : card.mode === 'irl' || repeated ? [] : defaultTypingPauses(card, nodes);
     const startsWithMedia = nodes[0]?.matches('.image-bubble, .media-placeholder') || nodes[0]?.querySelector('.message-image');
@@ -1951,7 +2053,7 @@
   }
 
   function choose(side) {
-    if (app.locked || app.view !== 'playing') return;
+    if (app.locked || app.view !== 'playing' || saveStatus === 'conflict') return;
     if (app.cardDelivery && !app.cardDelivery.delivered) return;
     sound.unlock();
     const card = engine.cardById(app.deck, app.state.currentCardId);
@@ -1969,29 +2071,54 @@
   }
 
   function resolveCardChoice(card, side, scrollTop, resolved) {
+    const previousProgress = app.progress;
     const celebrationKey = JSON.stringify([app.state.seed, app.state.route.cycle, card.id]);
     recordTestStep(scrollTop);
     app.locked = true;
     clearPreview();
     app.state = resolved || route.resolveChoice(app.deck, app.state, side,
       directStoryTest ? { outcomeRng: Math.random } : {}).state;
+    app.progress = window.MistakeryFounderProfile.collectWins(app.deck, app.progress, app.state);
     const feedback = app.state.history.at(-1);
     if (card.outcomeTone === 'success' && card.winFeedback && (!app.state.gameOver || app.state.endingId === 'run_complete')) {
       // Route settlement/draw has already happened once. Hold presentation only:
       // no next-card typing, incoming sound, scrolling or gameplay work behind the modal.
       winPresentations.set(app.state, { pending: true, cardId: card.id, feedback, celebrationKey });
+      saveCheckpoint();
+      trackChoice(card, side, previousProgress);
       showWinFeedback();
       return;
     }
+    saveCheckpoint();
+    trackChoice(card, side, previousProgress);
     renderCard(feedback);
     const nextCard = engine.cardById(app.deck, app.state.currentCardId);
     unlockAfterChoice(nextCard?.mode === 'irl' ? resourceAttentionMs(feedback) : 0);
+  }
+
+  function trackChoice(card, side, before) {
+    if (saveStatus === 'conflict') return;
+    analytics?.choice(analyticsRunId, { card, side, state: app.state, before, after: app.progress,
+      terminalCard: app.state.gameOver ? engine.cardById(app.deck, app.state.currentCardId) : null,
+      ceoType: window.MistakeryFounderProfile.earnedReward(app.deck, app.progress)?.type });
   }
 
   function resourceAttentionMs(feedback) {
     if (!feedback || reducedMotion.matches) return 0;
     const largest = Math.max(...engine.RESOURCE_KEYS.map(key => Math.abs(feedback.rawAfter[key] - feedback.rawBefore[key])));
     return largest >= 2 ? 420 : largest > 0 ? 200 : 0;
+  }
+
+  function openFounderCard() {
+    if (saveStatus === 'conflict') return;
+    const profile = window.MistakeryFounderProfile.earnedReward(app.deck, app.progress);
+    if (!profile) return;
+    const pendingWin = winPresentations.get(app.state);
+    if (pendingWin) pendingWin.pending = false;
+    app.progress.revealed = true;
+    revealedProfiles.add(app.state);
+    saveCheckpoint();
+    renderFounderProfile(profile);
   }
 
   function renderTitle() {
@@ -2004,28 +2131,65 @@
     $('[data-chat]').innerHTML = '<span class="sr-only" data-card-id>TITLE</span>';
     $('[data-choices]').replaceChildren();
     clearPreview();
-    const screen = document.createElement('button');
-    screen.type = 'button';
-    screen.className = 'title-screen'; screen.dataset.titleScreen = ''; screen.dataset.titlePlay = '';
-    screen.setAttribute('aria-label', 'Mistakery — Tap to play');
-    screen.innerHTML = '<span class="title-prompt">Tap to play</span>';
+    const firstVisit = app.firstVisit;
+    const screen = document.createElement(firstVisit ? 'button' : 'section');
+    screen.className = firstVisit ? 'title-screen' : 'title-screen title-screen--save'; screen.dataset.titleScreen = '';
+    screen.setAttribute('aria-label', 'Mistakery');
+    const earned = window.MistakeryFounderProfile.earnedReward(app.deck, app.progress);
+    const canContinue = app.state && !app.state.gameOver;
+    screen.innerHTML = firstVisit ? '<span class="title-prompt">Tap to play</span>'
+      : `<div class="title-actions">${canContinue ? '<button type="button" class="choice choice--right" data-title-continue>Continue</button>' : ''}<button type="button" class="choice" data-title-new>New run</button>${earned ? '<button type="button" class="title-profile" data-title-profile>CEO card</button>' : ''}</div>`;
+    if (firstVisit) {
+      screen.type = 'button'; screen.dataset.titlePlay = '';
+      screen.setAttribute('aria-label', 'Mistakery — Tap to play');
+      screen.addEventListener('click', event => {
+        if (event.detail > 1 || app.view !== 'title' || app.locked || !app.firstVisit) return;
+        app.firstVisit = false;
+        analytics?.tap();
+        deliverOnboardingMessage();
+      });
+    }
     screen.prepend(titleLogo);
     $('[data-game]').append(screen);
     // The exit click must never pass through to Play, including rapid double taps.
     choiceUnlockTimer = window.setTimeout(() => { app.locked = false; }, 280);
-    screen.addEventListener('click', event => {
-      if (event.detail > 1) return;
-      if (app.view === 'title' && !app.locked) restartRun();
+    screen.querySelector('[data-title-continue]')?.addEventListener('click', event => {
+      if (event.detail <= 1 && app.view === 'title') continueRun();
+    });
+    screen.querySelector('[data-title-profile]')?.addEventListener('click', event => {
+      if (event.detail <= 1 && app.view === 'title' && !app.locked) openFounderCard();
+    });
+    screen.querySelector('[data-title-new]')?.addEventListener('click', event => {
+      if (event.detail <= 1 && app.view === 'title' && !app.locked) requestNewRun(event);
     });
     screen.addEventListener('keydown', event => {
       if (event.repeat) event.preventDefault();
     });
-    screen.focus({ preventScroll: true });
+    if (!firstVisit) screen.querySelector('button').focus({ preventScroll: true });
+  }
+
+  function requestNewRun(event) {
+    if (saveStatus === 'conflict' || $('[data-new-run-dialog]')) return;
+    if (!unreadableSave && (!app.state || app.state.gameOver)) return restartRun();
+    const state = app.state, origin = event?.currentTarget;
+    const dialog = document.createElement('dialog');
+    dialog.className = 'quit-dialog'; dialog.dataset.newRunDialog = '';
+    dialog.setAttribute('aria-labelledby', 'new-run-title');
+    dialog.innerHTML = `<h2 id="new-run-title">Start a new run?</h2><p>This will replace your saved run.</p><footer class="choices"><button type="button" class="choice" data-new-run-confirm>New run</button><button type="button" class="choice choice--right" data-new-run-cancel autofocus>Cancel</button></footer>`;
+    const cancel = () => { dialog.close(); dialog.remove(); origin?.focus({ preventScroll: true }); };
+    dialog.querySelector('[data-new-run-cancel]').addEventListener('click', cancel);
+    dialog.addEventListener('cancel', e => { e.preventDefault(); cancel(); });
+    dialog.querySelector('[data-new-run-confirm]').addEventListener('click', () => {
+      if (app.state !== state || !dialog.isConnected) return;
+      dialog.close(); dialog.remove(); restartRun();
+    });
+    document.body.append(dialog); dialog.showModal();
   }
 
   function exitRun() {
     if (app.view === 'title') return;
     recordTestStep();
+    saveCheckpoint();
     renderTitle();
   }
 
@@ -2039,7 +2203,7 @@
     dialog.setAttribute('aria-labelledby', 'quit-title');
     dialog.setAttribute('aria-describedby', 'quit-description');
     dialog.innerHTML = `<h2 id="quit-title">Do you really want to quit?</h2>
-      <p id="quit-description">Your current run will be lost.</p>
+      <p id="quit-description">${storyTestEnabled ? 'Your run stays here until you close this page.' : saveStatus === 'saved' ? 'Your run is saved. You can continue from the title screen.' : 'Your run stays here, but recent progress may not survive closing this page.'}</p>
       <footer class="choices"><button class="choice" type="button" data-quit-confirm>Quit</button>
       <button class="choice choice--right" type="button" data-quit-cancel autofocus>Cancel</button></footer>`;
     const cancel = () => {
@@ -2076,16 +2240,19 @@
   }
 
   function restartRun() {
+    if (saveStatus === 'conflict') return;
     sound.stop();
     if (lossPreviewEnabled) return openLossPreview(app.lossPreviewIndex);
     recordTestStep();
     window.clearTimeout(choiceUnlockTimer);
     window.clearTimeout(app.introTypingTimer);
     app.cardDelivery = null;
-    app.state = route.nextRun(app.deck, app.state);
+    app.state = app.state ? route.nextRun(app.deck, app.state) : initialRun();
     app.runStartState = structuredClone(app.state);
+    app.runStartProgress = structuredClone(app.progress);
     app.locked = false;
-    beginRun();
+    unreadableSave = false;
+    beginRun(true);
   }
 
   // Document review owns its own fixtures and replies. Never resolve a gameplay
@@ -2178,10 +2345,13 @@
       return reply;
     };
     setChoices(card.replies.map(reply => reply.en), side => {
-      if (presentation.reply || app.cardDelivery && !app.cardDelivery.delivered) return;
+      if (lossPresentations.get(app.state) !== presentation || saveStatus === 'conflict'
+        || presentation.reply || app.cardDelivery && !app.cardDelivery.delivered) return;
       sound.play('send');
+      presentation.side = side;
       presentation.reply = card.replies[side === 'left' ? 0 : 1].en;
       app.lossPreviewReply = presentation.reply;
+      saveCheckpoint();
       appendReply(presentation.reply);
       showLossPreviewFinale(card.id, side);
     });
@@ -2197,6 +2367,7 @@
       updateMembers();
     }
     chat.scrollTop = 0;
+    if (presentation.side) showLossPreviewFinale(card.id, presentation.side);
   }
 
   function showLossPreviewDefeat() {
@@ -2219,6 +2390,8 @@
   }
 
   function showLossPreviewFinale(cardId, side) {
+    if ($('[data-loss-finale]')?.open) return;
+    const state = app.state;
     const data = window.MISTAKERY_LOSS_FINALE;
     const finale = data.cards.find(card => card.id === cardId);
     const lines = finale.responses[side === 'left' ? 0 : 1].en;
@@ -2258,6 +2431,7 @@
     };
     dialog.querySelectorAll('[data-finale-choice]').forEach((button, index) => {
       button.addEventListener('click', event => {
+        if (app.state !== state || !dialog.isConnected) return;
         if (lossPreviewEnabled) dismiss();
         else if (index === 0) requestExit(event);
         else restartRun();
@@ -2281,7 +2455,7 @@
     window.clearTimeout(choiceUnlockTimer);
     app.locked = true;
     app.cardDelivery = null;
-    const freshFeedback = soundEvents.get(app.state)?.has('win-finale-alert') ? null : presentation.feedback;
+    const freshFeedback = resumedStates.has(app.state) || soundEvents.get(app.state)?.has('win-finale-alert') ? null : presentation.feedback;
     setView('playing', 'real', freshFeedback);
     renderResources(app.state.resources, freshFeedback);
     setSceneMode(card.mode);
@@ -2346,15 +2520,12 @@
     if (!presentation?.pending || (state.gameOver && state.endingId !== 'run_complete')) return;
     if ($('[data-win-finale]')?.open) return;
     renderWinFeedbackBackground(presentation);
-    const profile = window.MistakeryFounderProfile.reward(app.deck, state);
+    const profile = !app.progress.revealed && window.MistakeryFounderProfile.earnedReward(app.deck, app.progress);
     const feedback = profile ? { message: app.deck.meta.founderProfile.invitation, choices: [{ en: 'Let’s go' }] }
       : engine.cardById(app.deck, presentation.cardId).winFeedback;
-    // Count distinct completed story victories, never choices or filler outcomes.
-    const results = new Map(state.history.map(step => engine.cardById(app.deck, step.cardId))
-      .filter(card => card?.outcomeTone && state.route.completed.includes(card.plot))
-      .map(card => [card.plot, card.outcomeTone]));
-    const wins = [...results.values()].filter(tone => tone === 'success').length;
-    const progress = `<div class="win-progress" role="group" aria-label="${wins} of 3 wins secured"><span class="win-progress__dots" aria-hidden="true">${[1, 2, 3].map(n => `<i class="win-progress__dot${n <= wins ? ' is-filled' : ''}${n === wins ? ' is-new' : ''}"></i>`).join('')}</span><span>${wins} of 3 wins secured</span></div>`;
+    const count = Object.keys(app.progress.wins).length;
+    const progressLabel = `${count} of 3 wins secured`;
+    const progress = `<div class="win-progress" role="group" aria-label="${progressLabel}"><span class="win-progress__dots" aria-hidden="true">${[1, 2, 3].map(n => `<i class="win-progress__dot${n <= count ? ' is-filled' : ''}${n === count ? ' is-new' : ''}"></i>`).join('')}</span><span>${progressLabel}</span></div>`;
     const source = sourceFor('@b2buddy');
     const dialog = document.createElement('dialog');
     dialog.className = 'loss-finale'; dialog.dataset.winFinale = ''; dialog.dataset.card = presentation.cardId;
@@ -2372,9 +2543,10 @@
     </div>
     <footer class="choices">${feedback.choices.map((choice, index) => `<button type="button" class="choice${index ? ' choice--right' : ''}" data-win-finale-choice>${htmlAttribute(choice.en)}</button>`).join('')}</footer>`;
     const resume = () => {
-      if (app.state !== state || !dialog.isConnected || !presentation.pending) return;
+      if (app.state !== state || !dialog.isConnected || !presentation.pending || saveStatus === 'conflict') return;
       presentation.pending = false;
-      if (profile) revealedProfiles.add(state);
+      if (profile) { app.progress.revealed = true; revealedProfiles.add(state); }
+      saveCheckpoint();
       cancelWinConfetti();
       sound.stop();
       dialog.remove();
@@ -2427,7 +2599,7 @@
   }
 
   function render() {
-    if (!app.deck || !app.state) return;
+    if (!app.deck || !app.state && app.view !== 'title') return;
     if (lossPreviewEnabled) return renderLossPreview();
     if (app.view === 'title') renderTitle();
     else if (app.view === 'onboarding') renderOnboarding();
@@ -2600,6 +2772,10 @@
       if (errors.length) throw new Error(errors.join('\n'));
       app.deck = deck;
       app.activeCardIds = deck.cards.filter(card => card.plot || card.filler).map(card => card.id);
+      saveStore = window.MistakerySave.create({ deck, storage: () => window.localStorage, disabled: storyTestEnabled });
+      const saved = saveStore.load();
+      showSaveStatus(saved.status);
+      initializeAnalytics(saved);
       await Promise.all([warmCharacterAvatars(), warmStoryImages(), warmPadelBackgrounds()]);
       if (lossPreviewEnabled) {
         setupLossPreview();
@@ -2609,10 +2785,26 @@
         startStoryTest();
         return;
       }
+      if (saved.status === 'saved') {
+        app.state = saved.data.state;
+        app.progress = saved.data.progress;
+        restorePresentation(saved.data.presentation);
+        await titleLogoReady;
+        renderTitle();
+        return;
+      }
+      if (['invalid', 'incompatible'].includes(saved.status)) {
+        unreadableSave = true;
+        await titleLogoReady;
+        renderTitle();
+        return;
+      }
       app.state = initialRun();
       app.runStartState = structuredClone(app.state);
       app.onboardingIndex = 0;
-      deliverOnboardingMessage();
+      app.firstVisit = true;
+      await titleLogoReady;
+      renderTitle();
     })
     .catch((error) => {
       $('[data-message]').textContent = `Could not start Mistakery: ${error.message}`;

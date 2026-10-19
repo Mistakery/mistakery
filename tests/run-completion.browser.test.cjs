@@ -26,12 +26,13 @@ async function reach(page, witness, beforeLast = false) {
   await page.clock.runFor(20000);
 }
 for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
-  test(`${name}: third story ends neutrally; success feedback, stop, replay and Back preserve the run`, async () => {
+  test(`${name}: mixed outcomes finish at the title without a CEO card or results table`, async () => {
     const browser = await type.launch();
     try {
       for (const [kind, witness] of Object.entries(fixtures)) {
         const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
         const errors = []; page.on('pageerror', e => errors.push(e.message));
+        await page.addInitScript(() => localStorage.setItem('mistakery.sound','off'));
         await page.goto(url + '?test=route');
         await page.waitForFunction(() => window.MistakeryApp?.state);
         await page.clock.install(); await page.clock.pauseAt(new Date());
@@ -45,38 +46,24 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         assert.equal(end.route.completed.length, 3); assert.equal(end.route.cycle, 1);
         assert.equal(end.history.length, before.history.length + 1);
         assert.equal(end.resources.cash, before.resources.cash - .5);
-        if (kind === 'success') {
-          assert.equal(await page.locator('[data-win-finale][open]').count(), 1);
-          await page.clock.runFor(15000);
-          assert.equal(await page.locator('.typing-bubble').count(), 0);
-          await page.keyboard.press('Escape');
-        }
-        await page.clock.runFor(2000);
-        assert.equal(await page.locator('[data-ending-title]').textContent(), 'Run complete');
-        assert.equal(await page.locator('[data-run-result]').count(), 3);
-        assert.equal(await page.locator('[data-choice]').first().textContent(), 'Back to 9–5');
-        assert.doesNotMatch(await page.locator('[data-ending-summary]').textContent(), /YOU (WIN|LOST)/);
-        assert.deepEqual(await snapshot(page), end);
-        await page.locator('[data-test-inspect]').click();
-        assert.match(await page.locator('[data-details-body]').textContent(), /Все три сюжета завершены/);
-        await page.locator('[data-details-close]').click();
-        await page.locator('[data-choice="left"]').click();
-        assert.equal(await page.locator('[data-quit-dialog][open]').count(),1);
-        await page.locator('[data-quit-cancel]').click();
+        assert.equal(await page.locator('[data-founder-invitation]').count(), 0);
+        if (kind === 'success') await page.locator('[data-win-finale-choice]').first().click();
+        assert.equal(await page.locator('.founder-card').count(), 0);
+        assert.equal(await page.locator('[data-run-result]').count(), 0);
+        assert.equal(await page.locator('[data-run-summary]').count(), 0);
+        assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
+        assert.equal(await page.locator('[data-title-continue]').count(),0);
         assert.deepEqual(await snapshot(page),end);
-        await page.locator('[data-choice="left"]').click();
-        await page.locator('[data-quit-confirm]').click();
-        await page.locator('[data-title-play]').click();
-        assert.deepEqual(await snapshot(page), end, 'an immediate tap on Play cannot pass through the exit');
+        assert.ok(Object.keys(await page.evaluate(()=>MistakeryApp.progress.wins)).length<3);
         await page.clock.runFor(60000);
         await page.evaluate(() => MistakeryApp.render());
         assert.deepEqual(await snapshot(page), end, 'finish never starts or spends another run');
         assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
-        assert.equal((await page.locator('[data-title-play]').textContent()).trim(),'Tap to play');
+        assert.equal((await page.locator('[data-title-new]').textContent()).trim(),'New run');
         for (const viewport of [{ width: 320, height: 650 }, { width: 1280, height: 900 }]) {
           await page.setViewportSize(viewport);
           assert.equal(await page.evaluate(() => {
-            const button = document.querySelector('[data-title-play]').getBoundingClientRect();
+            const button = document.querySelector('[data-title-new]').getBoundingClientRect();
             return document.documentElement.scrollWidth <= innerWidth + 1
               && button.bottom <= innerHeight + 1 && button.top >= 0;
           }), true);
@@ -86,7 +73,7 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
           }
         }
         await page.clock.runFor(300);
-        await page.locator('[data-title-play]').press('Enter');
+        await page.locator('[data-title-new]').press('Enter');
         const next = await snapshot(page);
         assert.equal(next.gameOver, false); assert.equal(next.history.length, 0);
         assert.notEqual(next.seed, end.seed); assert.notEqual(next.route.initialPlot, end.route.initialPlot);
@@ -100,10 +87,11 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
       }
     } finally { await browser.close(); }
   });
-  test(`${name}: exit opens title after loss or Judgment Day; New run starts fresh`, async () => {
+  test(`${name}: exit opens title after loss; Judgment Day and New run start fresh`, async () => {
     const browser = await type.launch();
     try {
       const page = await browser.newPage({ reducedMotion: 'reduce' });
+      await page.addInitScript(() => localStorage.setItem('mistakery.sound','off'));
       await page.goto(url + '?test=route');
       await page.waitForFunction(() => window.MistakeryApp?.state);
       await page.clock.install(); await page.clock.pauseAt(new Date());
@@ -113,13 +101,16 @@ for (const [name, type] of [['Chromium', chromium], ['WebKit', webkit]]) {
         if (id === 'cash_low') {
           await page.locator('[data-choice="left"]').click();
           await page.locator('[data-finale-choice]').first().click();
-        } else await page.locator('[data-choice="left"]').click();
+        } else {
+          await page.locator('[data-choice="left"]').click();
+          assert.equal((await snapshot(page)).gameOver,false);continue;
+        }
         assert.equal(await page.locator('[data-quit-dialog][open]').count(),1);
         await page.locator('[data-quit-confirm]').click();
         await page.clock.runFor(60000);
         assert.deepEqual(await snapshot(page), end);
         assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
-        assert.equal((await page.locator('[data-title-play]').textContent()).trim(),'Tap to play');
+        assert.equal((await page.locator('[data-title-new]').textContent()).trim(),'New run');
         await playFromTitle(page);
         assert.equal((await snapshot(page)).gameOver, false);
         assert.equal(await page.evaluate(() => MistakeryApp.view), 'playing');

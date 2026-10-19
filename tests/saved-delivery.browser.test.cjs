@@ -9,16 +9,19 @@ const notes = page => page.locator('[data-chat] .note-message');
 const replies = page => page.locator('[data-choice]');
 
 async function start(page, testMode = false) {
+  await page.addInitScript(()=>localStorage.setItem('mistakery.sound','off'));
+  await page.clock.install();
   await page.goto(url + (testMode ? '?test=route' : ''));
   if (testMode) {
     await page.waitForFunction(() => window.MistakeryApp?.view === 'saved');
-    await page.clock.install(); await page.clock.pauseAt(new Date());
+    await page.clock.pauseAt(new Date());
     await page.getByRole('button', { name: 'Right on track' }).click();
     return;
   }
+  await page.locator('[data-title-play]').waitFor();
+  await page.clock.pauseAt(new Date());await page.clock.runFor(300);
+  await page.locator('[data-title-play]').click();
   await page.waitForFunction(() => window.MistakeryApp?.view === 'onboarding');
-  await page.clock.install();
-  await page.clock.pauseAt(new Date());
   await page.clock.runFor(620);
   await page.getByRole('button', { name: 'So long, corporate jail!' }).click();
   await page.clock.runFor(620);
@@ -121,6 +124,7 @@ for (const [name, engine] of [['Chromium', chromium], ['WebKit', webkit]]) {
     const browser = await engine.launch();
     try {
       const page = await browser.newPage();
+      await page.addInitScript(()=>localStorage.setItem('mistakery.sound','off'));
       await page.goto(`${url}?test=route`);
       await page.waitForFunction(() => window.MistakeryApp?.view === 'saved');
       await page.clock.install(); await page.clock.pauseAt(new Date());

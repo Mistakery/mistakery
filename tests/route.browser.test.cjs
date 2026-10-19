@@ -9,9 +9,11 @@ const deck = require('../cards.json');
 const url = pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href;
 const seeds = [...new Map(Array.from({ length: 80 }, (_, seed) => [route.startRun(deck, { seed: String(seed) }).route.order.join(','), seed])).values()];
 async function open(page, suffix) {
+  await page.addInitScript(()=>localStorage.setItem('mistakery.sound','off'));
+  await page.clock.install();
   await page.goto(url + suffix);
   await page.waitForFunction(() => window.MistakeryApp?.state);
-  await page.clock.install(); await page.clock.pauseAt(new Date());
+  await page.clock.pauseAt(new Date());
 }
 async function click(page, side = 'left') {
   await page.clock.runFor(6000);
@@ -30,6 +32,8 @@ for (const [name, browserType] of [['Chromium', chromium], ['WebKit', webkit]]) 
         const errors = []; page.on('pageerror', e => errors.push(e.message));
         await open(page, prefix);
         if (!prefix.includes('test=')) {
+          await page.locator('[data-title-play]').waitFor();await page.clock.runFor(300);
+          await page.locator('[data-title-play]').click();
           assert.equal(await page.evaluate(() => MistakeryApp.view), 'onboarding');
           for (let i = 0; i < 3; i++) await click(page);
         }

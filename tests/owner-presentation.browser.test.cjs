@@ -3,15 +3,34 @@ const assert = require('node:assert/strict');
 const { chromium, webkit } = require('playwright');
 const { pathToFileURL } = require('node:url');
 const path = require('node:path');
+const fs = require('node:fs');
 const url = pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href;
 for (const [name, engine] of Object.entries({ Chromium: chromium, WebKit: webkit })) {
- test(`${name}: first entry uses b2buddy and both Saved screens; exit then Play skips them`, async () => {
+ test(`${name}: first entry shows Tap to play before b2buddy and Saved; returning players use Continue`, async () => {
   const browser = await engine.launch();
   try {
    const page = await browser.newPage({viewport:{width:320,height:650}});
-   await page.goto(url);
-   await page.waitForFunction(()=>MistakeryApp?.view==='onboarding');
-   await page.clock.install(); await page.clock.pauseAt(new Date());
+   await page.addInitScript(() => localStorage.setItem('mistakery.sound','off'));
+   await page.clock.install();
+   await page.goto(url);await page.locator('[data-title-play]').waitFor();
+   await page.clock.pauseAt(new Date());await page.clock.runFor(300);
+   assert.equal(await page.locator('[data-title-play]').innerText(),'Tap to play');
+   assert.equal(await page.locator('.title-logo').evaluate(img=>img.complete&&img.naturalWidth>0),true);
+   assert.equal(await page.locator('[data-title-continue]').count(),0);
+   assert.equal(await page.evaluate(()=>localStorage.getItem('mistakery.browser-save')),null);
+   if(process.env.MISTAKERY_QA_DIR&&name==='Chromium'){
+     fs.mkdirSync(process.env.MISTAKERY_QA_DIR,{recursive:true});
+     await page.setViewportSize({width:390,height:844});await page.clock.runFor(300);
+     await page.screenshot({path:path.join(process.env.MISTAKERY_QA_DIR,'tap-to-play.png'),animations:'disabled'});
+     await page.setViewportSize({width:320,height:650});await page.clock.runFor(300);
+   }
+   await page.locator('[data-title-play]').dispatchEvent('click',{detail:2});
+   assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
+   await page.locator('[data-title-play]').focus();
+   await page.keyboard.press('Enter');
+   await page.waitForFunction(()=>MistakeryApp.view==='onboarding');
+   assert.equal(await page.evaluate(()=>MistakeryApp.state.history.length),0);
+
    assert.equal(await page.locator('[data-sender]').innerText(),'@b2buddy');
    assert.equal(await page.locator('[data-status]').innerText(),'AI Agent');
    assert.match(await page.locator('[data-avatar] img').getAttribute('src'),/avatar-b2buddy.webp$/);
@@ -31,7 +50,7 @@ for (const [name, engine] of Object.entries({ Chromium: chromium, WebKit: webkit
    assert.equal(await page.locator('[data-quit-dialog][open]').count(),1);
    await page.locator('[data-quit-confirm]').click();
    assert.equal(await page.evaluate(()=>MistakeryApp.view),'title');
-   await page.clock.runFor(300);await page.locator('[data-title-play]').click();
+   await page.clock.runFor(300);await page.locator('[data-title-continue]').click();
    assert.equal(await page.evaluate(()=>MistakeryApp.view),'playing');
   } finally {await browser.close();}
  });
@@ -41,6 +60,7 @@ for (const [name, engine] of Object.entries({ Chromium: chromium, WebKit: webkit
   const browser = await engine.launch();
   try {
    const page = await browser.newPage({viewport:{width:390,height:844}});
+   await page.addInitScript(() => localStorage.setItem('mistakery.sound','off'));
    await page.goto(`${url}?test=route`);
    await page.waitForFunction(()=>MistakeryApp?.view==='saved');
    await page.clock.install(); await page.clock.pauseAt(new Date());
@@ -70,6 +90,7 @@ for (const [name, engine] of Object.entries({ Chromium: chromium, WebKit: webkit
   const browser=await engine.launch();
   try {
    const page=await browser.newPage({viewport:{width:320,height:650}});
+   await page.addInitScript(() => localStorage.setItem('mistakery.sound','off'));
    await page.goto(`${url}?test=route`);await page.waitForFunction(()=>MistakeryApp?.view==='saved');
    await page.clock.install();await page.clock.pauseAt(new Date());
    await page.locator('[data-choice]').first().click();await page.clock.runFor(1000);

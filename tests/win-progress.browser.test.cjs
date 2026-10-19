@@ -5,7 +5,7 @@ const path=require('node:path'),fs=require('node:fs');
 const deck=require('../cards.json'),witness=require('./founder-profile.fixture.json').flex;
 const {completeFounderSend}=require('./chat-delivery.fixture.cjs');
 const checkpoints=witness.steps.map((step,index)=>({step,index})).filter(({step})=>deck.cards.find(c=>c.id===step.card)?.outcomeTone==='success');
-for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) test(`${name}: distinct victories show 1, 2 and 3 wins with no state changes`,async()=>{
+for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) test(`${name}: victories show progress and surviving completion shows three stories without state changes`,async()=>{
  const browser=await type.launch();
  try {
   for(const [i,{step,index}] of checkpoints.entries()) {
@@ -23,7 +23,7 @@ for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) test(`${name
    await page.clock.runFor(20000);
    await page.locator(`[data-choice="${step.side}"]`).click();await completeFounderSend(page,true);
    const state=await page.evaluate(()=>structuredClone(MistakeryApp.state));
-   assert.equal(await page.locator('.win-progress').innerText(),`${i+1} of 3 wins secured`);
+   assert.equal(await page.locator('.win-progress').innerText(),i===2?'3 of 3 wins secured':`${i+1} of 3 wins secured`);
    assert.equal(await page.locator('.win-progress__dot').count(),3);
    assert.equal(await page.locator('.win-progress__dot.is-filled').count(),i+1);
    assert.equal(await page.locator('.win-progress__dot.is-new').evaluate(el=>getComputedStyle(el).animationName),'none');
@@ -34,7 +34,7 @@ for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]) test(`${name
    }),true);
    await page.evaluate(()=>MistakeryApp.render());
    assert.deepEqual(await page.evaluate(()=>structuredClone(MistakeryApp.state)),state);
-   assert.equal(await page.locator('.win-progress').innerText(),`${i+1} of 3 wins secured`);
+   assert.equal(await page.locator('.win-progress').innerText(),i===2?'3 of 3 wins secured':`${i+1} of 3 wins secured`);
    if(process.env.MISTAKERY_QA_DIR&&name==='Chromium'){
     fs.mkdirSync(process.env.MISTAKERY_QA_DIR,{recursive:true});
     await page.screenshot({path:path.join(process.env.MISTAKERY_QA_DIR,`win-progress-${i+1}.png`)});

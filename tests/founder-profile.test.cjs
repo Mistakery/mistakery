@@ -49,5 +49,11 @@ test('real routes unlock every profile; defeat, duplicate wins and new attempts 
     }
     assert.equal(profile.reward(deck,route.nextRun(deck,state)),null);
   }
-  for(const witness of Object.values(require('./run-completion.fixture.json'))) assert.equal(profile.reward(deck,replay(witness)),null);
+});
+test('finishing with setbacks does not earn a CEO card', () => {
+  for(const witness of Object.values(require('./run-completion.fixture.json'))) {
+    const state=replay(witness);
+    assert.equal(profile.reward(deck,state),null);
+    assert.equal(profile.earnedReward(deck,profile.collectWins(deck,profile.emptyProgress(),state)),null);
+  }
 });

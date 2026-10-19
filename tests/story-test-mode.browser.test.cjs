@@ -101,7 +101,8 @@ test('direct story test supports exact undo, alternate answers, outcome undo and
     for (const suffix of ['', '?story=unknown']) {
       await page.goto(`${url}${suffix}`);
       await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
-      assert.equal((await state(page)).view, 'onboarding');
+      assert.equal((await state(page)).view, 'title');
+      assert.equal(await page.locator('[data-title-play]').count(),1);
       assert.equal(await page.locator('[data-test-controls]').isVisible(), false);
     }
     assert.deepEqual(errors, []);
