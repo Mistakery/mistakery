@@ -26,11 +26,14 @@
         context = new Audio();
         master = context.createGain(); master.connect(context.destination);
       }
-      if (context.state === 'suspended' && !resuming) {
-        resuming = context.resume().catch(() => {}).then(() => {
-          resuming = null;
+      if (context.state === 'suspended' || context.state === 'interrupted') {
+        // Safari can leave an earlier resume pending until a valid user gesture.
+        // Retry on the new activation instead of letting that promise lock audio.
+        const attempt = context.resume().catch(() => {}).then(() => {
+          if (resuming === attempt) resuming = null;
           flush();
         });
+        resuming = attempt;
       }
       return resuming || Promise.resolve();
     } catch { /* Sound is optional; the game must remain playable. */ }

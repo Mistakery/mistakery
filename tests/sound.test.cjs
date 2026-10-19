@@ -120,6 +120,35 @@ test('slow activation discards stale feedback instead of playing it late', async
   audio.elapse(200); audio.finishResume(); await tick(); assert.equal(audio.played.length, 0);
   audio.sound.play('send'); await tick(); assert.equal(audio.played.length, 1);
 });
+test('a fresh activation retries a resume that is still waiting for permission', async () => {
+  const audio = setup({ delayedResume: true });
+  audio.sound.unlock();
+  audio.sound.play('incoming');
+  audio.elapse(200);
+  // The first activation was not accepted (for example, a touch pointerdown).
+  // A later real tap is allowed to resume, even while the first promise is pending.
+  audio.context.resume = function () { this.state = 'running'; return Promise.resolve(); };
+  audio.sound.unlock();
+  await tick();
+  assert.equal(audio.context.state, 'running', 'a pending request must not block a fresh activation');
+  assert.equal(audio.played.length, 0, 'old feedback stays discarded');
+  audio.sound.play('send'); await tick();
+  assert.equal(audio.played.length, 1, 'the next choice is audible');
+  audio.finishResume(); await tick();
+  assert.equal(audio.played.length, 1, 'late completion of the old request does not replay audio');
+});
+test('a fresh activation resumes the interrupted state used by iOS Safari', async () => {
+  const audio = setup();
+  await audio.sound.unlock();
+  audio.document.hidden = true; audio.listeners.visibilitychange();
+  audio.context.state = 'interrupted';
+  audio.document.hidden = false; audio.listeners.visibilitychange();
+  assert.equal(audio.played.length, 0, 'returning to the page does not autoplay');
+  await audio.sound.unlock();
+  audio.sound.play('send'); await tick();
+  assert.equal(audio.context.state, 'running');
+  assert.equal(audio.played.length, 1, 'a new choice works after interruption');
+});
 test('muted preference, blocked storage and missing audio fail quietly', async () => {
   const muted = setup({ muted: true }); await muted.sound.unlock(); muted.sound.play('incoming'); await tick(); assert.equal(muted.played.length, 0);
   for (const options of [{ unsupported: true }, { storageBlocked: true }]) {
