@@ -6,6 +6,21 @@
     <meta name="theme-color" content="#bdd5e8">
     <title>Mistakery</title>
     <link rel="icon" href="data:,">
+    <style>
+      /* The initial frame must be safe even before deferred game scripts run. */
+      .phone[data-view="loading"] > :not([data-startup-screen]) { display: none !important; }
+      .phone:not([data-view="loading"]) > [data-startup-screen] { display: none; }
+      [data-startup-screen] {
+        position: absolute; inset: 0; display: grid; place-items: center; padding: 28px;
+        background: linear-gradient(160deg, #bdd5e8, #e5eff6 75%);
+      }
+      [data-startup-status] {
+        margin: 0; color: #637384; font-size: 14px; line-height: 1.5; text-align: center;
+        opacity: 0; animation: startup-status 0s 1s forwards;
+      }
+      [data-startup-status][data-failed] { opacity: 1; animation: none; }
+      @keyframes startup-status { to { opacity: 1; } }
+    </style>
     <link rel="preload" as="image" type="image/png" href="assets/mistakery-logo-optimized.png" fetchpriority="high">
     <link rel="stylesheet" href="style.css?v=208bb5bd0933">
     <link rel="stylesheet" href="assets/endings.css?v=603f1cb6640e">
@@ -32,7 +47,7 @@
     <script src="assets/analytics.js?v=35afd992b824" defer></script>
     <link rel="stylesheet" href="assets/deals.css?v=aeb2de948cbe">
     <script src="assets/deals.js?v=b8f8dddb4ee9" defer></script>
-    <script src="app.js?v=e41426e3b992" defer></script>
+    <script src="app.js?v=3f25b8f5a6d8" defer></script>
   </head>
   <body>
     <main class="app" data-app>
@@ -49,6 +64,9 @@
       </nav>
       <div class="frame">
         <section class="phone" data-game data-view="loading" data-shell-stage="intro" aria-label="Mistakery game">
+          <section data-startup-screen role="status" aria-label="Loading Mistakery">
+            <p data-startup-status>Loading…</p>
+          </section>
           <header class="top" data-top hidden>
             <div class="brand deals-brand"><b>B2BuyerSpyer</b><span class="deals-line" data-deals role="group" aria-label="Deals: 0 of 3 closed across attempts."><span class="deals-count" data-deals-count>Deals 0/3</span><span class="deals-marks" data-deals-marks aria-hidden="true"></span></span></div>
             <button class="quit" type="button" data-restart-run disabled>Back to 9–5</button>

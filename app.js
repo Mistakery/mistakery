@@ -2830,7 +2830,9 @@
       renderTitle();
     })
     .catch((error) => {
-      $('[data-message]').textContent = `Could not start Mistakery: ${error.message}`;
+      const status = $('[data-startup-status]');
+      status.textContent = `Could not start Mistakery: ${error.message}`;
+      status.dataset.failed = '';
       console.error(error);
     });
 })();
