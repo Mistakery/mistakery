@@ -6,14 +6,68 @@
     <meta name="theme-color" content="#bdd5e8">
     <title>Mistakery</title>
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="style.css?v=f32d2c654fc3">
+    <style>
+      /* The initial frame must be safe even before deferred game scripts run. */
+      .phone[data-view="loading"] > :not([data-startup-screen]) { display: none !important; }
+      .phone:not([data-view="loading"]) > [data-startup-screen] { display: none; }
+      [data-startup-screen] {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 18px; padding: 28px;
+        background: linear-gradient(160deg, #bdd5e8, #e5eff6 75%);
+      }
+      [data-startup-art] { flex: none; }
+      /* Critical copy of the messenger's typing styles: no extra file to load. */
+      [data-startup-screen] .startup-typing {
+        box-sizing: border-box; width: 64px; border: 0; flex-shrink: 0;
+        display: flex; align-items: center; gap: 5px; padding: 15px 16px;
+        border-radius: 18px 18px 18px 6px; background: #fff;
+        box-shadow: 0 8px 26px rgba(35, 77, 114, .13);
+      }
+      [data-startup-screen] .startup-typing i {
+        width: 7px; height: 7px; border-radius: 50%; background: #9eafbf;
+        animation: typingBlink 1.1s infinite;
+      }
+      [data-startup-screen] .startup-typing i:nth-child(2) { animation-delay: .18s; }
+      [data-startup-screen] .startup-typing i:nth-child(3) { animation-delay: .36s; }
+      [data-startup-status] {
+        max-width: 235px; margin: 0; color: #315c76; font-size: 16px;
+        font-weight: 650; line-height: 1.45; text-align: center;
+      }
+      [data-startup-screen]:has([data-failed]) [data-startup-art] { display: none; }
+      [data-startup-status][data-failed] { font-size: 14px; font-weight: 400; }
+      @keyframes typingBlink { 0%, 60%, 100% { opacity: .32; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-1px); } }
+      @media (prefers-reduced-motion: reduce) {
+        [data-startup-screen] .startup-typing i { animation: none; opacity: .65; }
+      }
+    </style>
+    <link rel="preload" as="image" type="image/png" href="assets/mistakery-logo-optimized.png" fetchpriority="high">
+    <link rel="stylesheet" href="style.css?v=3d1b794c4992">
+    <link rel="stylesheet" href="assets/endings.css?v=603f1cb6640e">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-founder.webp" fetchpriority="high">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-manifesto.webp?v=91aac6e47bbd">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-judgment-day.webp">
     <link rel="preload" as="image" type="image/webp" href="assets/live-agent-hasta-la-vista.webp">
-    <script src="cards.bundle.js?v=49d1c68e6757" defer></script>
+    <script src="cards.bundle.js?v=e5cdfc13eecf" defer></script>
     <script src="game.js?v=4587f9034eb5" defer></script>
-    <script src="app.js?v=d59402acbb00" defer></script>
+    <script src="assets/route.js?v=4f41bcc5a6f6" defer></script>
+    <script src="assets/loss-preview-data.js?v=a10508ba398a" defer></script>
+    <script src="assets/loss-finale-data.js?v=1a459e659c5b" defer></script>
+    <link rel="stylesheet" href="assets/loss-preview.css?v=1d706b3f7401">
+    <link rel="stylesheet" href="assets/sound.css?v=dd35fefe9cf0">
+    <script src="assets/sound-samples.js?v=95b7708d569c" defer></script>
+    <script src="assets/sound.js?v=898ed7f481aa" defer></script>
+    <script src="assets/haptics.js?v=1c134283ef29" defer></script>
+    <script src="assets/padel-backgrounds.js?v=0e334a815064" defer></script>
+    <link rel="stylesheet" href="assets/founder-profile.css?v=5f3d81633654">
+    <script src="assets/founder-profile.js?v=52b6c3a9ea79" defer></script>
+    <script src="assets/founder-card-touch.js?v=ee3baaad05d2" defer></script>
+    <link rel="stylesheet" href="assets/save.css?v=940e594164ad">
+    <script src="assets/save.js?v=95e62c924e7d" defer></script>
+    <script src="assets/analytics-config.js?v=d8b2df2f8f7d" defer></script>
+    <script src="assets/analytics.js?v=35afd992b824" defer></script>
+    <link rel="stylesheet" href="assets/deals.css?v=aeb2de948cbe">
+    <script src="assets/deals.js?v=b8f8dddb4ee9" defer></script>
+    <script src="app.js?v=6139a15728e5" defer></script>
   </head>
   <body>
     <main class="app" data-app>
@@ -23,11 +77,21 @@
         <button type="button" data-test-inspect aria-label="Перевод и ресурсы" aria-haspopup="dialog">RU / ±</button>
         <button type="button" data-test-back disabled>← Back</button>
         <button type="button" data-test-restart>Restart story</button>
+        <div class="hud-switcher" role="group" aria-label="Вид ресурсов" hidden>
+          <button type="button" data-hud-variant="pulse" aria-pressed="true">Пульс шкал</button>
+          <button type="button" data-hud-variant="icons" aria-pressed="false">Живые иконки</button>
+        </div>
       </nav>
       <div class="frame">
         <section class="phone" data-game data-view="loading" data-shell-stage="intro" aria-label="Mistakery game">
+          <section data-startup-screen role="status" aria-label="Loading Mistakery">
+            <div data-startup-art aria-hidden="true">
+              <div class="startup-typing"><i></i><i></i><i></i></div>
+            </div>
+            <p data-startup-status>Preparing questionable decisions…</p>
+          </section>
           <header class="top" data-top hidden>
-            <div class="brand"><b>B2BuyerSpyer</b><span>AI-POWERED</span></div>
+            <div class="brand deals-brand"><b>B2BuyerSpyer</b><span class="deals-line" data-deals role="group" aria-label="Deals: 0 of 3 closed across attempts."><span class="deals-count" data-deals-count>Deals 0/3</span><span class="deals-marks" data-deals-marks aria-hidden="true"></span></span></div>
             <button class="quit" type="button" data-restart-run disabled>Back to 9–5</button>
           </header>
 
@@ -38,19 +102,26 @@
             <header class="contact">
               <div class="avatar" data-avatar aria-hidden="true">M</div>
               <div class="contact__text"><b data-sender>Mistakery</b><i data-status>typing...</i></div>
-              <span class="more" aria-hidden="true">⋯</span>
+              <button class="haptics-toggle" type="button" data-haptics-toggle aria-label="Disable haptics" aria-pressed="true" title="Disable haptics" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="4" width="8" height="16" rx="2"/><g class="haptics-on"><path d="m4 8-2 4 2 4m16-8 2 4-2 4"/></g><path class="haptics-off" d="m3 3 18 18"/></svg>
+              </button>
+              <button class="sound-toggle" type="button" data-sound-toggle aria-label="Mute sounds" aria-pressed="true" title="Mute sounds">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4Z"/><g class="sound-on"><path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></g><path class="sound-off" d="m16 9 5 6m0-6-5 6"/></svg>
+              </button>
             </header>
 
-            <button class="pinned" type="button" data-pinned hidden>
-              <span class="pin" aria-hidden="true">📌</span>
-              <span><small>PINNED</small><b data-pinned-title>5 MONTHS AS A FOUNDER 🚀</b></span>
-            </button>
-
-            <div class="outcome-banner" data-outcome-banner role="status" hidden>
-              <b data-outcome-label></b>
+            <div class="irl-location" data-location hidden>
+              <span class="pin" aria-hidden="true">📍</span>
+              <span><small></small><b data-location-score></b></span>
             </div>
 
-            <div class="chat" data-chat aria-live="polite">
+            <section class="run-ending" data-ending-summary role="status" hidden>
+              <small>GAME OVER · YOU LOST</small>
+              <h2 data-ending-title></h2>
+              <p data-ending-cause></p>
+            </section>
+
+            <div class="chat" data-chat aria-live="polite" tabindex="-1">
               <span class="sr-only" data-card-id></span>
               <div class="message-row">
                 <div class="mini-avatar message-avatar" data-message-avatar aria-hidden="true">M</div>
@@ -72,15 +143,6 @@
             <footer class="choices" data-choices></footer>
           </section>
 
-          <div class="pin-sheet" data-pin-sheet hidden>
-            <div class="pin-sheet__card" role="dialog" aria-label="Pinned message">
-              <header class="pin-sheet__head">
-                <span>📌 Pinned</span>
-                <button class="pin-sheet__close" type="button" data-pin-close aria-label="Close">✕</button>
-              </header>
-              <div class="message note-message"><p data-pin-text></p></div>
-            </div>
-          </div>
         </section>
       </div>
     </main>

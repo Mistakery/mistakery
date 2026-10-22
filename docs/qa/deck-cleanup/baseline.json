@@ -1,0 +1,1001 @@
+{
+  "baseline": "21c80d88f26fa758bad5d6dad206f5956cb1face",
+  "beforeCount": 100,
+  "afterCount": 77,
+  "retired": [
+    {
+      "index": 52,
+      "mechanics": {
+        "id": "AGENT_01",
+        "kind": "story",
+        "storyletEntry": true,
+        "continuation": "storylet",
+        "opensPressureSlot": true,
+        "oncePerRun": true,
+        "excludes": [
+          "empathy_demanded"
+        ],
+        "stateEffects": [
+          {
+            "requires": [
+              "payroll_offer_compute_only"
+            ],
+            "effects": {
+              "cash": 1
+            }
+          }
+        ],
+        "choices": {
+          "left": {
+            "effects": {
+              "cash": -2,
+              "team": -4,
+              "founder": 4
+            },
+            "setFlags": [
+              "empathy_demanded"
+            ]
+          },
+          "right": {
+            "effects": {
+              "cash": -1,
+              "team": -7,
+              "founder": 6
+            },
+            "setFlags": [
+              "empathy_demanded"
+            ]
+          }
+        },
+        "requires": [
+          "opening_done"
+        ]
+      }
+    },
+    {
+      "index": 53,
+      "mechanics": {
+        "id": "SADBOT_01_SEED",
+        "kind": "story",
+        "storyletEntry": true,
+        "continuation": "storylet",
+        "weight": 2,
+        "oncePerRun": true,
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -2,
+              "founder": -2
+            },
+            "setFlags": [
+              "sadbot_on"
+            ]
+          },
+          "right": {
+            "effects": {
+              "founder": 2
+            }
+          }
+        },
+        "requires": [
+          "opening_done"
+        ]
+      }
+    },
+    {
+      "index": 54,
+      "mechanics": {
+        "id": "SADBOT_02_EVIDENCE",
+        "kind": "story",
+        "storyletEntry": true,
+        "continuation": "storylet",
+        "weight": 3,
+        "oncePerRun": true,
+        "requires": [
+          "sadbot_on"
+        ],
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -2,
+              "customers": 5,
+              "founder": -1
+            },
+            "setFlags": [
+              "sadbot_stage2",
+              "sadbot_blackmail"
+            ]
+          },
+          "right": {
+            "effects": {
+              "customers": 2,
+              "founder": 1
+            },
+            "setFlags": [
+              "sadbot_stage2"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "index": 55,
+      "mechanics": {
+        "id": "SADBOT_03_VIRAL",
+        "kind": "story",
+        "storyletEntry": true,
+        "continuation": "storylet",
+        "weight": 3,
+        "oncePerRun": true,
+        "requires": [
+          "sadbot_stage2"
+        ],
+        "stateEffects": [
+          {
+            "requires": [
+              "sadbot_blackmail"
+            ],
+            "effects": {
+              "customers": 2,
+              "team": -1
+            }
+          }
+        ],
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -2,
+              "customers": 6,
+              "founder": 3
+            },
+            "setFlags": [
+              "sadbot_hyped"
+            ]
+          },
+          "right": {
+            "effects": {
+              "team": 2,
+              "customers": -4,
+              "founder": -3
+            }
+          }
+        }
+      }
+    },
+    {
+      "index": 56,
+      "mechanics": {
+        "id": "SADBOT_INVESTOR_CLAIM",
+        "kind": "story",
+        "storyletEntry": true,
+        "continuation": "storylet",
+        "weight": 2,
+        "oncePerRun": true,
+        "requires": [
+          "sadbot_hyped",
+          "empathy_demanded"
+        ],
+        "excludes": [
+          "consciousness_removed"
+        ],
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -3,
+              "founder": 3
+            }
+          },
+          "right": {
+            "effects": {
+              "founder": -2
+            }
+          }
+        }
+      }
+    },
+    {
+      "index": 57,
+      "mechanics": {
+        "id": "SADBOT_04_LEAD",
+        "kind": "story",
+        "storyletEntry": true,
+        "continuation": "forced",
+        "weight": 3,
+        "oncePerRun": true,
+        "requires": [
+          "sadbot_hyped"
+        ],
+        "excludesPendingCallbacks": true,
+        "stateEffects": [
+          {
+            "requires": [
+              "payroll_offer_compute_only",
+              "payroll_priority_machines",
+              "cloud_credits_resolved"
+            ],
+            "effects": {
+              "team": -2
+            }
+          },
+          {
+            "requires": [
+              "payroll_offer_ordinary_compute",
+              "payroll_priority_machines",
+              "cloud_credits_resolved"
+            ],
+            "effects": {
+              "team": -2
+            }
+          },
+          {
+            "requires": [
+              "payroll_offer_compute_only",
+              "payroll_priority_people",
+              "cloud_credits_resolved"
+            ],
+            "effects": {
+              "team": 2,
+              "founder": -1
+            }
+          },
+          {
+            "requires": [
+              "payroll_offer_ordinary_compute",
+              "payroll_priority_people",
+              "cloud_credits_resolved"
+            ],
+            "effects": {
+              "team": 2,
+              "founder": -1
+            }
+          },
+          {
+            "requires": [
+              "dev_conflict_public",
+              "dev_access_protected",
+              "dev_updates_restored"
+            ],
+            "effects": {
+              "team": 2
+            }
+          },
+          {
+            "requires": [
+              "dev_conflict_public",
+              "dev_access_contested",
+              "dev_updates_restored"
+            ],
+            "effects": {
+              "team": -1,
+              "founder": -1
+            }
+          },
+          {
+            "requires": [
+              "dev_conflict_bypassed",
+              "dev_access_protected",
+              "dev_updates_restored"
+            ],
+            "effects": {
+              "founder": -2
+            }
+          },
+          {
+            "requires": [
+              "dev_conflict_bypassed",
+              "dev_access_contested",
+              "dev_updates_restored"
+            ],
+            "effects": {
+              "team": -4,
+              "founder": 1
+            }
+          },
+          {
+            "requires": [
+              "b3_free_optout_granted"
+            ],
+            "effects": {
+              "team": 1
+            }
+          }
+        ],
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -1,
+              "customers": 4,
+              "founder": 2
+            },
+            "setFlags": [
+              "client_engaged"
+            ],
+            "next": "SADBOT_05_ORDER_CALL"
+          },
+          "right": {
+            "effects": {
+              "team": 1,
+              "customers": 3,
+              "founder": -1
+            },
+            "setFlags": [
+              "client_engaged"
+            ],
+            "next": "SADBOT_05_ORDER_REPLY"
+          }
+        }
+      }
+    },
+    {
+      "index": 58,
+      "mechanics": {
+        "id": "SADBOT_05_ORDER_CALL",
+        "kind": "story",
+        "continuation": "forced",
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -4,
+              "customers": 7,
+              "founder": 4
+            },
+            "setFlags": [
+              "lied_500"
+            ],
+            "next": "SADBOT_FRIDAY"
+          },
+          "right": {
+            "effects": {
+              "team": 2,
+              "customers": -2,
+              "founder": -3
+            },
+            "next": "SADBOT_05B_THEATER"
+          }
+        }
+      }
+    },
+    {
+      "index": 59,
+      "mechanics": {
+        "id": "SADBOT_05_ORDER_REPLY",
+        "kind": "story",
+        "continuation": "forced",
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -4,
+              "customers": 7,
+              "founder": 4
+            },
+            "setFlags": [
+              "lied_500"
+            ],
+            "next": "SADBOT_FRIDAY"
+          },
+          "right": {
+            "effects": {
+              "team": 2,
+              "customers": -2,
+              "founder": -3
+            },
+            "next": "SADBOT_05B_THEATER"
+          }
+        }
+      }
+    },
+    {
+      "index": 60,
+      "mechanics": {
+        "id": "SADBOT_05B_THEATER",
+        "kind": "story",
+        "continuation": "forced",
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -5,
+              "customers": 3,
+              "founder": 2
+            },
+            "next": "SADBOT_06_LEGAL"
+          },
+          "right": {
+            "effects": {
+              "team": 2,
+              "customers": -1,
+              "founder": -1
+            },
+            "setFlags": [
+              "mascot_pitch"
+            ],
+            "next": "SADBOT_06_LEGAL"
+          }
+        }
+      }
+    },
+    {
+      "index": 61,
+      "mechanics": {
+        "id": "SADBOT_FRIDAY",
+        "kind": "story",
+        "continuation": "forced",
+        "requires": [
+          "lied_500"
+        ],
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -6,
+              "customers": 2,
+              "founder": 2
+            },
+            "next": "SADBOT_06_LEGAL"
+          },
+          "right": {
+            "effects": {
+              "team": 2,
+              "customers": -4,
+              "founder": -3
+            },
+            "setFlags": [
+              "delivery_slipped"
+            ],
+            "next": "SADBOT_06_LEGAL"
+          }
+        }
+      }
+    },
+    {
+      "index": 62,
+      "mechanics": {
+        "id": "SADBOT_06_LEGAL",
+        "kind": "story",
+        "continuation": "weighted",
+        "opensPressureSlot": true,
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -3,
+              "customers": 4,
+              "founder": -4
+            },
+            "setFlags": [
+              "consciousness_removed"
+            ],
+            "next": [
+              "SADBOT_07_INVOICE",
+              "SADBOT_07_INVOICE_CUT"
+            ]
+          },
+          "right": {
+            "effects": {
+              "team": 1,
+              "customers": -5,
+              "founder": 4
+            },
+            "next": [
+              "SADBOT_07_LOGO"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "index": 63,
+      "mechanics": {
+        "id": "SADBOT_07_INVOICE",
+        "kind": "story",
+        "continuation": "forced",
+        "excludes": [
+          "delivery_slipped"
+        ],
+        "stateEffects": [
+          {
+            "requires": [
+              "mascot_pitch"
+            ],
+            "effects": {
+              "cash": -4
+            }
+          }
+        ],
+        "choices": {
+          "left": {
+            "effects": {
+              "cash": 16,
+              "team": -3,
+              "customers": 8,
+              "founder": 8
+            },
+            "paid": true,
+            "validationProof": true,
+            "ending": "validation_agents"
+          },
+          "right": {
+            "effects": {
+              "cash": -1,
+              "team": -3,
+              "customers": -4,
+              "founder": 5
+            },
+            "next": "SADBOT_07_LOGO"
+          }
+        }
+      }
+    },
+    {
+      "index": 64,
+      "mechanics": {
+        "id": "SADBOT_07_INVOICE_CUT",
+        "kind": "story",
+        "continuation": "forced",
+        "requires": [
+          "delivery_slipped"
+        ],
+        "stateEffects": [
+          {
+            "requires": [
+              "mascot_pitch"
+            ],
+            "effects": {
+              "cash": -2
+            }
+          }
+        ],
+        "choices": {
+          "left": {
+            "effects": {
+              "cash": 10,
+              "team": -2,
+              "customers": 5,
+              "founder": 5
+            },
+            "paid": true,
+            "validationProof": true,
+            "ending": "validation_agents"
+          },
+          "right": {
+            "effects": {
+              "cash": -1,
+              "team": -3,
+              "customers": -4,
+              "founder": 5
+            },
+            "next": "SADBOT_07_LOGO"
+          }
+        }
+      }
+    },
+    {
+      "index": 65,
+      "mechanics": {
+        "id": "SADBOT_07_LOGO",
+        "kind": "story",
+        "continuation": "storylet",
+        "choices": {
+          "left": {
+            "effects": {
+              "cash": -2,
+              "team": -4,
+              "customers": 6,
+              "founder": 2
+            },
+            "ending": "ai_foundation"
+          },
+          "right": {
+            "effects": {
+              "team": 1,
+              "customers": -5,
+              "founder": 3
+            }
+          }
+        }
+      }
+    },
+    {
+      "index": 66,
+      "mechanics": {
+        "id": "PADEL_01",
+        "kind": "story",
+        "arc": "padel",
+        "arcStep": 1,
+        "continuation": "forced",
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -2,
+              "customers": 5,
+              "founder": 5
+            },
+            "next": "PADEL_02"
+          },
+          "right": {
+            "effects": {
+              "team": 3,
+              "customers": -4,
+              "founder": -6
+            },
+            "switchArc": "agents",
+            "next": "AGENT_01"
+          }
+        }
+      }
+    },
+    {
+      "index": 67,
+      "mechanics": {
+        "id": "PADEL_02",
+        "kind": "story",
+        "arc": "padel",
+        "arcStep": 2,
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -7,
+              "customers": 6,
+              "founder": 7
+            },
+            "next": "PADEL_03_TEAM"
+          },
+          "right": {
+            "effects": {
+              "team": 4,
+              "customers": -5,
+              "founder": -6
+            },
+            "switchArc": "agents",
+            "next": "AGENT_01"
+          }
+        }
+      }
+    },
+    {
+      "index": 68,
+      "mechanics": {
+        "id": "PADEL_03_TEAM",
+        "kind": "story",
+        "arc": "padel",
+        "arcStep": 3,
+        "continuation": "forced",
+        "choices": {
+          "left": {
+            "effects": {
+              "cash": -1,
+              "team": 4,
+              "founder": -3
+            },
+            "next": "PADEL_04_CHOICE"
+          },
+          "right": {
+            "effects": {
+              "team": -6,
+              "founder": 5
+            },
+            "next": "PADEL_04_CHOICE"
+          }
+        }
+      }
+    },
+    {
+      "index": 69,
+      "mechanics": {
+        "id": "PADEL_04_CHOICE",
+        "kind": "story",
+        "arc": "padel",
+        "arcStep": 4,
+        "continuation": "forced",
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -7,
+              "founder": -6
+            },
+            "next": "PADEL_05_LOSE"
+          },
+          "right": {
+            "effects": {
+              "cash": -1,
+              "team": 5,
+              "founder": 8
+            },
+            "next": "PADEL_05_WIN"
+          }
+        }
+      }
+    },
+    {
+      "index": 70,
+      "mechanics": {
+        "id": "PADEL_05_WIN",
+        "kind": "story",
+        "arc": "padel",
+        "arcStep": 5,
+        "continuation": "forced",
+        "choices": {
+          "left": {
+            "effects": {
+              "team": 3,
+              "customers": 7,
+              "founder": -4
+            },
+            "next": "PADEL_06_PILOT"
+          },
+          "right": {
+            "effects": {
+              "team": -4,
+              "customers": 10,
+              "founder": 10
+            },
+            "next": "PADEL_06_WAR"
+          }
+        }
+      }
+    },
+    {
+      "index": 71,
+      "mechanics": {
+        "id": "PADEL_05_LOSE",
+        "kind": "story",
+        "arc": "padel",
+        "arcStep": 5,
+        "continuation": "forced",
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -10,
+              "customers": 4,
+              "founder": -10
+            },
+            "ending": "acquired_by_padel"
+          },
+          "right": {
+            "effects": {
+              "team": -6,
+              "customers": -3,
+              "founder": 3
+            },
+            "next": "PADEL_06_ACQUIRED"
+          }
+        }
+      }
+    },
+    {
+      "index": 72,
+      "mechanics": {
+        "id": "PADEL_06_PILOT",
+        "kind": "story",
+        "arc": "padel",
+        "arcStep": 6,
+        "choices": {
+          "left": {
+            "effects": {
+              "cash": 16,
+              "team": -3,
+              "customers": 12,
+              "founder": 5
+            },
+            "paid": true,
+            "validationProof": true,
+            "ending": "validation_padel"
+          },
+          "right": {
+            "effects": {
+              "team": 5,
+              "customers": -8,
+              "founder": -4
+            },
+            "ending": "closedai_boundary"
+          }
+        }
+      }
+    },
+    {
+      "index": 73,
+      "mechanics": {
+        "id": "PADEL_06_WAR",
+        "kind": "story",
+        "arc": "padel",
+        "arcStep": 6,
+        "choices": {
+          "left": {
+            "effects": {
+              "cash": -8,
+              "team": -8,
+              "customers": 7,
+              "founder": 10
+            },
+            "ending": "closedai_war"
+          },
+          "right": {
+            "effects": {
+              "cash": -2,
+              "team": -5,
+              "customers": -7,
+              "founder": -8
+            },
+            "ending": "acquired_by_padel"
+          }
+        }
+      }
+    },
+    {
+      "index": 74,
+      "mechanics": {
+        "id": "PADEL_06_ACQUIRED",
+        "kind": "story",
+        "arc": "padel",
+        "arcStep": 6,
+        "choices": {
+          "left": {
+            "effects": {
+              "team": -10,
+              "customers": 3,
+              "founder": -12
+            },
+            "ending": "acquired_by_padel"
+          },
+          "right": {
+            "effects": {
+              "cash": 12,
+              "team": -8,
+              "customers": 10,
+              "founder": -8
+            },
+            "paid": true,
+            "validationProof": true,
+            "ending": "acquired_validation"
+          }
+        }
+      }
+    }
+  ],
+  "scheduler": {
+    "boundaries": [],
+    "protectedPairs": [
+      [
+        "SADBOT_04_LEAD",
+        "SADBOT_05_ORDER_CALL"
+      ],
+      [
+        "SADBOT_04_LEAD",
+        "SADBOT_05_ORDER_REPLY"
+      ],
+      [
+        "SADBOT_05_ORDER_CALL",
+        "SADBOT_FRIDAY"
+      ],
+      [
+        "SADBOT_05_ORDER_REPLY",
+        "SADBOT_FRIDAY"
+      ],
+      [
+        "SADBOT_05_ORDER_CALL",
+        "SADBOT_05B_THEATER"
+      ],
+      [
+        "SADBOT_05_ORDER_REPLY",
+        "SADBOT_05B_THEATER"
+      ],
+      [
+        "SADBOT_FRIDAY",
+        "SADBOT_06_LEGAL"
+      ],
+      [
+        "SADBOT_05B_THEATER",
+        "SADBOT_06_LEGAL"
+      ],
+      [
+        "PADEL_01",
+        "PADEL_02"
+      ],
+      [
+        "PADEL_04_CHOICE",
+        "PADEL_05_WIN"
+      ],
+      [
+        "PADEL_04_CHOICE",
+        "PADEL_05_LOSE"
+      ],
+      [
+        "PADEL_05_WIN",
+        "PADEL_06_PILOT"
+      ],
+      [
+        "PADEL_05_WIN",
+        "PADEL_06_WAR"
+      ],
+      [
+        "PADEL_05_LOSE",
+        "PADEL_06_ACQUIRED"
+      ]
+    ],
+    "locks": [
+      {
+        "lockCardId": "PADEL_01",
+        "arc": "padel",
+        "forbidVariableSlots": true
+      }
+    ]
+  },
+  "retainedCardSha256": {
+    "OPEN_01": "d1cd161937ae963008f3af662e4394242a8623b81677dcb467b54ec1253dc8b0",
+    "OPEN_02a": "049498d6cd49feb778faf3ebdfdaa010ad9e245678a0bd141d9c86817d5cc584",
+    "OPEN_02b": "a1460635a06270b5de021b44dd26eeae7505994f477f0ba28b2bd9556f055d2f",
+    "OPEN_BOSS": "4e5ad12cce5d80004183f85891307bc5015061ff94b826b40f33b74eb7e4c286",
+    "OPEN_DEV": "9c00dc195da115d4a7de4a2c07a27ff5b4af5f1d84b5bc3f13c2a64a5be3b24c",
+    "OPEN_INVESTOR": "cde72ebb821f4990228e363f76051fdc553e29bb663034dad341d4262cb3f1fa",
+    "LIVE_AGENT_01": "dbbc8bdb2c9e3f182c25b3449cfb0f738b8b7784dcd63589518436fc81b516ec",
+    "LIVE_AGENT_02": "a95d52d99d1e5c41066bf1910b08c020bebbe2503d74fc22a0a817f6a465d4d4",
+    "LIVE_AGENT_03": "decfd78e80e02910d623a191db93577e6762291ab48fa76f10a0a6071da6c2b0",
+    "LIVE_AGENT_04": "8a2c38071c77a6785dfdc0b6eb0e2d1fb194a7533902f2d622279dbe257683d9",
+    "LIVE_AGENT_04B": "3c8b0b45446c4d1cea43722289b875749c4e986b649cf3ee1f06a5c243390ea8",
+    "LIVE_AGENT_05": "1ba692dced354f972e8cc26aa77404ee68b3991a9961530924f44a4c2bfce047",
+    "LIVE_AGENT_06": "88e0faaa0312cbb9595e4b12c98bd42d87ab26259fa78ee54e0c7cd17867f4ce",
+    "LIVE_AGENT_07": "4a7c4d40440a7f5e213ff73647757ec7a1834619d0d0dc8ad4f0e9667e4a1351",
+    "LIVE_AGENT_07B": "57860c987ca0fbbd0795babd2506d0034b15a6e5d2833ee8a37e9a99d50b79fe",
+    "LIVE_AGENT_08": "d92342585d12486f491cf479194b54a8420c9c62e6a57b274f4c33253eeaebb5",
+    "LIVE_AGENT_OUTCOME_0": "c85b55f9554eceb7930e0ced44f014df057170d8757c5f1d2b3826aead6384e0",
+    "LIVE_AGENT_OUTCOME_1": "fe04920edd8e8bc028b59ff040203979350368c7791f80a1c5629a862302afe8",
+    "LIVE_AGENT_OUTCOME_2": "ed3e3812042cf7b3df7ece67d56a82a3cbc48c22bd17ddef1c6eb2c9cbb5deab",
+    "LIVE_AGENT_OUTCOME_3": "1e820f79424ca5d8473be484991913fa13b2c0d39cfbb95547ce6f1ddd6a2978",
+    "LIVE_AGENT_OUTCOME_4": "b2f9b100a6c0c871463d311c414ab82dc2955c9cc84c92a64cf94f328b8f6a99",
+    "INFLUENCER_01": "34c4717ba2cd052028a15ce4847faadb1b53c69235e189e88db964119d4b6829",
+    "INFLUENCER_02": "dab37eb4a27c89927ada66dc246dc90685a7645f6d92847ac5535a97e33ecdd1",
+    "INFLUENCER_02A": "c053c949f8037e5e3467a8ab7ce3523cdfa29fce8273a3886aa92a318cb5452f",
+    "INFLUENCER_03": "13348b38adaa8196b454b59038a22a60770e8c3daa66632ffbff2efb3278c7d2",
+    "INFLUENCER_04": "8fbbff209d6af2cf2ddf6a5cda70d9559579e25be8f01a62138353fd1e7eee36",
+    "INFLUENCER_05": "12028f2d7a87fa5c31b2ee0ea152ef0600dc1e80aa99bfb8e3aac1bca9f30599",
+    "INFLUENCER_06": "2c7910e825dde922daab846899f42693273d751b5bba5f57d1ed15229d080b05",
+    "INFLUENCER_07": "bab60ab979a8bc916f0ab5c100397adb69c91548f10ed5df44ab526cce45dc65",
+    "INFLUENCER_08": "ed73c76352463ff3d0a907f84a51a6d1a1c7cdcb3770e82209a19fe406d852ef",
+    "INFLUENCER_OUTCOME_1": "6bd91a715845ba941c301655c8cf0a3196d14b708a08591183a91a7f935c9116",
+    "INFLUENCER_OUTCOME_2": "8505e1621adcd84da77d87a70996b76df9c8a64dadf71ddb0f37ae1d3801d264",
+    "INFLUENCER_OUTCOME_3": "67ceb10eca6bfac7bbbc60a2c15e249c3bbf8523a22976b2a32974caf838647f",
+    "INFLUENCER_OUTCOME_4": "1f423c096f62853eebfbfb9113a9e2a522729880726a07286f7ce4ada9a94333",
+    "INFLUENCER_OUTCOME_5": "e4515312240cce122c0aa356ddf96104e509b157eaee6f43e77073de3776b808",
+    "INFLUENCER_OUTCOME_6": "a9da8f726052e61b44747178f9df0c56b3dac236323510fb7c5e4a3f7c85346c",
+    "INFLUENCER_OUTCOME_7": "548edf02a3b9b9bde56c7e6a331a17b02257bef35ad19aa5cb635518daaa870f",
+    "PADEL_INVITE": "1728240d48a23db8c627b16f6fc649d1ee7667cf4efdade1964ec86a75492f70",
+    "DREAM_TEAM": "a84dbec132b3a492b43f94ae6375b1cf1925ea3d7de7d1b7b99af5f9b4d2d45a",
+    "IRL_PADEL_01": "04e4d0f38e815c22f7d9063d0a2ed5c2de444ddb7275aec563d3ac881df09b1f",
+    "IRL_PADEL_03B": "0973336589604fcb9ff99a2f286dc2e683d2757d8394e01f67816c61681d1fc3",
+    "IRL_PADEL_04": "9dd59a3f1b0bcda2d27176b6df7a1b7e5a88e7497ff6a13888b07aa25c8c6442",
+    "IRL_PADEL_05": "59a690bc3ad8d0054beeaf08fa76a53aeab35f95a601b53af4b26003e7e40912",
+    "IRL_PADEL_06": "d09e75967d1cc0caa7418a5af75d0b7e3cefcb6778c7e3d673cab74d36a4425f",
+    "PADEL_OUTCOME_0": "23d807fbb6b181b1b944610a86c1ef81585279fc6f1d1248b54554c7ee49ea68",
+    "PADEL_OUTCOME_1": "c6e55b87414a233aab81266c910eafe18de81788dede66785b781d3f81bffb24",
+    "PADEL_OUTCOME_2": "87ec4019df939fd682d4a66b1ffcf9ff8c73cc2dd6792949493ec3300d893916",
+    "PADEL_OUTCOME_3": "9f492b8574e5631cde84eaf4d9cc3c7ca2c2db87413bd01c4000c72f001543a0",
+    "PADEL_OUTCOME_4": "0f848def338eb619500333e69e92270bbc0353028c5c29e01bfd3deae7159733",
+    "PADEL_OUTCOME_5": "d6a68969eb6bbd78ba7f392d0c25731d6b05c60750b94d7dc5d5c5768a1fc37c",
+    "PADEL_OUTCOME_6": "cd0b21b65353dc42bd94c154fa8039967d92ce07b6b9b722e17cfd4ed3468d2d",
+    "PADEL_OUTCOME_7": "2be5164f91fdaea4e76339b773334d3e0857bb25066d569a59a2689c6d2a3fb2",
+    "FILL_PAYROLL_1": "34f5477253425259883be946ed3e27acba72a0376637ad21fc67b8a46aaf5b5f",
+    "FILL_PAYROLL_2": "1ba868da9a33dbd97fe94db4d27b24a444242047bb3346283f607d9a16c9bdb4",
+    "FILL_MOM_CALL_1": "a02630458aadb75efad67427d5d07493d58a06854bfd088f8680f6a892810ae6",
+    "FILL_MOM_CALL_2": "0d03f54934f8c546e6bf2d7e43fcc9f31a7b6b8f58bb753fb5e11e499404cd37",
+    "FILL_COMA_1": "941aac25ccf8cc3ca3f5b0e76564c01c6d7c0102c2020e33c003942cdce1f0af",
+    "FILL_COMA_2A": "60df309231fbc04fbb42c43d921863927539844e3dc0f65188225b257f5342ff",
+    "FILL_COMA_2B": "c27cea8b21c03b7b5e9c1f001b11993d004055cba9b11d20857a8b1a339c8aec",
+    "FILL_SALES_1": "522214d17ad1c8dfb9a56c948948ec51119b6db80d98db942ac13d1f66ae21df",
+    "FILL_SALES_2": "326c5cfb0cb1469fff9e75edcee3278c7c19361e7bede0bf8fcbc0652ac14bfa",
+    "FILL_DOMAIN_1": "8242d386f3f34bcf19ec8e9ed2594df5f93b967bb303fa190a99677286a8e49c",
+    "FILL_DOMAIN_2": "96e81f1311b688f74f500d44926d1294e1f089cffa984df8afd798981c8139cb",
+    "FILL_VIDEO_1": "9c7fd705599ff4727916cddce32a41522cebcb01958f35b5f01cd4a3b71e60f3",
+    "FILL_VIDEO_2": "8d612889942dfd6cc32ae680f0da3421e7522a184f20239101bf1b8363df5b80",
+    "FILL_POLICE_1": "70814c98253bf185e3f41cd583c3357ff62b331d4ae1dbcc00f9b13eb838176b",
+    "FILL_POLICE_2": "616eba9c112094740f1c06da8141d121831b1c60fdf036100e2db3dfada7b68b",
+    "FILL_AI_DEV": "2317f3e7987e38ec8fe5c6f1f8dde06b274d3fef2858c90c94b64d1fe4c9cd88",
+    "FILL_MOM_FLYERS": "fdad006cc11f4e4a29040e9c26a9940b1cba71e0f43a7f5549259a25e870f8bf",
+    "FILL_FRIDGE": "3f2f0bea732a83982d2d37138a7d68f7a9111fade66479e5dd3c3f8de27a98d8",
+    "FILL_FONT": "17dadb9b20adde060156a5c1205a3a0329df2dfe2b547958bdeb1b0b4bdcae08",
+    "FILL_FIGHT": "60b104c4613967ef929d14429a44726865be152a2dec603f4b5124c2d362a37f",
+    "FILL_USER_WIFE": "22607a85754c262c7d38cef03569fbc685f32fc59479b7c7dfaadf0a2e00e3e1",
+    "FILL_RIVAL": "d16c4345d2805219bf369bbce8a0de11855291f25ca25e865702a8b7851bda98",
+    "FILL_THERAPY": "27b2f7f3c4943d1f8ce4d2d7be370507ced4a675f2a275d285c780bea53d4271",
+    "FILL_BLACK_SQUARE": "30450869a4849b11b23c084470fc3b2d0a2b6d56062f09c1fecc39f18bc51347",
+    "FILL_MANTRA": "b75ce39be14942fcdf7cf895c27b96a251806ecafe5b8600a6f4e2ddae450ae3"
+  },
+  "translationsSha256": "77d4575df428ec7052d8cd87c767f56f89461e61e7d84cb4a8631b22be9bf429",
+  "founderProfileSha256": "b1e07b42f8266db980929a872b4fafb326c03fbb37918ad9bdee9386b5f3de1a"
+}

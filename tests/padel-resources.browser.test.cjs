@@ -1,4 +1,5 @@
 const test = require('node:test');
+const { revealMessages, continueWinFeedback } = require('./chat-delivery.fixture.cjs');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -12,7 +13,7 @@ async function seed(page, id, score = 0, resources = base, draws = [.99]) {
   await page.evaluate(({ id, score, resources, draws }) => {
     const a = window.MistakeryApp;
     clearTimeout(a.introTypingTimer);
-    a.state = window.MistakeryEngine.startRun(a.deck);
+    a.state = window.MistakeryRoute.startRun(a.deck, { seed: 'fixture' }); a.state.route.gap = { target: 4, played: [], usedUnit: null };
     a.state.currentCardId = id;
     a.state.resources = resources;
     a.state.schedulerResources = { ...resources };
@@ -25,6 +26,7 @@ async function seed(page, id, score = 0, resources = base, draws = [.99]) {
     Math.random = () => draws[window.draws++] ?? .99;
     a.render();
   }, { id, score, resources, draws });
+  await revealMessages(page);
 }
 async function click(page, side) {
   await page.waitForFunction(() => !window.MistakeryApp.locked);
@@ -52,7 +54,7 @@ test('Padel decisions and each outcome apply once, preview resources, and preser
   try {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
     await page.goto(`${url}?story=live-agent`);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
     for (const [id, effects] of Object.entries(decisions).filter(([id]) => id !== 'IRL_PADEL_06')) {
       for (const [index, side] of ['left', 'right'].entries()) {
         await seed(page, id);
@@ -62,6 +64,15 @@ test('Padel decisions and each outcome apply once, preview resources, and preser
         assert.deepEqual((await state(page)).resources, sum(base, effects[index]), `${id}.${side}`);
       }
     }
+    await page.setViewportSize({ width: 320, height: 650 });
+    const results = {
+      1: ['YOU WIN! The match. Not the deal.', 'rgb(146, 44, 55)'],
+      2: ['YOU WIN! The match. And the deal.', 'rgb(18, 97, 60)'],
+      3: ['YOU LOSE! The match. And the deal.', 'rgb(146, 44, 55)'],
+      4: ['YOU LOSE! The match. Not the deal.', 'rgb(18, 97, 60)'],
+      5: ['YOU LOSE! The match. Not the deal.', 'rgb(18, 97, 60)'],
+      6: ['YOU LOSE! The match. And the deal.', 'rgb(146, 44, 55)'],
+    };
     for (const [n, side, draws] of [[1,'right',[0,0]], [2,'right',[0,.99]], [3,'left',[0]], [4,'left',[.99]], [5,'right',[.99,0]], [6,'right',[.99,.99]], [7,'right',[]]]) {
       const early = n === 7;
       const id = early ? 'IRL_PADEL_05' : 'IRL_PADEL_06';
@@ -69,18 +80,31 @@ test('Padel decisions and each outcome apply once, preview resources, and preser
       const before = await state(page);
       const button = page.locator(`[data-choice="${side}"]`);
       await button.hover();
-      assert.equal(await page.locator('[data-resource].is-preview').count(), 4);
+      assert.equal(await page.locator('[data-resource].is-preview').count(), early ? 3 : 4);
       assert.equal((await state(page)).draws, 0);
       await click(page, side);
       const entered = await state(page);
       assert.equal(entered.currentCardId, `PADEL_OUTCOME_${n}`);
+      if (results[n]) {
+        const result = await page.locator('[data-location-score]').evaluate(node => ({
+          text: node.textContent,
+          color: node.firstElementChild && getComputedStyle(node.firstElementChild).color,
+          detailColor: getComputedStyle(node).color,
+          fits: node.scrollWidth <= node.clientWidth && node.scrollHeight <= node.clientHeight,
+        }));
+        assert.equal(result.text, results[n][0]);
+        assert.equal(result.color, results[n][1], 'result color follows the deal');
+        assert.equal(result.detailColor, 'rgb(23, 33, 43)', 'only YOU WIN/LOSE is colored');
+        assert.equal(result.fits, true, 'the complete result fits on 320px');
+      }
       assert.deepEqual(entered.resources, sum(base, decisions[id][side === 'left' ? 0 : 1], outcomes[n]));
       assert.equal(entered.draws, draws.length);
       await page.evaluate(() => window.MistakeryApp.render());
       assert.deepEqual((await state(page)).resources, entered.resources);
       await click(page, 'left');
-      assert.equal((await state(page)).view, 'saved');
+      assert.equal((await state(page)).view, 'playing');
       assert.deepEqual((await state(page)).resources, sum(entered.resources));
+      await continueWinFeedback(page);
       await page.locator('[data-test-back]').click();
       assert.deepEqual((await state(page)).resources, entered.resources, 'Back does not reapply outcome effects');
       await page.locator('[data-test-back]').click();
@@ -89,34 +113,35 @@ test('Padel decisions and each outcome apply once, preview resources, and preser
   } finally { await browser.close(); }
 });
 
-test('zero resource boundaries stay playable without crises or double refusal penalties', async () => {
+test('Padel resolves its story before resource defeat without double refusal penalties', async () => {
   const browser = await chromium.launch({ headless: true });
   try {
     const page = await browser.newPage({ viewport: { width: 320, height: 650 }, reducedMotion: 'reduce' });
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     await page.goto(`${url}?story=live-agent`);
-    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck));
-    for (const cash of [40, 25, 10, 0]) {
+    await page.waitForFunction(() => Boolean(window.MistakeryApp?.deck) && window.MistakeryApp.view !== 'loading');
+    for (const cash of [40, 25, 16.5, 16, 10, 0]) {
       await seed(page, 'PADEL_INVITE', 0, { ...base, cash });
       await click(page, 'right');
       const outcome = await state(page);
       assert.equal(outcome.currentCardId, 'PADEL_OUTCOME_0');
-      assert.equal(outcome.resources.cash, Math.max(0, cash - 25.5));
+      assert.equal(outcome.resources.cash, Math.max(0, cash - 15.5));
       assert.equal(outcome.activeCrisisId, null);
       assert.equal(outcome.gameOver, false);
       await click(page, 'right');
       const finished = await state(page);
-      assert.equal(finished.view, 'saved');
+      assert.equal(finished.view, cash > 16 ? 'playing' : 'ended');
       assert.deepEqual(finished.resources, sum(outcome.resources));
       assert.equal(finished.activeCrisisId, null);
-      assert.equal(finished.gameOver, false);
+      assert.equal(finished.gameOver, cash <= 16);
+      if (cash <= 16) assert.equal(finished.endingId, 'cash_low');
     }
     await seed(page, 'IRL_PADEL_04', 0, { ...base, cash: 1, founder: 1 });
     await click(page, 'left');
     assert.equal((await state(page)).currentCardId, 'IRL_PADEL_05');
     assert.equal((await state(page)).score, -1);
-    assert.deepEqual((await state(page)).resources, { cash: 0, team: 50, customers: 50, founder: 0 });
+    assert.deepEqual((await state(page)).resources, { cash: .5, team: 50, customers: 50, founder: 0 });
     await click(page, 'left');
     assert.equal((await state(page)).currentCardId, 'IRL_PADEL_06');
     await click(page, 'right');

@@ -26,7 +26,7 @@ test('offline bundle contains exactly the canonical JSON deck', () => {
 });
 
 test('runtime asset URLs track file content so cached scripts cannot hide new card captions', () => {
-  for (const file of ['style.css', 'cards.bundle.js', 'game.js', 'app.js']) {
+  for (const file of ['style.css', 'cards.bundle.js', 'game.js', 'assets/route.js', 'assets/save.js', 'assets/save.css', 'assets/deals.js', 'assets/deals.css', 'assets/analytics-config.js', 'assets/analytics.js', 'assets/sound-samples.js', 'assets/sound.js', 'assets/sound.css', 'assets/padel-backgrounds.js', 'assets/founder-profile.js', 'assets/founder-profile.css', 'assets/founder-card-touch.js', 'app.js']) {
     const version = createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex').slice(0, 12);
     assert.ok(index.includes(`${file}?v=${version}`), `Stale runtime URL for ${file}: rebuild the offline deck`);
   }
@@ -38,6 +38,27 @@ test('negative review screenshot is a compact cacheable WebP asset', () => {
   assert.ok(image.length <= 100 * 1024, `negative review screenshot is too large: ${image.length} bytes`);
   assert.equal(image.subarray(0, 4).toString('ascii'), 'RIFF');
   assert.equal(image.subarray(8, 12).toString('ascii'), 'WEBP');
+});
+
+test('all six supplied filler pictures are mapped to compact WebP assets', () => {
+  const deck = require('../cards.json');
+  let total = 0;
+  for (const [id, name] of Object.entries({
+    FILL_DOMAIN_1: 'filler-domain-hair-loss', FILL_VIDEO_2: 'filler-pitch-video',
+    FILL_COMA_2A: 'filler-fans-door', FILL_FONT: 'filler-font-a',
+    FILL_BLACK_SQUARE: 'filler-black-screen', FILL_MOM_FLYERS: 'filler-mom-flyers',
+  })) {
+    const card = deck.cards.find(c => c.id === id);
+    assert.equal(card.image?.src, `assets/${name}.webp`, id);
+    const data = fs.readFileSync(path.join(root, card.image.src));
+    assert.equal(data.subarray(0, 4).toString('ascii'), 'RIFF');
+    assert.equal(data.subarray(8, 12).toString('ascii'), 'WEBP');
+    assert.ok(data.length <= 160 * 1024, `${id}: picture exceeds 160 KiB`);
+    assert.ok(card.image.width > 0 && card.image.height > 0);
+    assert.ok(Math.max(card.image.width, card.image.height) <= 1200);
+    total += data.length;
+  }
+  assert.ok(total <= 500 * 1024, 'six filler pictures must stay below 500 KiB combined');
 });
 
 test('bilingual catalog contains every canonical card and its current English copy', () => {
@@ -73,29 +94,28 @@ test('bilingual catalog includes contextual AI influencer reply choices', () => 
   }
 });
 
-test('bilingual catalog keeps the approved AGENT_01 Russian copy', () => {
+test('bilingual catalog contains exactly the current deck card IDs', () => {
+  const canonical = require('../cards.json');
   const catalog = fs.readFileSync(catalogPath, 'utf8');
-  assert.ok(catalog.includes('ВСТАВЬ ДУШУ В B2BUYERSPYER ИЛИ ПРОСИ ДЕНЬГИ У МАМЫ.'));
+  const ids = [...catalog.matchAll(/^## ([A-Z][A-Za-z0-9_]+) —/gm)].map(match => match[1]);
+  assert.deepEqual(ids.sort(), canonical.cards.map(card => card.id).sort());
 });
 
-test('bilingual catalog contains Russian copy for every SADBOT card', () => {
+test('bilingual catalog contains approved Russian copy for every current card', () => {
+  const canonical = require('../cards.json');
   const catalog = fs.readFileSync(catalogPath, 'utf8');
-  const ids = [
-    'SADBOT_01_SEED', 'SADBOT_02_EVIDENCE', 'SADBOT_03_VIRAL',
-    'SADBOT_INVESTOR_CLAIM', 'SADBOT_04_LEAD', 'SADBOT_05_ORDER_CALL',
-    'SADBOT_05_ORDER_REPLY', 'SADBOT_05B_THEATER', 'SADBOT_FRIDAY',
-    'SADBOT_06_LEGAL', 'SADBOT_07_INVOICE', 'SADBOT_07_INVOICE_CUT',
-    'SADBOT_07_LOGO',
-  ];
-  for (const id of ids) {
+  for (const card of canonical.cards) {
+    const id = card.id;
     const start = catalog.indexOf(`## ${id} `);
     assert.notEqual(start, -1, `missing catalog entry ${id}`);
     const next = catalog.indexOf('\n## ', start + 1);
     const entry = catalog.slice(start, next === -1 ? catalog.length : next);
     assert.match(entry, /\*\*RU\*\*/);
     assert.doesNotMatch(entry, /перевод не утверждён/);
-    const russian = entry.slice(entry.indexOf('**RU**'));
-    assert.match(russian, /[А-Яа-яЁё]/, `${id} has no Russian copy`);
+    const translation = canonical.testTranslations[id];
+    assert(translation, `${id}: approved translation`);
+    for (const line of translation.text.split('\n').filter(Boolean)) assert(entry.includes(`> ${line}`), `${id}: ${line}`);
+    for (const side of ['left', 'right']) assert(entry.includes(` — ${translation[side]}**`), `${id}.${side}`);
   }
 });
 
@@ -110,4 +130,27 @@ test('uses the Mistakery brand without the Validation label and includes a messa
   assert.match(indexSource, /<h1>Mistakery<\/h1>/);
   assert.doesNotMatch(indexSource, />Validation</);
   assert.match(indexSource, /data-message-avatar/);
+});
+
+
+test('offline audio embeds exactly the seven approved CC0 PCM clips', () => {
+  const vm = require('node:vm');
+  const window = {};
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/sound-samples.js'), 'utf8'), { window });
+  const sources = JSON.parse(fs.readFileSync(path.join(root, 'assets/audio/sources.json'), 'utf8'));
+  assert.equal(sources.length, 7);
+  assert.deepEqual(Object.keys(window.MISTAKERY_SOUND_SAMPLES).sort(), ['incoming', 'send', 'story-loss', 'resource-loss', 'ai-finale', 'story-win', 'padel'].sort());
+  assert.ok(index.indexOf('assets/sound-samples.js') < index.indexOf('assets/sound.js'), 'samples load before player');
+  for (const source of sources) {
+    const wav = fs.readFileSync(path.join(root, 'assets/audio', source.file));
+    const pcm = wav.subarray(44);
+    assert.equal(source.license, 'CC0-1.0');
+    assert.equal(source.owner_approved_on, '2026-10-10');
+    assert.equal(createHash('sha256').update(wav).digest('hex'), source.wav_sha256);
+    assert.equal(createHash('sha256').update(pcm).digest('hex'), source.pcm_sha256);
+    assert.equal(pcm.length, source.frames * 2);
+    assert.equal(window.MISTAKERY_SOUND_SAMPLES[source.kind].sampleRate, 48000);
+    assert.deepEqual(Buffer.from(window.MISTAKERY_SOUND_SAMPLES[source.kind].pcm, 'base64'), pcm);
+    assert.ok(source.duration_seconds < .5, 'single cue, without audition repeats');
+  }
 });

@@ -1,6 +1,6 @@
-// Resource values read in full from Google Doc 1oGlgbtUK7Ayrq8sx4O9HCHPtVhOJ-_wJJ0xjH5wgjcc.
+// Google Doc values; owner adjusted the one-time refusal to -15 Cash on 2026-10-03.
 exports.decisions = {
-  INFLUENCER_01: [{ customers: 5 }, { cash: -25 }],
+  INFLUENCER_01: [{ customers: 5 }, { cash: -15 }],
   INFLUENCER_02: [{ customers: 5 }, { founder: 3 }],
   INFLUENCER_02A: [{ customers: 5 }, { customers: 5, founder: 2 }],
   INFLUENCER_03: [{ team: 5 }, { cash: -10, team: -5 }],
@@ -15,7 +15,7 @@ exports.contextual = {
   INFLUENCER_06: { INFLUENCER_05: [{ founder: -15, team: -5 }, { founder: 7 }] },
 };
 exports.outcomes = {
-  // User confirmed Cash -25 is charged only on the refusal choice.
+  // The refusal penalty is charged only on the choice, never again on the outcome.
   1: { founder: -5 },
   2: { cash: 15, customers: 25, team: -10, founder: -10 },
   3: { cash: -15, customers: -10, team: -15, founder: -25 },
