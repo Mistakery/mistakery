@@ -644,6 +644,7 @@ button.typing-bubble:focus-visible { outline: 2px solid var(--blue); outline-off
   box-shadow: 0 12px 32px rgba(7, 20, 32, .22);
 }
 .irl-dialog p { margin: 0; font-size: var(--message-font-size); font-weight: 400; line-height: 1.38; letter-spacing: -.012em; }
+.irl-dialog p + p { margin-top: 8px; }
 .irl-scene .choices { padding-top: 4px; }
 .irl-scene .choice { font-size: 12.2px; }
 
